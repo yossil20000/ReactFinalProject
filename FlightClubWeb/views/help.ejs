@@ -1,0 +1,14 @@
+<html>
+    <h1>Customer Service</h1>
+    <ul>
+        
+        <% options.forEach( (item , index) => { %>
+            <li><%= index%>
+                <li><%= item.phone %></li> 
+                <li><%= item.chat %></li>
+                <li><%= item.type %></li>
+            </li>
+           
+        <%})%>
+    </ul>
+</html>

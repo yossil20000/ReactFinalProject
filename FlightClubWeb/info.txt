@@ -1,0 +1,14 @@
+npm install express-generator -g
+express --view=ejs app-name
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMzIxMjJiMDgyYTkyZjI1OGVmOWJhYyIsImlhdCI6MTY0NzU4MzIwMiwiZXhwIjoxNjQ3NTgzNTgyfQ.5_W52hLj3dW8N0Yt98gatAEA2Ssbsy2Jx0N70PoBJrM
+
+
+ "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Inlvc0BnbWFpbC5jb20iLCJpYXQiOjE2NDc1OTM2NTl9.VQCRysGoH33ELOLhDjky6KtZehVQ37FlPUChEH2YnOM",
+        "message": "Access Permited",
+        "member": {
+            "email": "yos@gmail.com",
+            "fullName": "Levy Yosef"
+        }
+    }
