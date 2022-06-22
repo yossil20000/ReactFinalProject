@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.theme-startup {
+  --color-primary: 255 115 179;
+  --color-secondary: 111 114 185;
+  /* ... */
+}
+
+.theme-boring {
+  --color-primary: 2 82 204;
+  --color-secondary: 255 196 2;
+  /* ... */
+}
+
+.theme-elegant {
+  --color-primary: 192 178 131;
+  --color-secondary: 220 208 192;
+  /* ... */
+}
+.yl__container{
+  display: grid;
+  height: 100vh;
+  width: 100vw;
+  grid-template-areas: "nav nav nav nav" "header header header header" ". main main ." "footer footer footer footer";
+  grid-template-columns: 1% 5fr 2fr 1%;
+  grid-template-rows: auto auto 1fr 5ch;
+  align-content: center;
+}
+.yl__container .l_nav{
+  grid-area: l_nav;
+  background-color: rgb(46, 173, 173);
+}
+.yl__container .nav {
+  grid-area: nav;
+  background-color: aquamarine;
+  justify-content: center;
+}
+.yl__container .header{
+  grid-area: header;
+}
+.yl__container .r_nav {
+  grid-area: r_nav;
+  background-color: aquamarine;
+}
+.yl__container .main{
+  display: flex;
+  flex-direction: column;
+  grid-area: main;
+  background-color: rgb(235, 239, 239);
+}
+.yl__container .l_footer {
+  grid-area: l_footer;
+  background-color: red;
+}
+.yl__container .footer {
+  grid-area: footer;
+  background-color: rgb(237, 166, 166);
+}
+
+.yl__container .r_footer {
+  grid-area: r_footer;
+  background-color: rgb(122, 15, 15);
+}
+
