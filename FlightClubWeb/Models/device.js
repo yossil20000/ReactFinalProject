@@ -22,7 +22,7 @@ var DeviceSchema = new Schema({
         base: {type: mongoose.Decimal128},
         meter: {type: String, enum:[CE.DEVICE_MET.HOBBS,CE.DEVICE_MET.ENGIEN], default:CE.DEVICE_MET[1]}
     },
-    description:{
+    details:{
         image: {type: String},
         color: {type: String},
         seats: {type: Number},

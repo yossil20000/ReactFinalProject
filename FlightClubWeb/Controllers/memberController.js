@@ -12,7 +12,7 @@ exports.member_list = function(req,res,next){
     .sort([['family_name','ascending']])
     .exec(function(err,list_members){
         if(err){ return next(err);}
-        res.status(201).json({success: false, errors : errors = [], data: list_members});
+        res.status(201).json({success: true, errors : [], data: list_members});
     })
 }
 exports.member_detail = function(req,res,next){
@@ -20,7 +20,7 @@ exports.member_detail = function(req,res,next){
     Member.findById(req.params.id)
         .exec(function(err,member){
             if(err) {return next(err);}
-            res.status(201).json({success: false, errors :  [], data: member});
+            res.status(201).json({success: true, errors :  [], data: member});
         });
 }
 exports.member_delete = function(req,res,next){
@@ -42,7 +42,7 @@ exports.member_delete = function(req,res,next){
         else{
             Member.findByIdAndRemove(req.params.memberId, function(err,doc){
                 if(err) { return next(err);}
-                res.status(201).json({success: false, errors : ["member has link reservation"], data: doc });
+                res.status(201).json({success: true, errors : [], data: doc });
             });
         }
     });
@@ -101,8 +101,9 @@ exports.member_create = [
                     family_name: req.body.family_name,
                     member_id: req.body.member_id,
                     date_of_birth: req.body.date_of_birth,
-                    date_of_join: req.body.date_of_join === undefined ? null : req.body.date_of_join
-                    
+                    date_of_join: req.body.date_of_join === undefined ? null : req.body.date_of_join,
+                    password: req.body.password === undefined ? req.body.first_name : req.body.password,
+                    contact:{email: req.body.email === undefined ? `${req.body.first_name}@gmail.com` : req.body.email}
                 }
             );
             member.save((err) => {
