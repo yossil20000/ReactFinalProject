@@ -56,7 +56,7 @@ var MemberSchema = new Schema({
     date_of_join: {type: Date, required: true},
     date_of_leave: {type: Date},
     flights: [{type: Schema.ObjectId,ref: 'Flight'}],
-    flight_reserv: [{type: Schema.ObjectId, ref: 'FlightReservation'}],
+    flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}],
     membership: {type: Schema.ObjectId,ref: 'Membership'}
 },{timestamps: true});
 

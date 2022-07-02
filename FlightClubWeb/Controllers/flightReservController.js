@@ -81,11 +81,11 @@ exports.reservation_delete= function(req,res,next){
 		};
 		async.parallel({
 			member_delete_flight: function(callback){
-				Member.findOneAndUpdate(req.body.member_id,{$pull: {flights: req.body._id}}).exec(callback);
+				Member.findOneAndUpdate(req.body.member_id,{$pull: {flight_reservs: req.body._id}}).exec(callback);
 			},
 			device_delete_flight: function(callback){
 				Device.findById(req.body.device_id)
-				.updateOne({$pull: {flights: req.body._id}})
+				.updateOne({$pull: {flight_reservs: req.body._id}})
 				.exec(callback);
 			}
 

@@ -84,7 +84,8 @@ function deviceCreate(device_id,device_type,available,device_status,due_date,hob
         hobbs_meter: 345.6,
         engien_meter: 245.7,
         maintanance: {next_meter: 5670.6},
-        description: {
+        description: "Good Aircrapt",
+        details: {
             image:  'https://www.google.com/search?q=airplane+images&sxsrf=APq-WBtm62ecKiz4huAVdDnYbGDgBYIrLw:1647066931349&tbm=isch&source=iu&ictx=1&vet=1&fir=dJ-ns3zOOG2WjM%252C8pJNRpwZOAYayM%252C_%253BeSVzIEk_N-h10M%252CWITfi61mVOl_gM%252C_%253BK8fp99P4ei9q5M%252CfdhhcUCkHFlBVM%252C_%253BRA9DKM8DJ1bucM%252CzUO50cMzwM52bM%252C_%253B9iEF7ZGmZNUHvM%252C_CeaBxaSDKd9FM%252C_%253BYvBvR3ld5lWTvM%252CNZPjaL6BtLrdwM%252C_%253BYyq0M5VdF0FUBM%252CMDPvSWhwOcWPzM%252C_%253B74EO1BkTKAjRTM%252C6YGYLTGE1BuVMM%252C_%253B7F1Qgw4VQpjxUM%252ChbdRpLYBCtxpzM%252C_%253BaqRgmcTxbHGjvM%252CSIsyVKIDS4mSVM%252C_%253BMv_grMNuMngiRM%252Cs6uQndQalu9gwM%252C_%253BWhz34Ns70Sam4M%252C8pJNRpwZOAYayM%252C_&usg=AI4_-kT_yASkbU7xCWtx-7SQ5th5LpOruw&sa=X&sqi=2&ved=2ahUKEwi92_S6-r_2AhUDxhoKHXCQAisQ9QF6BAggEAE#imgrc=eSVzIEk_N-h10M',
             color: 'Red/White',
             seats: 4,

@@ -27,7 +27,7 @@ var DeviceSchema = new Schema({
         color: {type: String},
         seats: {type: Number},
         fuel: {
-            quantity: {type: Number},
+            quantity: {type: Number, default: 0},
             units: {type:String, enum:['galon','litter'] , default:'galon'}
         },
         instruments: [{type: String, enum:[CE.DEVICE_INS.VFR,CE.DEVICE_INS.IFR,CE.DEVICE_INS.G1000,CE.DEVICE_INS.ICE,CE.DEVICE_INS.AIR_CONDITION]}]
