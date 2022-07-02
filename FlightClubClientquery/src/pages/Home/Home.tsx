@@ -5,7 +5,7 @@ import TitlebarBelowMasonryImageList from "../../Components/Masonry/TitlebarImag
 import { Messages } from "./components/Messages"
 
 
-function Home(props:any) {
+function Home() {
   return (
     <div className="main">
       {/* <Messages></Messages> */}
