@@ -30,12 +30,17 @@ const importData = async () => {
     //console.log('Devices Data Imported!' , devices);
     
     if(members.length > 0 && devices.length > 0)    {
-      let newReservation = createReservation(members[0], devices[0], new Date(1995, 11, 17, 3, 4, 0), new Date(1995, 11, 17, 3, 5, 0));
-      await FlightReservation.insertMany(newReservation)
-      devices[0].flight_reservs = newReservation;
-		  members[0].flight_reservs = newReservation;
-      await devices[0].save();
-      await members[0].save();
+      for(let i=0;i<10;i++)
+      {
+        let newReservation = createReservation(members[i % 2], devices[i % 2], new Date(2022, 11, 17, i, 30, 0), new Date(2022, 11, 17, i+1, 30, 0));
+
+        await FlightReservation.insertMany(newReservation)
+        devices[0].flight_reservs = newReservation;
+        members[0].flight_reservs = newReservation;
+        await devices[0].save();
+        await members[0].save();
+      }
+      
     }
     process.exit();
     
@@ -48,7 +53,7 @@ const importData = async () => {
 
 const destroyData = async () => {
   try {
- 
+    await Member.deleteMany();
     console.log('Data Destroyed!')
     process.exit()
   } catch (error) {
