@@ -1,7 +1,8 @@
 
 import axios from 'axios';
 import { ClubMessage } from '../../../Types/ClubMessages';
-import { CLUB_MESSAGE_ALL } from './Consts/Api';
+import { URLS } from '../../../Types/Urls';
+import { CLUB_MESSAGE_ALL } from '../../Consts/Api';
 const apiClient = axios.create({
     baseURL: process.env.SERVER_BASE_ADDRESS,
     headers: {
@@ -15,7 +16,7 @@ const apiClient = axios.create({
 
 const getAll =  async  () => {
    
-    const response = await apiClient.get("http://localhost:3002/club_notice/");
+    const response = await apiClient.get(`${URLS.SERVER_BASE_ADDRESS}/api/${CLUB_MESSAGE_ALL}`);
     console.log("Response getAll", response.data.data);
     for(let i=0; i< response.data.length;i++)
     {
