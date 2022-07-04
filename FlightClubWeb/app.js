@@ -49,15 +49,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/members', membersRouter);
-app.use('/devices', deviceRouter);
-app.use('/deviceTypes', deviceTypeRouter);
-app.use('/reservation', flightReservRouter);
+app.use('/api', indexRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/members', membersRouter);
+app.use('/api/devices', deviceRouter);
+app.use('/api/deviceTypes', deviceTypeRouter);
+app.use('/api/reservation', flightReservRouter);
 app.use('/',loginRouter);
-app.use('/memberships', membershipRouter);
-app.use('/club_notice',clubNoticeRouter)
+app.use('/api/memberships', membershipRouter);
+app.use('/api/club_notice',clubNoticeRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
