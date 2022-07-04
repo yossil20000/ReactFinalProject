@@ -10,7 +10,7 @@ exports.signin = function(req,res,next){
     const email = req.body.email;
     const password = req.body.password;
 
-    log.info(`login: ${email} `);
+    log.info(`login: ${email} ${password} `);
    
     Member.findOne({"contact.email" : email}, (err, member) => {
         if(err){
@@ -63,7 +63,7 @@ exports.signin = function(req,res,next){
         }
         else
         {
-            return res.status(401).json({ success: false, errors: ["Access Denied"], message: "Access Denied" });
+            return res.status(201).json({ success: false, errors: ["Access Denied"], message: "Access Denied" });
         }
         
     })
