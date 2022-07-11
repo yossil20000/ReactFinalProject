@@ -6,6 +6,11 @@
       "dom.iterable",
       "esnext"
     ],
+    "plugins": [
+      { 
+        "transform": "ts-transformer-keys/transformer"
+      }
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,5 +27,6 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "files": ["node_modules/ts-transformer-keys/index.d.ts"]
 }
