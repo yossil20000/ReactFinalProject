@@ -1,0 +1,20 @@
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+
+import counterReducer from "../features/counter/counterslice";
+import titleReducer from '../features/counter/titleSlicse'
+import {apiSlice} from '../features/dogs/dogsSlice';
+
+export const store = configureStore(
+    {
+        reducer:{
+            counter: counterReducer,
+            title : titleReducer,
+            [apiSlice.reducerPath] : apiSlice.reducer
+        },
+        middleware: (getDefaultMiddleware) => {
+            return getDefaultMiddleware().concat(apiSlice.middleware)
+        }
+    }
+);
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>

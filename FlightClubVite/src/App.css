@@ -1,0 +1,89 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+button {
+  font-size: calc(10px + 2vmin);
+}
+
+
+.yl__container{
+  display: grid;
+  height: 100vh;
+  width: 100vw;
+  grid-template-areas: "nav nav nav nav" "header header header header" ". main main ." "footer footer footer footer";
+  grid-template-columns: 1% 5fr 2fr 1%;
+  grid-template-rows: auto auto 1fr 5ch;
+  align-content: center;
+}
+.yl__container .l_nav{
+  grid-area: l_nav;
+  background-color: rgb(46, 173, 173);
+}
+.yl__container .nav {
+  grid-area: nav;
+  background-color: aquamarine;
+  justify-content: center;
+}
+.yl__container .header{
+  grid-area: header;
+}
+.yl__container .r_nav {
+  grid-area: r_nav;
+  background-color: aquamarine;
+}
+.yl__container .main{
+  display: flex;
+  flex-direction: column;
+  grid-area: main;
+  background-color: rgb(235, 239, 239);
+}
+.yl__container .l_footer {
+  grid-area: l_footer;
+  background-color: red;
+}
+.yl__container .footer {
+  grid-area: footer;
+  background-color: rgb(237, 166, 166);
+}
+
+.yl__container .r_footer {
+  grid-area: r_footer;
+  background-color: rgb(122, 15, 15);
+}
+
