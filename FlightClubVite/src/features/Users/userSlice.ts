@@ -1,10 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-
-interface base<T> {
-    "success": boolean;
-    "errors": string[];
-    "data": T[];
-}
+import IResultBase from '../../Interfaces/API/IResultBase'
+import {URLS} from '../../Enums/Routers';
 interface Breed {
     "success": boolean;
     "errors": string[];
@@ -65,23 +61,12 @@ export interface LogingProp {
     "password": string;
     "email": string;
 }
-interface LoginResult {
-    "access_token": string;
-    "exp": number;
-    "iat": string;
-    "expDate": string;
-    "message": string;
-    "member": {
-        "email": string;
-        "fullName": string;
-    }
-}
 
 
 export const apiSlice = createApi({
     reducerPath: 'apiSlice',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:3002/api',
+        baseUrl: URLS.BACKEND_URL,
         prepareHeaders(headers) {
 
             return headers;
@@ -90,10 +75,10 @@ export const apiSlice = createApi({
     endpoints(builder) {
         return {
             fetchBreeds: builder.query<Breed, number | void>({
-                query(limit = 10) { return `/club_notice`; }
+                query(limit = 10) { return `/${URLS.CLUB_NOTICE}`; }
             }),
-            fetcAllMembers: builder.query<base<Member>, void>({
-                query() { return '/members' }
+            fetcAllMembers: builder.query<IResultBase<Member>, void>({
+                query() { return `/${URLS.MEMBERS}` }
             })
         }
     }
