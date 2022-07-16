@@ -1,7 +1,8 @@
 import { ClassNames } from '@emotion/react';
 import React from 'react'
 import {useForm} from 'react-hook-form'
-import {useLoginMutation,LogingProp} from '../../features/Users/userSlice'
+import {useLoginMutation} from '../../features/Auth/authSlice'
+import ILogin from '../../Interfaces/API/ILogin';
 export default function LoginPage() {
   const {register,handleSubmit} = useForm();
   const [loging,result]= useLoginMutation();
@@ -10,13 +11,13 @@ export default function LoginPage() {
     console.log("submitForm/data", data);
   
     
-    const logingProps : LogingProp = {
+    const loginProps : ILogin = {
       password: data.password,
       email:  data.email
     }
-    console.log("submitForm/login", logingProps);
+    console.log("submitForm/login", loginProps);
     try{
-      const paload = await loging(logingProps).unwrap();
+      const paload = await loging(loginProps).unwrap();
       console.log("Unwrap", paload);
     }
     catch(err)

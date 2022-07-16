@@ -79,7 +79,7 @@ interface LoginResult {
 
 
 export const apiSlice = createApi({
-    reducerPath: 'api',
+    reducerPath: 'apiSlice',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:3002/api',
         prepareHeaders(headers) {
@@ -94,18 +94,11 @@ export const apiSlice = createApi({
             }),
             fetcAllMembers: builder.query<base<Member>, void>({
                 query() { return '/members' }
-            }),
-            login: builder.mutation<base<LoginResult>, LogingProp>({
-                query: (login) => ({
-                    url: "/login",
-                    method: "PUT",
-                    body: login
-                })
             })
         }
     }
 });
 
-export const { useFetchBreedsQuery, useFetcAllMembersQuery,useLoginMutation } = apiSlice
+export const { useFetchBreedsQuery, useFetcAllMembersQuery } = apiSlice
 
 

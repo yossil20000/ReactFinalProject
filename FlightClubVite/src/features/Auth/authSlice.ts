@@ -1,22 +1,46 @@
-//https://blog.logrocket.com/handling-user-authentication-redux-toolkit/
-import { createSlice } from "@reduxjs/toolkit";
-
-export interface userLogin{
-
-}
-const initialState ={
-    loading:  false,
-    userInfo: {},
-    userToken: null,
-    error: null,
-    success: false
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import ILogin from "../../Interfaces/API/ILogin";
+interface base<T> {
+    "success": boolean;
+    "errors": string[];
+    "data": T[];
 }
 
-const authSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers:{},
-    extraReducers: {},
-})
+interface LoginResult {
+    "access_token": string;
+    "exp": number;
+    "iat": string;
+    "expDate": string;
+    "message": string;
+    "member": {
+        "email": string;
+        "fullName": string;
+    }
+}
 
-export default authSlice.reducer;
+
+export const apiAuthSlice = createApi({
+    reducerPath: 'apiAuthSlice',
+    baseQuery: fetchBaseQuery({
+        baseUrl: 'http://localhost:3002/api',
+        prepareHeaders(headers) {
+
+            return headers;
+        }
+    }),
+    endpoints(builder) {
+        return {
+            login: builder.mutation<base<LoginResult>, ILogin>({
+                query: (login) => ({
+                    url: "/login",
+                    method: "PUT",
+                    body: login
+                })
+            })
+        }
+    }
+});
+
+export const { useLoginMutation } = apiAuthSlice
+
+
