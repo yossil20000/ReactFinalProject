@@ -55,7 +55,7 @@ app.use('/api/members', membersRouter);
 app.use('/api/devices', deviceRouter);
 app.use('/api/deviceTypes', deviceTypeRouter);
 app.use('/api/reservation', flightReservRouter);
-app.use('/',loginRouter);
+app.use('/api',loginRouter);
 app.use('/api/memberships', membershipRouter);
 app.use('/api/club_notice',clubNoticeRouter)
 // catch 404 and forward to error handler
