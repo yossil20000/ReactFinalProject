@@ -80,7 +80,7 @@ endpoints(builder){
             query(limit = 10){ return `/club_notice`;}
         }),
         fetcAllMembers : builder.query<base<Member>,void>({
-            query() {return 'members'}
+            query() {return '/members'}
         })
     }
 }

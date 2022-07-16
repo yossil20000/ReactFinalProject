@@ -16,7 +16,7 @@ export interface ImageListProps {
 }
 export default function TitlebarBelowMasonryImageList({imageList} : ImageListProps) {
   return (
-    <Box sx={{ width: "100%", height: 450, overflowY: 'scroll' }}>
+    <Box sx={{ width: "100%", height: "50vh", overflowY: 'scroll' }}>
       <ImageList  cols={1} gap={3}>
         {imageList.map((item) => (
           <ImageListItem key={item.img}>
@@ -26,8 +26,8 @@ export default function TitlebarBelowMasonryImageList({imageList} : ImageListPro
               alt={item.title}
               loading="lazy"
             />
-            <ImageListItemBar position="below" title={item.author } />
-            <ImageListItemBar position="top" title={item.title } />
+            <ImageListItemBar position="below" subtitle={item.author } title={item.title} />
+            
           </ImageListItem>
         ))}
       </ImageList>

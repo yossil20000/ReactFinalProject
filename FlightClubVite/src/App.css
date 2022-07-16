@@ -63,10 +63,7 @@ button {
 .yl__container .header{
   grid-area: header;
 }
-.yl__container .r_nav {
-  grid-area: r_nav;
-  background-color: aquamarine;
-}
+
 .yl__container .main{
   display: flex;
   flex-direction: column;
