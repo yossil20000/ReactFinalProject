@@ -1,11 +1,15 @@
 /* import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 import React from 'react'
+import { useFetchAllReservationsQuery } from '../../features/Reservations/reservationsSlice';
 
 function ReservationsPage() {
+  const {data ,isFetching} = useFetchAllReservationsQuery();
+  console.log("ReservationsPage",data?.data)
   return (
     <div className='main'>
       <h1>Reservation</h1>
+      
       {/* <LocalizationProvider dateAdapter={AdapterLuxon}></LocalizationProvider> */}
     </div>
   )

@@ -1,28 +1,13 @@
+import base from "@emotion/styled/types/base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import ILogin from "../../Interfaces/API/ILogin";
-interface base<T> {
-    "success": boolean;
-    "errors": string[];
-    "data": T[];
-}
-
-interface LoginResult {
-    "access_token": string;
-    "exp": number;
-    "iat": string;
-    "expDate": string;
-    "message": string;
-    "member": {
-        "email": string;
-        "fullName": string;
-    }
-}
-
+import { URLS } from "../../Enums/Routers";
+import ILogin, { ILoginResult, IReset, IResetResult } from "../../Interfaces/API/ILogin";
+import IResultBase from "../../Interfaces/API/IResultBase";
 
 export const apiAuthSlice = createApi({
     reducerPath: 'apiAuthSlice',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:3002/api',
+        baseUrl: URLS.BACKEND_URL,
         prepareHeaders(headers) {
 
             return headers;
@@ -30,17 +15,24 @@ export const apiAuthSlice = createApi({
     }),
     endpoints(builder) {
         return {
-            login: builder.mutation<base<LoginResult>, ILogin>({
+            login: builder.mutation<IResultBase<ILoginResult>, ILogin>({
                 query: (login) => ({
-                    url: "/login",
+                    url: `/${URLS.LOGIN}`,
                     method: "PUT",
                     body: login
+                })
+            }),
+            reset: builder.mutation<IResultBase<IResetResult>,IReset>({
+                query: (reset) => ({
+                    url: `/${URLS.RESET}`,
+                    method: "PUT",
+                    body: reset
                 })
             })
         }
     }
 });
 
-export const { useLoginMutation } = apiAuthSlice
+export const { useLoginMutation,useResetMutation } = apiAuthSlice
 
 
