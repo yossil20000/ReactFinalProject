@@ -71,8 +71,8 @@ exports.signin = function(req,res,next){
 }
 exports.reset = function(req,res,next){
     const email = req.body.email;
-    const phone = req.body.phone;
-    console.log(email,phone);
+    
+    console.log("reset",email);
     Member.findOne({"contact.email" : email}, (err, member) => {
         if(err){
             console.info(`${email} Not Found ${err}`)
