@@ -86,7 +86,7 @@ exports.reset = function(req,res,next){
            member.updateOne({password: member.password}).exec((err, result) => {
                if(err){
                 console.log("Update Mail Failed", err);
-                return  res.status(401).json({ success: false, errors: err, message: password });
+                return  res.status(401).json({ success: false, errors: err, message: password ,data: {newPassword: ""}});
                }
                else if(result){
                    console.log("result", result)
@@ -95,12 +95,14 @@ exports.reset = function(req,res,next){
                     return res.status(201).json(
                         { success: true,
                           errors: [],
-                          message: password });
+                          message: "password renew",
+                          data: {newPassword: password}
+                         });
                    }
                     
                    ).catch((err => {
                     console.log("Send Mail");
-                    return res.status(201).json({ success: false, errors:[err], message: password });
+                    return res.status(201).json({ success: false, errors:[err], message: "password renew" , data: {newPassword: password} });
                    })
 
                    );

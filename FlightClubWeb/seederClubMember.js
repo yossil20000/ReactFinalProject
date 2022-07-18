@@ -15,8 +15,6 @@ var Member = require('./Models/member');
 const Membership = require('./Models/membership');
 var DeviceType = require('./Models/deviceType')
 var Device = require('./models/device')
-var Flight = require('./Models/flight')
-var FlightReservation = require('./Models/flightReservation')
 var Role = require('./Models/role');
 const CE = require('./Models/constants');
 let mongoose = require('mongoose');
@@ -33,14 +31,14 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-let collections = ["devicetypes",'members','devices','flightreservations'];
+let collections = ["devicetypes",'members','devices',"Memberships"];
 
 let dropCollections = function() {
     //var collections = _.keys(mongoose.connection.collections)
     collections.forEach( collectionName => {
       var collection = mongoose.connection.collections[collectionName]
-        console.log(collection);
-      collection.drop(function(err) {
+        console.log("Collection",collectionName,collection);
+      collection?.drop(function(err) {
         if (err && err.message != 'ns not found') console.log("Drop Done:" +err)
         console.log("Drop Done:" +null)
       })
@@ -174,6 +172,9 @@ function createMembers(cb) {
         },
         function (callback) {
             memberCreate("Giora", "Yahel", "1966-09-22", "2012-12-02", "259828392", 'yos2@gmail.com',"password2", memberships[1],callback);
+        },
+        function (callback) {
+            memberCreate("Giora", "Yahel", "1966-09-22", "2012-12-02", "359828392", 'yos.1965@gmail.com',"password2", memberships[1],callback);
         }
     ],
         cb

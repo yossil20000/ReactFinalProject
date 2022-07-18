@@ -1,21 +1,19 @@
+require('dotenv').config();
 var express = require('express');
 const nodemailer = require('nodemailer');
 const Q = require('q');
 let sender = {
     service: "gmail",
     auth:{
-        user: process.env.SITE_MAIL,
-        pass: process.env.SITE_PASSWORD
+        user: "flight.club.972@gmail.com",
+        pass: "ngoglfjbapqkpoai"
     }
 };
 let transporter = nodemailer.createTransport({
     service: "gmail",
     auth:{
         user: process.env.SITE_MAIL,
-        pass: process.env.SITE_PASSWORD,
-    },
-    tls: {
-        rejectUnauthorized: false
+        pass: process.env.nodemailer,
     }
 });
 
@@ -71,3 +69,4 @@ module.exports = {
     SendMail: SendMail,
     SendMailQ : SendMailQ
 } ;
+transporter.verify().then(e => console.log(e)).catch(err => console.log(err));
