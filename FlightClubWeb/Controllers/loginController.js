@@ -70,6 +70,7 @@ exports.signin = function(req,res,next){
     
 }
 exports.reset = function(req,res,next){
+    console.log("reset.body",req.body);
     const email = req.body.email;
     
     console.log("reset",email);
