@@ -3,3 +3,9 @@ export default interface IResultBase<T> {
     "errors": string[];
     "data": T[];
 }
+
+export  interface IResultBaseSingle<T> {
+    "success": boolean;
+    "errors": string[];
+    "data": T;
+}

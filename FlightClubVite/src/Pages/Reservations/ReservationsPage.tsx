@@ -1,7 +1,7 @@
 /* import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 import React from 'react'
-import { useFetchAllReservationsQuery } from '../../features/Reservations/reservationsSlice';
+import { useFetchAllReservationsQuery } from '../../features/Reservations/reservationsApiSlice';
 
 function ReservationsPage() {
   const {data ,isFetching} = useFetchAllReservationsQuery();

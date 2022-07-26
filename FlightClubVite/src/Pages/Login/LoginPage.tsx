@@ -1,8 +1,9 @@
 import { ClassNames } from '@emotion/react';
 import React from 'react'
 import {useForm} from 'react-hook-form'
-import {useLoginMutation} from '../../features/Auth/authSlice'
+import {useLoginMutation} from '../../features/Auth/authApiSlice'
 import ILogin from '../../Interfaces/API/ILogin';
+import {useNewloginMutation} from "../../features/Auth/authApiSlice1"
 export default function LoginPage() {
   const {register,handleSubmit} = useForm();
   const [loging,result]= useLoginMutation();
@@ -18,6 +19,7 @@ export default function LoginPage() {
     console.log("submitForm/login", loginProps);
     try{
       const paload = await loging(loginProps).unwrap();
+      
       console.log("Unwrap", paload);
     }
     catch(err)

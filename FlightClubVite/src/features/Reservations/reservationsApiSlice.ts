@@ -3,8 +3,8 @@ import { URLS } from "../../Enums/Routers";
 import IReservation from "../../Interfaces/API/IReservation";
 import IResultBase from "../../Interfaces/API/IResultBase";
 
-export const apiReservationSlice = createApi({
-    reducerPath: "apiReservationSlice",
+export const reservationApiSlice = createApi({
+    reducerPath: "reservationApiSlice",
     baseQuery:fetchBaseQuery({
         baseUrl: URLS.BACKEND_URL,
         prepareHeaders(headers){
@@ -21,5 +21,5 @@ export const apiReservationSlice = createApi({
     
 });
 
-export const {useFetchAllReservationsQuery} = apiReservationSlice;
+export const {useFetchAllReservationsQuery} = reservationApiSlice;
 

@@ -5,7 +5,7 @@ const initialState : IAuth = {
     user: null,
     token: null
 }
-export const authSlice = createSlice({
+export const authSlice1 = createSlice({
     name: "authSlice1",
     initialState,
     reducers: {
@@ -21,10 +21,9 @@ export const authSlice = createSlice({
     },
 });
 
+export const {setCredentials,logOut} = authSlice1.actions;
 
-export const {setCredentials,logOut} = authSlice.actions;
-
-export default authSlice.reducer;
+export default authSlice1.reducer
 
 export const selectCurrentUser = (state : IAuth) => state.user;
 export const selectCurrentToken = (state: IAuth) => state.token;

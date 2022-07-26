@@ -1,0 +1,38 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:jsx-control-statements/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint",
+        "jsx-control-statements"
+    ],
+    "rules": {
+        "react/jsx-no-undef": [2, { "allowGlobals": true }],
+        "jsx-control-statements/jsx-choose-not-empty": 1,
+        "jsx-control-statements/jsx-for-require-each": 1,
+        "jsx-control-statements/jsx-for-require-of": 1,
+        "jsx-control-statements/jsx-for-require-body": 1,
+        "jsx-control-statements/jsx-if-require-condition": 1,
+        "jsx-control-statements/jsx-otherwise-once-last": 1,
+        "jsx-control-statements/jsx-use-if-tag": 1,
+        "jsx-control-statements/jsx-when-require-condition": 1,
+        "jsx-control-statements/jsx-jcs-no-undef": 1,
+        "no-undef": 0 // Replace this with jsx-jcs-no-undef
+    }
+}

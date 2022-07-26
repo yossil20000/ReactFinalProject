@@ -19,10 +19,5 @@ export interface IReset{
     "email": string;
 }
 export interface IResetResult{
-    "success": string;
-    "errors": any[];
-    "message": string;
-    "data": {
-        "newPassword": string;
-    }
+    "newPassword": string;
 }
