@@ -1,11 +1,13 @@
-import { Password } from '@mui/icons-material';
-import { Box, Grid, Step, StepLabel, Stepper } from '@mui/material';
+import { Home, Password } from '@mui/icons-material';
+import { Box, Grid, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import IMemberInfo from '../../Interfaces/IMemberInfo';
-import ContanctInfo from './ContanctInfo';
+import ContanctInfo from './ShippingAddress';
 import PersonalInfo from './PersonalInfo';
 import Register from './Register';
 import SubmitRegistration from './SubmitRegistration';
+import HomeAddress from './HomeAddress';
+import ShippingAddress from './ShippingAddress';
 
 function RegistrationPage() {
   const initialForm: IMemberInfo = {
@@ -43,21 +45,22 @@ function RegistrationPage() {
     '25%',
     '50%',
     '75%',
+    '100%',
     'Submit',
   ];
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberInfo>(initialForm);
-  const numPage = 4;
+  const numPage = 5;
   const componentList = [
     <Register numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
     <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
-    <ContanctInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <HomeAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <ShippingAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
     <SubmitRegistration numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData}/>
   ]
   return (
     <div className='main' style={{ width: "100vw" }}>
       <Grid container spacing={2}>
-        <Grid item xs={12}> Registration</Grid>
         <Grid item xs={12} >
           <Box sx={{ width: '100%'}}>
             <Stepper  activeStep={page} alternativeLabel>

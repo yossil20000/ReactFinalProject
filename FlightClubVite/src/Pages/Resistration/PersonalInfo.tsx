@@ -1,4 +1,4 @@
-import { Box, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
+import { Box, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField, Typography } from '@mui/material';
 import { useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
@@ -35,7 +35,13 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
  
   return (
     <Box sx={{ flexGrow: 1 }}>
+      
       <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="h5" component="div" align='center'>
+        Personal Info
+      </Typography>
+        </Grid>
         <Grid item xs={12} md={12}>
           <Item>
             <TextField sx={{ width: "90%", margin: "auto" }}

@@ -35,6 +35,11 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
+            <Grid item xs={12}>
+                    <Item><button>
+                        Save
+                    </button></Item>
+                </Grid>
                 <Grid item xs={6}>
                     <Item><button
                         onClick={() => {

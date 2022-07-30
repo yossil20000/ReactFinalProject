@@ -12,11 +12,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useNavigate } from 'react-router-dom';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -32,9 +34,18 @@ const ResponsiveAppBar = () => {
   };
 
   const handleCloseUserMenu = () => {
+    const setting = anchorElUser;
+    console.log("settig", setting)
     setAnchorElUser(null);
   };
-
+  
+  const handleSettingMenu = (event: React.MouseEvent<HTMLElement>, setting:string) => {
+    event.preventDefault();
+    console.log("handleSettingMenu:Setting", setting)
+    console.log("handleSettingMenu", event.target)
+    navigate(`${setting}`)
+    setAnchorElUser(null);
+  };
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -148,8 +159,8 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting} >
+                  <Typography key={setting} textAlign="center" onClick={(e) => handleSettingMenu(e,setting)} >{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

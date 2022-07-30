@@ -1,18 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import IResultBase from '../../Interfaces/API/IResultBase'
 import {URLS} from '../../Enums/Routers';
-interface Breed {
-    "success": boolean;
-    "errors": string[];
-    "data":
-    {
-        "_id": string;
-        "title": string;
-        "description": string;
-        "issue_date": Date;
-        "due_date": Date;
-    }[]
-}
+import IClubNotice from "../../Interfaces/API/IClubNotice";
+
+
 interface Role {
     "user": string;
     "account": string;
@@ -74,7 +65,7 @@ export const apiSlice = createApi({
     }),
     endpoints(builder) {
         return {
-            fetchBreeds: builder.query<Breed, number | void>({
+            fetchAllClubNotice: builder.query<IResultBase<IClubNotice>, number | void>({
                 query(limit = 10) { return `/${URLS.CLUB_NOTICE}`; }
             }),
             fetcAllMembers: builder.query<IResultBase<Member>, void>({
@@ -84,6 +75,6 @@ export const apiSlice = createApi({
     }
 });
 
-export const { useFetchBreedsQuery, useFetcAllMembersQuery } = apiSlice
+export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery } = apiSlice
 
 
