@@ -5,6 +5,7 @@ const log = require('debug-level').log('LoginController');
 const mail = require("../Services/mailService");
 const jwtService = require('../Services/jwtService');
 const authJWT = require('../middleware/authJWT');
+const passGen = require('../Services/passwordGenerator')
 
 exports.signin = function(req,res,next){
     const email = req.body.email;
@@ -82,7 +83,7 @@ exports.reset = function(req,res,next){
         if(member)
         {
             log.info(`phone: ${member.code_area_phone}`)
-            var password = passwordGenrator(8);
+            var password = passGen.passwordGenerator(8);
             member.password = member.hash(password);
            member.updateOne({password: member.password}).exec((err, result) => {
                if(err){
@@ -120,14 +121,5 @@ exports.reset = function(req,res,next){
         }
 })
 }
-function passwordGenrator(nChar){
-    var password ="";
-    const string_length = nChar
- password = [...Array(string_length)].map(i=>(~~(Math.random()*36)).toString(36)).join('')
-console.log(password);
-return password;
-}
 
-function sendResetPassword(password,email){
 
-}
