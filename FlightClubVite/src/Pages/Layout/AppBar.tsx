@@ -13,8 +13,14 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from 'react-router-dom';
+import { URLS } from '../../Enums/Routers';
+import { ROUTES } from '../../Types/Urls';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+type page = {
+  name: string,
+  route: string
+}
+const pages : page[] = [{name:'Home',route: ROUTES.HOME}, {name:'Reservations',route: ROUTES.RESERVATION}, {name:'Flight',route: ROUTES.Flight}, {name: 'Members', route: 'members'}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -34,12 +40,18 @@ const ResponsiveAppBar = () => {
   };
 
   const handleCloseUserMenu = () => {
-    const setting = anchorElUser;
-    console.log("settig", setting)
     setAnchorElUser(null);
   };
+
+  const handleSettingNavMenu = (event: React.MouseEvent<HTMLElement>, setting:string) => {
+    event.preventDefault();
+    console.log("handleSettingMenu:Setting", setting)
+    console.log("handleSettingMenu", event.target)
+    navigate(`${setting}`)
+    setAnchorElNav(null);
+  };
   
-  const handleSettingMenu = (event: React.MouseEvent<HTMLElement>, setting:string) => {
+  const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement>, setting:string) => {
     event.preventDefault();
     console.log("handleSettingMenu:Setting", setting)
     console.log("handleSettingMenu", event.target)
@@ -98,9 +110,9 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {pages.map((page,index) => (
+                <MenuItem key={index} onClick={(e) => handleSettingNavMenu(e,page.route)}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -125,13 +137,13 @@ const ResponsiveAppBar = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {pages.map((page, index) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={index}
+                onClick={(e) => handleSettingNavMenu(e,page.route)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
@@ -160,7 +172,7 @@ const ResponsiveAppBar = () => {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} >
-                  <Typography key={setting} textAlign="center" onClick={(e) => handleSettingMenu(e,setting)} >{setting}</Typography>
+                  <Typography key={setting} textAlign="center" onClick={(e) => handleSettingUserMenu(e,setting)} >{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

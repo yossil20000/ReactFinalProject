@@ -1,7 +1,7 @@
 export enum ROUTES{
     HOME = 'home',
-    RESERVATION = "reservation",
-    ORDER = "oreder",
+    RESERVATION = "reservations",
+    Flight = "flight",
     LOGIN = "login",
     CHANGE_PASSWORD = "change_password"
 }
