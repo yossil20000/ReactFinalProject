@@ -10,6 +10,8 @@ export interface ILoginResult {
     "expDate": string;
     "message": string;
     "member": {
+        "roll": string[];
+        "_id": string;
         "email": string;
         "fullName": string;
     }

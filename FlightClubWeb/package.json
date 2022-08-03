@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "//": "npm run devstart",
     "start": "node ./bin/www",
     "loadApi": "node loadApi",
     "devstart": "nodemon ./bin/www",
@@ -29,5 +30,9 @@
     "q": "^1.5.1",
     "readline": "^1.3.0",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
   }
 }
+

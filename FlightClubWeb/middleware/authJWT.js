@@ -4,7 +4,8 @@ const jwtService = require('../Services/jwtService');
 const payload = {
     email: "",
     userId:"",
-    roles:[]
+    roles:[],
+    _id: ""
    };
 // SIGNING OPTIONS
 const signOptions = {

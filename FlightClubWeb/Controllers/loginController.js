@@ -47,6 +47,8 @@ exports.signin = function(req,res,next){
                             expDate: new Date(decodeJWT.exp*1000),
                             message: "Access Permited",
                             member: {
+                                roll: member.role.roles,
+                                _id: member._id,
                                 email: member.contact.email,
                                 fullName: member.full_name}} });
                     
@@ -64,7 +66,7 @@ exports.signin = function(req,res,next){
         }
         else
         {
-            return res.status(201).json({ success: false, errors: ["Access Denied"], message: "Access Denied" });
+            return res.status(401).json({ success: false, errors: ["Access Denied"], message: "Access Denied" });
         }
         
     })

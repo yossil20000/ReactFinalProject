@@ -3,7 +3,7 @@ import React from 'react'
 import {useForm} from 'react-hook-form'
 import {useLoginMutation} from '../../features/Auth/authApiSlice'
 import ILogin from '../../Interfaces/API/ILogin';
-import {useNewloginMutation} from "../../features/Auth/authApiSlice1"
+import {setCredentials} from "../../features/Auth/authSlice"
 export default function LoginPage() {
   const {register,handleSubmit} = useForm();
   const [loging,result]= useLoginMutation();
@@ -18,9 +18,9 @@ export default function LoginPage() {
     }
     console.log("submitForm/login", loginProps);
     try{
-      const paload = await loging(loginProps).unwrap();
-      
-      console.log("Unwrap", paload);
+      const payload = await loging(loginProps).unwrap();
+      setCredentials(payload.data)
+      console.log("Unwrap", payload.data);
     }
     catch(err)
     {

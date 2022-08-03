@@ -15,7 +15,7 @@ export const authApiSlice = createApi({
     }),
     endpoints(builder) {
         return {
-            login: builder.mutation<IResultBase<ILoginResult>, ILogin>({
+            login: builder.mutation<IResultBaseSingle<ILoginResult>, ILogin>({
                 query: (login) => ({
                     url: `/${URLS.LOGIN}`,
                     method: "PUT",

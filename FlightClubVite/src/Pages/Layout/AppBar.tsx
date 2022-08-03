@@ -20,7 +20,7 @@ type page = {
   name: string,
   route: string
 }
-const pages : page[] = [{name:'Home',route: ROUTES.HOME}, {name:'Reservations',route: ROUTES.RESERVATION}, {name:'Flight',route: ROUTES.Flight}, {name: 'Members', route: 'members'}];
+const pages : page[] = [{name:'Home',route: ROUTES.HOME}, {name:'Reservations',route: ROUTES.RESERVATION}, {name:'Flight',route: ROUTES.Flight}, {name: 'Members', route: 'members'} , {name: "Login" , route: "login"}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {

@@ -13,3 +13,4 @@ export enum URLS {
     DEVICES = "devices",
     DEVICETYPES = "device_type" 
 }
+
