@@ -4,6 +4,7 @@ import { URLS } from '../Enums/Routers'
 import HomePage from '../Pages/Home/HomePage'
 import ChangePassword from '../Pages/Login/ChangePassword'
 import LoginPage from '../Pages/Login/LoginPage'
+import LogoutPage from '../Pages/Login/LogoutPage'
 import ResetPage from '../Pages/Login/ResetPage'
 import MembersPage from '../Pages/Members/MembersPage'
 import MembersTablePage from '../Pages/Members/MembersTablePage'
@@ -20,6 +21,7 @@ export function PagesRouter() {
         <Route path="/home" element={<HomePage></HomePage>} />
         <Route path="/reservations" element={<ReservationsPage></ReservationsPage>}/>
         <Route path="/login" element={<LoginPage></LoginPage>}/>
+        <Route path="/logout" element={<LogoutPage></LogoutPage>}/>
         <Route path="/reset" element={<ResetPage></ResetPage>}/>
         <Route path='change_password' element={<ChangePassword></ChangePassword>}/>
         <Route path='registration' element={<RegistrationPage></RegistrationPage>}/>

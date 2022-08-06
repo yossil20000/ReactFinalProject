@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import logo from './logo.svg'
 import './App.css'
-import {useAppDispatch,useAppSelector} from './app/hooks'
+import {useAppDispatch,useAppSelector} from './app/hooksDemo'
 
 import {incremented, amountAdded} from './features/counter/counterslice'
 import { addTitle } from './features/counter/titleSlicse'

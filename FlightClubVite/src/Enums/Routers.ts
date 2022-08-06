@@ -4,5 +4,6 @@ export  enum URLS{
     RESERVATION = 'api/reservation',
     CLUB_NOTICE = 'api/club_notice',
     MEMBERS = 'api/members',
-    RESET = 'api/reset_password'
+    RESET = 'api/reset_password',
+    MEMBER_DETAIL = 'api/members/detail'
 }

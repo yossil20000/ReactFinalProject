@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import IResultBase from '../../Interfaces/API/IResultBase'
+import IResultBase, { IResultBaseSingle } from '../../Interfaces/API/IResultBase'
 import {URLS} from '../../Enums/Routers';
 import IClubNotice from "../../Interfaces/API/IClubNotice";
+import IMember from "../../Interfaces/API/IMember";
+import IMemberInfo from "../../Interfaces/IMemberInfo";
 
 
 interface Role {
@@ -70,11 +72,15 @@ export const apiSlice = createApi({
             }),
             fetcAllMembers: builder.query<IResultBase<Member>, void>({
                 query() { return `/${URLS.MEMBERS}` }
-            })
+            }),
+            getMember: builder.query<IResultBaseSingle<IMemberInfo>,string | "">({
+                query(id) {return `/${URLS.MEMBER_DETAIL}/${id}`;}
+            }
+            )
         }
     }
 });
 
-export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery } = apiSlice
+export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery,useGetMemberQuery } = apiSlice
 
 

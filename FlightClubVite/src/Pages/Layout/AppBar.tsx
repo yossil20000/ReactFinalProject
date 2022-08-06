@@ -15,6 +15,9 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from 'react-router-dom';
 import { URLS } from '../../Enums/Routers';
 import { ROUTES } from '../../Types/Urls';
+import { ILoginResult } from '../../Interfaces/API/ILogin';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import { logOut } from '../../features/Auth/authSlice';
 
 type page = {
   name: string,
@@ -27,6 +30,8 @@ const ResponsiveAppBar = () => {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const login = useAppSelector((state) => state.authSlice);
+  const dispatch = useAppDispatch();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -49,13 +54,23 @@ const ResponsiveAppBar = () => {
     console.log("handleSettingMenu", event.target)
     navigate(`${setting}`)
     setAnchorElNav(null);
+    
   };
   
   const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement>, setting:string) => {
     event.preventDefault();
     console.log("handleSettingMenu:Setting", setting)
     console.log("handleSettingMenu", event.target)
-    navigate(`${setting}`)
+    if(setting == "Logout")
+    {
+      console.log("Logout")
+      
+      dispatch(logOut());
+      navigate("/login");
+    }
+    else{
+      navigate(`${setting}`)
+    }
     setAnchorElUser(null);
   };
   return (
@@ -78,7 +93,7 @@ const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name}`}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -134,7 +149,7 @@ const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name}`}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page, index) => (

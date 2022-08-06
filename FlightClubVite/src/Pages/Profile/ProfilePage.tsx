@@ -7,9 +7,15 @@ import PersonalInfo from '../Resistration/PersonalInfo';
 import SubmitRegistration from '../Resistration/SubmitRegistration';
 import HomeAddress from '../Resistration/HomeAddress';
 import ShippingAddress from '../Resistration/ShippingAddress';
+import { useGetMemberQuery } from '../../features/Users/userSlice';
+import { authSlice, selectCurrentId } from '../../features/Auth/authSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 function ProfilePage() {
+
+  
   const initialForm: IMemberInfo = {
+    _id:"",
     member_id: '',
     family_name: '',
     first_name: '',

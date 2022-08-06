@@ -3,14 +3,20 @@ import React from 'react'
 import {useForm} from 'react-hook-form'
 import {useLoginMutation} from '../../features/Auth/authApiSlice'
 import ILogin from '../../Interfaces/API/ILogin';
-import {setCredentials} from "../../features/Auth/authSlice"
+import {setCredentials,selectCurrentUser,selectCurrentId} from "../../features/Auth/authSlice"
+import {useAppDispatch,useAppSelector} from '../../app/hooks'
+
 export default function LoginPage() {
   const {register,handleSubmit} = useForm();
   const [loging,result]= useLoginMutation();
-
+  const dispatch = useAppDispatch();
+  const select = useAppSelector;
+  const id = useAppSelector((state) => state.authSlice.member._id);
+  console.log("id", id)
+  console.log("id", selectCurrentId)
   const submitForm = async (data: any) => {
     console.log("submitForm/data", data);
-  
+    
     
     const loginProps : ILogin = {
       password: data.password,
@@ -19,8 +25,10 @@ export default function LoginPage() {
     console.log("submitForm/login", loginProps);
     try{
       const payload = await loging(loginProps).unwrap();
-      setCredentials(payload.data)
+      dispatch(setCredentials(payload.data));
+      
       console.log("Unwrap", payload.data);
+      
     }
     catch(err)
     {
@@ -43,7 +51,8 @@ export default function LoginPage() {
       <input type='password' className='form-input' {...register('password')} required/>
     </div>
     
-    <button type='submit' className='button'>Login</button>
+    <button type='submit' className='button'>Login </button>
+    <div></div>
     </form>
     </div>
   )

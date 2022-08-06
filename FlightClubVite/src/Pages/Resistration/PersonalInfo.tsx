@@ -7,6 +7,8 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { useAppSelector } from '../../app/hooks';
+import { useGetMemberQuery } from '../../features/Users/userSlice';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -17,7 +19,9 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate) {
-
+  const login = useAppSelector((state) => state.authSlice);
+ 
+  const { data: member, isFetching } = useGetMemberQuery(login.member._id);
   const handlePersonChange = (prop: any) => (event: any) => {
     setFormData({ ...formData,  [prop]: event.target.value  });
     console.log("formData", formData)
