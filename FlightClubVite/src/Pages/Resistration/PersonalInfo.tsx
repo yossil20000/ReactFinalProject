@@ -19,9 +19,9 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate) {
-  const login = useAppSelector((state) => state.authSlice);
  
-  const { data: member, isFetching } = useGetMemberQuery(login.member._id);
+ 
+  
   const handlePersonChange = (prop: any) => (event: any) => {
     setFormData({ ...formData,  [prop]: event.target.value  });
     console.log("formData", formData)

@@ -52,8 +52,9 @@ function ProfilePage() {
     '100%',
     'Submit',
   ];
+  const login = useAppSelector((state) => state.authSlice);
   const [page, setPage] = useState(0);
-  const [formData, setFormData] = useState<IMemberInfo>(initialForm);
+  const [formData, setFormData] = useState<IMemberInfo>(login.member);
   const numPage = 4;
   const componentList = [
     <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,

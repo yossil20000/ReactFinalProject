@@ -16,22 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: IPageNavigate) {
 
-    const handleChange = (prop: any) => (event: any) => {
-        setFormData({ ...formData, [prop]: event.target.value });
 
-    };
-    const handleemailChange = (prop: any) => (event: any) => {
-        setFormData({ ...formData, contact:{...formData.contact, [prop]: event.target.value}  });
-        console.log("formData", formData)
-    };
-    const [values, setValues] = useState({
-        showPassword: false
-    })
-    const handleClickShowPasssword = (e: any) => {
-        setValues({
-            ...values, showPassword: !values.showPassword
-        })
-    }
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>

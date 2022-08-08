@@ -1,8 +1,8 @@
 import IMemberInfo from "../IMemberInfo";
 
 export default interface ILogin{
-    email: string,
-    password: string
+    email: string | undefined,
+    password: string | undefined
 } 
 
 export interface ILoginResult {
@@ -15,8 +15,12 @@ export interface ILoginResult {
 }
 
 export interface IReset{
-    "email": string;
+    "email": string | undefined;
 }
 export interface IResetResult{
     "newPassword": string;
+}
+export interface IChangePassword{
+    currentPassword: string | undefined;
+    newPassword: string | undefined;
 }

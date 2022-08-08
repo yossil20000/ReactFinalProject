@@ -13,7 +13,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavigate) {
   const handleContactChange = (prop: any) => (event: any) => {
-    setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
+    setFormData(prev => ({...prev, contact: { ...prev.contact, shipping_address: {...prev.contact.shipping_address, [prop]: event.target.value}} }));
     console.log("formData", formData)
   };
   const handleTimeChange = (newValue: Date | null ) => {
@@ -37,6 +37,7 @@ function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPage
               required
               id="line1"
               label="Line1"
+              value={formData.contact.shipping_address.line1}
               onChange={handleContactChange("line1")}
             />
         </Item>
@@ -47,6 +48,7 @@ function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPage
               required
               id="line2"
               label="line2"
+              value={formData.contact.shipping_address.line2}
               onChange={handleContactChange("line2")}
             />
         </Item>
@@ -57,6 +59,7 @@ function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPage
               required
               id="city"
               label="City"
+              value={formData.contact.shipping_address.city}
               onChange={handleContactChange("city")}
             />
         </Item>
@@ -67,6 +70,7 @@ function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPage
               required
               id="postcode"
               label="Postcode"
+              value={formData.contact.shipping_address.postcode}
               onChange={handleContactChange("postcode")}
             />
         </Item>
@@ -77,7 +81,8 @@ function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPage
               
               id="province"
               label="Province"
-              onChange={handleContactChange("postcode")}
+              value={formData.contact.shipping_address.province}
+              onChange={handleContactChange("province")}
             />
         </Item>
       </Grid>
@@ -87,6 +92,7 @@ function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPage
              required 
               id="state"
               label="State"
+              value={formData.contact.shipping_address.state}
               onChange={handleContactChange("state")}
             />
         </Item>

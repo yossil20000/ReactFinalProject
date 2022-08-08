@@ -8,8 +8,10 @@ import Register from './Register';
 import SubmitRegistration from './SubmitRegistration';
 import HomeAddress from './HomeAddress';
 import ShippingAddress from './ShippingAddress';
+import { useAppSelector } from '../../app/hooks';
 
 function RegistrationPage() {
+  const login = useAppSelector((state) => state.authSlice);
   const initialForm: IMemberInfo = {
     member_id: '',
     family_name: '',
@@ -39,7 +41,8 @@ function RegistrationPage() {
       email: ''
     },
     date_of_birth: new Date(),
-    password: "1234"
+    password: "1234",
+    _id: ''
   }
   const steps = [
     '25%',
@@ -49,7 +52,8 @@ function RegistrationPage() {
     'Submit',
   ];
   const [page, setPage] = useState(0);
-  const [formData, setFormData] = useState<IMemberInfo>(initialForm);
+  const [formData, setFormData] = useState<IMemberInfo>(login.member);
+  console.log("formData", login.member)
   const numPage = 5;
   const componentList = [
     <Register numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,

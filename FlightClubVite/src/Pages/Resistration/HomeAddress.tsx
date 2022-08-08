@@ -13,7 +13,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavigate) {
   const handleContactChange = (prop: any) => (event: any) => {
-    setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
+    //setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
+    setFormData(prev => ({...prev, contact: { ...prev.contact, billing_address: {...prev.contact.billing_address, [prop]: event.target.value}} }));
     console.log("formData", formData)
   };
   const handleTimeChange = (newValue: Date | null ) => {
@@ -36,6 +37,7 @@ function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavi
         <TextField sx={{ width: "100%", margin: "auto" }}
               required
               id="line1"
+              value={formData.contact.billing_address.line1}
               label="Line1"
               onChange={handleContactChange("line1")}
             />
@@ -47,6 +49,7 @@ function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavi
               required
               id="line2"
               label="line2"
+              value={formData.contact.billing_address.line2}
               onChange={handleContactChange("line2")}
             />
         </Item>
@@ -57,6 +60,7 @@ function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavi
               required
               id="city"
               label="City"
+              value={formData.contact.billing_address.city}
               onChange={handleContactChange("city")}
             />
         </Item>
@@ -67,6 +71,7 @@ function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavi
               required
               id="postcode"
               label="Postcode"
+              value={formData.contact.billing_address.postcode}
               onChange={handleContactChange("postcode")}
             />
         </Item>
@@ -77,7 +82,8 @@ function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavi
               
               id="province"
               label="Province"
-              onChange={handleContactChange("postcode")}
+              value={formData.contact.billing_address.province}
+              onChange={handleContactChange("province")}
             />
         </Item>
       </Grid>
@@ -87,6 +93,7 @@ function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavi
              required 
               id="state"
               label="State"
+              value={formData.contact.billing_address.state}
               onChange={handleContactChange("state")}
             />
         </Item>
