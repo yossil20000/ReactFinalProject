@@ -12,8 +12,8 @@ let devices = null;
 let reservations = null;
 const createReservation = (member,device,date_from,date_to) =>{
     let reservation = new FlightReservation();
-    reservation.member = member._id;
-    reservation.device = device._id;
+    reservation.member = member;
+    reservation.device = device;
     reservation.date_from = date_from;
     reservation.date_to = date_to;
     reservation.notification.type = "email";

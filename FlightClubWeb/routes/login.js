@@ -30,4 +30,5 @@ router.get('/hidden/:token', [authJWT.authenticate , authorize(['user'])], funct
         res.status(200).json({ success: true, errors: [], data: {message: "Authorized"}});
     }
 })
+router.put('/change_password',authJWT.authenticate,loginController.change_password)
 module.exports = router;

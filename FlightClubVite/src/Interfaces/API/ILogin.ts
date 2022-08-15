@@ -23,4 +23,5 @@ export interface IResetResult{
 export interface IChangePassword{
     currentPassword: string | undefined;
     newPassword: string | undefined;
+    email:string;
 }

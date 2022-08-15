@@ -10,9 +10,15 @@ import ShippingAddress from '../Resistration/ShippingAddress';
 import { useGetMemberQuery } from '../../features/Users/userSlice';
 import { authSlice, selectCurrentId } from '../../features/Auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import SubmitProfile from './SubmitProfile';
 
 function ProfilePage() {
-
+  const steps = [
+    '33%',
+    '66%',
+    '100%',
+    'Submit',
+  ];
   
   const initialForm: IMemberInfo = {
     _id:"",
@@ -46,21 +52,17 @@ function ProfilePage() {
     date_of_birth: new Date(),
     password: "1234"
   }
-  const steps = [
-    '33%',
-    '66%',
-    '100%',
-    'Submit',
-  ];
+
   const login = useAppSelector((state) => state.authSlice);
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberInfo>(login.member);
+  console.log("formData", login.member)
   const numPage = 4;
   const componentList = [
     <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
     <HomeAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
     <ShippingAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
-    <SubmitRegistration numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData}/>
+    <SubmitProfile numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData}/>
   ]
   return (
     <div className='main' style={{ width: "100vw" }}>

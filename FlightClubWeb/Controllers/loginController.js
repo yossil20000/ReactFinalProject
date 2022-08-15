@@ -151,5 +151,55 @@ exports.reset = function(req,res,next){
         }
 })
 }
+exports.change_password = function(req,res,next){
+    console.log("reset.body",req.body);
+    const email = req.body.email;
+    
+    console.log("reset",email);
+    Member.findOne({"contact.email" : email}, (err, member) => {
+        if(err){
+            console.info(`${email} Not Found ${err}`)
+            return res.status(401).json({ success: false, errors:[err], message: `${email} Not Found` });
+        }
+        if(member)
+        {
+            log.info(`phone: ${member.code_area_phone}`)
+            var password = passGen.passwordGenerator(8);
+            member.password = member.hash(password);
+           member.updateOne({password: member.password}).exec((err, result) => {
+               if(err){
+                console.log("Update Mail Failed", err);
+                return  res.status(401).json({ success: false, errors: err, message: password ,data: {newPassword: ""}});
+               }
+               else if(result){
+                   console.log("result", result)
+                   mail.SendMail(member.contact.email,"Test", `Your temporary paassword is ${password}`).then((result) => {
+                    console.log("Send Mail to:", member.contact.email);
+                    return res.status(201).json(
+                        { success: true,
+                          errors: [],
+                          message: "password renew",
+                          data: {newPassword: password}
+                         });
+                   }
+                    
+                   ).catch((err => {
+                    console.log("Send Mail");
+                    return res.status(201).json({ success: false, errors:[err], message: "password renew" , data: {newPassword: password} });
+                   })
 
+                   );
+                   
+               }
+            
+           })
+           
+        }
+        
+        else
+        {
+            return res.status(401).json({ success: false, errors:[err], message: `${email} Not Found` });
+        }
+})
+}
 

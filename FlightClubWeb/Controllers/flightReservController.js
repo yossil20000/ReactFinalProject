@@ -32,6 +32,7 @@ exports.reservation_list = function(req,res,next){
 	.exec((err,results) => {
 		if(err) { log.critical('err'); return next(err);}
 		else{
+			console.log("reservation",results)
 			res.status(201).json({success: true, errors : [], data: results});
 			return;
 		}

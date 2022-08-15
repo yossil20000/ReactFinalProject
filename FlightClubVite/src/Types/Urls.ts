@@ -11,6 +11,7 @@ export enum URLS {
     RESERVATIONS = "reservation",
     MEMBERS = "members",
     DEVICES = "devices",
-    DEVICETYPES = "device_type" 
+    DEVICETYPES = "device_type" ,
+    CHANGE_PASSWORD = "change_password"
 }
 

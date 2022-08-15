@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-const { DataTime, DateTime } = require('luxon');
+const {  DateTime } = require('luxon');
 
 var Schema = mongoose.Schema;
 var FlightReservationSchema = new Schema({

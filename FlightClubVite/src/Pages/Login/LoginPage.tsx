@@ -19,6 +19,8 @@ import {useLoginMutation} from '../../features/Auth/authApiSlice'
 import ILogin from '../../Interfaces/API/ILogin';
 import {setCredentials,selectCurrentUser,selectCurrentId} from "../../features/Auth/authSlice"
 import {useAppDispatch,useAppSelector} from '../../app/hooks'
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../Types/Urls';
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -34,16 +36,17 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function LoginPage() {
-  const {register,handleSubmit} = useForm();
-  const [loging,result]= useLoginMutation();
+  const navigate = useNavigate();
+  const [loging]= useLoginMutation();
   const dispatch = useAppDispatch();
-  const select = useAppSelector;
+  const [loginError,setLoginError] = React.useState<string[]>([]);
   const id = useAppSelector((state) => state.authSlice.member._id);
   console.log("id", id)
   console.log("id", selectCurrentId)
   const handleSubmit1 = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    setLoginError([]);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
@@ -53,39 +56,40 @@ export default function LoginPage() {
       email:  data.get('email')?.toString() === undefined ? "" : data.get('email')?.toString() ,
     }
     try{
-      const payload = await loging(loginProps).unwrap();
-      dispatch(setCredentials(payload.data));
+      const payload = await loging(loginProps)
+      .unwrap()
+      .then((payload) => {
+        console.log('fullfil' , payload);
+        dispatch(setCredentials(payload.data));
+        navigate(`/${ROUTES.HOME}`);
+    })
+      .catch((err) => {console.log("rejected",err);
+      setLoginError(err.data.errors);
+      console.log("loginerr", loginError);
       
-      console.log("Unwrap", payload.data);
+    });
+      //dispatch(setCredentials(payload));
+      
+      //console.log("Unwrap", payload.data);
       
     }
     catch(err)
     {
-      console.log("submitForm/login: err", err);
+      console.log("submitForm/login: err");
+
     }
-    console.log("LogingPageResult" , result)
+    //console.log("LogingPageResult" , result)
   };
-  const submitForm = async (data: any) => {
-    console.log("submitForm/data", data);
-    
-    
-    const loginProps : ILogin = {
-      password: data.password,
-      email:  data.email
-    }
-    console.log("submitForm/login", loginProps);
-    try{
-      const payload = await loging(loginProps).unwrap();
-      dispatch(setCredentials(payload.data));
-      
-      console.log("Unwrap", payload.data);
-      
-    }
-    catch(err)
-    {
-      console.log("submitForm/login: err", err);
-    }
-    console.log("LogingPageResult" , result)
+  function renderError() {
+    const reptiles = ["alligator", "snake", "lizard"];
+  
+    return (
+      <ol>
+        {loginError.map((err) => (
+          <li>{err}</li>
+        ))}
+      </ol>
+    );
   }
   return (
     <div className='main'>
@@ -128,10 +132,12 @@ export default function LoginPage() {
               id="password"
               autoComplete="current-password"
             />
+            { renderError()}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
+           
             <Button
               type="submit"
               fullWidth
@@ -142,7 +148,7 @@ export default function LoginPage() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/reset" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

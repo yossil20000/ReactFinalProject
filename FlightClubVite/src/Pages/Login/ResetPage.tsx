@@ -19,9 +19,10 @@ import { useNavigate } from 'react-router-dom';
 import {useResetMutation} from '../../features/Auth/authApiSlice'
 import {IReset,IResetResult} from '../../Interfaces/API/ILogin';
 import { ROUTES } from '../../Types/Urls';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 const theme = createTheme();
 export default function ResetPage() {
+
   const navigate = useNavigate();
   
   const [reset,result]= useResetMutation();
@@ -80,12 +81,14 @@ export default function ResetPage() {
                 required
                 fullWidth
                 id="email"
-                label="Send To Email Address"
+                label="Your email account "
                 name="email"
                 autoComplete="email"
                 autoFocus
               />
-
+            <Typography component="h2" variant="subtitle2">
+              * new password will send to your email
+            </Typography>
               <Button
                 type="submit"
                 fullWidth

@@ -16,6 +16,7 @@ export enum Role{
 }
 
 export default interface IMember{
+    _id:string
     member_id: string
     family_name: string
     first_name: string
