@@ -8,11 +8,11 @@ export enum MemberType{
 }
 
 export enum Role{
-    guest,
-    user,
-    desk,
-    account,
-    admin
+    "guest"= 'guest',
+    "user" = 'user',
+    "desk" = "desk",
+    "account" = 'account',
+    "admin" = "admin"
 }
 
 export default interface IMember{
@@ -46,7 +46,7 @@ export default interface IMember{
     },
     password: string
     member_type: MemberType
-    role: Role
+    role: Role[]
     date_of_birth: Date
     date_of_join: Date
     date_of_leave: Date

@@ -1,3 +1,4 @@
+import { Role } from "./API/IMember";
 
 export default interface IMemberInfo{
     _id:string;
@@ -30,4 +31,5 @@ export default interface IMemberInfo{
     },
     date_of_birth?: Date;
     password:string;
+    role: Role;
 }

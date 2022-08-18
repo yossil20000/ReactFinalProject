@@ -1,5 +1,5 @@
 
-import Checkbox from '@mui/material/Checkbox';
+import Checkbox, { checkboxClasses } from '@mui/material/Checkbox';
 import { alpha, Box, FormControlLabel, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
 import React, { Component, useEffect, useState } from 'react'
 
@@ -71,7 +71,7 @@ interface HeadCell {
 }
 
 const headCells: readonly HeadCell[] = [
-  { id: "_id", label: "Id ", numeric: false, disablePadding: true },
+  
   { id: "member_id", label: "Id Number", numeric: false, disablePadding: true },
   { id: "family_name", label: "Famaily", numeric: false, disablePadding: true },
   { id: "first_name", label: "Name", numeric: false, disablePadding: true },
@@ -96,23 +96,11 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 
     <TableHead>
       <TableRow>
-        <TableCell align='center' padding='none'>
 
-          <Checkbox
-            color='primary'
-
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all id'
-            }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'center'}
+            align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}>
             <TableSortLabel
@@ -161,6 +149,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           Memebrs
         </Typography>
       )}
+      
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
@@ -172,8 +161,10 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           <IconButton>
             <FilterListIcon />
           </IconButton>
+ 
         </Tooltip>
       )}
+
     </Toolbar>
   )
 }
@@ -307,13 +298,22 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
     };
 
   return (
-    <div className='main'>
+    <div className='main' style={{overflow: 'auto'}}>
 
       <MediaQuery minWidth={768}>
         {rows ? (
           <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
               <EnhancedTableToolbar numSelected={selected ? selected.length : 0} />
+              <TablePagination sx={{overflow:'visible'}} 
+                rowsPerPageOptions={[1,5, 10, 25]}
+                component="div"
+                count={rows ? rows.length : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
               <TableContainer>
                 <Table
                   sx={{ minWidth: 750 }}
@@ -328,11 +328,12 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                     onRequestSort={handleRequestSort}
                     rowCount={rows ? rows.length : 0}
                   />
+
                   <TableBody>
+
                     {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                      rows.slice().sort(getComparator(order, orderBy)) */}
-
-                    {rows.slice().sort(getComparator(order, orderBy))
+                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).sort(getComparator(order, orderBy))
                       .map((row: ItableData, index: number) => {
                         const isItemSelected = isSelected(row._id);
                         const labelId = `enhanced-table-checkbox-${index}`;
@@ -347,23 +348,8 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                             key={row._id}
                             selected={isItemSelected}
                           >
-                            <TableCell padding="checkbox">
-                              <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                  'aria-labelledby': labelId,
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell
-                              component="th"
-                              id={labelId}
-                              scope="row"
-                              padding="none"
-                            >
-                              {row._id}
-                            </TableCell>
+
+                           
                             <TableCell align="left">{row.member_id}</TableCell>
                             <TableCell align="left">{row.family_name}</TableCell>
                             <TableCell align="left">{row.first_name}</TableCell>
@@ -384,15 +370,7 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                   </TableBody>
                 </Table>
               </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={rows ? rows.length : 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+
             </Paper>
             <FormControlLabel
               control={<Switch checked={dense} onChange={handleChangeDense} />}
@@ -422,19 +400,27 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                 />
 
               </Table>
-
+              <TablePagination
+                rowsPerPageOptions={[1,5, 10, 25]}
+                component="div"
+                count={rows ? rows.length : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                      rows.slice().sort(getComparator(order, orderBy)) */}
 
-            {rows.slice().sort(getComparator(order, orderBy))
+            {rows.sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row: ItableData, index: number) => {
                 const isItemSelected = isSelected(row._id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
 
-                <Accordion expanded={expanded === `panel${index}` } onChange={handleChange(`panel${index}`)}>
+                <Accordion key={row._id} expanded={expanded === `panel${index}` } onChange={handleChange(`panel${index}`)}>
                   <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                     <Typography>{row.family_name}, {row.first_name}, {row.member_id}</Typography>
                   </AccordionSummary>

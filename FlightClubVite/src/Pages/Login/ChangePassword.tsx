@@ -33,7 +33,7 @@ function ChangePassword() {
     });
 
     const changePassword: IChangePassword = {
-      email: login.member.contact.email,
+      email: login.member.email,
       currentPassword: data.get('currentPassword')?.toString() === undefined ? "" : data.get('currentPassword')?.toString(),
       newPassword: data.get('password')?.toString() === undefined ? "" : data.get('password')?.toString()
     }
@@ -51,7 +51,7 @@ function ChangePassword() {
     isValid();
   }
   const RenderChangePassword = () => {
-    if (login.member.contact.email)
+    if (login.member.email)
       return (
         <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
@@ -131,10 +131,10 @@ function ChangePassword() {
     }
   }
   useEffect(() => {
-    if(login.member.contact.email === ""){
+    if(login.member.email === ""){
       navigate(`/${ROUTES.LOGIN}`)
     }
-  },[login.member.contact.email])
+  },[login.member.email])
   return (
     <div className='main'>
       {RenderChangePassword()}

@@ -11,6 +11,7 @@ import { useGetMemberQuery } from '../../features/Users/userSlice';
 import { authSlice, selectCurrentId } from '../../features/Auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import SubmitProfile from './SubmitProfile';
+import { Role } from '../../Interfaces/API/IMember';
 
 function ProfilePage() {
   const steps = [
@@ -21,7 +22,7 @@ function ProfilePage() {
   ];
   
   const initialForm: IMemberInfo = {
-    _id:"",
+    _id: "",
     member_id: '',
     family_name: '',
     first_name: '',
@@ -50,7 +51,8 @@ function ProfilePage() {
       email: ''
     },
     date_of_birth: new Date(),
-    password: "1234"
+    password: "1234",
+    role: Role.guest
   }
 
   const login = useAppSelector((state) => state.authSlice);

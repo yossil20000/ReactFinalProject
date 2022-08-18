@@ -16,11 +16,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ClassNames } from '@emotion/react';
 import {useForm} from 'react-hook-form'
 import {useLoginMutation} from '../../features/Auth/authApiSlice'
-import ILogin from '../../Interfaces/API/ILogin';
+import ILogin, { ILoginResult } from '../../Interfaces/API/ILogin';
 import {setCredentials,selectCurrentUser,selectCurrentId} from "../../features/Auth/authSlice"
 import {useAppDispatch,useAppSelector} from '../../app/hooks'
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
+import { getFromLocalStorage, setLocalStorage } from '../../Utils/localStorage';
+import { LOCAL_STORAGE } from '../../Enums/localStroage';
+
+
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -60,7 +64,13 @@ export default function LoginPage() {
       .unwrap()
       .then((payload) => {
         console.log('fullfil' , payload);
+        let loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
+        console.log("localStorage:before", loging_info);
         dispatch(setCredentials(payload.data));
+        setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO,payload.data);
+        loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
+
+        console.log("localStorage", loging_info);
         navigate(`/${ROUTES.HOME}`);
     })
       .catch((err) => {console.log("rejected",err);

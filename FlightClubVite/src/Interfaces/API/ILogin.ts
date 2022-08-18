@@ -1,4 +1,5 @@
 import IMemberInfo from "../IMemberInfo";
+import { Role } from "./IMember";
 
 export default interface ILogin{
     email: string | undefined,
@@ -11,7 +12,14 @@ export interface ILoginResult {
     "iat": string;
     "expDate": string;
     "message": string;
-    "member": IMemberInfo;
+    "member": {
+        _id: string;
+        member_id: string;
+        family_name: string;
+        first_name: string;
+        roles:Role[];
+        email: string;
+    };
 }
 
 export interface IReset{

@@ -9,6 +9,7 @@ import SubmitRegistration from './SubmitRegistration';
 import HomeAddress from './HomeAddress';
 import ShippingAddress from './ShippingAddress';
 import { useAppSelector } from '../../app/hooks';
+import { Role } from '../../Interfaces/API/IMember';
 
 function RegistrationPage() {
   const login = useAppSelector((state) => state.authSlice);
@@ -42,7 +43,8 @@ function RegistrationPage() {
     },
     date_of_birth: new Date(),
     password: "1234",
-    _id: ''
+    _id: '',
+    role: Role.guest
   }
   const steps = [
     '25%',

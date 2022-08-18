@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import IAuth from '../../Interfaces/API/IAuth';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
+import { Role } from '../../Interfaces/API/IMember';
 import IMemberInfo from '../../Interfaces/IMemberInfo';
 
 const initialState: ILoginResult = {
@@ -14,32 +15,9 @@ const initialState: ILoginResult = {
         member_id: "",
         family_name: "",
         first_name: "",
-        contact: {
-            billing_address: {
-                line1: "",
-                line2: "",
-                city: "",
-                postcode: "",
-                province: "",
-                state: "",
-            },
-            shipping_address: {
-                line2: "",
-                line1: "",
-                city: "",
-                postcode: "",
-                province: "",
-                state: "",
-            },
-            phone: {
-                country: "",
-                area: "",
-                number: "",
-            },
-            email: "",
-        },
-        date_of_birth: undefined,
-        password: ""
+        role: [Role.guest],
+        email: ""
+
     }
 }
 export const authSlice = createSlice({
@@ -57,7 +35,7 @@ export const authSlice = createSlice({
             console.log("setCredentials/state", state);
         },
         logOut: (state) => {
-            state.member = JSON.parse(JSON.stringify(initialState.member)) as IMemberInfo;
+            state.member = JSON.parse(JSON.stringify(initialState.member));
             
             state.access_token = "";
             state.message = "";
