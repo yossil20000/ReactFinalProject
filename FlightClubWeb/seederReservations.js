@@ -30,15 +30,20 @@ const importData = async () => {
     //console.log('Devices Data Imported!' , devices);
     
     if(members.length > 0 && devices.length > 0)    {
-      for(let i=0;i<10;i++)
+      for(let i=0;i<5;i++)
       {
-        let newReservation = createReservation(members[i % 2], devices[i % 2], new Date(2022, 11, 17, i, 30, 0), new Date(2022, 11, 17, i+1, 30, 0));
+        let member_id = i % 3;
+        let device_id = i % 2;
+        console.log("member_id", member_id ,"device_id",device_id )
+
+        let newReservation = createReservation(members[Number(member_id)], devices[Number(device_id)], new Date(2022, 12, 17, i, 30, 0), new Date(2022, 12, 17, i+1, 30, 0));
 
         await FlightReservation.insertMany(newReservation)
-        devices[0].flight_reservs = newReservation;
-        members[0].flight_reservs = newReservation;
-        await devices[0].save();
-        await members[0].save();
+       // console.log('Member Data Imported!' , members[member_id]);
+        devices[Number(device_id)].flight_reservs = newReservation;
+        members[Number(member_id)].flight_reservs = newReservation;
+        await devices[Number(device_id)].save();
+        await members[Number(member_id)].save();
       }
       
     }

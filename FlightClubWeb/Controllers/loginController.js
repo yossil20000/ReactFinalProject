@@ -51,33 +51,9 @@ exports.signin = function(req,res,next){
                                 member_id: member.member_id,
                                 family_name: member.family_name,
                                 first_name: member.first_name,
-                                contact:{
-                                    billing_address: {
-                                        line1: member.contact.line1,
-                                        line2: member.contact.line2,
-                                        city: member.contact.city,
-                                        postcode: member.contact.postcode,
-                                        province: member.contact.province,
-                                        state: member.contact.state,
-                                    },
-                                    shipping_address: {
-                                        line1: member.contact.line1,
-                                        line2: member.contact.line2,
-                                        city: member.contact.city,
-                                        postcode: member.contact.postcode,
-                                        province: member.contact.province,
-                                        state: member.contact.state,
-                                    },
-                                    phone: {
-                                        country: member.contact.phone.country,
-                                        area: member.contact.phone.area,
-                                       number: member.contact.phone.number
-                                    },
-                                   email: member.contact.email
-                                },
-                                date_of_birth: member.date_of_birth,
-                                password: member.password
-                            }
+                                roles: member.role.roles
+                            },
+                            
                         } });
                     
                 }
