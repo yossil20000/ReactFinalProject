@@ -7,10 +7,8 @@ import React, { Component, useEffect, useState } from 'react'
 
 
 import { visuallyHidden } from '@mui/utils';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
+import PersonIcon from '@mui/icons-material/Person';
 import MediaQuery from "react-responsive";
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
@@ -23,18 +21,18 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
 import { useFetchAllReservationsQuery } from '../../features/Reservations/reservationsApiSlice';
 import { Iso } from '@mui/icons-material';
-import  GeneralCanDo, { CanDo } from '../../Utils/owner';
+import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
 
 
 interface ItableData {
-  _id_reservaion: string; _id_member: string; name: string; 
-  device_name: string;  date_from: Date;  date_to: Date;  member_id:string;validOperation:CanDo;
+  _id_reservaion: string; _id_member: string; name: string;
+  device_name: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
 }
 
 function createdata(_id_reservaion: string, _id_member: string, member_id: string,
-   name: string, device_name: string,  date_from: Date,  date_to: Date , validOperation: CanDo): ItableData {
-  return { _id_reservaion, _id_member, member_id,name: name, device_name, date_from,  date_to,validOperation } as ItableData
+  name: string, device_name: string, date_from: Date, date_to: Date, validOperation: CanDo): ItableData {
+  return { _id_reservaion, _id_member, member_id, name: name, device_name, date_from, date_to, validOperation } as ItableData
 }
 
 
@@ -51,8 +49,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-    a: { [key in Key]: number | string  | Date | boolean},
-    b: { [key in Key]: number | string | Date | boolean},
+    a: { [key in Key]: number | string | Date | boolean },
+    b: { [key in Key]: number | string | Date | boolean },
   ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -86,11 +84,10 @@ const headCells: readonly HeadCell[] = [
   { id: "date_to", label: "To", numeric: false, disablePadding: true },
   { id: "name", label: "Name", numeric: false, disablePadding: true },
   { id: "member_id", label: "IdNumber", numeric: false, disablePadding: true }
- 
+
 ]
 interface IEnhancedTableHeadProps {
-  mineSelected: boolean;
-  filterOwner: boolean;
+  numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ItableData) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
@@ -98,7 +95,7 @@ interface IEnhancedTableHeadProps {
   rowCount: number;
 }
 function EnhancedTableHead(props: IEnhancedTableHeadProps) {
-  const { onSelectAllClick, order, orderBy, mineSelected, rowCount, onRequestSort ,filterOwner} =
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler = (property: keyof ItableData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
@@ -134,35 +131,61 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 }
 
 interface EnhancedTableToolbarProps {
-  mineSelect: boolean;
-  filterOwner: boolean;
+  numSelected: number;
+  isFilterOwner: boolean;
+  OnFilterOwner: () => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { mineSelect , filterOwner} = props;
+  const { numSelected, OnFilterOwner, isFilterOwner } = props;
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(mineSelect  && {
+        ...(numSelected > 0 && {
           bgcolor: (them) =>
             alpha(them.palette.primary.main, them.palette.action.activatedOpacity),
         }),
       }}
     >
-   
-
-      {filterOwner  ? (
-        <Tooltip title="Show All">
-          <IconButton >
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component="div">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+          Memebrs
+        </Typography>
+      )}
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component="div">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+          Memebrs
+        </Typography>
+      )}
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component="div">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+          Memebrs
+        </Typography>
+      )}
+      {isFilterOwner == false ? (
+        <Tooltip title="Show Mine">
+          <IconButton onClick={OnFilterOwner}>
             <PeopleIcon />
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Show Mine">
-         
-          <IconButton>
+        <Tooltip title="Show All">
+
+          <IconButton onClick={OnFilterOwner}>
             <PersonIcon />
           </IconButton>
         </Tooltip>
@@ -208,16 +231,16 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 function ReservationsPage() {
   const login = useAppSelector((state) => state.authSlice);
-  const {data: reservations ,isFetching} = useFetchAllReservationsQuery();
+  const { data: reservations, isFetching } = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
 
 
-  console.log("ReservationsPage",reservations?.data)
+  console.log("ReservationsPage", reservations?.data)
 
   useEffect(() => {
 
     let rows = reservations?.data.map((item) => {
-      return createdata(item._id, item.member._id,item.member.member_id,`${item.member.family_name} ${item.member.first_name}`,item.device.device_id,item.date_from,item.date_to ,GeneralCanDo(item.member._id,login.member._id,login.member.roles))
+      return createdata(item._id, item.member._id, item.member.member_id, `${item.member.family_name} ${item.member.first_name}`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo(item.member._id, login.member._id, login.member.roles))
     })
     console.log('UseEffect/rows/be', rows)
     if (rows === undefined) {
@@ -230,12 +253,12 @@ function ReservationsPage() {
   const RenderReservations = () => {
     return (
       <ol>
-        {reservations?.data.map((r,i) => (
-          
+        {reservations?.data.map((r, i) => (
+
           <li key={i}>{new Date(r.date_from).toLocaleString()}</li>
         ))}
       </ol>
-      
+
     )
   }
 
@@ -246,15 +269,17 @@ function ReservationsPage() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [filterOwner,setFilterOwner ] = useState(false);
+  const [isFilterOwner, setIsFilterOwner] = useState(false);
+
+  const handleFilterOwner = () => {
+    setIsFilterOwner(!isFilterOwner);
+  }
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ItableData) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   }
- const handleFilterOwner = () => {
-  setFilterOwner(!filterOwner);
- }
+
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelecteds = rows?.map((n) => n._id_reservaion);
@@ -303,7 +328,7 @@ function ReservationsPage() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-const [expanded, setExpanded] = React.useState<string | false>('panel0');
+  const [expanded, setExpanded] = React.useState<string | false>('panel0');
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -311,13 +336,13 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
     };
 
   return (
-    <div className='main' style={{overflow: 'auto'}}>
+    <div className='main' style={{ overflow: 'auto' }}>
 
       <MediaQuery minWidth={768}>
         {rows ? (
           <Box sx={{ width: '100%', overflow: 'auto' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-              <EnhancedTableToolbar mineSelect={selected ? true : false} />
+              <EnhancedTableToolbar numSelected={selected ? selected.length : 0} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} />
               <TablePagination
                 rowsPerPageOptions={[1, 5, 10, 25]}
                 component="div"
@@ -334,7 +359,7 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                   size={dense ? 'small' : 'medium'}
                 >
                   <EnhancedTableHead
-                    mineSelected={selected ? true : false}
+                    numSelected={selected ? selected.length : 0}
                     order={order}
                     orderBy={orderBy}
                     onSelectAllClick={handleSelectAllClick}
@@ -345,7 +370,12 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                     {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                      rows.slice().sort(getComparator(order, orderBy)) */}
 
-                    {rows.sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    {rows.filter((r) => {
+                      if (!isFilterOwner) return true
+                      if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                      return false;
+                    })
+                      .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row: ItableData, index: number) => {
                         const isItemSelected = isSelected(row._id_reservaion);
                         const labelId = `enhanced-table-checkbox-${index}`;
@@ -396,16 +426,16 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
       <MediaQuery maxWidth={767}>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar mineSelect={selected ? true : false} />
+            <EnhancedTableToolbar numSelected={selected ? selected.length : 0} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} />
             <TablePagination
-                rowsPerPageOptions={[1, 5, 10, 25]}
-                component="div"
-                count={rows ? rows.length : 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+              rowsPerPageOptions={[1, 5, 10, 25]}
+              component="div"
+              count={rows ? rows.length : 0}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             <TableContainer>
               <Table
                 sx={{ maxWidth: 700 }}
@@ -413,7 +443,7 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                 size="small"
               >
                 <EnhancedTableHead
-                 mineSelected={selected ? true : false}
+                  numSelected={selected ? selected.length : 0}
                   order={order}
                   orderBy={orderBy}
                   onSelectAllClick={handleSelectAllClick}
@@ -434,15 +464,15 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
 
                 return (
 
-                <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}` } onChange={handleChange(`panel${index}`)}>
-                  <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                    <Typography> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography> Order by: {row.name} , {row.member_id}</Typography>
-                  
-                  </AccordionDetails>
-                </Accordion>
+                  <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
+                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                      <Typography> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography> Order by: {row.name} , {row.member_id}</Typography>
+
+                    </AccordionDetails>
+                  </Accordion>
 
                 );
               })}
