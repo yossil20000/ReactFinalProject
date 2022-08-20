@@ -1,13 +1,13 @@
 import { Password } from '@mui/icons-material';
 import { Box, Grid, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import IMemberInfo from '../../Interfaces/IMemberInfo';
 import ContanctInfo from '../Resistration/ShippingAddress';
 import PersonalInfo from '../Resistration/PersonalInfo';
 import SubmitRegistration from '../Resistration/SubmitRegistration';
 import HomeAddress from '../Resistration/HomeAddress';
 import ShippingAddress from '../Resistration/ShippingAddress';
-import { useGetMemberQuery } from '../../features/Users/userSlice';
+import {  useGetMemberByIdQuery } from '../../features/Users/userSlice';
 import { authSlice, selectCurrentId } from '../../features/Auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import SubmitProfile from './SubmitProfile';
@@ -52,12 +52,15 @@ function ProfilePage() {
     },
     date_of_birth: new Date(),
     password: "1234",
-    role: Role.guest
+    role: { 
+      roles: [Role.guest]
+    }
   }
-
   const login = useAppSelector((state) => state.authSlice);
+  const { data: member, isFetching } = useGetMemberByIdQuery(login.member._id);
+  
   const [page, setPage] = useState(0);
-  const [formData, setFormData] = useState<IMemberInfo>(login.member);
+  const [formData, setFormData] = useState<IMemberInfo>(initialForm);
   console.log("formData", login.member)
   const numPage = 4;
   const componentList = [
@@ -66,6 +69,17 @@ function ProfilePage() {
     <ShippingAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
     <SubmitProfile numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData}/>
   ]
+
+
+  useEffect(() => {
+
+if(member?.data){
+  setFormData(member.data);
+  console.log('UseEffect/rows', member.data);
+}
+
+
+  }, [member?.data])
   return (
     <div className='main' style={{ width: "100vw" }}>
       <Grid container spacing={2}>

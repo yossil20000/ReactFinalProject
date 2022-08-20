@@ -73,7 +73,7 @@ export const apiSlice = createApi({
             fetcAllMembers: builder.query<IResultBase<Member>, void>({
                 query() { return `/${URLS.MEMBERS}` }
             }),
-            getMember: builder.query<IResultBaseSingle<IMemberInfo>,string | "">({
+            getMemberById: builder.query<IResultBaseSingle<IMemberInfo>,string | "">({
                 query(id) {return `/${URLS.MEMBER_DETAIL}/${id}`;}
             }
             )
@@ -81,6 +81,6 @@ export const apiSlice = createApi({
     }
 });
 
-export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery,useGetMemberQuery } = apiSlice
+export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery,useGetMemberByIdQuery } = apiSlice
 
 

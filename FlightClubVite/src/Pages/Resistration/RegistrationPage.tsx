@@ -44,7 +44,7 @@ function RegistrationPage() {
     date_of_birth: new Date(),
     password: "1234",
     _id: '',
-    role: Role.guest
+    role: {roles:[Role.guest]}
   }
   const steps = [
     '25%',
@@ -54,7 +54,7 @@ function RegistrationPage() {
     'Submit',
   ];
   const [page, setPage] = useState(0);
-  const [formData, setFormData] = useState<IMemberInfo>(login.member);
+  const [formData, setFormData] = useState<IMemberInfo>(initialForm);
   console.log("formData", login.member)
   const numPage = 5;
   const componentList = [

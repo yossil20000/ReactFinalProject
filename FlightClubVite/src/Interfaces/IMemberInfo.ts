@@ -31,5 +31,7 @@ export default interface IMemberInfo{
     },
     date_of_birth?: Date;
     password:string;
-    role: Role;
+    role: {
+        roles: Role[]
+    };
 }

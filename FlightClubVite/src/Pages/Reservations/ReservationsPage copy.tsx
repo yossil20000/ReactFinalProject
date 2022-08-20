@@ -2,7 +2,7 @@
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 
 import Checkbox from '@mui/material/Checkbox';
-import { alpha, Box, Button, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Paper, Radio, RadioGroup, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
+import { alpha, Box, Button, FormControlLabel, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
 import React, { Component, useEffect, useState } from 'react'
 
 
@@ -23,9 +23,6 @@ import { useFetchAllReservationsQuery } from '../../features/Reservations/reserv
 import { Iso } from '@mui/icons-material';
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
-import SplitedButton, { ISplitButtonProps } from '../../Components/Buttons/SplitedButton';
-
-const filterDateoptions = ["today","week"]
 
 
 interface ItableData {
@@ -86,8 +83,7 @@ const headCells: readonly HeadCell[] = [
   { id: "date_from", label: "From", numeric: false, disablePadding: true },
   { id: "date_to", label: "To", numeric: false, disablePadding: true },
   { id: "name", label: "Name", numeric: false, disablePadding: true },
-  { id: "member_id", label: "IdNumber", numeric: false, disablePadding: true },
-
+  { id: "member_id", label: "IdNumber", numeric: false, disablePadding: true }
 
 ]
 interface IEnhancedTableHeadProps {
@@ -128,12 +124,6 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell>
-
-        </TableCell>
-        <TableCell>
-
-        </TableCell>
       </TableRow>
     </TableHead>
 
@@ -153,55 +143,39 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(isFilterOwner && {
+        ...(numSelected > 0 && {
           bgcolor: (them) =>
             alpha(them.palette.primary.main, them.palette.action.activatedOpacity),
         }),
       }}
     >
-      
-      <FormControl>
-        
-        <RadioGroup name='filterDate' defaultValue="top" row>
-      <FormControlLabel value="Today" control={<Radio/>} label="Today" labelPlacement='top'/>
-      <FormControlLabel value="Today" control={<Radio/>} label="Week" labelPlacement='top'/>
-      <FormControlLabel value="Today" control={<Radio/>} label="Month" labelPlacement='top'/>
-
-        </RadioGroup>
-        
-      </FormControl>
-      <FormControl>
-      <FormLabel id="demo-form-control-label-placement">Label placement</FormLabel>
-      <RadioGroup
-        row
-        aria-labelledby="demo-form-control-label-placement"
-        name="position"
-        defaultValue="top"
-      >
-        <FormControlLabel
-          value="top"
-          control={<Radio />}
-          label="Top"
-          labelPlacement="top"
-        />
-        <FormControlLabel
-          value="start"
-          control={<Radio />}
-          label="Start"
-          labelPlacement="start"
-        />
-        <FormControlLabel
-          value="bottom"
-          control={<Radio />}
-          label="Bottom"
-          labelPlacement="bottom"
-        />
-        <FormControlLabel value="end" control={<Radio />} label="End" />
-      </RadioGroup>
-    </FormControl>
-      <Box sx={{flexGrow: 1}}/>
-
-
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component="div">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+          Memebrs
+        </Typography>
+      )}
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component="div">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+          Memebrs
+        </Typography>
+      )}
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component="div">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+          Memebrs
+        </Typography>
+      )}
       {isFilterOwner == false ? (
         <Tooltip title="Show Mine">
           <IconButton onClick={OnFilterOwner}>
@@ -364,9 +338,9 @@ function ReservationsPage() {
   return (
     <div className='main' style={{ overflow: 'auto' }}>
 
-      <MediaQuery minWidth={768}>
+
         {rows ? (
-          <Box sx={{ width: '100%', overflow: 'auto' }}>
+          <Box sx={{ width: '100%', overflow: 'visible' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
               <EnhancedTableToolbar numSelected={selected ? selected.length : 0} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} />
               <TablePagination
@@ -392,6 +366,7 @@ function ReservationsPage() {
                     onRequestSort={handleRequestSort}
                     rowCount={rows ? rows.length : 0}
                   />
+                  <MediaQuery minWidth={768}>
                   <TableBody>
                     {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                      rows.slice().sort(getComparator(order, orderBy)) */}
@@ -437,6 +412,31 @@ function ReservationsPage() {
                       </TableRow>
                     )}
                   </TableBody>
+                  </MediaQuery>
+                  <MediaQuery maxWidth={767}>
+ {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+                     rows.slice().sort(getComparator(order, orderBy)) */}
+
+{rows.sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row: ItableData, index: number) => {
+                const isItemSelected = isSelected(row._id_reservaion);
+                const labelId = `enhanced-table-checkbox-${index}`;
+
+                return (
+<TableBody>
+                  <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
+                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                      <Typography> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography> Order by: {row.name} , {row.member_id}</Typography>
+
+                    </AccordionDetails>
+                  </Accordion>
+                  </TableBody>
+                );
+              })}
+                  </MediaQuery>
                 </Table>
               </TableContainer>
 
@@ -448,7 +448,6 @@ function ReservationsPage() {
           </Box>
 
         ) : (<div>Loading</div>)}
-      </MediaQuery>
       <MediaQuery maxWidth={767}>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
@@ -480,52 +479,7 @@ function ReservationsPage() {
               </Table>
 
             </TableContainer>
-            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                     rows.slice().sort(getComparator(order, orderBy)) */}
-
-            {rows.sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row: ItableData, index: number) => {
-                const isItemSelected = isSelected(row._id_reservaion);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-
-                  <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
-                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                      <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-
-                      <Grid container spacing={1}>
-                        <Grid item xs={3} >
-
-                          <Typography>
-                            {row.name}
-                          </Typography>
-                        </Grid>
-                        <Grid item sm={3} >
-                          <Typography>
-                            Id:
-                          </Typography>
-                          <Typography>
-                            {row.member_id}
-                          </Typography>
-                        </Grid>
-                        <Grid item sm={3} >
-                          <Typography>
-                            <Button>Edit</Button>
-                          </Typography>
-                          <Typography>
-                            <Button>Edit</Button>
-                          </Typography>
-
-                        </Grid>
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-
-                );
-              })}
+           
           </Paper>
           <FormControlLabel
             control={<Switch checked={dense} onChange={handleChangeDense} />}

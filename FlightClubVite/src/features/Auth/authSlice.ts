@@ -15,7 +15,7 @@ const initialState: ILoginResult = {
         member_id: "",
         family_name: "",
         first_name: "",
-        role: [Role.guest],
+        roles: [Role.guest],
         email: ""
 
     }
