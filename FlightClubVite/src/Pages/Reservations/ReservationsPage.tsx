@@ -1,8 +1,8 @@
 /* import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 
-import { alpha, Box, Button,  FormControlLabel,  Grid, IconButton, Paper,  Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from '@mui/material';
-import React, {  useEffect, useState } from 'react'
+import { alpha, Box, Button, FormControlLabel, Grid, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react'
 
 
 import { visuallyHidden } from '@mui/utils';
@@ -27,6 +27,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { is } from 'immer/dist/internal';
 
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
@@ -77,13 +78,13 @@ const headCells: readonly HeadCell[] = [
 
 ]
 interface IEnhancedTableHeadProps {
- 
+
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ItableData) => void;
   order: Order;
   orderBy: string;
 }
 function EnhancedTableHead(props: IEnhancedTableHeadProps) {
-  const {  order, orderBy,   onRequestSort } =
+  const { order, orderBy, onRequestSort } =
     props;
   const createSortHandler = (property: keyof ItableData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
@@ -125,24 +126,35 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 }
 
 interface EnhancedTableToolbarProps {
-  
+  fromDateFilter: Date | null;
+  setFromDateFilter: React.Dispatch<React.SetStateAction<Date | null>>;
+  setToDateFilter: React.Dispatch<React.SetStateAction<Date | null>>;
+  toDateFilter: Date | null;
   isFilterOwner: boolean;
   OnFilterOwner: () => void;
-  handleFilterClick(selectedIndex : number) : number;
+  handleFilterClick(selectedIndex: number): number;
+  isByDateRange: boolean;
 }
 const defaultMaterialThem = createTheme({
-  
+
 })
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const {  OnFilterOwner, isFilterOwner ,handleFilterClick} = props;
-  const [value,setValue] = useState<Date | null>(new Date());
-  const handleChange = (newValue: Date | null) => {
-    setValue(newValue);
+  const { isByDateRange ,OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
+  console.log("isbydateRange", isByDateRange);
+  const handleFromDateFilterChange = (newValue: Date | null) => {
+    if (newValue && toDateFilter && newValue < toDateFilter)
+      setFromDateFilter(newValue);
   };
+  const handleToDateFilterChange = (newValue: Date | null) => {
+    if (newValue && fromDateFilter && newValue > fromDateFilter)
+      setToDateFilter(newValue);
+  };
+  const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange", "All"];
+
   return (
     <Toolbar
       sx={{
-       
+
         pl: { sm: 1 },
         pr: { xs: 1, sm: 1 },
         ...(isFilterOwner && {
@@ -151,26 +163,32 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         }),
       }}
     >
-      <SplitedButton options={["Today", 'Week',"Month","All"]} handleClick={handleFilterClick}/>
-      <LocalizationProvider dateAdapter={AdapterLuxon}>
-        <ThemeProvider theme={defaultMaterialThem}>
-        <DateTimePicker 
-          label="From Date"
-          value={value}
-          onChange={handleChange}
-          renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{label:{color:"#2196f3"}, ml:{sm:1},}}/>}
-        />
-         <DateTimePicker 
-         
-          label="To Date"
-          value={value}
-          onChange={handleChange}
-          renderInput={(params) => <TextField {...params} size={'small'}  color={'error'} sx={{label:{color:"#2196f3"}, ml:{sm:1}}}/>}
-        />
-        </ThemeProvider>
-     
-      </LocalizationProvider>
-     
+      <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
+      {isByDateRange ? (
+        <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <ThemeProvider theme={defaultMaterialThem}>
+            <DateTimePicker
+              label="From Date"
+              value={fromDateFilter}
+              onChange={handleFromDateFilterChange}
+              renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
+            />
+            <DateTimePicker
+
+              label="To Date"
+              value={toDateFilter}
+              onChange={handleToDateFilterChange}
+              renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
+            />
+          </ThemeProvider>
+
+        </LocalizationProvider>
+      ) :
+        (null)
+
+      }
+
+
       <Box sx={{ flexGrow: 1 }} />
 
 
@@ -227,11 +245,18 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
+const newDate = (days: number): Date => {
+  let date = new Date();
+  date.setDate(date.getDate() + 1);
+  return date;
+}
 function ReservationsPage() {
   const login = useAppSelector((state) => state.authSlice);
   const { data: reservations, isFetching } = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
-
+  const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
+  const [toDateFilter, setToDateFilter] = useState<Date | null>(newDate(1));
+  const [isByDateRange, setIsByDateRange] = useState(false);
 
   console.log("ReservationsPage", reservations?.data)
 
@@ -263,17 +288,24 @@ function ReservationsPage() {
   /* Table Section */
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof ItableData>('_id_reservaion');
- 
+
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
-  const [filterBydate,setFilterByDate] = useState(0);
-  const handleFilterClick = (selectedIndex: number) :number => {
+  const [filterBydate, setFilterByDate] = useState(0);
+
+
+  const handleFilterClick = (selectedIndex: number): number => {
     console.log("handleFilterClick", selectedIndex);
+    if (selectedIndex == 3)
+      setIsByDateRange(true);
+    else
+      setIsByDateRange(false);
     setFilterByDate(selectedIndex);
+    console.log("handleFilterClick", selectedIndex , isByDateRange);
     return selectedIndex;
-   }
+  }
   const handleFilterOwner = () => {
     setIsFilterOwner(!isFilterOwner);
   }
@@ -300,7 +332,7 @@ function ReservationsPage() {
     setDense(event.target.checked);
   };
 
-  
+
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -320,7 +352,7 @@ function ReservationsPage() {
         {rows ? (
           <Box sx={{ width: '100%', overflow: 'auto' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-              <EnhancedTableToolbar  OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} />
+              <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
               <TablePagination
                 rowsPerPageOptions={[1, 5, 10, 25]}
                 component="div"
@@ -347,9 +379,8 @@ function ReservationsPage() {
 
                     {rows.filter((r) => {
 
-                      if(filterBydate != 0)
-                      {
-                        
+                      if (filterBydate != 0) {
+
                       }
                       if (!isFilterOwner) return true
                       if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
@@ -400,7 +431,7 @@ function ReservationsPage() {
       <MediaQuery maxWidth={767}>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar  OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick}/>
+            <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
             <TablePagination
               rowsPerPageOptions={[1, 5, 10, 25]}
               component="div"
@@ -456,11 +487,11 @@ function ReservationsPage() {
                           </Grid>
                           <Grid item sm={3} >
                             <Typography>
-                            {(row.validOperation & CanDo.Edit) ? <Button>Edit</Button> : null}
-                             
+                              {(row.validOperation & CanDo.Edit) ? <Button>Edit</Button> : null}
+
                             </Typography>
                             <Typography>
-                            {(row.validOperation & CanDo.Delete) ? <Button>Delete</Button> : null}
+                              {(row.validOperation & CanDo.Delete) ? <Button>Delete</Button> : null}
                             </Typography>
 
                           </Grid>
