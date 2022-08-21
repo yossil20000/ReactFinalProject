@@ -23,12 +23,14 @@ import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
 import SplitedButton, { ISplitButtonProps } from '../../Components/Buttons/SplitedButton';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { is } from 'immer/dist/internal';
-
+import { DateTime } from 'luxon';
+const todayDate = new Date(2023,0,17);
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
   device_name: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
@@ -36,7 +38,7 @@ interface ItableData {
 
 function createdata(_id_reservaion: string, _id_member: string, member_id: string,
   name: string, device_name: string, date_from: Date, date_to: Date, validOperation: CanDo): ItableData {
-  return { _id_reservaion, _id_member, member_id, name: name, device_name, date_from, date_to, validOperation } as ItableData
+  return { _id_reservaion, _id_member, member_id, name: name, device_name,date_from : new Date( date_from), date_to : new Date(date_to), validOperation } as ItableData
 }
 
 
@@ -141,13 +143,15 @@ const defaultMaterialThem = createTheme({
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const { isByDateRange ,OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
   console.log("isbydateRange", isByDateRange);
-  const handleFromDateFilterChange = (newValue: Date | null) => {
-    if (newValue && toDateFilter && newValue < toDateFilter)
-      setFromDateFilter(newValue);
+  const handleFromDateFilterChange = (newValue: DateTime | null) => {
+    let newDate = newValue?.toJSDate();
+    if (newDate && toDateFilter && newDate <= toDateFilter)
+      setFromDateFilter(new Date(newDate.getFullYear(), newDate.getMonth() , newDate.getDate(),0,0,0));
   };
-  const handleToDateFilterChange = (newValue: Date | null) => {
-    if (newValue && fromDateFilter && newValue > fromDateFilter)
-      setToDateFilter(newValue);
+  const handleToDateFilterChange = (newValue: DateTime | null) => {
+    let newDate = newValue?.toJSDate();
+    if (newDate && fromDateFilter && newDate >= fromDateFilter)
+      setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth() , newDate.getDate(), 23,59,59));
   };
   const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange", "All"];
 
@@ -167,13 +171,13 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       {isByDateRange ? (
         <LocalizationProvider dateAdapter={AdapterLuxon}>
           <ThemeProvider theme={defaultMaterialThem}>
-            <DateTimePicker
+            <MobileDatePicker
               label="From Date"
               value={fromDateFilter}
               onChange={handleFromDateFilterChange}
               renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
             />
-            <DateTimePicker
+            <MobileDatePicker
 
               label="To Date"
               value={toDateFilter}
@@ -246,11 +250,12 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 const newDate = (days: number): Date => {
-  let date = new Date();
+  let date = new Date(todayDate);
   date.setDate(date.getDate() + 1);
   return date;
 }
 function ReservationsPage() {
+  
   const login = useAppSelector((state) => state.authSlice);
   const { data: reservations, isFetching } = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
@@ -345,6 +350,39 @@ function ReservationsPage() {
       setExpanded(newExpanded ? panel : false);
     };
 
+const isInDateRange = (row : ItableData) : boolean => {
+   
+  switch(filterBydate)
+  
+    {
+      case 0:
+        return (row.date_from.getFullYear() == todayDate.getFullYear() &&  row.date_from.getDate() == todayDate.getDate() &&  row.date_from.getMonth() == todayDate.getMonth());
+        break;
+      case 1:
+        return  getWeek(row.date_from) == getWeek(todayDate);
+        break;
+        case 2:
+          return row.date_from.getMonth() == todayDate.getMonth() && row.date_from.getFullYear() == todayDate.getFullYear();
+        case 3:
+          if(fromDateFilter && toDateFilter)
+            return  row.date_from >= fromDateFilter &&  row.date_from <= toDateFilter 
+          break;
+    }
+    return true;
+}
+
+const getWeek = (date : Date) : number =>  {
+  
+  const oneJan = new Date(date.getFullYear(),0,1);
+  let a : number;
+  a = (date.valueOf() - oneJan.valueOf()) as number;
+  var numberOfDays = Math.floor((a) / (24 * 60 * 60 * 1000));
+  var result = Math.ceil(( date.getDay() + 1 + numberOfDays) / 7);
+
+  console.log(`The week number of the current date (${date}) is ${result}.`);
+  return result;
+}
+
   return (
     <div className='main' style={{ overflow: 'auto' }}>
 
@@ -379,9 +417,7 @@ function ReservationsPage() {
 
                     {rows.filter((r) => {
 
-                      if (filterBydate != 0) {
-
-                      }
+                     if(!isInDateRange(r)) return false;
                       if (!isFilterOwner) return true
                       if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
                       return false;
@@ -459,10 +495,12 @@ function ReservationsPage() {
 
             {
               rows.filter((r) => {
-                if (!isFilterOwner) return true
-                if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
-                return false;
-              })
+
+                if(!isInDateRange(r)) return false;
+                 if (!isFilterOwner) return true
+                 if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                 return false;
+               })
                 .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: ItableData, index: number) => {
                   return (
