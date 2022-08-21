@@ -1,9 +1,8 @@
 /* import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 
-import Checkbox from '@mui/material/Checkbox';
-import { alpha, Box, Button, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Paper, Radio, RadioGroup, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
-import React, { Component, useEffect, useState } from 'react'
+import { alpha, Box, Button,  FormControlLabel,  Grid, IconButton, Paper,  Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from '@mui/material';
+import React, {  useEffect, useState } from 'react'
 
 
 import { visuallyHidden } from '@mui/utils';
@@ -20,13 +19,14 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
 
 import { useFetchAllReservationsQuery } from '../../features/Reservations/reservationsApiSlice';
-import { Iso } from '@mui/icons-material';
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
 import SplitedButton, { ISplitButtonProps } from '../../Components/Buttons/SplitedButton';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
-const filterDateoptions = ["today","week"]
-
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
@@ -60,20 +60,6 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
 interface HeadCell {
   disablePadding: boolean;
   id: keyof ItableData;
@@ -91,15 +77,13 @@ const headCells: readonly HeadCell[] = [
 
 ]
 interface IEnhancedTableHeadProps {
-  numSelected: number;
+ 
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ItableData) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
-  rowCount: number;
 }
 function EnhancedTableHead(props: IEnhancedTableHeadProps) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const {  order, orderBy,   onRequestSort } =
     props;
   const createSortHandler = (property: keyof ItableData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
@@ -141,17 +125,25 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 }
 
 interface EnhancedTableToolbarProps {
-  numSelected: number;
+  
   isFilterOwner: boolean;
   OnFilterOwner: () => void;
+  handleFilterClick(selectedIndex : number) : number;
 }
-
+const defaultMaterialThem = createTheme({
+  
+})
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, OnFilterOwner, isFilterOwner } = props;
+  const {  OnFilterOwner, isFilterOwner ,handleFilterClick} = props;
+  const [value,setValue] = useState<Date | null>(new Date());
+  const handleChange = (newValue: Date | null) => {
+    setValue(newValue);
+  };
   return (
     <Toolbar
       sx={{
-        pl: { sm: 2 },
+       
+        pl: { sm: 1 },
         pr: { xs: 1, sm: 1 },
         ...(isFilterOwner && {
           bgcolor: (them) =>
@@ -159,47 +151,27 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         }),
       }}
     >
-      
-      <FormControl>
-        
-        <RadioGroup name='filterDate' defaultValue="top" row>
-      <FormControlLabel value="Today" control={<Radio/>} label="Today" labelPlacement='top'/>
-      <FormControlLabel value="Today" control={<Radio/>} label="Week" labelPlacement='top'/>
-      <FormControlLabel value="Today" control={<Radio/>} label="Month" labelPlacement='top'/>
-
-        </RadioGroup>
-        
-      </FormControl>
-      <FormControl>
-      <FormLabel id="demo-form-control-label-placement">Label placement</FormLabel>
-      <RadioGroup
-        row
-        aria-labelledby="demo-form-control-label-placement"
-        name="position"
-        defaultValue="top"
-      >
-        <FormControlLabel
-          value="top"
-          control={<Radio />}
-          label="Top"
-          labelPlacement="top"
+      <SplitedButton options={["Today", 'Week',"Month","All"]} handleClick={handleFilterClick}/>
+      <LocalizationProvider dateAdapter={AdapterLuxon}>
+        <ThemeProvider theme={defaultMaterialThem}>
+        <DateTimePicker 
+          label="From Date"
+          value={value}
+          onChange={handleChange}
+          renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{label:{color:"#2196f3"}, ml:{sm:1},}}/>}
         />
-        <FormControlLabel
-          value="start"
-          control={<Radio />}
-          label="Start"
-          labelPlacement="start"
+         <DateTimePicker 
+         
+          label="To Date"
+          value={value}
+          onChange={handleChange}
+          renderInput={(params) => <TextField {...params} size={'small'}  color={'error'} sx={{label:{color:"#2196f3"}, ml:{sm:1}}}/>}
         />
-        <FormControlLabel
-          value="bottom"
-          control={<Radio />}
-          label="Bottom"
-          labelPlacement="bottom"
-        />
-        <FormControlLabel value="end" control={<Radio />} label="End" />
-      </RadioGroup>
-    </FormControl>
-      <Box sx={{flexGrow: 1}}/>
+        </ThemeProvider>
+     
+      </LocalizationProvider>
+     
+      <Box sx={{ flexGrow: 1 }} />
 
 
       {isFilterOwner == false ? (
@@ -291,12 +263,17 @@ function ReservationsPage() {
   /* Table Section */
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof ItableData>('_id_reservaion');
-  const [selected, setSelected] = useState<readonly string[]>([]);
+ 
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
-
+  const [filterBydate,setFilterByDate] = useState(0);
+  const handleFilterClick = (selectedIndex: number) :number => {
+    console.log("handleFilterClick", selectedIndex);
+    setFilterByDate(selectedIndex);
+    return selectedIndex;
+   }
   const handleFilterOwner = () => {
     setIsFilterOwner(!isFilterOwner);
   }
@@ -306,34 +283,9 @@ function ReservationsPage() {
     setOrderBy(property);
   }
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelecteds = rows?.map((n) => n._id_reservaion);
-      setSelected(newSelecteds);
-      return
-    }
-    setSelected([]);
-  }
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
 
-    setSelected(newSelected);
-  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -348,7 +300,7 @@ function ReservationsPage() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name: string) => selected?.indexOf(name) !== -1;
+  
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -368,7 +320,7 @@ function ReservationsPage() {
         {rows ? (
           <Box sx={{ width: '100%', overflow: 'auto' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-              <EnhancedTableToolbar numSelected={selected ? selected.length : 0} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} />
+              <EnhancedTableToolbar  OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} />
               <TablePagination
                 rowsPerPageOptions={[1, 5, 10, 25]}
                 component="div"
@@ -385,36 +337,32 @@ function ReservationsPage() {
                   size={dense ? 'small' : 'medium'}
                 >
                   <EnhancedTableHead
-                    numSelected={selected ? selected.length : 0}
                     order={order}
                     orderBy={orderBy}
-                    onSelectAllClick={handleSelectAllClick}
                     onRequestSort={handleRequestSort}
-                    rowCount={rows ? rows.length : 0}
                   />
                   <TableBody>
                     {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                      rows.slice().sort(getComparator(order, orderBy)) */}
 
                     {rows.filter((r) => {
+
+                      if(filterBydate != 0)
+                      {
+                        
+                      }
                       if (!isFilterOwner) return true
                       if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
                       return false;
                     })
                       .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row: ItableData, index: number) => {
-                        const isItemSelected = isSelected(row._id_reservaion);
-                        const labelId = `enhanced-table-checkbox-${index}`;
-
+                      .map((row: ItableData) => {
                         return (
                           <TableRow
                             hover
-                            onClick={(event) => handleClick(event, row._id_reservaion)}
                             role="checkbox"
-                            aria-checked={isItemSelected}
                             tabIndex={-1}
                             key={row._id_reservaion}
-                            selected={isItemSelected}
                           >
 
                             <TableCell align="left">{row.device_name}</TableCell>
@@ -452,7 +400,7 @@ function ReservationsPage() {
       <MediaQuery maxWidth={767}>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected ? selected.length : 0} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} />
+            <EnhancedTableToolbar  OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick}/>
             <TablePagination
               rowsPerPageOptions={[1, 5, 10, 25]}
               component="div"
@@ -469,63 +417,59 @@ function ReservationsPage() {
                 size="small"
               >
                 <EnhancedTableHead
-                  numSelected={selected ? selected.length : 0}
                   order={order}
                   orderBy={orderBy}
-                  onSelectAllClick={handleSelectAllClick}
                   onRequestSort={handleRequestSort}
-                  rowCount={rows ? rows.length : 0}
                 />
-
               </Table>
-
             </TableContainer>
             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                      rows.slice().sort(getComparator(order, orderBy)) */}
 
-            {rows.sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row: ItableData, index: number) => {
-                const isItemSelected = isSelected(row._id_reservaion);
-                const labelId = `enhanced-table-checkbox-${index}`;
+            {
+              rows.filter((r) => {
+                if (!isFilterOwner) return true
+                if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                return false;
+              })
+                .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row: ItableData, index: number) => {
+                  return (
+                    <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
+                      <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                        <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Grid container spacing={1}>
+                          <Grid item xs={3} >
+                            <Typography>
+                              {row.name}
+                            </Typography>
+                          </Grid>
+                          <Grid item sm={3} >
+                            <Typography>
+                              Id:
+                            </Typography>
+                            <Typography>
+                              {row.member_id}
+                            </Typography>
+                          </Grid>
+                          <Grid item sm={3} >
+                            <Typography>
+                            {(row.validOperation & CanDo.Edit) ? <Button>Edit</Button> : null}
+                             
+                            </Typography>
+                            <Typography>
+                            {(row.validOperation & CanDo.Delete) ? <Button>Delete</Button> : null}
+                            </Typography>
 
-                return (
-
-                  <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
-                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                      <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-
-                      <Grid container spacing={1}>
-                        <Grid item xs={3} >
-
-                          <Typography>
-                            {row.name}
-                          </Typography>
+                          </Grid>
                         </Grid>
-                        <Grid item sm={3} >
-                          <Typography>
-                            Id:
-                          </Typography>
-                          <Typography>
-                            {row.member_id}
-                          </Typography>
-                        </Grid>
-                        <Grid item sm={3} >
-                          <Typography>
-                            <Button>Edit</Button>
-                          </Typography>
-                          <Typography>
-                            <Button>Edit</Button>
-                          </Typography>
-
-                        </Grid>
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-
-                );
-              })}
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                })
+            }
           </Paper>
           <FormControlLabel
             control={<Switch checked={dense} onChange={handleChangeDense} />}
