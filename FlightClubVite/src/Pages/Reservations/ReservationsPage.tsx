@@ -1,5 +1,6 @@
 /* import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
+import "../../Types/date.extensions.js"
 
 import { alpha, Box, Button, FormControlLabel, Grid, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
@@ -249,18 +250,13 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-const newDate = (days: number): Date => {
-  let date = new Date(todayDate);
-  date.setDate(date.getDate() + 1);
-  return date;
-}
 function ReservationsPage() {
   
   const login = useAppSelector((state) => state.authSlice);
   const { data: reservations, isFetching } = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
   const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
-  const [toDateFilter, setToDateFilter] = useState<Date | null>(newDate(1));
+  const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(1));
   const [isByDateRange, setIsByDateRange] = useState(false);
 
   console.log("ReservationsPage", reservations?.data)
@@ -278,17 +274,6 @@ function ReservationsPage() {
     console.log('UseEffect/rows', rows)
 
   }, [reservations?.data])
-  const RenderReservations = () => {
-    return (
-      <ol>
-        {reservations?.data.map((r, i) => (
-
-          <li key={i}>{new Date(r.date_from).toLocaleString()}</li>
-        ))}
-      </ol>
-
-    )
-  }
 
   /* Table Section */
   const [order, setOrder] = useState<Order>('asc');
@@ -356,13 +341,13 @@ const isInDateRange = (row : ItableData) : boolean => {
   
     {
       case 0:
-        return (row.date_from.getFullYear() == todayDate.getFullYear() &&  row.date_from.getDate() == todayDate.getDate() &&  row.date_from.getMonth() == todayDate.getMonth());
+        return row.date_from.isSameDate(todayDate);
         break;
       case 1:
-        return  getWeek(row.date_from) == getWeek(todayDate);
+        return  row.date_from.getWeek() == todayDate.getWeek();
         break;
         case 2:
-          return row.date_from.getMonth() == todayDate.getMonth() && row.date_from.getFullYear() == todayDate.getFullYear();
+          return row.date_from.isSameMonth(todayDate);
         case 3:
           if(fromDateFilter && toDateFilter)
             return  row.date_from >= fromDateFilter &&  row.date_from <= toDateFilter 
@@ -371,24 +356,14 @@ const isInDateRange = (row : ItableData) : boolean => {
     return true;
 }
 
-const getWeek = (date : Date) : number =>  {
-  
-  const oneJan = new Date(date.getFullYear(),0,1);
-  let a : number;
-  a = (date.valueOf() - oneJan.valueOf()) as number;
-  var numberOfDays = Math.floor((a) / (24 * 60 * 60 * 1000));
-  var result = Math.ceil(( date.getDay() + 1 + numberOfDays) / 7);
 
-  console.log(`The week number of the current date (${date}) is ${result}.`);
-  return result;
-}
 
   return (
     <div className='main' style={{ overflow: 'auto' }}>
 
       <MediaQuery minWidth={768}>
         {rows ? (
-          <Box sx={{ width: '100%', overflow: 'auto' }}>
+          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
               <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
               <TablePagination
