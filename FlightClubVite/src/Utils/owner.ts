@@ -14,7 +14,7 @@ export enum CanDo {
     
     if(login_id === id) {canDo = CanDo.Read  | CanDo.Edit | CanDo.Delete | CanDo.Owner; return canDo;}
     if(role.includes(Role.admin)) {canDo =  CanDo.Edit | CanDo.Read | CanDo.Delete ; return canDo};
-    if(role.includes(Role.account)) {canDo =  CanDo.Edit | CanDo.Read ; return canDo};
+    if(role.includes(Role.account)) {canDo =  CanDo.Edit | CanDo.Read | CanDo.Delete; return canDo};
     if(role.includes(Role.desk)) {canDo =  CanDo.Edit | CanDo.Read ; return canDo};
     return canDo;
   }

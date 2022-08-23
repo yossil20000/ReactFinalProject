@@ -76,11 +76,32 @@ export const apiSlice = createApi({
             getMemberById: builder.query<IResultBaseSingle<IMemberInfo>,string | "">({
                 query(id) {return `/${URLS.MEMBER_DETAIL}/${id}`;}
             }
-            )
+            ),
+            deleteMember: builder.mutation<IResultBaseSingle<IMemberInfo>,string>({
+                query: (_id) => ({
+                    url: `/${URLS.MEMBERS}/${_id}`,
+                    method: "DELETE",
+
+                })
+            }),
+            createMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMember>({
+                query: (_id) => ({
+                    url: `/${URLS.MEMBERS}`,
+                    method: "POST",
+
+                })
+            }),
+            updateMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMember>({
+                query: (_id) => ({
+                    url: `/${URLS.MEMBERS}`,
+                    method: "PUT",
+
+                })
+            })
         }
     }
 });
 
-export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery,useGetMemberByIdQuery } = apiSlice
+export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery,useGetMemberByIdQuery, useDeleteMemberMutation, useCreateMemberMutation,useUpdateMemberMutation } = apiSlice
 
 

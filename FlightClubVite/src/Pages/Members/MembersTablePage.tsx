@@ -1,6 +1,6 @@
 
 import Checkbox, { checkboxClasses } from '@mui/material/Checkbox';
-import { alpha, Box, FormControlLabel, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
+import { alpha, Box, Button, FormControlLabel, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
 import React, { Component, useEffect, useState } from 'react'
 
 
@@ -16,15 +16,16 @@ import MuiAccordionSummary, {
 } from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
-import { useFetcAllMembersQuery, useFetchAllClubNoticeQuery } from '../../features/Users/userSlice'
+import { useFetcAllMembersQuery, useFetchAllClubNoticeQuery,useDeleteMemberMutation } from '../../features/Users/userSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import GeneralCanDo, { CanDo } from '../../Utils/owner';
 
 interface ItableData {
-  _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string
+  _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string,validOperation: CanDo
 }
 
-function createdata(_id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string): ItableData {
-  return { _id, member_id, family_name, first_name, email, phone } as ItableData
+function createdata(_id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string, validOperation: CanDo): ItableData {
+  return { _id, member_id, family_name, first_name, email, phone,validOperation } as ItableData
 }
 
 
@@ -117,6 +118,12 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
             </TableSortLabel>
           </TableCell>
         ))}
+                <TableCell>
+
+</TableCell>
+<TableCell>
+
+</TableCell>
       </TableRow>
     </TableHead>
 
@@ -140,6 +147,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         }),
       }}
     >
+       <Box sx={{ flexGrow: 1 }} />
       {numSelected > 0 ? (
         <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component="div">
           {numSelected} selected
@@ -205,6 +213,8 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 function MembersTablePage() {
+  const login = useAppSelector((state) => state.authSlice);
+  const [deleteMember] = useDeleteMemberMutation();
   const { data: members, isFetching } = useFetcAllMembersQuery();
   const { data: message, isFetching: isFetchingMessage } = useFetchAllClubNoticeQuery();
   const [rows, setRows] = useState<ItableData[]>([])
@@ -217,7 +227,7 @@ function MembersTablePage() {
   useEffect(() => {
 
     let rows = members?.data.map((item) => {
-      return createdata(item._id, item.member_id, item.family_name, item.first_name, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`)
+      return createdata(item._id, item.member_id, item.family_name, item.first_name, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`,GeneralCanDo(item._id, login.member._id, login.member.roles))
     })
     console.log('UseEffect/rows/be', rows)
     if (rows === undefined) {
@@ -250,7 +260,22 @@ function MembersTablePage() {
     }
     setSelected([]);
   }
+  const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
+    console.log("Delete /",_id);
+    try{
+      const payload = await deleteMember(_id)
+      .unwrap()
+      .then((payload) => {
+        console.log("DeleteMember Fullfill", payload)
+      });
+    }
+    catch(err){
 
+    }
+  }
+  const handleEditClick = (event: React.MouseEvent<unknown>, _id: string) => {
+    console.log("Edit /",_id);
+  }
   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected: readonly string[] = [];
@@ -341,20 +366,20 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                         return (
                           <TableRow
                             hover
-                            onClick={(event) => handleClick(event, row._id)}
+                            
                             role="checkbox"
                             aria-checked={isItemSelected}
                             tabIndex={-1}
                             key={row._id}
                             selected={isItemSelected}
                           >
-
-                           
                             <TableCell align="left">{row.member_id}</TableCell>
                             <TableCell align="left">{row.family_name}</TableCell>
                             <TableCell align="left">{row.first_name}</TableCell>
                             <TableCell align="left">{row.email}</TableCell>
                             <TableCell align="left">{row.phone}</TableCell>
+                            <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}</TableCell>
+                            <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}</TableCell>
                           </TableRow>
                         );
                       })}

@@ -6,7 +6,9 @@ export enum MemberType{
     Normal,
     Member    
 }
-
+export enum Status {
+    "Active" = "Active","Suspended" = "Suspended","Removed"="Removed"
+}
 export enum Role{
     "guest"= 'guest',
     "user" = 'user',
@@ -44,6 +46,7 @@ export default interface IMember{
         },
         email: string
     },
+    status: Status
     password: string
     member_type: MemberType
     role: Role[]

@@ -51,6 +51,7 @@ var MemberSchema = new Schema({
     },
     password: {type: String, required: true},
     member_type:{type:String, enum:['Normal','Member'] , default: 'Normal'},
+    status:{type:String, enum:["Active","Suspended","Removed"], default: "Active"},
     role: {type: Role, _id:false} ,
     date_of_birth: {type: Date, required: true},
     date_of_join: {type: Date, required: true},
