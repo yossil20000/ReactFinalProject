@@ -195,10 +195,10 @@ exports.register = function (req, res, next) {
             Member.findOne({ "contact.email": user.contact.email }, (err, member) => {
                
                 if(err){
-                    return res.status(401).json({ success: false, errors: [err], message: `${email}  register error` });
+                    return res.status(401).json({ success: false, errors: [err], message: `Member Found Error` });
                 }
                 if (member)
-                    return res.status(401).json({ success: false, errors: [], message: `${email}  Already Register` });
+                    return res.status(401).json({ success: false, errors: [], message: `${user.contact.email}  Already Register` });
                 else {
                     next();
                 }

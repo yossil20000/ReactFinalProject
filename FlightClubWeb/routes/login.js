@@ -4,6 +4,7 @@ var loginController = require('../Controllers/loginController');
 var memberController = require('../Controllers/memberController')
 const authJWT = require('../middleware/authJWT');
 const authorize = require('../middleware/authorize');
+const { ROLES } = require('../Models/constants');
 
 router.put('/login', loginController.signin);
 router.put('/logout',)
@@ -32,5 +33,5 @@ router.get('/hidden/:token', [authJWT.authenticate], function(req,res,next) {
     }
 })
 router.put('/change_password',authJWT.authenticate,loginController.change_password)
-router.post('/register', loginController.register,memberController.member_create);
+router.post('/register', [authJWT.authenticate, authorize.authorize([ROLES[3],ROLES[4]])], loginController.register,memberController.member_create);
 module.exports = router;

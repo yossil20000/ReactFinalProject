@@ -23,9 +23,9 @@ const signToken = function (payLoad) {
 }
 const authenticate = (req, res, next) => {
 
-    if (req.headers && req.headers.token) {
-        const token = req.headers.token.replace('Bearer ', '');
-        console.log(req.headers.token, 'req.headers.token');
+    if (req.headers && req.headers.authorization) {
+        const token = req.headers.authorization.replace('Bearer ', '');
+        console.log(req.headers.authorization, 'req.headers.authorization');
         console.log(token, 'token');
         JWT.verify(token, process.env.JWT_SECRET, function (err, decode) {
             console.log("decode", decode);
