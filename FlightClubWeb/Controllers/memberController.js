@@ -1,11 +1,15 @@
 const Member = require('../Models/member');
 const FlightReservation = require('../Models/flightReservation');
 
+
 const async = require('async');
 const log = require('debug-level').log('MemberController');
+const mail = require("../Services/mailService");
 
 var { body, validationResult } = require('express-validator');
 const passGen = require('../Services/passwordGenerator');
+const role = require('../Models/role');
+
 
 exports.member_list = function (req, res, next) {
     log.info("member_list");
@@ -97,30 +101,43 @@ exports.member_create = [
             res.status(401).json({ success: false, errors: errors, data: req.body });
         }
         else {
-            Member.findOne({ "contact.email": email }, (err, member) => {
-
+            const user = req.body;
+            Member.findOne({ "contact.email": user.contact.email }, (err, member) => {
+               
                 if (member) {
                     return res.status(401).json({ success: false, errors: ["email already registered"], message: "email already registered" });
                 }
                 else {
                     const member = new Member(
                         {
-                            first_name: req.body.first_name,
-                            family_name: req.body.family_name,
+                            first_name: user.first_name,
+                            family_name: user.family_name,
                             member_id: req.body.member_id,
-                            date_of_birth: req.body.date_of_birth,
-                            date_of_join: req.body.date_of_join === undefined ? null : req.body.date_of_join,
-                            password: req.body.password === undefined ? passGen.passwordGenerator(8) : req.body.password,
-                            contact: req.body.contact,
-                            contact: { email: req.body.email === undefined ? `${req.body.first_name}@gmail.com` : req.body.email }
+                            date_of_birth: user.date_of_birth,
+                            date_of_join: user.date_of_join === undefined ? null : user.date_of_join,
+                            password: user.password === undefined ? passGen.passwordGenerator(8) : user.password,
+                            contact: user.contact,
+                           
+                            role: user.role,
 
                         });
-                    member.save((err) => {
-                        if (err) { return next(err); }
-                        mail.SendMail(member.contact.email, "Create New user", `Your temporary paassword is ${password} Please Login with your maile`).then((result) => {
-                            console.log("Send Mail to:", member.contact.email);
-                            res.status(201).json({ success: true, errors: [{ message: "You Initial passwors was sent to your mail" }], data: member });
-                        });
+                    console.log("membertosave", member);
+                    member.save((err,result) => {
+                        if (err) {
+                             return res.status(401).json({ success: false, errors: [err],  message: "Failed To Save" , data: member })
+                        }
+                        if(result){
+                            console.log("membertosave/Result", result);
+                            console.log("member.contact.email", member.contact.email)
+                            mail.SendMail(user.contact.email, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
+                            .then((result) => {
+                                console.log("Send Mail to:", user.contact.email);
+                                res.status(201).json({ success: true, errors: [result], message: "You Initial passwors was sent to your mail" , data: member })
+                            }).catch((err => {
+                                res.status(401).json({ success: false, errors: [err],  message: "Failed To send Initial passwors to your mail" , data: member })
+                            }));
+                        }
+                        
                     })
                 }
 

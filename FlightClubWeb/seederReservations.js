@@ -22,7 +22,7 @@ const createReservation = (member,device,date_from,date_to) =>{
     return reservation;
 }
 
-const importData = async () => {
+const importData = async (save) => {
   try {
     members = await Member.find();
     devices = await device.find();
@@ -36,15 +36,20 @@ const importData = async () => {
         let device_id = i % 2;
         console.log("member_id", member_id ,"device_id",device_id )
 
-        let newReservation = createReservation(members[Number(member_id)], devices[Number(device_id)], new Date(2022, 12, 17, i, 30, 0), new Date(2022, 12, 17, i+1, 30, 0));
+        let newReservation = createReservation(members[Number(member_id)], devices[Number(device_id)], new Date(), new Date(2022, 12, 17, i+1, 30, 0));
 
-        await FlightReservation.insertMany(newReservation)
-       // console.log('Member Data Imported!' , members[member_id]);
-        devices[Number(device_id)].flight_reservs = newReservation;
-        members[Number(member_id)].flight_reservs = newReservation;
-        await devices[Number(device_id)].save();
-        await members[Number(member_id)].save();
-      }
+        console.log("reservation", (newReservation.date_from.getFullYear()));
+        if(save)
+        {
+          await FlightReservation.insertMany(newReservation)
+          // console.log('Member Data Imported!' , members[member_id]);
+           devices[Number(device_id)].flight_reservs = newReservation;
+           members[Number(member_id)].flight_reservs = newReservation;
+           await devices[Number(device_id)].save();
+           await members[Number(member_id)].save();
+   
+        }
+              }
       
     }
     process.exit();
@@ -69,6 +74,10 @@ const destroyData = async () => {
 
 if (process.argv[2] === '-d') {
   destroyData()
-} else {
-  importData()
+} else if (process.argv[2] === '-s') {
+  console.log("Demo")
+  importData(true)
+}
+else{
+  importData(false);
 }

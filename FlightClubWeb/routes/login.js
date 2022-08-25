@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var loginController = require('../Controllers/loginController');
+var memberController = require('../Controllers/memberController')
 const authJWT = require('../middleware/authJWT');
 const authorize = require('../middleware/authorize');
 
@@ -18,7 +19,7 @@ router.get('/hidden', authJWT.authenticate, function(req,res,next) {
         res.status(200).json({ success: true, errors: [], data: {message: "Authorized"}});
     }
 });
-router.get('/hidden/:token', [authJWT.authenticate , authorize(['user'])], function(req,res,next) {
+router.get('/hidden/:token', [authJWT.authenticate], function(req,res,next) {
 
     if(!req.user){
 
@@ -31,4 +32,5 @@ router.get('/hidden/:token', [authJWT.authenticate , authorize(['user'])], funct
     }
 })
 router.put('/change_password',authJWT.authenticate,loginController.change_password)
+router.post('/register', loginController.register,memberController.member_create);
 module.exports = router;
