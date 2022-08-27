@@ -4,6 +4,7 @@ import {URLS} from '../../Enums/Routers';
 import IClubNotice from "../../Interfaces/API/IClubNotice";
 import IMember from "../../Interfaces/API/IMember";
 import IMemberInfo from "../../Interfaces/IMemberInfo";
+import { RootState } from "../../app/userStor";
 
 
 interface Role {
@@ -60,21 +61,32 @@ export const apiSlice = createApi({
     reducerPath: 'apiSlice',
     baseQuery: fetchBaseQuery({
         baseUrl: URLS.BACKEND_URL,
-        prepareHeaders(headers) {
-
-            return headers;
-        }
+        prepareHeaders: (headers, { getState }) => {
+            // By default, if we have a token in the store, let's use that for authenticated requests
+            const token = (getState() as RootState).authSlice.access_token
+            if (token) {
+              headers.set('authorization', `Bearer ${token}`)
+            }
+            return headers
+          },
     }),
+    tagTypes:["Members","Message"],
     endpoints(builder) {
         return {
             fetchAllClubNotice: builder.query<IResultBase<IClubNotice>, number | void>({
                 query(limit = 10) { return `/${URLS.CLUB_NOTICE}`; }
             }),
             fetcAllMembers: builder.query<IResultBase<Member>, void>({
-                query() { return `/${URLS.MEMBERS}` }
+                query : () =>  `/${URLS.MEMBERS}` ,
+                providesTags: ["Members"]
             }),
             getMemberById: builder.query<IResultBaseSingle<IMemberInfo>,string | "">({
-                query(id) {return `/${URLS.MEMBER_DETAIL}/${id}`;}
+                query: (id) => ({
+                     url:  `/${URLS.MEMBER_DETAIL}/${id}`,
+                     method: "GET"
+                    }
+                ) ,
+                providesTags: ["Members"]
             }
             ),
             deleteMember: builder.mutation<IResultBaseSingle<IMemberInfo>,string>({
@@ -82,21 +94,26 @@ export const apiSlice = createApi({
                     url: `/${URLS.MEMBERS}/${_id}`,
                     method: "DELETE",
 
-                })
+                }),
+                invalidatesTags: ["Members"]
             }),
             createMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMember>({
-                query: (_id) => ({
+                query: (data) => ({
                     url: `/${URLS.MEMBERS}`,
                     method: "POST",
+                    body: data
 
-                })
+                }),
+                invalidatesTags: ["Members"]
             }),
-            updateMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMember>({
-                query: (_id) => ({
+            updateMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMemberInfo>({
+                query: (data) => ({
                     url: `/${URLS.MEMBERS}`,
                     method: "PUT",
+                    body:data,
 
-                })
+                }),
+                invalidatesTags: ["Members"]
             })
         }
     }

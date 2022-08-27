@@ -30,7 +30,7 @@ export default interface IMemberInfo{
         email: string
     },
     date_of_birth?: Date;
-    password:string;
+    
     role: {
         roles: Role[]
     };

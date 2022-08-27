@@ -93,7 +93,7 @@ const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name}`}
+            {login?.member.first_name == "" ? "Hello, Please login" : `Hello ${login?.member.first_name}`}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

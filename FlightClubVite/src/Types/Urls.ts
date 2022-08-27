@@ -3,7 +3,8 @@ export enum ROUTES{
     RESERVATION = "reservations",
     Flight = "flight",
     LOGIN = "login",
-    CHANGE_PASSWORD = "change_password"
+    CHANGE_PASSWORD = "change_password",
+    MEMBERS = "members"
 }
 
 export enum URLS {
