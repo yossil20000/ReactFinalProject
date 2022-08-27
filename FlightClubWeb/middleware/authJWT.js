@@ -31,7 +31,7 @@ const authenticate = (req, res, next) => {
             console.log("decode", decode);
             if (err) {
                 console.log("verify", err);
-                res.status(500).json({ success: false, errors: [err], data: [] });
+                res.status(403).json({ success: false, errors: [err], message: "In Valid Authorization" , data: [] });
             }
             else {
                 console.log(decode);
@@ -39,7 +39,7 @@ const authenticate = (req, res, next) => {
                     .exec((err, user) => {
                         if (err) {
                             console.log("findOne error:", err);
-                            res.status(500).json({ success: false, errors: [err], data: [] });
+                            res.status(400).json({ success: false, errors: [err], message: "" , data: [] });
                         }
                         else {
                             console.log("findOne:", user);
@@ -53,7 +53,7 @@ const authenticate = (req, res, next) => {
     else {
         console.log("Verify not enter")
         req.user = undefined;
-        next();
+        res.status(403).json({ success: false, errors: [err], message: "UnAthurized" , data: [] });
     }
 };
 
