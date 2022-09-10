@@ -9,6 +9,6 @@ export interface IMemberCombo{
   first_name: string;
 }
 export interface IFlightReservationProps {
-  devices: IDeviceCombo[];
-  members: IMemberCombo[];
+  devices: IDeviceCombo[] | [];
+  members: IMemberCombo[] | [];
 }

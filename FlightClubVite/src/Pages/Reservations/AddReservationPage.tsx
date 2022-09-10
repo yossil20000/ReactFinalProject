@@ -3,9 +3,14 @@ import { Autocomplete, Box, Button, createTheme, Grid, Paper, Stack, styled, Tex
 import { DateTimePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
-import React, { useEffect } from 'react'
-import { IFlightReservationProps } from '../../Interfaces/IFlightReservationProps';
-import {useFetchMembersComboQuery} from '../../features/Users/userSlice'
+import React, { useEffect, useState } from 'react'
+import { IDeviceCombo, IFlightReservationProps } from '../../Interfaces/IFlightReservationProps';
+import { useFetchMembersComboQuery } from '../../features/Users/userSlice'
+import { IMemberCombo } from '../../Interfaces/IFlightReservationProps'
+import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
+import IDevice from '../../Interfaces/API/IDevice';
+
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -17,8 +22,10 @@ const defaultMaterialThem = createTheme({
 
 })
 function AddReservationPage() {
-  let content : any;
-  const {data : membersCombo,isError,isLoading,error} = useFetchMembersComboQuery();
+  let content: any;
+  const { data: membersCombo, isError, isLoading, error } = useFetchMembersComboQuery();
+  const { data: devices, isError: isDeviceError, isLoading: isDeviceLoading, error: deviceError } = useFetchAllDevicesQuery();
+  const [devicesCombo, setDevices] = useState<IDeviceCombo[]>([]);
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
@@ -28,50 +35,63 @@ function AddReservationPage() {
     let newDate = newValue?.toJSDate();
 
   };
-  const device = ["4xcgc", "4xfgh"]
+
   useEffect(() => {
-    console.log("AddReservation", isLoading)
-    if(isLoading) {
-      content = <RenderLoading/>;
+
+    if (isLoading) {
+      content = <RenderLoading />;
       return;
     }
-    if(!isLoading) {
-      content = <RenderLoading/>;
-      return;
-    }
-    if(isError){
+
+    if (isError) {
       content = RenderError()
       return;
     }
-    content = RenderAddReservation();
-  },[membersCombo?.data,isLoading])
-const RenderLoading = () : any => {
-  return (
-    <div>{content}</div>
-  )
-}
-const RenderError = () : any => {
-  return (
-    <div>
-      <div>Error</div>{membersCombo?.errors.map((e) => (<li>{e}</li>))}
-    </div>
-  )
-}
-  const  RenderAddReservation = () : any => {
+    console.log("AddReservation/ membersCombo", membersCombo?.data?.map((i) => console.log(i._id)))
+    if (membersCombo?.data)
+      content = RenderAddReservation({ props: membersCombo?.data });
+  }, [membersCombo?.data])
+  useEffect(() => {
+    let d = devices?.data.map((item) => devicesToDeviceCombo(item));
+    if (d !== undefined)
+      setDevices(d);
+  }, [devices?.data])
+
+  const devicesToDeviceCombo = (input: IDevice): IDeviceCombo => {
+    return { device_id: input.device_id, _id: input._id }
+  }
+  const RenderLoading = (): any => {
+    return (
+      <div>Loading</div>
+    )
+  }
+  const RenderError = (): any => {
+    return (
+      <div>
+        <div>Error</div>{membersCombo?.errors.map((e) => (<li>{e}</li>))}
+      </div>
+    )
+  }
+  const RenderAddReservation = (props: { props: IMemberCombo[] }): any => {
+    const memberCombo = props.props;
+    const handleOnChange = (event: any, newValue: any) => {
+      console.log(event.target);
+      console.log(newValue);
+    }
     return (
       <Grid container sx={{ width: "100%" }} justifyContent="center">
         <Grid item xs={12} >
           <Typography variant='h5' component="div" align='center'>New Reservation</Typography>
         </Grid>
-        <Grid item sx={{marginLeft: "0px"}} xs={12} md={6} xl={6} >
-          <Item sx={{marginLeft: "0px"}}>
+        <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
+          <Item sx={{ marginLeft: "0px" }}>
             <LocalizationProvider dateAdapter={AdapterLuxon}>
               <ThemeProvider theme={defaultMaterialThem}>
-                <DateTimePicker 
+                <DateTimePicker
                   label="From Date"
                   value={new Date()}
                   onChange={handleFromDateFilterChange}
-                  renderInput={(params) => <TextField {...params}  size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft:"0"}} />}
+                  renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                 />
 
               </ThemeProvider>
@@ -98,19 +118,20 @@ const RenderError = () : any => {
           </Item>
 
         </Grid>
-        <Grid item xs={12} md={6} xl={6} sx={{marginLeft: "0px"}}>
+        <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
           <Item>
-            <Autocomplete  
+            <Autocomplete
               freeSolo
               id="free-solo-2-demo"
               disableClearable
-              options={device.map((option) => option)}
-
+              options={devicesCombo}
+              getOptionLabel={option => (option as IDeviceCombo).device_id}
+              onChange={handleOnChange}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
-                  
+
                   size={'small'}
                   label="Device"
                   InputProps={{
@@ -128,8 +149,9 @@ const RenderError = () : any => {
               freeSolo
               id="free-solo-2-demo"
               disableClearable
-              options={device.map((option) => option)}
-
+              options={memberCombo}
+              getOptionLabel={option => `${(option as IMemberCombo).member_id} ${(option as IMemberCombo).family_name}`}
+              onChange={handleOnChange}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -151,7 +173,7 @@ const RenderError = () : any => {
             onClick={() => {
               ;
             }}>
-              
+
             Cancle
           </Button></Item>
         </Grid>
@@ -166,18 +188,18 @@ const RenderError = () : any => {
       </Grid>
     )
   }
-   function Render(){
-    
-    if(isLoading)
-    return <RenderLoading/>
-    return <RenderAddReservation/>
+  function Render() {
+
+    if (isLoading && isDeviceLoading)
+      return <RenderLoading />
+    return <RenderAddReservation props={membersCombo?.data === undefined ? [] : membersCombo?.data} />
 
   }
   return (
     <div className='main' style={{ overflow: 'auto' }}>
-          <Box sx={{ flexGrow: 1 }}>
-        <Render/>
-    </Box>
+      <Box sx={{ flexGrow: 1 }}>
+        <Render />
+      </Box>
     </div>
 
   )

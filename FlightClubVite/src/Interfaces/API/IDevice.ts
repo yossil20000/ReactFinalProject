@@ -26,6 +26,7 @@ export enum DEVICE_INS  {
     AIR_CONDITION
 }
 export default interface IDevice{
+    _id: string
     device_id: string
     device_type: IDeviceType
     description: string
