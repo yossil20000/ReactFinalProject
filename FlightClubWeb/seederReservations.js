@@ -36,7 +36,7 @@ const importData = async (save) => {
         let device_id = i % 2;
         console.log("member_id", member_id ,"device_id",device_id )
 
-        let newReservation = createReservation(members[Number(member_id)], devices[Number(device_id)], new Date(), new Date(2022, 12, 17, i+1, 30, 0));
+        let newReservation = createReservation(members[Number(member_id)], devices[Number(device_id)], new Date(2022, 12, `${16+i}`, i+1, 30, 0), new Date(2022, 12, `${17+i}`, i+1, 30, 0));
 
         console.log("reservation", (newReservation.date_from.getFullYear()));
         if(save)
@@ -61,7 +61,7 @@ const importData = async (save) => {
 }
 
 
-const destroyData = async () => {
+const destroyMembers = async () => {
   try {
     await Member.deleteMany();
     console.log('Data Destroyed!')
@@ -72,8 +72,20 @@ const destroyData = async () => {
   }
 }
 
+
+const destroyReservations = async () => {
+  try {
+    await FlightReservation.deleteMany();
+    console.log('Data FlightReservation Destroyed!')
+    process.exit()
+  } catch (error) {
+    console.error(`${error}`)
+    process.exit(1)
+  }
+}
+
 if (process.argv[2] === '-d') {
-  destroyData()
+  destroyReservations()
 } else if (process.argv[2] === '-s') {
   console.log("Demo")
   importData(true)

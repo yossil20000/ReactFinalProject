@@ -5,6 +5,7 @@ import IClubNotice from "../../Interfaces/API/IClubNotice";
 import IMember from "../../Interfaces/API/IMember";
 import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
+import { IMemberCombo } from "../../Interfaces/IFlightReservationProps";
 
 
 interface Role {
@@ -63,7 +64,7 @@ export const apiSlice = createApi({
         baseUrl: URLS.BACKEND_URL,
         prepareHeaders: (headers, { getState }) => {
             // By default, if we have a token in the store, let's use that for authenticated requests
-            const token = (getState() as RootState).authSlice.access_token
+            const token : string = (getState() as RootState).authSlice.access_token
             if (token) {
               headers.set('authorization', `Bearer ${token}`)
             }
@@ -114,11 +115,25 @@ export const apiSlice = createApi({
 
                 }),
                 invalidatesTags: ["Members"]
+            }),
+            fetchMembersCombo : builder.query<IResultBase<IMemberCombo>,void>({
+                query: () => ({
+                    url: `/${URLS.MEMBERS}`,
+                    method: "GET"
+                })
             })
         }
     }
 });
 
-export const { useFetchAllClubNoticeQuery, useFetcAllMembersQuery,useGetMemberByIdQuery, useDeleteMemberMutation, useCreateMemberMutation,useUpdateMemberMutation } = apiSlice
+export const { 
+    useFetchAllClubNoticeQuery,
+    useFetcAllMembersQuery,
+    useGetMemberByIdQuery,
+    useDeleteMemberMutation, 
+    useCreateMemberMutation,
+    useUpdateMemberMutation,
+    useFetchMembersComboQuery
+ } = apiSlice
 
 

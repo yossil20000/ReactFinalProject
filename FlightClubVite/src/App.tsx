@@ -34,7 +34,7 @@ function App() {
             }
         }
         dispatch(setCredentials(login_info as ILoginResult));
-    }, [])
+    },[])
     return (
         <BrowserRouter>
             <div className='yl__container'>

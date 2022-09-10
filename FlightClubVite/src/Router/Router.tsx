@@ -9,6 +9,7 @@ import ResetPage from '../Pages/Login/ResetPage'
 import MembersPage from '../Pages/Members/MembersPage'
 import MembersTablePage from '../Pages/Members/MembersTablePage'
 import ProfilePage from '../Pages/Profile/ProfilePage'
+import AddReservationPage from '../Pages/Reservations/AddReservationPage'
 import ReservationsPage from '../Pages/Reservations/ReservationsPage'
 import RegistrationPage from '../Pages/Resistration/RegistrationPage'
 import { ROUTES } from '../Types/Urls'
@@ -20,6 +21,7 @@ export function PagesRouter() {
     <Routes>
         <Route path="/home" element={<HomePage></HomePage>} />
         <Route path="/reservations" element={<ReservationsPage></ReservationsPage>}/>
+        <Route path="/reservationsadd" element={<AddReservationPage></AddReservationPage>}/>
         <Route path="/login" element={<LoginPage></LoginPage>}/>
         <Route path="/logout" element={<LogoutPage></LogoutPage>}/>
         <Route path="/reset" element={<ResetPage></ResetPage>}/>

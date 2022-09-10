@@ -1,4 +1,4 @@
-import { Box, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
 import { useEffect, useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
@@ -8,6 +8,7 @@ import { useUpdateMemberMutation } from '../../features/Users/userSlice'
 import { useNavigate } from 'react-router-dom';
 import { URLS } from '../../Enums/Routers';
 import { ROUTES } from '../../Types/Urls';
+import { green } from '@mui/material/colors';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -19,11 +20,11 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageNavigate) {
-const navigate = useNavigate();
+    const navigate = useNavigate();
     const [updateMember, { isError, isLoading, isSuccess, error }] = useUpdateMemberMutation();
     const onSaveProfileHandler = async () => {
         console.log("onSaveProfileHandler", formData);
-           await updateMember(formData); 
+        await updateMember(formData);
 
     }
     useEffect(() => {
@@ -37,11 +38,45 @@ const navigate = useNavigate();
         }
 
     }, [isLoading])
+    
+    const buttonSx = {
+        ...(isSuccess && {
+          bgcolor: green[500],
+          '&:hover': {
+            bgcolor: green[700],
+          },
+        }),
+      };
+    
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Item><button onClick={onSaveProfileHandler}>
+                    <Item>
+                    <Box sx={{ m: 1, position: 'relative' }}>
+                            <Button
+                                variant="contained"
+                                sx={buttonSx}
+                                disabled={isLoading}
+                                onClick={onSaveProfileHandler}
+                            >
+                                Save
+                            </Button>
+                            {isLoading && (
+                                <CircularProgress
+                                    size={24}
+                                    sx={{
+                                        color: green[500],
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        marginTop: '-12px',
+                                        marginLeft: '-12px',
+                                    }}
+                                />
+                            )}
+                        </Box>
+                        <button onClick={onSaveProfileHandler}>
                         Save
                     </button></Item>
                 </Grid>
@@ -54,12 +89,15 @@ const navigate = useNavigate();
                     </button></Item>
                 </Grid>
                 <Grid item xs={6}>
-                    <Item><button
-                        onClick={() => {
-                            setPage(page + 1 == numPage ? 0 : page + 1);
-                        }}>
-                        Next
-                    </button></Item>
+                    <Item>
+                        <button
+
+                            onClick={() => {
+                                setPage(page + 1 == numPage ? 0 : page + 1);
+                            }}>
+                            Next
+                        </button>
+                    </Item>
                 </Grid>
 
             </Grid>

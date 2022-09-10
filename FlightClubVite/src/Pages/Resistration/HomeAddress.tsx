@@ -26,7 +26,7 @@ function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavi
  
   return (
     <Box sx={{ flexGrow: 1 }}>
-    <Grid container spacing={2}>
+    <Grid container spacing={2} >
     <Grid item xs={12}>
         <Typography variant="h5" component="div" align='center'>
         Home Address

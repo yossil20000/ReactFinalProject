@@ -56,7 +56,7 @@ function ProfilePage() {
     }
   }
   const login = useAppSelector((state) => state.authSlice);
-  const { data: member, isFetching } = useGetMemberByIdQuery(login.member._id);
+  const { data: member, isError,isLoading,isSuccess,error } = useGetMemberByIdQuery(login.member._id);
 
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberInfo>(initialForm);
@@ -69,7 +69,7 @@ function ProfilePage() {
     <SubmitProfile numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />
   ]
 
-
+let content;
   useEffect(() => {
 
     if (member?.data) {

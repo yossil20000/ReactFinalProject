@@ -20,6 +20,7 @@ export const reservationApiSlice = createApi({
     }),
     endpoints(builder) {
         return{
+            
             fetchAllReservations: builder.query<IResultBase<IReservation>, void>({
                 query(){return `/${URLS.RESERVATION}`}
             }),

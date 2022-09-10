@@ -52,6 +52,29 @@ exports.member_delete = function (req, res, next) {
         }
     });
 }
+exports.member_active = function (req, res, next) {
+    log.info(`member_delete`);
+    async.parallel({
+        member: function (callback) {
+            Member.findById(req.params.memberId).exec(callback);
+        }
+       
+    }, function (err, results) {
+        if (err) { return next(err); }
+       if(results)
+       {
+            results.status = "Suspended";
+            results.save(function(err) {
+                if(err){
+                    res.status(401).json({ success: false, errors: [err], data: [] });
+                }
+                else{
+                    res.status(201).json({ success: true, errors: [], data: results });
+                }
+            })
+       }
+    });
+}
 exports.member_update = [
     body('_id').trim().isLength({ min: 1 }).escape().withMessage('_id must be specified'),
     body('member_id').trim().isLength({ min: 1 }).escape().withMessage('member_id must be specified'),
@@ -132,7 +155,7 @@ exports.member_create = [
                             mail.SendMail(user.contact.email, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
                             .then((result) => {
                                 console.log("Send Mail to:", user.contact.email);
-                                res.status(201).json({ success: true, errors: [result], message: "You Initial passwors was sent to your mail" , data: member })
+                                res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail" , data: member })
                             }).catch((err => {
                                 res.status(401).json({ success: false, errors: [err],  message: "Failed To send Initial passwors to your mail" , data: member })
                             }));

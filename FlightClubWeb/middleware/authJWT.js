@@ -26,11 +26,11 @@ const authenticate = (req, res, next) => {
     if (req.headers && req.headers.authorization) {
         const token = req.headers.authorization.replace('Bearer ', '');
         console.log(req.headers.authorization, 'req.headers.authorization');
-        console.log(token, 'token');
+        console.log(token, 'authenticate token');
         JWT.verify(token, process.env.JWT_SECRET, function (err, decode) {
             console.log("decode", decode);
             if (err) {
-                console.log("verify", err);
+                console.log("authenticate verify", err);
                 res.status(403).json({ success: false, errors: [err], message: "In Valid Authorization" , data: [] });
             }
             else {
@@ -38,7 +38,7 @@ const authenticate = (req, res, next) => {
                 Member.findById(decode.userId)
                     .exec((err, user) => {
                         if (err) {
-                            console.log("findOne error:", err);
+                            console.log("authenticate findOne error:", err);
                             res.status(400).json({ success: false, errors: [err], message: "" , data: [] });
                         }
                         else {
@@ -51,7 +51,7 @@ const authenticate = (req, res, next) => {
         })
     }
     else {
-        console.log("Verify not enter")
+        console.log("authenticate Verify not enter")
         req.user = undefined;
         res.status(403).json({ success: false, errors: [err], message: "UnAthurized" , data: [] });
     }

@@ -23,15 +23,18 @@ import { useFetchAllReservationsQuery } from '../../features/Reservations/reserv
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
 import SplitedButton, { ISplitButtonProps } from '../../Components/Buttons/SplitedButton';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { is } from 'immer/dist/internal';
 import { DateTime } from 'luxon';
-const todayDate = new Date(2023,0,17);
+import { ILoginResult } from "../../Interfaces/API/ILogin.js";
+import AddReservationPage from "./AddReservationPage.js";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../Types/Urls.js";
+const todayDate = new Date(2023, 0, 17);
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
   device_name: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
@@ -39,7 +42,7 @@ interface ItableData {
 
 function createdata(_id_reservaion: string, _id_member: string, member_id: string,
   name: string, device_name: string, date_from: Date, date_to: Date, validOperation: CanDo): ItableData {
-  return { _id_reservaion, _id_member, member_id, name: name, device_name,date_from : new Date( date_from), date_to : new Date(date_to), validOperation } as ItableData
+  return { _id_reservaion, _id_member, member_id, name: name, device_name, date_from: new Date(date_from), date_to: new Date(date_to), validOperation } as ItableData
 }
 
 
@@ -87,6 +90,7 @@ interface IEnhancedTableHeadProps {
   orderBy: string;
 }
 function EnhancedTableHead(props: IEnhancedTableHeadProps) {
+  const navigate = useNavigate();
   const { order, orderBy, onRequestSort } =
     props;
   const createSortHandler = (property: keyof ItableData) => (event: React.MouseEvent<unknown>) => {
@@ -120,6 +124,9 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 
         </TableCell>
         <TableCell>
+          <Button onClick={() => navigate(`/${ROUTES.RESERVATION_ADD}`)} >Add</Button>
+        </TableCell>
+        <TableCell>
 
         </TableCell>
       </TableRow>
@@ -142,17 +149,17 @@ const defaultMaterialThem = createTheme({
 
 })
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { isByDateRange ,OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
+  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
   console.log("isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
     if (newDate && toDateFilter && newDate <= toDateFilter)
-      setFromDateFilter(new Date(newDate.getFullYear(), newDate.getMonth() , newDate.getDate(),0,0,0));
+      setFromDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0));
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
     if (newDate && fromDateFilter && newDate >= fromDateFilter)
-      setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth() , newDate.getDate(), 23,59,59));
+      setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59));
   };
   const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange", "All"];
 
@@ -251,13 +258,14 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 function ReservationsPage() {
-  
-  const login = useAppSelector((state) => state.authSlice);
-  const { data: reservations, isFetching } = useFetchAllReservationsQuery();
+
+  const login: ILoginResult = useAppSelector((state) => state.authSlice);
+  const { data: reservations, isError, isLoading, isSuccess, error } = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
   const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
   const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(1));
   const [isByDateRange, setIsByDateRange] = useState(false);
+
 
   console.log("ReservationsPage", reservations?.data)
 
@@ -293,7 +301,7 @@ function ReservationsPage() {
     else
       setIsByDateRange(false);
     setFilterByDate(selectedIndex);
-    console.log("handleFilterClick", selectedIndex , isByDateRange);
+    console.log("handleFilterClick", selectedIndex, isByDateRange);
     return selectedIndex;
   }
   const handleFilterOwner = () => {
@@ -335,26 +343,24 @@ function ReservationsPage() {
       setExpanded(newExpanded ? panel : false);
     };
 
-const isInDateRange = (row : ItableData) : boolean => {
-   
-  switch(filterBydate)
-  
-    {
+  const isInDateRange = (row: ItableData): boolean => {
+
+    switch (filterBydate) {
       case 0:
         return row.date_from.isSameDate(todayDate);
         break;
       case 1:
-        return  row.date_from.getWeek() == todayDate.getWeek();
+        return row.date_from.getWeek() == todayDate.getWeek();
         break;
-        case 2:
-          return row.date_from.isSameMonth(todayDate);
-        case 3:
-          if(fromDateFilter && toDateFilter)
-            return  row.date_from >= fromDateFilter &&  row.date_from <= toDateFilter 
-          break;
+      case 2:
+        return row.date_from.isSameMonth(todayDate);
+      case 3:
+        if (fromDateFilter && toDateFilter)
+          return row.date_from >= fromDateFilter && row.date_from <= toDateFilter
+        break;
     }
     return true;
-}
+  }
 
 
 
@@ -362,6 +368,7 @@ const isInDateRange = (row : ItableData) : boolean => {
     <div className='main' style={{ overflow: 'auto' }}>
 
       <MediaQuery minWidth={768}>
+      
         {rows ? (
           <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
@@ -386,13 +393,14 @@ const isInDateRange = (row : ItableData) : boolean => {
                     orderBy={orderBy}
                     onRequestSort={handleRequestSort}
                   />
+                  
                   <TableBody>
                     {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                      rows.slice().sort(getComparator(order, orderBy)) */}
 
                     {rows.filter((r) => {
 
-                     if(!isInDateRange(r)) return false;
+                      if (!isInDateRange(r)) return false;
                       if (!isFilterOwner) return true
                       if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
                       return false;
@@ -471,11 +479,11 @@ const isInDateRange = (row : ItableData) : boolean => {
             {
               rows.filter((r) => {
 
-                if(!isInDateRange(r)) return false;
-                 if (!isFilterOwner) return true
-                 if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
-                 return false;
-               })
+                if (!isInDateRange(r)) return false;
+                if (!isFilterOwner) return true
+                if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                return false;
+              })
                 .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: ItableData, index: number) => {
                   return (
