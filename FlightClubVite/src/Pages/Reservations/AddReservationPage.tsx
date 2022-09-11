@@ -1,4 +1,4 @@
-import { Margin } from '@mui/icons-material';
+import { Margin, NestCamWiredStandTwoTone } from '@mui/icons-material';
 import { Autocomplete, Box, Button, createTheme, Grid, Paper, Stack, styled, TextField, ThemeProvider, Typography } from '@mui/material'
 import { DateTimePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
@@ -9,7 +9,9 @@ import { useFetchMembersComboQuery } from '../../features/Users/userSlice'
 import { IMemberCombo } from '../../Interfaces/IFlightReservationProps'
 import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
 import IDevice from '../../Interfaces/API/IDevice';
-
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../Types/Urls';
+import IReservation, { IReservationCreate } from '../../Interfaces/API/IReservation';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -26,15 +28,50 @@ function AddReservationPage() {
   const { data: membersCombo, isError, isLoading, error } = useFetchMembersComboQuery();
   const { data: devices, isError: isDeviceError, isLoading: isDeviceLoading, error: deviceError } = useFetchAllDevicesQuery();
   const [devicesCombo, setDevices] = useState<IDeviceCombo[]>([]);
-
+const [selectedDevice,setSelectedDevice] = useState<IDeviceCombo>();
+const [selectedMember,setSelectedMember] = useState<IMemberCombo>();
+  let initialReservation : IReservationCreate = {
+    date_from: new Date(),
+    date_to: new Date(),
+    member: undefined,
+    device: undefined
+  }
+  const [reservation,setReservation] = useState<IReservationCreate>(initialReservation);
+  const navigate = useNavigate();
+  const handleOnCancel =() => {
+    
+    navigate(`/${ROUTES.RESERVATION}`)
+  }
+  const handleOnSave =() => {
+    console.log("navigate(`/${ROUTES.RESERVATION}`)")
+    console.log("Save/reservation", reservation)
+    /* navigate(`/${ROUTES.RESERVATION}`) */
+  }
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
-
+    setReservation(prev => ({...prev,date_from: newDate}))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate();
-
+    let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    setReservation(prev => ({...prev,date_to: newDate}))
   };
+  const handleMemberOnChange = (event: any, newValue: any) => {
+    console.log("Reservation",reservation);
+    console.log("member/target",event.target);
+    console.log("Member/newValue",newValue);
+    
+    setReservation(prev => ({...prev,member: {_id:newValue._id, member_id: newValue.member_id,family_name: newValue.family_name, first_name: newValue.first_name}}))
+    setSelectedMember(newValue);
+    
+  }
+  const handleDeviceOnChange = (event: any, newValue: any) => {
+    console.log("Reservation",reservation);
+    console.log(event.target);
+    console.log(newValue);
+    
+    setReservation(prev => ({...prev,device: {_id:newValue._id, device_id: newValue.device_id}}))
+    setSelectedDevice(newValue);
+  }
 
   useEffect(() => {
 
@@ -72,12 +109,10 @@ function AddReservationPage() {
       </div>
     )
   }
-  const RenderAddReservation = (props: { props: IMemberCombo[] }): any => {
+  function RenderAddReservation (props: { props: IMemberCombo[] }): any  {
     const memberCombo = props.props;
-    const handleOnChange = (event: any, newValue: any) => {
-      console.log(event.target);
-      console.log(newValue);
-    }
+    
+
     return (
       <Grid container sx={{ width: "100%" }} justifyContent="center">
         <Grid item xs={12} >
@@ -89,7 +124,7 @@ function AddReservationPage() {
               <ThemeProvider theme={defaultMaterialThem}>
                 <DateTimePicker
                   label="From Date"
-                  value={new Date()}
+                  value={reservation.date_from}
                   onChange={handleFromDateFilterChange}
                   renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                 />
@@ -106,9 +141,9 @@ function AddReservationPage() {
               <ThemeProvider theme={defaultMaterialThem}>
                 <DateTimePicker
 
-                  label="From Date"
-                  value={new Date()}
-                  onChange={handleFromDateFilterChange}
+                  label="To Date"
+                  value={reservation.date_to}
+                  onChange={handleToDateFilterChange}
                   renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
                 />
 
@@ -126,7 +161,8 @@ function AddReservationPage() {
               disableClearable
               options={devicesCombo}
               getOptionLabel={option => (option as IDeviceCombo).device_id}
-              onChange={handleOnChange}
+              value={selectedDevice}
+              onChange={handleDeviceOnChange}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -151,7 +187,8 @@ function AddReservationPage() {
               disableClearable
               options={memberCombo}
               getOptionLabel={option => `${(option as IMemberCombo).member_id} ${(option as IMemberCombo).family_name}`}
-              onChange={handleOnChange}
+              value={selectedMember}
+              onChange={handleMemberOnChange}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -170,18 +207,14 @@ function AddReservationPage() {
         </Grid>
         <Grid item xs={12} md={6} xl={6}>
           <Item><Button variant="outlined" sx={{ width: "100%" }}
-            onClick={() => {
-              ;
-            }}>
+            onClick={handleOnCancel}>
 
             Cancle
           </Button></Item>
         </Grid>
         <Grid item xs={12} md={6} xl={6}>
           <Item><Button variant="outlined" sx={{ width: "100%" }}
-            onClick={() => {
-
-            }}>
+            onClick={handleOnSave}>
             Save
           </Button></Item>
         </Grid>

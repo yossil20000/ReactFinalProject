@@ -1,3 +1,4 @@
+import { IDeviceCombo, IMemberCombo } from "../IFlightReservationProps"
 import IDevice from "./IDevice"
 import IMember from "./IMember"
 
@@ -23,8 +24,8 @@ export interface IReservationUpdate{
     _id:string;
 }
 export interface IReservationCreate{
-    date_from: Date;
+    date_from: Date | undefined;
     date_to:Date;
-    member_id: string;
-    device_id:string;
+    member: IMemberCombo | undefined;
+    device:IDeviceCombo | undefined;
 }
