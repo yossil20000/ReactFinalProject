@@ -168,13 +168,13 @@ function createMemberships(cb){
 function createMembers(cb) {
     async.series([
         function (callback) {
-            memberCreate("Yosef", "Levy", "1965-08-21", "2011-11-01", "059828392","yos1@gmail.com", "password1",memberships[0], callback);
+            memberCreate("Yosef", "Levy", "1965-08-21", "2011-11-01", "159828392","yos.1965@gmail.com", "password1",memberships[0], callback);
         },
         function (callback) {
-            memberCreate("Giora", "Yahel", "1966-09-22", "2012-12-02", "259828392", 'yos2@gmail.com',"password2", memberships[1],callback);
+            memberCreate("Sting", "TV", "1966-09-22", "2012-12-02", "259828392", 'stingTV2010300@gmail.com',"password2", memberships[1],callback);
         },
         function (callback) {
-            memberCreate("Giora", "Yahel", "1966-09-22", "2012-12-02", "359828392", 'yos.1965@gmail.com',"password2", memberships[1],callback);
+            memberCreate("Pilot", "Pilot", "1966-09-22", "2012-12-02", "359828392", 'tyy130500@gmail.com',"password2", memberships[1],callback);
         }
     ],
         cb

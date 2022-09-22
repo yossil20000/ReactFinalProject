@@ -160,16 +160,16 @@ exports.reservation_create = [
 			return res.status(401).json({success: false, errors : errors, data: req.body});
 		}
 		let newReservation = new FlightReservation({
-			data_from: req.body.date_from,
-			date_to: req.body.date_to,
+			data_from: req.body.date_from.toUTCString(),
+			date_to: req.body.date_to.toUTCString(),
 			member: req.body.member_id,
 			device: req.body.device_id
 		});
 		newReservation.save(err => {
 			if(err) {return res.status(500).json({success: false, errors : [err], data: []});}
 		});
-		results.device.flights.push(newReservation);
-		results.member.flights.push(newReservation);
+		results.device.flight_reservs.push(newReservation);
+		results.member.flight_reservs.push(newReservation);
 		results.device.save(err => {
 			if(err) {return res.status(500).json({success: false, errors : [err], data: []});}
 		});

@@ -45,6 +45,7 @@ const [selectedMember,setSelectedMember] = useState<IMemberCombo>();
   const handleOnSave =() => {
     console.log("navigate(`/${ROUTES.RESERVATION}`)")
     console.log("Save/reservation", reservation)
+    console.log("Save/reservation", reservation.date_from?.toUTCString())
     /* navigate(`/${ROUTES.RESERVATION}`) */
   }
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
