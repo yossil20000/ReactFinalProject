@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor";
 import { URLS } from "../../Enums/Routers";
-import IReservation, { IReservationCreate, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation";
+import IReservation, { IReservationCreate, IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 
 
@@ -17,12 +17,18 @@ export const reservationApiSlice = createApi({
             }
             return headers
           },
+
     }),
+    tagTypes:["Reservation"],
+    refetchOnFocus: true,
     endpoints(builder) {
         return{
             
             fetchAllReservations: builder.query<IResultBase<IReservation>, void>({
-                query(){return `/${URLS.RESERVATION}`}
+                query: () => ({
+                    url: `/${URLS.RESERVATION}`
+                }),
+                providesTags: ["Reservation"]
             }),
             deleteReservation: builder.mutation<IResultBaseSingle<IReservation>,IReservationDelete>({
                 query: (reservationDelete) => ({
@@ -30,15 +36,17 @@ export const reservationApiSlice = createApi({
                     method: "DELETE",
                     body: reservationDelete
 
-                })
+                }),
+                invalidatesTags: ["Reservation"]
             }),
-            createReservation: builder.mutation<IResultBaseSingle<IReservation>,IReservationCreate>({
+            createReservation: builder.mutation<IResultBaseSingle<IReservation>,IReservationCreateApi>({
                 query: (reservationCreate) => ({
                     url: `/${URLS.RESERVATION_CREATE}`,
                     method: "POST",
                     body: reservationCreate
 
-                })
+                }),
+                invalidatesTags: ["Reservation"]
             }),
             updateReservation: builder.mutation<IResultBaseSingle<IReservation>,IReservationUpdate>({
                 query: (RESERVATION_UPDATE) => ({
@@ -46,7 +54,8 @@ export const reservationApiSlice = createApi({
                     method: "PUT",
                     body: RESERVATION_UPDATE
 
-                })
+                }),
+                invalidatesTags: ["Reservation"]
             })
             
 

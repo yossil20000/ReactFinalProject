@@ -8,10 +8,11 @@ import { IDeviceCombo, IFlightReservationProps } from '../../Interfaces/IFlightR
 import { useFetchMembersComboQuery } from '../../features/Users/userSlice'
 import { IMemberCombo } from '../../Interfaces/IFlightReservationProps'
 import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
+import {useDeleteReservationMutation, useCreateReservationMutation, useFetchAllReservationsQuery} from '../../features/Reservations/reservationsApiSlice'
 import IDevice from '../../Interfaces/API/IDevice';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
-import IReservation, { IReservationCreate } from '../../Interfaces/API/IReservation';
+import IReservation, { CreateReservationToApi, IReservationCreate } from '../../Interfaces/API/IReservation';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -25,6 +26,8 @@ const defaultMaterialThem = createTheme({
 })
 function AddReservationPage() {
   let content: any;
+  const [createReservation  ] = useCreateReservationMutation();
+  const { refetch} = useFetchAllReservationsQuery();
   const { data: membersCombo, isError, isLoading, error } = useFetchMembersComboQuery();
   const { data: devices, isError: isDeviceError, isLoading: isDeviceLoading, error: deviceError } = useFetchAllDevicesQuery();
   const [devicesCombo, setDevices] = useState<IDeviceCombo[]>([]);
@@ -42,11 +45,15 @@ const [selectedMember,setSelectedMember] = useState<IMemberCombo>();
     
     navigate(`/${ROUTES.RESERVATION}`)
   }
-  const handleOnSave =() => {
+  const handleOnSave = async () => {
     console.log("navigate(`/${ROUTES.RESERVATION}`)")
     console.log("Save/reservation", reservation)
     console.log("Save/reservation", reservation.date_from?.toUTCString())
-    /* navigate(`/${ROUTES.RESERVATION}`) */
+    
+    const payload = await createReservation(CreateReservationToApi(reservation));
+ console.log("createReservation", payload);
+    refetch();
+    navigate(`/${ROUTES.RESERVATION}`) 
   }
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();

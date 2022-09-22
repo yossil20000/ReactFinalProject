@@ -19,7 +19,7 @@ import MuiAccordionSummary, {
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
 
-import { useFetchAllReservationsQuery } from '../../features/Reservations/reservationsApiSlice';
+import { useFetchAllReservationsQuery,useDeleteReservationMutation } from '../../features/Reservations/reservationsApiSlice';
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
 import SplitedButton, { ISplitButtonProps } from '../../Components/Buttons/SplitedButton';
@@ -34,7 +34,8 @@ import { ILoginResult } from "../../Interfaces/API/ILogin.js";
 import AddReservationPage from "./AddReservationPage.js";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../Types/Urls.js";
-const todayDate = new Date(2023, 0, 17);
+import { IReservationDelete } from "../../Interfaces/API/IReservation.js";
+const todayDate = new Date();
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
   device_name: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
@@ -260,12 +261,12 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 function ReservationsPage() {
 
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { data: reservations, isError, isLoading, isSuccess, error } = useFetchAllReservationsQuery();
+  const { data: reservations, isError, isLoading, isSuccess, error ,refetch} = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
   const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
   const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(1));
   const [isByDateRange, setIsByDateRange] = useState(false);
-
+  const [DeleteReservation] = useDeleteReservationMutation();
 
   console.log("ReservationsPage", reservations?.data)
 
@@ -292,7 +293,7 @@ function ReservationsPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
   const [filterBydate, setFilterByDate] = useState(0);
-
+  
 
   const handleFilterClick = (selectedIndex: number): number => {
     console.log("handleFilterClick", selectedIndex);
@@ -361,7 +362,22 @@ function ReservationsPage() {
     }
     return true;
   }
-
+  const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
+    const reservationDelete : IReservationDelete = {
+      _id: _id
+    }
+    console.log("Delete /",_id);
+    try{
+      const payload = await DeleteReservation(reservationDelete)
+      .unwrap()
+      .then((payload) => {
+        console.log("DeleteReservation Fullfill", payload)
+      });
+    }
+    catch(err){
+      console.log("DeleteReservation/err", err)
+    }
+  }
 
 
   return (
@@ -421,7 +437,7 @@ function ReservationsPage() {
                             <TableCell align="left">{row.name}</TableCell>
                             <TableCell align="left">{row.member_id}</TableCell>
                             <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button>Edit</Button> : null}</TableCell>
-                            <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button>Delete</Button> : null}</TableCell>
+                            <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
                           </TableRow>
                         );
                       })}

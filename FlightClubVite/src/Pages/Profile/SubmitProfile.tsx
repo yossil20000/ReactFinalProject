@@ -24,8 +24,8 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageN
     const [updateMember, { isError, isLoading, isSuccess, error }] = useUpdateMemberMutation();
     const onSaveProfileHandler = async () => {
         console.log("onSaveProfileHandler", formData);
-        await updateMember(formData);
-
+        const payload = await updateMember(formData).unwrap();
+        console.log("useUpdateMemberMutation", payload)
     }
     useEffect(() => {
         if (isError) {

@@ -14,8 +14,7 @@ export default interface IReservation{
     device: IDevice
 }
 export interface IReservationDelete{
-    member_id: string;
-    device_id:string;
+
     _id:string;
 }
 export interface IReservationUpdate{
@@ -29,3 +28,22 @@ export interface IReservationCreate{
     member: IMemberCombo | undefined;
     device:IDeviceCombo | undefined;
 }
+
+export interface IReservationCreateApi{
+    date_from: Date | undefined;
+    date_to:Date;
+    member_id: string;
+    device_id:string;
+}
+
+export function CreateReservationToApi (reservation : IReservationCreate) : IReservationCreateApi  {
+ let reservationApi : IReservationCreateApi = {
+     date_from: reservation.date_from,
+     date_to: reservation.date_to,
+     member_id: reservation.member?._id ?? "",
+     device_id: reservation.device?._id ?? ""
+ };
+ 
+ return reservationApi;
+}
+
