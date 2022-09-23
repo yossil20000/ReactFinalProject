@@ -372,6 +372,7 @@ function ReservationsPage() {
       .unwrap()
       .then((payload) => {
         console.log("DeleteReservation Fullfill", payload)
+        refetch();
       });
     }
     catch(err){
