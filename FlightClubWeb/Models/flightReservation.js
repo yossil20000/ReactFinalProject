@@ -26,4 +26,12 @@ FlightReservationSchema
     return '/reservation/'+this._id;
 });
 
+FlightReservationSchema.pre('remove', async function(next){
+    await this.model('Member').updateMany(
+        {flight_reservs: this._id},
+        {$pull: {flight_reservs: this._id}},
+        {multi: true},
+        next
+    )
+});
 module.exports = mongoose.model('FlightReservation', FlightReservationSchema);

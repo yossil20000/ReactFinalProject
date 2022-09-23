@@ -80,33 +80,46 @@ exports.reservation_delete= function(req,res,next){
 		if(!errors.isEmpty()) {
 			return res.status(401).json({success: false, errors : errors, data: []});
 		};
-		async.parallel({
-			member_delete_flight: function(callback){
-				Member.findOneAndUpdate(req.body.member_id,{$pull: {flight_reservs: req.body._id}}).exec(callback);
-			},
-			device_delete_flight: function(callback){
-				Device.findById(req.body.device_id)
-				.updateOne({$pull: {flight_reservs: req.body._id}})
-				.exec(callback);
-			}
-
-		}, function(err,results){
+		console.log("reservation_delete/id" , req.body);
+		const flight2delete =  FlightReservation.findById(req.body._id,(err,doc) => {
 			if(err){
-				res.status(401).json({success: false, errors:[err], data: results});		
+				console.log("FlightReservation.findById/err", err);
+				res.status(401).json({success: false, errors:[err], data: results});
 				return;
 			}
-			else{
-				FlightReservation.findByIdAndDelete(req.body._id, (err,doc) => {
+			if(doc){
+				console.log("FlightReservation.findById/doc", doc)
+				async.parallel({
+					member_delete_flight: function(callback){
+						Member.findOneAndUpdate(doc.member._id,{$pull: {flight_reservs: doc._id}}).exec(callback);
+					},
+					device_delete_flight: function(callback){
+						Device.findById(doc.device._id)
+						.updateOne({$pull: {flight_reservs: doc._id}})
+						.exec(callback);
+					}
+		
+				}, function(err,results){
 					if(err){
-						res.status(401).json({success: false, errors:[err], data: doc});
+						res.status(401).json({success: false, errors:[err], data: results});		
+						return;
 					}
 					else{
-						res.status(201).json({success: true, errors:[err], data: doc});
+						FlightReservation.findByIdAndDelete(req.body._id, (err,doc) => {
+							if(err){
+								res.status(401).json({success: false, errors:[err], data: doc});
+							}
+							else{
+								res.status(201).json({success: true, errors:["delete"], data: doc});
+							}
+							return;
+						})
 					}
-					return;
-				})
+				});
 			}
 		});
+		console.log("FlightReservation.flight2delete", flight2delete)
+
 		
 		
 		
@@ -212,3 +225,4 @@ exports.reservation_update = [
 		}
 	}
 ];
+
