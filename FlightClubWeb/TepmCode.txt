@@ -1,0 +1,85 @@
+exports.reservation_create = [
+	
+	body('device_id').trim().isLength({min:1}).escape().withMessage('device_id must be valid'),
+	body('member_id').trim().isLength({min:1}).escape().withMessage('member_id must be valid'),
+	body('date_from','Invalid date_from').trim().isISO8601().toDate(),
+	body('date_to','Invalid date_to').trim().isISO8601().toDate(),
+	body('date_to','date_to must be greater then date_from').trim().isISO8601().toDate()
+	.custom((value,{req}) => {
+			if((value -  req.body.date_from) > 0) return true;
+			return false;
+	}),
+	
+	(req,res,next) => {
+		log.info(req.body);
+		(
+			async () => {
+				  FlightReservation.find({"date_to": {$lte : "2022-09-24T07:06:34.000Z"}}).exec(function (err,record)  {
+					if(err){
+						log.error("FindSameFlight/err",err);
+					}
+					if(record){
+						log.info("FindSameFlight/record",record);
+					}
+				})
+				const found = await FlightReservation.find({"date_to": {$lte : "2022-09-23T07:06:34.000Z"}});
+				log.info("FindSameFlight/found", found)
+			}
+		)
+		
+		async.parallel({
+			member: function(callback){
+			Member.findById(req.body.member_id).exec(callback)
+		},
+		device: function(callback){
+			Device.findById(req.body.device_id).exec(callback)
+		},
+		founded: function(callback){
+			FlightReservation.find({"date_to": {$lte : Date.parse( req.body.date_from.toUTCString())}}).exec(callback)
+		}
+	}, 
+	function(err, results){
+		if(err) { return next(err);}
+		if(results.member == null || results.device == null)
+		{
+			
+			res.status(401).json({success: false, errors : ["Member or Device Not Exist"], data: results});
+			return;
+		}
+		log.info("parallael", results.founded);
+		
+		const errors = validationResult(req);
+		if(!errors.isEmpty())
+		{
+			return res.status(401).json({success: false, errors : errors, data: req.body});
+		}
+		let newReservation = new FlightReservation({
+			data_from: req.body.date_from.toUTCString(),
+			date_to: req.body.date_to.toUTCString(),
+			member: req.body.member_id,
+			device: req.body.device_id
+		});
+		log.info("newReservation", newReservation._doc);
+	
+		
+		log.info("FindSameFlight/finised");
+		newReservation.save(err => {
+			if(err) {return res.status(500).json({success: false, errors : [err], data: []});}
+		});
+		results.device.flight_reservs.push(newReservation);
+		results.member.flight_reservs.push(newReservation);
+		results.device.save(err => {
+			if(err) {return res.status(500).json({success: false, errors : [err], data: []});}
+		});
+		results.member.save(err => {
+			if(err) {return res.status(500).json({success: false, errors : [err], data: []});}
+		});
+		res.status(201).json({success: true, errors : ["Created"], data: newReservation});
+		return;
+	}
+	)
+	}
+
+
+
+];

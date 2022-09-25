@@ -27,10 +27,10 @@ FlightReservationSchema
 });
 
 FlightReservationSchema.pre('remove', async function(next){
-    await this.model('Member').updateMany(
+    await this.model('Member').updateOne(
         {flight_reservs: this._id},
         {$pull: {flight_reservs: this._id}},
-        {multi: true},
+       
         next
     )
 });
