@@ -189,17 +189,18 @@ exports.reservation_create = async function(req,res,next) {
 			device: req.body.device_id
 		});
 		log.info("newReservation", newReservation._doc);
-		const found = await FlightReservation.find({ $and: [
+		const found = await FlightReservation.findOne({ $and: [
 			{device: newReservation.device},
 			{$or:[
 				{$and:[{data_from : {$lte: newReservation._doc.date_to}},{date_to: {$gte: newReservation._doc.date_to}}]},
 				{$and:[{data_from : {$lte: newReservation._doc.date_from}},{date_to: {$gte: newReservation._doc.date_from}}]}
 			]}
 			]}).exec();
-		log.info("FlightReservation.find/found", found);
-		log.info("FlightReservation.find/arr", found.arr);
-		log.info("FlightReservation.find/length", found.length);
-		if(found == null || found.length == 0){
+		
+		
+		
+		log.info("FlightReservation.find/doc", found?._doc);
+		if(found?._doc === undefined){
 			newReservation.save(err => {
 				if(err) {return res.status(500).json({success: false, errors : [err], data: []});}
 			});
@@ -312,6 +313,7 @@ exports.reservation_update = [
 			return false;
 	}),
 	(req,res,next) => {
+		log.info("reservation_update/body", req.body);
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
