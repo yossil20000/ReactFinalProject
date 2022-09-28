@@ -14,7 +14,7 @@ export const storeUser = configureStore({
         authSlice: authSliceReducer ,
     },
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(apiSlice.middleware).concat(authApiSlice.middleware).concat(deviceApiSlice.middleware)
+        return getDefaultMiddleware().concat(apiSlice.middleware).concat(authApiSlice.middleware).concat(deviceApiSlice.middleware).concat(reservationApiSlice.middleware)
     }
 });
 

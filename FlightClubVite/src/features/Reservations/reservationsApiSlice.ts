@@ -49,10 +49,10 @@ export const reservationApiSlice = createApi({
                 invalidatesTags: ["Reservation"]
             }),
             updateReservation: builder.mutation<IResultBaseSingle<IReservation>,IReservationUpdate>({
-                query: (RESERVATION_UPDATE) => ({
-                    url: `/${URLS.RESERVATION}`,
+                query: (reservationUpdate) => ({
+                    url: `/${URLS.RESERVATION_UPDATE}`,
                     method: "PUT",
-                    body: RESERVATION_UPDATE
+                    body: reservationUpdate
 
                 }),
                 invalidatesTags: ["Reservation"]

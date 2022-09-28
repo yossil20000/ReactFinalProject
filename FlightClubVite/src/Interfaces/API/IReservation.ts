@@ -17,11 +17,52 @@ export interface IReservationDelete{
 
     _id:string;
 }
-export interface IReservationUpdate{
+export interface IReservationUpdateApi{
     date_from: Date;
-    date_to:Date;
-    _id:string;
+    date_to: Date;
+    _id: string;
 }
+export interface IReservationUpdate{
+    
+    date_from: Date;
+    date_to: Date;
+    _id: string;
+    member_name: string;
+    device_name: string;
+    
+
+}
+export class ReservationUpdate implements IReservationUpdate {
+    date_from: Date;
+    date_to: Date;
+    _id: string;
+    member_name: string;
+    device_name: string;
+    constructor(){
+        this.date_from = new Date();
+        this.date_to = new Date();
+        this.member_name = "";
+        this.device_name = "";
+        this._id =""
+    }
+    IsValid(): boolean {
+        if(this.date_to > this.date_from)
+            {
+                console.log("IsValid", true)
+                return true;
+            }
+            console.log("IsValid", false)
+        return false;
+    }
+    copy(i : IReservationUpdate) :void {
+        this.date_from = i.date_from;
+        this.date_to = i.date_to;
+        this.member_name = i.member_name;
+        this.device_name = i.device_name;
+    }
+}
+
+
 export interface IReservationCreate{
     date_from: Date | undefined;
     date_to:Date;

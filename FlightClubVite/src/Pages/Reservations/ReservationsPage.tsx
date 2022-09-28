@@ -31,11 +31,13 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DateTime } from 'luxon';
 import { ILoginResult } from "../../Interfaces/API/ILogin.js";
-import AddReservationPage from "./AddReservationPage.js";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../Types/Urls.js";
-import { IReservationDelete } from "../../Interfaces/API/IReservation.js";
+import { IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
+import UpdateReservationDialog from "./UpdateReservationDialog";
+
 const todayDate = new Date();
+
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
   device_name: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
@@ -45,11 +47,8 @@ function createdata(_id_reservaion: string, _id_member: string, member_id: strin
   name: string, device_name: string, date_from: Date, date_to: Date, validOperation: CanDo): ItableData {
   return { _id_reservaion, _id_member, member_id, name: name, device_name, date_from: new Date(date_from), date_to: new Date(date_to), validOperation } as ItableData
 }
-
-
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  console.log("descendingComparator", a, b, orderBy)
+  /* console.log("descendingComparator", a, b, orderBy) */
   if (b[orderBy] < a[orderBy]) { return -1 }
   if (b[orderBy] > a[orderBy]) { return 1 }
   return 0;
@@ -257,7 +256,14 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
+let reservationUpdateIntitial : IReservationUpdate = {
+  date_from: new Date(),
+  date_to: new Date(),
+  _id: "",
+  device_name:"",
+  member_name: ""
 
+}
 function ReservationsPage() {
 
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
@@ -268,8 +274,23 @@ function ReservationsPage() {
   const [isByDateRange, setIsByDateRange] = useState(false);
   const [DeleteReservation] = useDeleteReservationMutation();
 
+ const [isReservationUpdate,setIsReservationUpdate] = useState(false);
+ 
+ const [reservationUpdate,setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
   console.log("ReservationsPage", reservations?.data)
-
+  
+  function SetReservationUpdate(id_reservation: string) {
+   const reservation = rows.filter(item => item._id_reservaion === id_reservation)
+   if(reservation.length === 1){
+    console.log("RenderReservationUpdate/filter",reservation);
+    reservationUpdateIntitial._id = reservation[0]._id_reservaion;
+    reservationUpdateIntitial.date_from = reservation[0].date_from;
+    reservationUpdateIntitial.date_to = reservation[0].date_to;
+    reservationUpdateIntitial.device_name = reservation[0].device_name
+    reservationUpdateIntitial.member_name = `${reservation[0].name} ${reservation[0].member_id}` 
+    setReservationUpdate(reservationUpdateIntitial);
+   }
+  }
   useEffect(() => {
 
     let rows = reservations?.data.map((item) => {
@@ -349,10 +370,8 @@ function ReservationsPage() {
     switch (filterBydate) {
       case 0:
         return row.date_from.isSameDate(todayDate);
-        break;
       case 1:
         return row.date_from.getWeek() == todayDate.getWeek();
-        break;
       case 2:
         return row.date_from.isSameMonth(todayDate);
       case 3:
@@ -362,6 +381,8 @@ function ReservationsPage() {
     }
     return true;
   }
+
+
   const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     const reservationDelete : IReservationDelete = {
       _id: _id
@@ -379,11 +400,23 @@ function ReservationsPage() {
       console.log("DeleteReservation/err", err)
     }
   }
+  
+  const handleEditClick = async (event: React.MouseEvent<unknown>, _id: string) => {
+    SetReservationUpdate(_id);
+    setIsReservationUpdate(true);
+  }
+  const handleUpdateOnClose = () => {
+    setIsReservationUpdate(false);
+  }
+  const handleUpdateOnSave = (value: IReservationUpdate) => {
+    setIsReservationUpdate(false);
+    console.log("UpdateReservationDialog/handleOnSave/value", value);
 
+  }
 
   return (
     <div className='main' style={{ overflow: 'auto' }}>
-
+      <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />
       <MediaQuery minWidth={768}>
       
         {rows ? (
@@ -437,7 +470,7 @@ function ReservationsPage() {
                             <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
                             <TableCell align="left">{row.name}</TableCell>
                             <TableCell align="left">{row.member_id}</TableCell>
-                            <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button>Edit</Button> : null}</TableCell>
+                            <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event,row._id_reservaion)}>Edit</Button> : null}</TableCell>
                             <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
                           </TableRow>
                         );
