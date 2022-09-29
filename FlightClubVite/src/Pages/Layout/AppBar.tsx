@@ -18,6 +18,8 @@ import { ROUTES } from '../../Types/Urls';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import { logOut } from '../../features/Auth/authSlice';
+import { setLocalStorage } from '../../Utils/localStorage';
+import { LOCAL_STORAGE } from '../../Enums/localStroage';
 
 type page = {
   name: string,
@@ -64,7 +66,7 @@ const ResponsiveAppBar = () => {
     if(setting == "Logout")
     {
       console.log("Logout")
-      
+      setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO,"")
       dispatch(logOut());
       navigate("/login");
     }
