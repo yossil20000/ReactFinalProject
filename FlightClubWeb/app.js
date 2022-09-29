@@ -1,3 +1,4 @@
+const https = require("https")
 require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
@@ -18,6 +19,7 @@ var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 const membershipRouter = require('./routes/membership');
 const clubNoticeRouter = require('./routes/clubNotice');
+const flightRouter = require('./routes/flight')
 var app = express();
 
 //Import the mongoose module
@@ -57,7 +59,8 @@ app.use('/api/deviceTypes', deviceTypeRouter);
 app.use('/api/reservation', flightReservRouter);
 app.use('/api',loginRouter);
 app.use('/api/memberships', membershipRouter);
-app.use('/api/club_notice',clubNoticeRouter)
+app.use('/api/club_notice',clubNoticeRouter);
+app.use("/api/flight",flightRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

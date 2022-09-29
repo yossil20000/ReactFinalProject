@@ -19,7 +19,7 @@ exports.reservation = function(req,res,next) {
 			return res.status(401).json({success: false, errors : ["FlightReservation Not Exist", err], data: results});	
 		}
 		else{
-			res.status(401).json({success: true, errors : [], data: results});
+			res.status(201).json({success: true, errors : [], data: results});
 			return;
 		}
 	});
@@ -173,7 +173,7 @@ exports.reservation_create = async function(req,res,next) {
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, errors : errors, data: req.body});
+			return res.status(401).json({success: false, errors : [errors], data: req.body});
 		}
 		const member = await Member.findById(req.body.member_id).exec();
 		const device = await Device.findById(req.body.device_id).exec();

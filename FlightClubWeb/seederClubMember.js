@@ -79,8 +79,6 @@ function deviceCreate(device_id,device_type,available,device_status,due_date,hob
         hobbs_meter: hobbs_meter,
         engien_meter: engien_meter,
         price: {base: 420.4},
-        hobbs_meter: 345.6,
-        engien_meter: 245.7,
         maintanance: {next_meter: 5670.6},
         description: "Good Aircrapt",
         details: {
@@ -106,10 +104,10 @@ function deviceCreate(device_id,device_type,available,device_status,due_date,hob
 function createDevice(cb){
     async.series([
         function(callback){
-            deviceCreate("4X-CGC",deviceTypes[0],true,"IN_SERVICE",null,4500,3459,callback);
+            deviceCreate("4X-CGC",deviceTypes[0],true,"IN_SERVICE",null,0,0,callback);
         },
         function(callback){
-            deviceCreate("4X-XXX",deviceTypes[1],true,"IN_SERVICE",null,4500,3459,callback);
+            deviceCreate("4X-XXX",deviceTypes[1],true,"IN_SERVICE",null,0,0,callback);
         }
     ],
     cb);
