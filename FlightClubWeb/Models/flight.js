@@ -12,8 +12,8 @@ var FlightSchema = new Schema({
     engien_stop: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     status: {type: String, enum:["CREATED","OPEN","CLOSE"]},
     device: {type: Schema.Types.ObjectId, ref: 'Device', required: true},
-    member: {type: Schema.Types.ObjectId, ref: 'Member' , required: true}
-
+    member: {type: Schema.Types.ObjectId, ref: 'Member' , required: true},
+    descripton: {type: String}
 },{toJSON: {getters: true}});
 
 function getDecimal(value) {

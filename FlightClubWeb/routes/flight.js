@@ -5,5 +5,5 @@ const flightController = require('../Controllers/flightControrller');
 router.get('/', flightController.flight_list);
 router.get('/:_id', flightController.flight);
 router.post('/create' , flightController.flight_create);
-
+router.delete('/delete', flightController.flight_delete);
 module.exports = router;
