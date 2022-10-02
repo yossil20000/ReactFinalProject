@@ -41,9 +41,8 @@ exports.flight_list = function (req, res, next) {
     })
 }
 
-exports.flight_create = [
-  body('device_id').trim().isLength({ min: 1 }).escape().withMessage('device_id must be valid'),
-  body('member_id').trim().isLength({ min: 1 }).escape().withMessage('member_id must be valid'),
+exports.flight_update = [
+  body('_id').trim().isLength(24).escape().withMessage('_id must be valid 24 characters'),
   body('hobbs_stop', "Value must be greater then zero").custom((value) => {
     if (Number(value) < 0) return false;
     return true;
@@ -83,6 +82,118 @@ exports.flight_create = [
       if (!errors.isEmpty()) {
         return res.status(401).json({ success: false, errors: [errors], data: req.body });
       }
+
+      const flightToUpdate = await Flight.findById(req.body._id).exec();
+      if(flightToUpdate == null)
+      {
+        return res.status(401).json({ success: false, errors: ["Flight not exist"], data: [] })
+      }
+
+      
+      let updateFlight = {
+        date_from: req.body.date_from,
+        date_to: req.body.date_to,
+        hobbs_start: req.body.hobbs_start,
+        hobbs_stop: req.body.hobbs_stop,
+        engien_start: req.body.engien_start,
+        engien_stop: req.body.engien_stop,
+        descripton: req.body.descripton === undefined ? flightToUpdate.descripton : req.body.descripton 
+      }
+      log.info("newReservation", updateFlight);
+      
+      const flightValid = await isFlightValid(flightToUpdate.device._id,req.body);
+      if (flightValid) {
+        const session = await mongoose.startSession();
+        
+        try {
+          const maxValues = await deviceMaxValues(flightToUpdate.device._id);
+          const trananctionResult = await session.withTransaction(async () => {
+            const flightSaveResult = await Flight.updateOne({_id: flightToUpdate._id}, updateFlight, { session: session });
+            log.info("flightSaveResult/Flight/Create", flightSaveResult);
+            const hobbs_meter = (maxValues?.length == 0 || req.body.hobbs_stop > maxValues[0]?.max_hobbs_stop) ? req.body.hobbs_stop : maxValues[0].max_hobbs_stop;
+            const engien_meter = (maxValues?.length == 0 || req.body.engien_stop > maxValues[0]?.max_engien_stop ) ? req.body.engien_stop : maxValues[0].max_engien_stop;    
+            
+            const deviceUpdate = await Device.updateOne({ _id: flightToUpdate.device._id }, { engien_meter: engien_meter ,hobbs_meter: hobbs_meter}, { session });
+       
+            log.info("flightSaveResult/Device.updateOne", deviceUpdate);
+            if ( deviceUpdate.acknowledged == false) {
+              await session.abortTransaction();
+              log.info("trananctionResult/flight created aborted due to Devie/Member update failed");
+              return res.status(401).json({ success: false, errors: ["Flight created aborted due to Devie update failed"], data: [] })
+            }
+          }, transactionOptions);
+          if (trananctionResult) {
+            log.info("trananctionResult/flight created succefully", trananctionResult);
+            return res.status(201).json({ success: true, errors: ["Flight create transacon success"], data: [] })
+          }
+          else {
+            log.info("trananctionResult/flight created intentionally aborted");
+            return res.status(401).json({ success: false, errors: ["Flight  create intentionally aborted"], data: [] })
+          }
+        }
+        catch (error) {
+          log.info("trananctionResult/flight error", error);
+          return res.status(401).json({ success: false, errors: [error], data: [] })
+        }
+        finally {
+          await session.endSession();
+        }
+
+      }
+      else {
+        
+        return res.status(401).json({ success: false, errors: ["Flight Already exist"], data: [] })
+      }
+
+    }
+    catch (error) {
+      return res.status(501).json({ success: false, errors: [error.message], data: [] })
+    }
+  }
+]
+
+exports.flight_create = [
+  body('device_id').trim().isLength(24).escape().withMessage('device_id must be valid 24 characters'),
+  body('member_id').trim().isLength(24).escape().withMessage('member_id must be valid 24 characters'),
+  body('hobbs_stop', "Value must be greater then zero").custom((value) => {
+    if (Number(value) < 0) return false;
+    return true;
+  }),
+  body('hobbs_start', "Value must be greater then zero").custom((value) => {
+    if (Number(value) < 0) return false;
+    return true;
+  }),
+  body('hobbs_start', "Value must be less then hobbs_stop").custom((value, { req }) => {
+    if (Number(value) <= Number(req.body.hobbs_stop)) return true;
+    return false;
+  }),
+  body('engien_start', "Value must be greater then zero").custom((value) => {
+    if (Number(value) < 0) return false;
+    return true;
+  }),
+  body('engien_stop', "Value must be greater then zero").custom((value) => {
+    if (Number(value) < 0) return false;
+    return true;
+  }),
+  body('engien_start', "Value must be less then engien_stop").custom((value, { req }) => {
+    if (Number(value) <= Number(req.body.engien_stop)) return true;
+    return false;
+  }),
+  body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
+  body('date_to', 'Invalid date_to').trim().isISO8601().toDate(),
+  body('date_to', 'date_to must be greater then date_from').trim().isISO8601().toDate()
+    .custom((value, { req }) => {
+      if ((value - req.body.date_from) > 0) return true;
+      return false;
+    }),
+  async (req, res, next) => {
+    try {
+
+      
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(401).json({ success: false, errors: [errors], data: req.body });
+      }
       const member = await Member.findById(req.body.member_id).exec();
       //log.info("flight/find/member",member,req.body.member_id)
       if (member === null | member === undefined) {
@@ -92,23 +203,6 @@ exports.flight_create = [
       if (device === null | device === undefined) {
         return res.status(401).json({ success: false, errors: ["Device Not Exist"], data: [] })
       }
-/*       let maxValues1 = await Flight.aggregate(
-        [
-          {
-            $group:
-               {
-                 _id: "$device",
-                 max_hobbs_start: { $max: "$hobbs_start" },
-                 max_hobbs_stop: { $max: "$hobbs_stop" },
-                 max_engien_start: { $max: "$engien_start" },
-                 max_engien_stop: { $max: "$engien_stop" }
-               }
-          }
-        ]
-     ).exec();
-     log.info("filter",deviceMaxValues);
-     const deviceMaxValuesFiltered = maxValues1.filter((item) => (item._id == req.body.device_id));
-     log.info("filter",deviceMaxValuesFiltered); */
 
       const maxValues = await deviceMaxValues(req.body.device_id);
       let newFlight = new Flight({
@@ -122,24 +216,10 @@ exports.flight_create = [
         engien_stop: req.body.engien_stop
       })
       log.info("newReservation", newFlight._doc);
-/*       const found = await Flight.findOne({
-        $and: [
-          { device: newFlight._doc.device },
-          {
-            $or: [
-              { $and: [{ hobbs_start: { $lt: newFlight._doc.hobbs_stop } }, { hobbs_stop: { $gt: newFlight._doc.hobbs_stop } }] },
-              { $and: [{ hobbs_start: { $lt: newFlight._doc.hobbs_start } }, { hobbs_stop: { $gt: newFlight._doc.hobbs_start } }] },
-              { $and: [{ engien_start: { $lt: newFlight._doc.engien_stop } }, { engien_stop: { $gt: newFlight._doc.engien_stop } }] },
-              { $and: [{ engien_start: { $lt: newFlight._doc.engien_start } }, { engien_stop: { $gt: newFlight._doc.engien_start } }] },
-              { $and: [{ hobbs_start:  newFlight._doc.hobbs_start  }, { hobbs_stop: newFlight._doc.hobbs_stop  }] },
-              { $and: [{ engien_start:  newFlight._doc.engien_start  }, { engien_stop: newFlight._doc.engien_stop  }] }
-            ]
-          }
-        ]
-      }).exec(); */
-      const flightNotExist = await isFlightNotExist(req.body);
 
-      if (flightNotExist) {
+      const flightValid = await isFlightValid(req.body.device_id,req.body);
+
+      if (flightValid) {
         const session = await mongoose.startSession();
         
         try {
@@ -246,23 +326,25 @@ exports.flight_delete = [
   }
 ]
 
-const isFlightNotExist= async (req) => {
+const isFlightValid = async (_id,req) => {
   try{
     const found = await Flight.findOne({
       $and: [
-        { device: req.device_id },
+        { device: _id },
+        {_id: {$ne: req._id}},
         {
           $or: [
-            { $and: [{ hobbs_start: { $lt: req.hobbs_stop } }, { hobbs_stop: { $gt: req.hobbs_stop } }] },
-            { $and: [{ hobbs_start: { $lt: req.hobbs_start } }, { hobbs_stop: { $gt: req.hobbs_start } }] },
-            { $and: [{ engien_start: { $lt: req.engien_stop } }, { engien_stop: { $gt: req.engien_stop } }] },
-            { $and: [{ engien_start: { $lt: req.engien_start } }, { engien_stop: { $gt: req.engien_start } }] },
+            { $and: [{ hobbs_start: { $lt: req.hobbs_stop } }, { hobbs_stop: { $gte: req.hobbs_stop } }] },
+            { $and: [{ hobbs_start: { $lte: req.hobbs_start } }, { hobbs_stop: { $gt: req.hobbs_start } }] },
+            { $and: [{ engien_start: { $lt: req.engien_stop } }, { engien_stop: { $gte: req.engien_stop } }] },
+            { $and: [{ engien_start: { $lte: req.engien_start } }, { engien_stop: { $gt: req.engien_start } }] },
             { $and: [{ hobbs_start:  req.hobbs_start  }, { hobbs_stop: req.hobbs_stop  }] },
             { $and: [{ engien_start:  req.engien_start  }, { engien_stop: req.engien_stop  }] }
           ]
         }
       ]
     }).exec();
+    log.info("isFlightValid/found",found?._doc)
     return found?._doc === undefined;
   }
   catch(error){
