@@ -16,6 +16,7 @@
     "@mui/material": "^5.8.7",
     "@mui/x-date-pickers": "^5.0.0-beta.2",
     "@reduxjs/toolkit": "^1.8.3",
+    "async-mutex": "^0.4.0",
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "eslint-plugin-jsx-control-statements": "^3.0.0",

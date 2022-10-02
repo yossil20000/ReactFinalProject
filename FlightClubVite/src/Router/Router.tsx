@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { URLS } from '../Enums/Routers'
+import FlightPage from '../Pages/Flight/FllightPage'
 import HomePage from '../Pages/Home/HomePage'
 import ChangePassword from '../Pages/Login/ChangePassword'
 import LoginPage from '../Pages/Login/LoginPage'
@@ -29,6 +30,7 @@ export function PagesRouter() {
         <Route path='registration' element={<RegistrationPage></RegistrationPage>}/>
         <Route path="/profile" element={<ProfilePage></ProfilePage>}/>
         <Route path='/members' element={<MembersTablePage></MembersTablePage>}/>
+        <Route path='/flights' element={<FlightPage></FlightPage>}/>
         <Route path='*' element={<Navigate to="/home"/>}/>
     </Routes>
   )

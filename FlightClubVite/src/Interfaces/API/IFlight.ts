@@ -15,3 +15,15 @@ export default interface IFlight{
     device: IDevice
     member: IFlightReservation
 }
+
+export interface IFlightCreateApi{
+    hobbs_start: number
+    hobbs_stop: number
+    engien_start: number
+    engien_stop: number
+    device_id: string
+    member_id: string
+    date_from: Date
+    date_to: Date
+    description: string
+}

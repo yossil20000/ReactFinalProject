@@ -9,5 +9,6 @@ export  enum URLS{
     MEMBERS = 'api/members',
     RESET = 'api/reset_password',
     MEMBER_DETAIL = 'api/members/detail',
-    DEVICES = 'api/devices'
+    DEVICES = 'api/devices',
+    FLIGHT = 'api/flight'
 }

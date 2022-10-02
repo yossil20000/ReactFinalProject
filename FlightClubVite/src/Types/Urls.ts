@@ -2,7 +2,7 @@ export enum ROUTES{
     HOME = 'home',
     RESERVATION = "reservations",
     RESERVATION_ADD = "reservationsadd",
-    Flight = "flight",
+    Flight = "flights",
     LOGIN = "login",
     CHANGE_PASSWORD = "change_password",
     MEMBERS = "members"
@@ -14,6 +14,7 @@ export enum URLS {
     MEMBERS = "members",
     DEVICES = "devices",
     DEVICETYPES = "device_type" ,
-    CHANGE_PASSWORD = "change_password"
+    CHANGE_PASSWORD = "change_password",
+    
 }
 
