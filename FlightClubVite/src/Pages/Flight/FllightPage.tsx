@@ -15,14 +15,14 @@ import { ILoginResult } from "../../Interfaces/API/ILogin";
 interface IFlightData {
   _id: string; _id_member: string; name: string;
   device_id: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
-  hobbs_start: number; hobbs_stop: number;
+  hobbs_start: number; hobbs_stop: number; engien_start: number;engien_stop: number;
 }
 
 function createdata(flight: IFlight, validOperation: CanDo) : IFlightData{
 return {_id: flight._id,_id_member: flight.member._id,
   name: flight.member.family_name, device_id:flight.device.device_id,
 date_from:  flight.date_from, date_to: flight.date_to, member_id: flight.member.member_id,
-hobbs_start: flight.hobbs_start,hobbs_stop: flight.hobbs_stop,
+hobbs_start: flight.hobbs_start,hobbs_stop: flight.hobbs_stop, engien_start: flight.engien_start,engien_stop: flight.engien_stop,
 validOperation: validOperation}
 }
 
@@ -135,22 +135,34 @@ const FlightPage = () => {
               <AccordionDetails>
                 <Grid container spacing={1}>
                   <Grid item xs={3} >
-                    <Typography>
+             
+                    <Typography >
                       {row.name}
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={3} >
-                    <Typography>
-                      Id:
                     </Typography>
                     <Typography>
                       {row.member_id}
                     </Typography>
                   </Grid>
-                  <Grid item sm={3} >
+                  <Grid item sm={4} >
+                    <Typography>
+                      {`Hobbs Start: ${row.hobbs_start}`}
+                    </Typography>
+                    <Typography>
+                    {`Hobbs Stop: ${row.hobbs_stop}`}
+                    </Typography>
+                  </Grid>
+                  <Grid item sm={4} >
+                    <Typography>
+                      {`Engien Start: ${row.engien_start}`}
+                    </Typography>
+                    <Typography>
+                    {`Engien Stop: ${row.engien_stop}`}
+                    </Typography>
+                    
+                  </Grid>
+                  <Grid item sm={1} >
                     <Typography>
                     {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
-
                     </Typography>
                     <Typography>
                     {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
