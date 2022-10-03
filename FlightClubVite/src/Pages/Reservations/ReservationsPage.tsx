@@ -19,7 +19,7 @@ import MuiAccordionSummary, {
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
 
-import { useFetchAllReservationsQuery,useDeleteReservationMutation } from '../../features/Reservations/reservationsApiSlice';
+import { useFetchAllReservationsQuery, useDeleteReservationMutation } from '../../features/Reservations/reservationsApiSlice';
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
 import SplitedButton, { ISplitButtonProps } from '../../Components/Buttons/SplitedButton';
@@ -59,9 +59,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-    a: { [key in Key]: number | string | Date | boolean },
-    b: { [key in Key]: number | string | Date | boolean },
-  ) => number {
+  a: { [key in Key]: number | string | Date | boolean },
+  b: { [key in Key]: number | string | Date | boolean },
+) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -256,40 +256,40 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
-let reservationUpdateIntitial : IReservationUpdate = {
+let reservationUpdateIntitial: IReservationUpdate = {
   date_from: new Date(),
   date_to: new Date(),
   _id: "",
-  device_name:"",
+  device_name: "",
   member_name: ""
 
 }
 function ReservationsPage() {
 
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { data: reservations, isError, isLoading, isSuccess, error ,refetch} = useFetchAllReservationsQuery();
+  const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
   const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
   const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(1));
   const [isByDateRange, setIsByDateRange] = useState(false);
   const [DeleteReservation] = useDeleteReservationMutation();
 
- const [isReservationUpdate,setIsReservationUpdate] = useState(false);
- 
- const [reservationUpdate,setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
+  const [isReservationUpdate, setIsReservationUpdate] = useState(false);
+
+  const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
   console.log("ReservationsPage", reservations?.data)
-  
+
   function SetReservationUpdate(id_reservation: string) {
-   const reservation = rows.filter(item => item._id_reservaion === id_reservation)
-   if(reservation.length === 1){
-    console.log("RenderReservationUpdate/filter",reservation);
-    reservationUpdateIntitial._id = reservation[0]._id_reservaion;
-    reservationUpdateIntitial.date_from = reservation[0].date_from;
-    reservationUpdateIntitial.date_to = reservation[0].date_to;
-    reservationUpdateIntitial.device_name = reservation[0].device_name
-    reservationUpdateIntitial.member_name = `${reservation[0].name} ${reservation[0].member_id}` 
-    setReservationUpdate(reservationUpdateIntitial);
-   }
+    const reservation = rows.filter(item => item._id_reservaion === id_reservation)
+    if (reservation.length === 1) {
+      console.log("RenderReservationUpdate/filter", reservation);
+      reservationUpdateIntitial._id = reservation[0]._id_reservaion;
+      reservationUpdateIntitial.date_from = reservation[0].date_from;
+      reservationUpdateIntitial.date_to = reservation[0].date_to;
+      reservationUpdateIntitial.device_name = reservation[0].device_name
+      reservationUpdateIntitial.member_name = `${reservation[0].name} ${reservation[0].member_id}`
+      setReservationUpdate(reservationUpdateIntitial);
+    }
   }
   useEffect(() => {
 
@@ -314,7 +314,7 @@ function ReservationsPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
   const [filterBydate, setFilterByDate] = useState(0);
-  
+
 
   const handleFilterClick = (selectedIndex: number): number => {
     console.log("handleFilterClick", selectedIndex);
@@ -384,23 +384,23 @@ function ReservationsPage() {
 
 
   const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
-    const reservationDelete : IReservationDelete = {
+    const reservationDelete: IReservationDelete = {
       _id: _id
     }
-    console.log("Delete /",_id);
-    try{
+    console.log("Delete /", _id);
+    try {
       const payload = await DeleteReservation(reservationDelete)
-      .unwrap()
-      .then((payload) => {
-        console.log("DeleteReservation Fullfill", payload)
-        refetch();
-      });
+        .unwrap()
+        .then((payload) => {
+          console.log("DeleteReservation Fullfill", payload)
+          refetch();
+        });
     }
-    catch(err){
+    catch (err) {
       console.log("DeleteReservation/err", err)
     }
   }
-  
+
   const handleEditClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     SetReservationUpdate(_id);
     setIsReservationUpdate(true);
@@ -417,115 +417,57 @@ function ReservationsPage() {
   return (
     <div className='main' style={{ overflow: 'auto' }}>
       <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />
-      <MediaQuery minWidth={768}>
-      
-        {rows ? (
-          <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-              <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
-              <TablePagination
-                rowsPerPageOptions={[1, 5, 10, 25]}
-                component="div"
-                count={rows ? rows.length : 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+
+      <Box sx={{ width: '100%', height: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
+          <TablePagination
+            rowsPerPageOptions={[1, 5, 10, 25]}
+            component="div"
+            count={rows ? rows.length : 0}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? 'small' : 'medium'}
+            >
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
               />
-              <TableContainer>
-                <Table
-                  sx={{ minWidth: 750 }}
-                  aria-labelledby="tableTitle"
-                  size={dense ? 'small' : 'medium'}
-                >
-                  <EnhancedTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    onRequestSort={handleRequestSort}
-                  />
-                  
-                  <TableBody>
-                    {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                     rows.slice().sort(getComparator(order, orderBy)) */}
+              <MediaQuery minWidth={768}>
+                <TableBody>
+                  {rows.filter((r) => {
+                    if (!isInDateRange(r)) return false;
+                    if (!isFilterOwner) return true
+                    if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                    return false;
+                  }).sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row: ItableData) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row._id_reservaion}>
+                          <TableCell align="left">{row.device_name}</TableCell>
+                          <TableCell align="left">{new Date(row.date_from).toLocaleString()}</TableCell>
+                          <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
+                          <TableCell align="left">{row.name}</TableCell>
+                          <TableCell align="left">{row.member_id}</TableCell>
+                          <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}</TableCell>
+                          <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </MediaQuery>
 
-                    {rows.filter((r) => {
-
-                      if (!isInDateRange(r)) return false;
-                      if (!isFilterOwner) return true
-                      if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
-                      return false;
-                    })
-                      .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row: ItableData) => {
-                        return (
-                          <TableRow
-                            hover
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={row._id_reservaion}
-                          >
-
-                            <TableCell align="left">{row.device_name}</TableCell>
-                            <TableCell align="left">{new Date(row.date_from).toLocaleString()}</TableCell>
-                            <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
-                            <TableCell align="left">{row.name}</TableCell>
-                            <TableCell align="left">{row.member_id}</TableCell>
-                            <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event,row._id_reservaion)}>Edit</Button> : null}</TableCell>
-                            <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    {emptyRows > 0 && (
-                      <TableRow
-                        style={{
-                          height: (dense ? 33 : 53) * emptyRows,
-                        }}
-                      >
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-            </Paper>
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={handleChangeDense} />}
-              label="Dense padding"
-            />
-          </Box>
-
-        ) : (<div>Loading</div>)}
-      </MediaQuery>
-      <MediaQuery maxWidth={767}>
-        <Box sx={{ width: '100%' }}>
-          <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
-            <TablePagination
-              rowsPerPageOptions={[1, 5, 10, 25]}
-              component="div"
-              count={rows ? rows.length : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-            <TableContainer>
-              <Table
-                sx={{ maxWidth: 700 }}
-                aria-labelledby="tableTitle"
-                size="small"
-              >
-                <EnhancedTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                />
-              </Table>
-            </TableContainer>
-            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                     rows.slice().sort(getComparator(order, orderBy)) */}
-
+            </Table>
+          </TableContainer>
+          <MediaQuery maxWidth={767}>
             {
               rows.filter((r) => {
 
@@ -558,11 +500,11 @@ function ReservationsPage() {
                           </Grid>
                           <Grid item sm={3} >
                             <Typography>
-                              {(row.validOperation & CanDo.Edit) ? <Button>Edit</Button> : null}
+                            {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
 
                             </Typography>
                             <Typography>
-                              {(row.validOperation & CanDo.Delete) ? <Button>Delete</Button> : null}
+                            {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}
                             </Typography>
 
                           </Grid>
@@ -572,13 +514,15 @@ function ReservationsPage() {
                   );
                 })
             }
-          </Paper>
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label="Dense padding"
-          />
-        </Box>
-      </MediaQuery>
+          </MediaQuery>
+        </Paper>
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Dense padding"
+        />
+      </Box>
+
+
 
 
     </div>

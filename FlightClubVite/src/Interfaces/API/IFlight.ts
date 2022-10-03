@@ -1,5 +1,6 @@
 import IDevice from "./IDevice"
 import IFlightReservation from "./IFlightReservation"
+import IMember from "./IMember"
 
 export enum Status{
     CREATED,
@@ -7,13 +8,16 @@ export enum Status{
     CLOSE
 }
 export default interface IFlight{
+    _id: string;
     hobbs_start: number
     hobbs_stop: number
     engien_start: number
     engien_stop: number
     status: Status
     device: IDevice
-    member: IFlightReservation
+    member: IMember
+    date_from: Date;
+    date_to: Date;
 }
 
 export interface IFlightCreateApi{
