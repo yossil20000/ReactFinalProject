@@ -443,7 +443,9 @@ function ReservationsPage() {
               />
               <MediaQuery minWidth={768}>
                 <TableBody>
-                  {rows.filter((r) => {
+                  {
+                    
+                  rows.filter((r) => {
                     if (!isInDateRange(r)) return false;
                     if (!isFilterOwner) return true
                     if (isFilterOwner && r.validOperation & CanDo.Owner) return true;

@@ -259,7 +259,7 @@ exports.flight_create = [
 
       }
       else {
-        log.info("found?._doc", found?._doc)
+        log.info("Flight Already exist")
         return res.status(401).json({ success: false, errors: ["Flight Already exist"], data: [] })
       }
 
