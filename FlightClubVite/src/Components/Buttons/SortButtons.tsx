@@ -41,14 +41,14 @@ export default function SortButtons<T>(props: ISortButtonsProps<T>) {
   const createSortHandler = (property: keyof T) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
-  let n =`repeat(${sortCells.length},1fr)`;
+  let n =`repeat(${sortCells.length+1},1fr)`;
   return (
-    <Box display="grid" gridTemplateColumns={n} gap={2}>
+    <Box display="flex" justifyContent={"space-around"}>
         {sortCells.map((sortCell : ISortCell<T>, index: number) => (
           <Box gridColumn='span 1' key={index.toString()}>
           <TableCell
             key={sortCell.id.toString()}
-            align={sortCell.numeric ? 'center' : 'center'}
+            align={sortCell.numeric ? 'left' : 'left'}
             
             sortDirection={orderBy === sortCell.id ? order : false}>
             <TableSortLabel

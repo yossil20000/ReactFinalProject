@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
 import { URLS } from "../../Enums/Routers";
-import IFlight, { IFlightCreateApi } from "../../Interfaces/API/IFlight";
-import IResultBase from "../../Interfaces/API/IResultBase";
+import IFlight, { IFlightCreateApi, IFlightDeleteApi, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
+import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import customFetchBase from "../customeFetchBase";
 
 export const flightApi = createApi({
@@ -33,7 +33,7 @@ export const flightApi = createApi({
           
             url: `/${URLS.FLIGHT}/create`,
             method: 'POST',
-            credentials: 'include',
+            
             body: flight
           
         }),
@@ -42,6 +42,28 @@ export const flightApi = createApi({
         results.data.flight,
   
       }),
+      updateFlight: builder.mutation<IFlight,IFlightUpdateApi>({
+        query: (flight) =>( {
+          
+            url: `/${URLS.FLIGHT}/update`,
+            method: 'PUT',
+            
+            body: flight
+          
+        }),
+        invalidatesTags:[{type: 'Flights', id: 'LIST'}],
+        transformResponse: (results:{data: {flight: IFlight}}) =>
+        results.data.flight,
+  
+      }),
+      deleteFlight: builder.mutation<IResultBaseSingle<IFlight>, IFlightDeleteApi>({
+        query: (flight) => ({
+          url:`/${URLS.FLIGHT}/delete`,
+          method: 'DELETE',
+          body: flight
+        }),
+        invalidatesTags:[{type: 'Flights', id: 'LIST'}],
+      })
     }
     
   }
@@ -49,5 +71,7 @@ export const flightApi = createApi({
 
 export const {
 useCreateFlightMutation,
-useGetAllFlightsQuery
+useGetAllFlightsQuery,
+useDeleteFlightMutation,
+useUpdateFlightMutation
 } = flightApi;

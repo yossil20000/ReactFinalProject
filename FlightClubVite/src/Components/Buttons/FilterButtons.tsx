@@ -33,12 +33,12 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
     if (newDate && fromDateFilter && newDate >= fromDateFilter)
       setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59));
   };
-  const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange", "All"];
+  const selectedDateFilterOptions = ["Today", 'Week', "Month", "Dates", "All"];
 
   return (
     <Toolbar
       sx={{
-
+        
         pl: { sm: 1 },
         pr: { xs: 1, sm: 1 },
         ...(isFilterOwner && {

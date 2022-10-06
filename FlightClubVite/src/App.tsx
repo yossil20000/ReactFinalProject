@@ -41,9 +41,8 @@ function App() {
                 <div className='nav'>
                     <ResponsiveAppBar />
                 </div>
-                <div className='header'>header</div>
+                
                 <PagesRouter />
-                <footer className='footer'>Footer</footer>
             </div>
         </BrowserRouter>
     )
