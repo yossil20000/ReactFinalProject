@@ -83,3 +83,10 @@ exports.reservation_create = [
 
 
 ];
+
+
+ const flightToUpdate = await Flight.findById(req.body._id);
+      if(flightToUpdate == null)
+      {
+        return res.status(401).json({ success: false, errors: ["Flight Already exist"], data: [] })
+      }

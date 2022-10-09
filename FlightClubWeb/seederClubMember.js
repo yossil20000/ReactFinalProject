@@ -120,10 +120,10 @@ const address = {
     province: "Misgav",
     state: "ISRAEL"
 }
-const roles = new Role({
+/* const roles = new Role({
     roles: [CE.ROLES[1], CE.ROLES[3]]
-});
-function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,password,membership ,cb) {
+}); */
+function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,password,membership,roles ,cb) {
     let memberShip = new Membership();
     memberdetail = { first_name: first_name, family_name: family_name, member_id: memberId ,
         contact:{
@@ -166,13 +166,22 @@ function createMemberships(cb){
 function createMembers(cb) {
     async.series([
         function (callback) {
-            memberCreate("Yosef", "Levy", "1965-08-21", "2011-11-01", "159828392","yos.1965@gmail.com", "password1",memberships[0], callback);
+            const roles = new Role({
+                roles: [CE.ROLES[1], CE.ROLES[4]]
+            })
+            memberCreate("Yosef", "Levy", "1965-08-21", "2011-11-01", "159828392","yos.1965@gmail.com", "password1",memberships[0],roles, callback);
         },
         function (callback) {
-            memberCreate("Sting", "TV", "1966-09-22", "2012-12-02", "259828392", 'stingTV2010300@gmail.com',"password2", memberships[1],callback);
+            const roles = new Role({
+                roles: [CE.ROLES[1], CE.ROLES[3]]
+            })
+            memberCreate("Sting", "TV", "1966-09-22", "2012-12-02", "259828392", 'stingTV2010300@gmail.com',"password2",memberships[0], roles,callback);
         },
         function (callback) {
-            memberCreate("Pilot", "Pilot", "1966-09-22", "2012-12-02", "359828392", 'tyy130500@gmail.com',"password2", memberships[1],callback);
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Pilot", "Pilot", "1966-09-22", "2012-12-02", "359828392", 'tyy130500@gmail.com',"password2", memberships[0], roles,callback);
         }
     ],
         cb

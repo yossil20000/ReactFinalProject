@@ -7,15 +7,15 @@ import { is } from "immer/dist/internal";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
-import { useUpdateFlightMutation } from "../../features/Flight/flightApi"
-import { CFlightUpdate, IFlightUpdate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
+import { useCreateFlightMutation } from "../../features/Flight/flightApi"
+import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { IValidation } from "../../Interfaces/IValidation";
 
 
-export interface UpdateFlightDialogProps {
-  value: IFlightUpdate;
+export interface CreateFlightDialogProps {
+  value: IFlightCreate;
   onClose: () => void;
-  onSave: (value: IFlightUpdate) => void;
+  onSave: (value: IFlightCreate) => void;
   open: boolean;
 }
 const Item = styled(Paper)(({ theme }) => ({
@@ -30,17 +30,17 @@ const defaultMaterialThem = createTheme({
 })
 let transitionAlertInitial: ITransitionAlrertProps = {
   severity: "success",
-  alertTitle: "Update Flight",
+  alertTitle: "Create Flight",
   alertMessage: "Operation succeed",
   open: false,
   onClose: () => { }
 }
-function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFlightDialogProps) {
+function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFlightDialogProps) {
 
-  console.log("UpdateFlightDialog/value", value)
+  console.log("CreateFlightDialog/value", value)
 
-  const [updateFlight, { isError, isLoading, error, isSuccess }] = useUpdateFlightMutation();
-  const [flightUpdate, setFlightUpdate] = useState<IFlightUpdate>(value);
+  const [CreateFlight, { isError, isLoading, error, isSuccess }] = useCreateFlightMutation();
+  const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
 
@@ -49,26 +49,26 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
   }
   
   useEffect(() => {
-    console.log("UpdateFlightDialog/useEffect", isError, isSuccess, isLoading)
+    console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
 
-      setAlert((prev) => ({ ...prev, alertTitle: "Flight Update", alertMessage: "Flight Update Successfully", open: true, onClose: onClose, severity: "success" }))
+      setAlert((prev) => ({ ...prev, alertTitle: "Flight Create", alertMessage: "Flight Create Successfully", open: true, onClose: onClose, severity: "success" }))
 
     }
     if (isError) {
       if ((error as any).data.errors !== undefined) {
         if (Array.isArray((error as any).data.errors)) {
           (error as any).data.errors.forEach((element: any) => {
-            console.log("UpdateFlightDialog/useEffect/Error", element);
+            console.log("CreateFlightDialog/useEffect/Error", element);
           });
         }
         else {
-          console.log("UpdateFlightDialog/useEffect/Error/single", (error as any).data.errors)
+          console.log("CreateFlightDialog/useEffect/Error/single", (error as any).data.errors)
         }
       }
       if ((error as any).data.validation !== undefined) {
         let validation: IValidationAlertProps[];
-        console.log("UpdateFlightDialog/useEffect/data", (error as any).data)
+        console.log("CreateFlightDialog/useEffect/data", (error as any).data)
         validation = (error as any).data.validation.errors.map((item: IValidation) => {
           const alert : IValidationAlertProps  = {...(item as IValidationAlertProps)};
           alert.onClose = handleOnCancel;
@@ -77,7 +77,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
 
         })
         setValidationAlert(validation);
-        console.log("UpdateFlightDialog/useEffect/validation", validation )
+        console.log("CreateFlightDialog/useEffect/validation", validation )
       }
 
     }
@@ -85,16 +85,16 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightUpdate(prev => ({ ...prev, date_from: newDate }))
+    setFlightCreate(prev => ({ ...prev, date_from: newDate }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightUpdate(prev => ({ ...prev, date_to: newDate }))
+    setFlightCreate(prev => ({ ...prev, date_to: newDate }))
   };
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("handleFligtChange", event.target.name, event.target.value)
-    setFlightUpdate(prev => ({
+    setFlightCreate(prev => ({
       ...prev,
       [event.target.name]: event.target.value,
     }));
@@ -104,23 +104,23 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
     onClose()
   }
   const handleOnSave = async () => {
-    console.log("UpdateFlightDialog/onSave", flightUpdate)
-    let flight = new CFlightUpdate();
-    flight.copy(flightUpdate);
-    console.log("UpdateFlightDialog/onSave/flight", flight)
+    console.log("CreateFlightDialog/onSave", flightCreate)
+    let flight = new CFlightCreate();
+    flight.copy(flightCreate);
+    console.log("CreateFlightDialog/onSave/flight", flight)
     /*     if(!flight.IsDateValid())
         {
           setdateErrorAlert((prev) => ({...prev,alertTitle:"Date Input Error",alertMessage:"Date_to must be greater then date_from",open:true,onClose:onCloseDateError}))
           return;
         } */
 
-    console.log("UpdateFlightDialog/onSave/date_from", flightUpdate.date_from?.toUTCString())
+    console.log("CreateFlightDialog/onSave/date_from", flightCreate.date_from?.toUTCString())
 
-    await updateFlight(flightUpdate as IFlightUpdateApi).unwrap().then((data) => {
-      console.log("updateFlightDialoq/onSave/", data);
-      onSave(flightUpdate);
+    await CreateFlight(flightCreate as IFlightCreateApi).unwrap().then((data) => {
+      console.log("CreateFlightDialoq/onSave/", data);
+      onSave(flightCreate);
     }).catch((err) => {
-      console.log("updateFlightDialoq/onSave/error", err.data.errors);
+      console.log("CreateFlightDialoq/onSave/error", err.data.errors);
     });
     
 
@@ -131,7 +131,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
       maxWidth="sm"
 
       open={open} {...other}>
-      <DialogTitle>Flight Update</DialogTitle>
+      <DialogTitle>Flight Create</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
 
@@ -143,7 +143,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                     disableMaskedInput
                     label="From Date"
                     mask=''
-                    value={flightUpdate.date_from}
+                    value={flightCreate.date_from}
                     onChange={handleFromDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
@@ -162,7 +162,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                     mask=''
                     disableMaskedInput
                     label="To Date"
-                    value={flightUpdate.date_to}
+                    value={flightCreate.date_to}
                     onChange={handleToDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
                   />
@@ -193,7 +193,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                sx={{ marginLeft: "0px" , width:"100%"}}
                 name="engien_start"
                 label="Engien start"
-                value={flightUpdate.engien_start}
+                value={flightCreate.engien_start}
                 onChange={handleFligtChange}
               />
             </Item>
@@ -204,7 +204,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                sx={{ marginLeft: "0px" , width:"100%"}}
                 name="engien_stop"
                 label="Engien stop"
-                value={flightUpdate.engien_stop}
+                value={flightCreate.engien_stop}
                 onChange={handleFligtChange}
               />
             </Item>
@@ -217,7 +217,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 id="hobbs_start"
                 label="hobbs_start"
                 key={"hobbs_start"}
-                value={flightUpdate.hobbs_start}
+                value={flightCreate.hobbs_start}
                 onChange={handleFligtChange}
               />
             </Item>
@@ -230,7 +230,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 id="hobbs_stop"
                 label="hobbs_stop"
                 key={"hobbs_stop"}
-                value={flightUpdate.hobbs_stop}
+                value={flightCreate.hobbs_stop}
                 onChange={handleFligtChange}
               />
             </Item>
@@ -243,7 +243,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 id="outlined-disabled"
                 label="Description"
                 onChange={handleFligtChange}
-                value={flightUpdate.description}
+                value={flightCreate.description}
               />
             </Item>
           </Grid>
@@ -255,7 +255,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 id="outlined-disabled"
                 label="Device"
 
-                value={flightUpdate.device_name}
+                value={flightCreate.device_name}
               />
             </Item>
           </Grid>
@@ -265,7 +265,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 disabled
                 id="outlined-disabled"
                 label="Member"
-                defaultValue={flightUpdate.member_name}
+                defaultValue={flightCreate.member_name}
               />
 
             </Item>
@@ -289,4 +289,4 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
   )
 }
 
-export default UpdateFlightDialog;
+export default CreateFlightDialog;

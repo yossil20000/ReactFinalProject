@@ -4,6 +4,7 @@ const { DataTime } = require('luxon');
 var Schema = mongoose.Schema;
 
 var FlightSchema = new Schema({
+    description: {type: String},
     date_from: {type: Date, required: true, default: Date.now},
     date_to: {type: Date, required: true, default: Date.now},
     hobbs_start: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
@@ -13,7 +14,7 @@ var FlightSchema = new Schema({
     status: {type: String, enum:["CREATED","OPEN","CLOSE"]},
     device: {type: Schema.Types.ObjectId, ref: 'Device', required: true},
     member: {type: Schema.Types.ObjectId, ref: 'Member' , required: true},
-    descripton: {type: String}
+    
 },{toJSON: {getters: true}});
 
 function getDecimal(value) {

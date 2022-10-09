@@ -52,7 +52,7 @@ exports.flight_update = [
     return true;
   }),
   body('hobbs_start', "Value must be less then hobbs_stop").custom((value, { req }) => {
-    if (Number(value) <= Number(req.body.hobbs_stop)) return true;
+    if (Number(value) < Number(req.body.hobbs_stop)) return true;
     return false;
   }),
   body('engien_start', "Value must be greater then zero").custom((value) => {
@@ -64,7 +64,7 @@ exports.flight_update = [
     return true;
   }),
   body('engien_start', "Value must be less then hobbs_stop").custom((value, { req }) => {
-    if (Number(value) <= Number(req.body.engien_stop)) return true;
+    if (Number(value) < Number(req.body.engien_stop)) return true;
     return false;
   }),
   body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
@@ -80,7 +80,7 @@ exports.flight_update = [
       
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(401).json({ success: false, errors: [errors], data: req.body });
+        return res.status(401).json({ success: false, validation: errors, data: req.body });
       }
 
       const flightToUpdate = await Flight.findById(req.body._id).exec();
@@ -97,9 +97,9 @@ exports.flight_update = [
         hobbs_stop: req.body.hobbs_stop,
         engien_start: req.body.engien_start,
         engien_stop: req.body.engien_stop,
-        descripton: req.body.descripton === undefined ? flightToUpdate.descripton : req.body.descripton 
+        description: req.body.description === undefined ? flightToUpdate.description : req.body.description 
       }
-      log.info("newReservation", updateFlight);
+      log.info("updateFlight", updateFlight);
       
       const flightValid = await isFlightValid(flightToUpdate.device._id,req.body);
       if (flightValid) {
@@ -109,7 +109,7 @@ exports.flight_update = [
           const maxValues = await deviceMaxValues(flightToUpdate.device._id);
           const trananctionResult = await session.withTransaction(async () => {
             const flightSaveResult = await Flight.updateOne({_id: flightToUpdate._id}, updateFlight, { session: session });
-            log.info("flightSaveResult/Flight/Create", flightSaveResult);
+            log.info("flightSaveResult/Flight/Update", flightSaveResult);
             const hobbs_meter = (maxValues?.length == 0 || req.body.hobbs_stop > maxValues[0]?.max_hobbs_stop) ? req.body.hobbs_stop : maxValues[0].max_hobbs_stop;
             const engien_meter = (maxValues?.length == 0 || req.body.engien_stop > maxValues[0]?.max_engien_stop ) ? req.body.engien_stop : maxValues[0].max_engien_stop;    
             
@@ -118,21 +118,21 @@ exports.flight_update = [
             log.info("flightSaveResult/Device.updateOne", deviceUpdate);
             if ( deviceUpdate.acknowledged == false) {
               await session.abortTransaction();
-              log.info("trananctionResult/flight created aborted due to Devie/Member update failed");
-              return res.status(401).json({ success: false, errors: ["Flight created aborted due to Devie update failed"], data: [] })
+              log.info("trananctionResult/flight update aborted due to Devie/Member update failed");
+              return res.status(401).json({ success: false, errors: ["Flight update aborted due to Devie update failed"], data: [] })
             }
           }, transactionOptions);
           if (trananctionResult) {
-            log.info("trananctionResult/flight created succefully", trananctionResult);
-            return res.status(201).json({ success: true, errors: ["Flight create transacon success"], data: [] })
+            log.info("trananctionResult/flight update succefully", trananctionResult);
+            return res.status(201).json({ success: true, errors: ["Flight update transacon success"], data: [] })
           }
           else {
-            log.info("trananctionResult/flight created intentionally aborted");
-            return res.status(401).json({ success: false, errors: ["Flight  create intentionally aborted"], data: [] })
+            log.info("trananctionResult/flight update intentionally aborted");
+            return res.status(401).json({ success: false, errors: ["Flight  update intentionally aborted"], data: [] })
           }
         }
         catch (error) {
-          log.info("trananctionResult/flight error", error);
+          log.info("trananctionResult/flight/update error", error);
           return res.status(401).json({ success: false, errors: [error], data: [] })
         }
         finally {
@@ -213,7 +213,8 @@ exports.flight_create = [
         hobbs_start: req.body.hobbs_start,
         hobbs_stop: req.body.hobbs_stop,
         engien_start: req.body.engien_start,
-        engien_stop: req.body.engien_stop
+        engien_stop: req.body.engien_stop,
+        description: req.body.description
       })
       log.info("newReservation", newFlight._doc);
 

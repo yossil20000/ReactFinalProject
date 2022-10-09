@@ -3,16 +3,17 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, 
 import { useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery , useDeleteFlightMutation} from "../../features/Flight/flightApi";
-import IFlight, { IFlightDeleteApi, IFlightUpdate } from "../../Interfaces/API/IFlight";
+import IFlight, { IFlightDeleteApi, IFlightUpdate, Status } from "../../Interfaces/API/IFlight";
 import Message from '../../Components/Message'
 import { grid } from "@mui/system";
 
-import SortButtons, {ISortButtonsProps,ISortCell,Order} from "../../Components/Buttons/sortButtons";
+
 import GeneralCanDo, { CanDo } from "../../Utils/owner";
 import { useAppSelector } from "../../app/hooks";
 import { ILoginResult } from "../../Interfaces/API/ILogin";
 import FilterButtons from "../../Components/Buttons/FilterButtons";
 import UpdateFlightDialog from "./UpdateFlightDialog";
+import SortButtons, { ISortCell, Order } from "../../Components/Buttons/SortButtons";
 
 interface IFlightData {
   _id: string; _id_member: string; name: string;description:string;
@@ -70,7 +71,8 @@ let flightUpdateIntitial: IFlightUpdate = {
   hobbs_stop: 0,
   engien_start: 0,
   engien_stop: 0,
-  description: ""
+  description: "",
+  status: Status.CREATED
 }
 const FlightPage = () => {
   const [openFlightUpdate, setOpenFlightUpdate] = useState(false);
@@ -220,9 +222,10 @@ const FlightPage = () => {
       }
     }
     const handleUpdateOnSave = (value: IFlightUpdate) => {
+      refetch();
       setOpenFlightUpdate(false);
       console.log("UpdateFlightDialog/handleOnSave/value", value);
-      refetch();
+      
     }
     const handleEditClick = async (event: React.MouseEvent<unknown>, _id: string) => {
       fillFlightUpdate(_id);
