@@ -9,8 +9,9 @@ import { ILoginResult } from './Interfaces/API/ILogin';
 import { Role } from './Interfaces/API/IMember';
 import ResponsiveAppBar from './Pages/Layout/AppBar';
 import { PagesRouter } from './Router/Router';
+import { getMembersAndDevicesCombo } from './Utils/fetchData';
 import { getFromLocalStorage } from './Utils/localStorage';
-
+getMembersAndDevicesCombo();
 function App() {
     const dispatch = useAppDispatch();
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
 import { Preview } from "@mui/icons-material";
-import { Dialog, DialogTitle, DialogContent, Grid, Typography, TextField, Button, createTheme, Paper, styled, CircularProgress } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, Typography, TextField, Button, createTheme, Paper, styled, CircularProgress, Autocomplete } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { is } from "immer/dist/internal";
@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
+import { IDeviceCombo, IMemberCombo } from "../../Interfaces/IFlightReservationProps";
 import { IValidation } from "../../Interfaces/IValidation";
 
 
@@ -17,6 +18,8 @@ export interface CreateFlightDialogProps {
   onClose: () => void;
   onSave: (value: IFlightCreate) => void;
   open: boolean;
+  memberCombo: IMemberCombo[];
+  devicesCombo : IDeviceCombo[];
 }
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -35,7 +38,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFlightDialogProps) {
+function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devicesCombo, ...other }: CreateFlightDialogProps) {
 
   console.log("CreateFlightDialog/value", value)
 
@@ -43,7 +46,8 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-
+  const [selectedDevice, setSelectedDevice] = useState<IDeviceCombo>();
+  const [selectedMember, setSelectedMember] = useState<IMemberCombo>();
   const onCloseDateError = () => {
     setAlert((prev) => ({ ...prev, open: false }))
   }
@@ -124,6 +128,23 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     });
     
 
+  }
+  const handleMemberOnChange = (event: any, newValue: any) => {
+    console.log("Reservation", flightCreate);
+    console.log("member/target", event.target);
+    console.log("Member/newValue", newValue);
+
+    setFlightCreate(prev => ({ ...prev, member: { _id: newValue._id, member_id: newValue.member_id, family_name: newValue.family_name, first_name: newValue.first_name } }))
+    setSelectedMember(newValue);
+
+  }
+  const handleDeviceOnChange = (event: any, newValue: any) => {
+    console.log("Reservation", flightCreate);
+    console.log(event.target);
+    console.log(newValue);
+
+    setFlightCreate(prev => ({ ...prev, device: { _id: newValue._id, device_id: newValue.device_id } }))
+    setSelectedDevice(newValue);
   }
   return (
     <Dialog
@@ -248,28 +269,57 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
-                disabled
-                id="outlined-disabled"
-                label="Device"
+          <Item>
+            <Autocomplete
+              freeSolo
+              id="free-solo-2-demo"
+              disableClearable
+              options={devicesCombo}
+              getOptionLabel={option => (option as IDeviceCombo).device_id}
+              value={selectedDevice}
+              onChange={handleDeviceOnChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
 
-                value={flightCreate.device_name}
-              />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item>
-              <TextField sx={{ marginLeft: "0px" , width:"100%"}}
-                disabled
-                id="outlined-disabled"
-                label="Member"
-                defaultValue={flightCreate.member_name}
-              />
+                  size={'small'}
+                  label="Device"
+                  InputProps={{
+                    ...params.InputProps,
+                    type: 'search'
+                  }}
+                />
+              )}
+            />
+          </Item>
+        </Grid>
+        <Grid item xs={12} md={6} xl={6}>
+          <Item>
+            <Autocomplete
+              freeSolo
+              id="free-solo-2-demo"
+              disableClearable
+              options={memberCombo}
+              getOptionLabel={option => `${(option as IMemberCombo).member_id} ${(option as IMemberCombo).family_name}`}
+              value={selectedMember}
+              onChange={handleMemberOnChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
+                  size={'small'}
+                  label="Member"
+                  InputProps={{
+                    ...params.InputProps,
+                    type: 'search',
+                  }}
+                />
+              )}
+            />
 
-            </Item>
-          </Grid>
+          </Item>
+        </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>

@@ -13,6 +13,7 @@ import IDevice from '../../Interfaces/API/IDevice';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import IReservation, { CreateReservationToApi, IReservationCreate } from '../../Interfaces/API/IReservation';
+import InputCombo, { InputComboItem } from '../../Components/Buttons/InputCombo';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -31,6 +32,7 @@ function AddReservationPage() {
   const { data: membersCombo, isError, isLoading, error } = useFetchMembersComboQuery();
   const { data: devices, isError: isDeviceError, isLoading: isDeviceLoading, error: deviceError } = useFetchAllDevicesQuery();
   const [devicesCombo, setDevices] = useState<IDeviceCombo[]>([]);
+  const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<IDeviceCombo>();
   const [selectedMember, setSelectedMember] = useState<IMemberCombo>();
   let initialReservation: IReservationCreate = {
@@ -100,10 +102,16 @@ function AddReservationPage() {
     let d = devices?.data.map((item) => devicesToDeviceCombo(item));
     if (d !== undefined)
       setDevices(d);
+    let items  =   devices?.data.map((item) => devicesToItemCombo(item));
+    if (items !== undefined)
+      setDevicesItem(items);
   }, [devices?.data])
 
   const devicesToDeviceCombo = (input: IDevice): IDeviceCombo => {
     return { device_id: input.device_id, _id: input._id }
+  }
+  const devicesToItemCombo = (input: IDevice): InputComboItem => {
+    return {  lable: input.device_id, _id: input._id }
   }
   const RenderLoading = (): any => {
     return (
@@ -166,6 +174,7 @@ function AddReservationPage() {
         </Grid>
         <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
           <Item>
+            <InputCombo items={devicesItems} handleComboChange={handleDeviceOnChange} title="Devices"/>
             <Autocomplete
               freeSolo
               id="free-solo-2-demo"
