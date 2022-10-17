@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom';
 import { URLS } from '../../Enums/Routers';
 import { ROUTES } from '../../Types/Urls';
 import { green } from '@mui/material/colors';
+import IMemberInfo from '../../Interfaces/IMemberInfo';
+import IMemberCreate from '../../Interfaces/IMemberCreate';
+import IMemberUpdate from '../../Interfaces/IMemberInfo';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -19,13 +22,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageNavigate) {
+function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
     const navigate = useNavigate();
     const [updateMember, { isError, isLoading, isSuccess, error }] = useUpdateMemberMutation();
     const onSaveProfileHandler = async () => {
         console.log("onSaveProfileHandler", formData);
-        const payload = await updateMember(formData).unwrap();
-        console.log("useUpdateMemberMutation", payload)
+        const payload = await updateMember(formData as IMemberInfo).unwrap();
+        console.log("useUpdateMemberMutation/payload", payload)
     }
     useEffect(() => {
         if (isError) {
@@ -33,27 +36,27 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageN
         }
         if (isSuccess) {
             console.log("SubmitProfile/Success");
-            navigate(`/${ROUTES.MEMBERS}`)
+            /* navigate(`/${ROUTES.MEMBERS}`) */
 
         }
 
     }, [isLoading])
-    
+
     const buttonSx = {
         ...(isSuccess && {
-          bgcolor: green[500],
-          '&:hover': {
-            bgcolor: green[700],
-          },
+            bgcolor: green[500],
+            '&:hover': {
+                bgcolor: green[700],
+            },
         }),
-      };
-    
+    };
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Item>
-                    <Box sx={{ m: 1, position: 'relative' }}>
+                        <Box sx={{ m: 1, position: 'relative' }}>
                             <Button
                                 variant="contained"
                                 sx={buttonSx}
@@ -76,9 +79,7 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageN
                                 />
                             )}
                         </Box>
-                        <button onClick={onSaveProfileHandler}>
-                        Save
-                    </button></Item>
+                    </Item>
                 </Grid>
                 <Grid item xs={6}>
                     <Item><button

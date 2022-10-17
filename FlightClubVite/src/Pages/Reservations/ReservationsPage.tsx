@@ -416,7 +416,7 @@ function ReservationsPage() {
 
   return (
     <div className='main' style={{ overflow: 'auto' }}>
-      <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />
+      { isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
 
       <Box sx={{ width: '100%', height: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>

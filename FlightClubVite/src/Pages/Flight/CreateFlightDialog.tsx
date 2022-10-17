@@ -6,7 +6,10 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { is } from "immer/dist/internal";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
+import InputCombo, { InputComboItem } from "../../Components/Buttons/InputCombo";
 import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
+import DevicesCombo from "../../Components/Devices/DevicesCombo";
+import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { IDeviceCombo, IMemberCombo } from "../../Interfaces/IFlightReservationProps";
@@ -18,8 +21,6 @@ export interface CreateFlightDialogProps {
   onClose: () => void;
   onSave: (value: IFlightCreate) => void;
   open: boolean;
-  memberCombo: IMemberCombo[];
-  devicesCombo : IDeviceCombo[];
 }
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -38,7 +39,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devicesCombo, ...other }: CreateFlightDialogProps) {
+function CreateFlightDialog({ value, onClose, onSave, open,  ...other }: CreateFlightDialogProps) {
 
   console.log("CreateFlightDialog/value", value)
 
@@ -46,12 +47,16 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
   const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<IDeviceCombo>();
-  const [selectedMember, setSelectedMember] = useState<IMemberCombo>();
+
+  const [devicesItems, setDevicesItem] = useState<InputComboItem[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<InputComboItem | undefined>();
+  const [membersItems, setMembersItem] = useState<InputComboItem[]>([]);
+  const [selectedMember, setSelectedMember] = useState<InputComboItem | undefined>();
+
   const onCloseDateError = () => {
     setAlert((prev) => ({ ...prev, open: false }))
   }
-  
+
   useEffect(() => {
     console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -74,14 +79,14 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
         let validation: IValidationAlertProps[];
         console.log("CreateFlightDialog/useEffect/data", (error as any).data)
         validation = (error as any).data.validation.errors.map((item: IValidation) => {
-          const alert : IValidationAlertProps  = {...(item as IValidationAlertProps)};
+          const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
           alert.onClose = handleOnCancel;
           alert.open = true
           return alert;
 
         })
         setValidationAlert(validation);
-        console.log("CreateFlightDialog/useEffect/validation", validation )
+        console.log("CreateFlightDialog/useEffect/validation", validation)
       }
 
     }
@@ -126,7 +131,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
     }).catch((err) => {
       console.log("CreateFlightDialoq/onSave/error", err.data.errors);
     });
-    
+
 
   }
   const handleMemberOnChange = (event: any, newValue: any) => {
@@ -145,6 +150,12 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
 
     setFlightCreate(prev => ({ ...prev, device: { _id: newValue._id, device_id: newValue.device_id } }))
     setSelectedDevice(newValue);
+  }
+  const onDeviceChanged = (item : InputComboItem) =>  {
+    setFlightCreate(prev => ({ ...prev, _id_device: item._id}))
+  }
+  const onMemberChanged = (item : InputComboItem) =>  {
+    setFlightCreate(prev => ({ ...prev, _id_member: item._id}))
   }
   return (
     <Dialog
@@ -202,16 +213,16 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
     </Grid> */}
           {validationAlert.map((item) => (
             <Grid item xs={12}>
-            <Item>
-            
-              <ValidationAlert {...item}/>
-            </Item>
-          </Grid> 
+              <Item>
+
+                <ValidationAlert {...item} />
+              </Item>
+            </Grid>
           ))}
-           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_start"
                 label="Engien start"
                 value={flightCreate.engien_start}
@@ -222,7 +233,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_stop"
                 label="Engien stop"
                 value={flightCreate.engien_stop}
@@ -233,7 +244,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="hobbs_start"
                 id="hobbs_start"
                 label="hobbs_start"
@@ -246,7 +257,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="hobbs_stop"
                 id="hobbs_stop"
                 label="hobbs_stop"
@@ -256,10 +267,10 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
               />
             </Item>
           </Grid>
-          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px" , width:"100%"}}>
+          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
             <Item>
               <TextField
-                sx={{ marginLeft: "0px" , width:"100%"}}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="description"
                 id="outlined-disabled"
                 label="Description"
@@ -269,57 +280,16 @@ function CreateFlightDialog({ value, onClose, onSave, open, memberCombo, devices
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-          <Item>
-            <Autocomplete
-              freeSolo
-              id="free-solo-2-demo"
-              disableClearable
-              options={devicesCombo}
-              getOptionLabel={option => (option as IDeviceCombo).device_id}
-              value={selectedDevice}
-              onChange={handleDeviceOnChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
-
-                  size={'small'}
-                  label="Device"
-                  InputProps={{
-                    ...params.InputProps,
-                    type: 'search'
-                  }}
-                />
-              )}
-            />
-          </Item>
-        </Grid>
-        <Grid item xs={12} md={6} xl={6}>
-          <Item>
-            <Autocomplete
-              freeSolo
-              id="free-solo-2-demo"
-              disableClearable
-              options={memberCombo}
-              getOptionLabel={option => `${(option as IMemberCombo).member_id} ${(option as IMemberCombo).family_name}`}
-              value={selectedMember}
-              onChange={handleMemberOnChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
-                  size={'small'}
-                  label="Member"
-                  InputProps={{
-                    ...params.InputProps,
-                    type: 'search',
-                  }}
-                />
-              )}
-            />
-
-          </Item>
-        </Grid>
+            <Item>
+              <DevicesCombo onChanged={onDeviceChanged}/>
+              
+            </Item>
+          </Grid>
+          <Grid item xs={12} md={6} xl={6}>
+            <Item>
+              <MembersCombo onChanged={onMemberChanged}/>
+            </Item>
+          </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>

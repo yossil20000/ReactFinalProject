@@ -14,95 +14,107 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { ClassNames } from '@emotion/react';
-import {useForm} from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
-import {useResetMutation} from '../../features/Auth/authApiSlice'
-import {IReset,IResetResult} from '../../Interfaces/API/ILogin';
+import { useResetMutation } from '../../features/Auth/authApiSlice'
+import { IReset, IResetResult } from '../../Interfaces/API/ILogin';
 import { ROUTES } from '../../Types/Urls';
 import { useEffect, useState } from 'react';
 const theme = createTheme();
 export default function ResetPage() {
 
   const navigate = useNavigate();
-  
-  const [reset,result]= useResetMutation();
-  const [isReset,setIsReset] = useState(false)
-  let resetProps : IReset = {
-    email:  ""
+
+  const [reset, result] = useResetMutation();
+  const [isReset, setIsReset] = useState(false)
+  let resetProps: IReset = {
+    email: "",
+    username: ""
   }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email')
+      email: data.get('email'),
+      username: data.get('username')
     });
-    resetProps.email =  data.get('email')?.toString() ===  undefined ? "" : data.get('email')?.toString() ;
-    try{
+    resetProps.email = data.get('email')?.toString() === undefined ? "" : data.get('email')?.toString();
+    resetProps.username = data.get('username')?.toString() === undefined ? "" : data.get('username')?.toString();
+    try {
       const paload = await reset(resetProps).unwrap();
-      
-      
-      if(paload.success){
+
+
+      if (paload.success) {
         console.log("Unwrap", paload.data.newPassword);
-        console.log("resetProps" , resetProps.email)
+        console.log("resetProps", resetProps.email)
         setIsReset(true);
       }
     }
-    catch(err)
-    {
+    catch (err) {
       console.log("submitForm/reset: err", err);
     }
-    console.log("ResetPageResult" , result)
+    console.log("ResetPageResult", result)
   };
- 
-  
+
+
   const renderReset = () => {
-    if(!isReset){
+    if (!isReset) {
       return (
         <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Reset Password
-            </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Your email account "
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-            <Typography component="h2" variant="subtitle2">
-              * new password will send to your email
-            </Typography>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Reset
-              </Button>
-              
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Reset Password
+              </Typography>
+              <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Your email account "
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="username"
+                  label="Your username account "
+                  name="username"
+                  autoComplete="username"
+                  autoFocus
+                />
+                <Typography component="h2" variant="subtitle2">
+                  * new password will send to your email
+                </Typography>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Reset
+                </Button>
+
+              </Box>
             </Box>
-          </Box>
-          
-        </Container>
-      </ThemeProvider>
+
+          </Container>
+        </ThemeProvider>
       )
     }
     else {
@@ -118,7 +130,7 @@ export default function ResetPage() {
     <div className='main'>
       {renderReset()}
 
-        
+
     </div>
   )
 }

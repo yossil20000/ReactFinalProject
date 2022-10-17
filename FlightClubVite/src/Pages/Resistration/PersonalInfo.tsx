@@ -9,6 +9,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useAppSelector } from '../../app/hooks';
 import { useGetMemberByIdQuery } from '../../features/Users/userSlice';
+import IMemberUpdate from '../../Interfaces/IMemberInfo';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -18,33 +19,48 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate) {
- 
- 
-  
+function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
+
+
+
   const handlePersonChange = (prop: any) => (event: any) => {
-    setFormData({ ...formData,  [prop]: event.target.value  });
+    setFormData({ ...formData, [prop]: event.target.value });
     console.log("formData", formData)
   };
   const handleContactChange = (prop: any) => (event: any) => {
     setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
     console.log("formData", formData)
   };
-  const handleTimeChange = (newValue: Date | null ) => {
-    if(newValue === null  )
+  const handleTimeChange = (newValue: Date | null) => {
+    if (newValue === null)
       return;
-    setFormData({...formData,date_of_birth:newValue});
+    setFormData({ ...formData, date_of_birth: newValue });
     console.log("formData", formData)
   };
- 
+  const handleemailChange = (prop: any) => (event: any) => {
+    setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
+    console.log("formData", formData)
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      
+
       <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Typography variant="h5" component="div" align='center'>
-        Personal Info
-      </Typography>
+        <Grid item xs={12}>
+          <Typography variant="h5" component="div" align='center'>
+            Personal Info
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Item>
+            <TextField sx={{ width: "90%", margin: "auto" }}
+              required
+              id="email"
+              label="Email"
+              value={formData.contact.email}
+              onChange={handleemailChange("email")}
+            />
+          </Item>
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>
@@ -81,15 +97,15 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <MobileDatePicker 
-              label="Date Of Birth"
-              inputFormat="MM/dd/yyyy"
-              value={formData.date_of_birth}
-              onChange={handleTimeChange}
-              renderInput={(params) => 
-              <TextField sx={{ width: "90%", margin: "auto" }} {...params} />}
-            />
+            <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <MobileDatePicker
+                label="Date Of Birth"
+                inputFormat="MM/dd/yyyy"
+                value={formData.date_of_birth}
+                onChange={handleTimeChange}
+                renderInput={(params) =>
+                  <TextField sx={{ width: "90%", margin: "auto" }} {...params} />}
+              />
             </LocalizationProvider>
           </Item>
         </Grid>

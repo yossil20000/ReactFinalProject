@@ -14,11 +14,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { ClassNames } from '@emotion/react';
-import {useForm} from 'react-hook-form'
-import {useLoginMutation} from '../../features/Auth/authApiSlice'
+import { useForm } from 'react-hook-form'
+import { useLoginMutation } from '../../features/Auth/authApiSlice'
 import ILogin, { ILoginResult } from '../../Interfaces/API/ILogin';
-import {setCredentials,selectCurrentUser,selectCurrentId} from "../../features/Auth/authSlice"
-import {useAppDispatch,useAppSelector} from '../../app/hooks'
+import { setCredentials, selectCurrentUser, selectCurrentId } from "../../features/Auth/authSlice"
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import { getFromLocalStorage, setLocalStorage } from '../../Utils/localStorage';
@@ -41,9 +41,9 @@ const theme = createTheme();
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [loging]= useLoginMutation();
+  const [loging] = useLoginMutation();
   const dispatch = useAppDispatch();
-  const [loginError,setLoginError] = React.useState<string[]>([]);
+  const [loginError, setLoginError] = React.useState<string[]>([]);
   const id = useAppSelector((state) => state.authSlice.member._id);
   console.log("id", id)
   console.log("id", selectCurrentId)
@@ -55,36 +55,37 @@ export default function LoginPage() {
       email: data.get('email'),
       password: data.get('password'),
     });
-    const loginProps : ILogin = {
-      password: data.get('password')?.toString() ===  undefined ? "" : data.get('password')?.toString() ,
-      email:  data.get('email')?.toString() === undefined ? "" : data.get('email')?.toString() ,
+    const loginProps: ILogin = {
+      password: data.get('password')?.toString() === undefined ? "" : data.get('password')?.toString(),
+      email: data.get('email')?.toString() === undefined ? "" : data.get('email')?.toString(),
+      username: data.get('username')?.toString() === undefined ? "" : data.get('username')?.toString()
     }
-    try{
+    try {
       const payload = await loging(loginProps)
-      .unwrap()
-      .then((payload) => {
-        console.log('fullfil' , payload);
-        let loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
-        console.log("localStorage:before", loging_info);
-        dispatch(setCredentials(payload.data));
-        setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO,payload.data);
-        loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
+        .unwrap()
+        .then((payload) => {
+          console.log('fullfil', payload);
+          let loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
+          console.log("localStorage:before", loging_info);
+          dispatch(setCredentials(payload.data));
+          setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO, payload.data);
+          loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
 
-        console.log("localStorage", loging_info);
-        navigate(`/${ROUTES.HOME}`);
-    })
-      .catch((err) => {console.log("rejected",err);
-      setLoginError(err.data.errors);
-      console.log("loginerr", loginError);
-      
-    });
+          console.log("localStorage", loging_info);
+          navigate(`/${ROUTES.HOME}`);
+        })
+        .catch((err) => {
+          console.log("rejected", err);
+          setLoginError(err.data.errors);
+          console.log("loginerr", loginError);
+
+        });
       //dispatch(setCredentials(payload));
-      
+
       //console.log("Unwrap", payload.data);
-      
+
     }
-    catch(err)
-    {
+    catch (err) {
       console.log("submitForm/login: err");
 
     }
@@ -92,7 +93,7 @@ export default function LoginPage() {
   };
   function renderError() {
     const reptiles = ["alligator", "snake", "lizard"];
-  
+
     return (
       <ol>
         {loginError.map((err) => (
@@ -104,75 +105,85 @@ export default function LoginPage() {
   return (
     <div className='main'>
 
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit1} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            { renderError()}
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-           
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="/reset" variant="body2">
-                  Forgot password?
-                </Link>
+      <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit1} noValidate sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              {renderError()}
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="/reset" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="/registration" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Link href="/registration" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
+          <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
+      </ThemeProvider>
     </div>
   )
 }

@@ -54,7 +54,7 @@ exports.deviceType_update = [
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, errors: errors, data: req.body });
+            res.status(401).json({ success: false, validation: errors, data: req.body });
             return;
         }
         else {
@@ -92,7 +92,7 @@ exports.deviceType_create = [
         log.info(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, errors: errors, data: req.body });
+            res.status(401).json({ success: false, validation: errors, data: req.body });
             return;
         }
         else {

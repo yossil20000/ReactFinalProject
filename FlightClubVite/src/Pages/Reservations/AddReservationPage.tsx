@@ -12,7 +12,7 @@ import { useDeleteReservationMutation, useCreateReservationMutation, useFetchAll
 import IDevice from '../../Interfaces/API/IDevice';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
-import IReservation, { CreateReservationToApi, IReservationCreate } from '../../Interfaces/API/IReservation';
+import IReservation, { CreateReservationToApi, IReservationCreate, IReservationCreateApi } from '../../Interfaces/API/IReservation';
 import InputCombo, { InputComboItem } from '../../Components/Buttons/InputCombo';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -29,19 +29,21 @@ function AddReservationPage() {
   let content: any;
   const [createReservation] = useCreateReservationMutation();
   const { refetch } = useFetchAllReservationsQuery();
-  const { data: membersCombo, isError, isLoading, error } = useFetchMembersComboQuery();
+  const { data: members, isError, isLoading, error } = useFetchMembersComboQuery();
   const { data: devices, isError: isDeviceError, isLoading: isDeviceLoading, error: deviceError } = useFetchAllDevicesQuery();
-  const [devicesCombo, setDevices] = useState<IDeviceCombo[]>([]);
+
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<IDeviceCombo>();
-  const [selectedMember, setSelectedMember] = useState<IMemberCombo>();
-  let initialReservation: IReservationCreate = {
+  const [selectedDevice, setSelectedDevice] = useState<InputComboItem | undefined>();
+  const [membersItems,setMembersItem] = useState<InputComboItem[]>([]);
+  const [selectedMember, setSelectedMember] = useState<InputComboItem | undefined>();
+  let initialReservation: IReservationCreateApi = {
     date_from: new Date(),
     date_to: new Date(),
-    member: undefined,
-    device: undefined
+    _id_member: "",
+    _id_device: ""
   }
-  const [reservation, setReservation] = useState<IReservationCreate>(initialReservation);
+ 
+  const [reservation, setReservation] = useState<IReservationCreateApi>(initialReservation);
   const navigate = useNavigate();
   const handleOnCancel = () => {
 
@@ -49,10 +51,14 @@ function AddReservationPage() {
   }
   const handleOnSave = async () => {
     console.log(`navigate("/${ROUTES.RESERVATION}"`)
-    console.log("Save/reservation", reservation)
+    console.log("Save/reservation", reservation,selectedMember,selectedDevice)
     console.log("Save/reservation", reservation.date_from?.toUTCString())
+    const addReservation = reservation;
+    addReservation._id_device = selectedDevice?._id === undefined ? "" : selectedDevice?._id;
+    addReservation._id_member = selectedMember?._id === undefined ? "" : selectedMember?._id;
 
-    const payload = await createReservation(CreateReservationToApi(reservation));
+    console.log("Save/reservation/afterupdate", addReservation)
+    const payload = await createReservation(addReservation);
     console.log("createReservation", payload);
     refetch();
     navigate(`/${ROUTES.RESERVATION}`)
@@ -65,6 +71,14 @@ function AddReservationPage() {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     setReservation(prev => ({ ...prev, date_to: newDate }))
   };
+ 
+  const onMemberChanged = (item : InputComboItem) =>  {
+    setReservation(prev => ({ ...prev, _id_member: item._id}))
+  }
+
+  const onDeviceChanged = (item : InputComboItem) =>  {
+    setReservation(prev => ({ ...prev, _id_device: item._id}))
+  }
   const handleMemberOnChange = (event: any, newValue: any) => {
     console.log("Reservation", reservation);
     console.log("member/target", event.target);
@@ -94,22 +108,24 @@ function AddReservationPage() {
       content = RenderError()
       return;
     }
-    console.log("AddReservation/ membersCombo", membersCombo?.data?.map((i) => console.log(i._id)))
-    if (membersCombo?.data)
-      content = RenderAddReservation({ props: membersCombo?.data });
-  }, [membersCombo?.data])
+   
+/*     if (membersCombo?.data)
+      content = RenderAddReservation({ props: membersCombo?.data }); */
+      let items  =   members?.data.map((item) => membersToItemCombo(item));
+    if (items !== undefined)
+      setMembersItem(items);
+  }, [members?.data])
+
   useEffect(() => {
-    let d = devices?.data.map((item) => devicesToDeviceCombo(item));
-    if (d !== undefined)
-      setDevices(d);
+    console.log("AddReservation/ Devices.data", devices?.data)
+    
     let items  =   devices?.data.map((item) => devicesToItemCombo(item));
+    console.log("AddReservation/ DeviceItem", items)
     if (items !== undefined)
       setDevicesItem(items);
   }, [devices?.data])
 
-  const devicesToDeviceCombo = (input: IDevice): IDeviceCombo => {
-    return { device_id: input.device_id, _id: input._id }
-  }
+
   const devicesToItemCombo = (input: IDevice): InputComboItem => {
     return {  lable: input.device_id, _id: input._id }
   }
@@ -118,15 +134,18 @@ function AddReservationPage() {
       <div>Loading</div>
     )
   }
+  const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
+    return {  lable: `${input.family_name} ${input.member_id}`, _id: input._id }
+  }
+
   const RenderError = (): any => {
     return (
       <div>
-        <div>Error</div>{membersCombo?.errors.map((e) => (<li>{e}</li>))}
+        <div>Error</div>{members?.errors.map((e) => (<li>{e}</li>))}
       </div>
     )
   }
-  function RenderAddReservation(props: { props: IMemberCombo[] }): any {
-    const memberCombo = props.props;
+  function RenderAddReservation(): any {
 
 
     return (
@@ -174,58 +193,16 @@ function AddReservationPage() {
         </Grid>
         <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
           <Item>
-            <InputCombo items={devicesItems} handleComboChange={handleDeviceOnChange} title="Devices"/>
-            <Autocomplete
-              freeSolo
-              id="free-solo-2-demo"
-              disableClearable
-              options={devicesCombo}
-              getOptionLabel={option => (option as IDeviceCombo).device_id}
-              value={selectedDevice}
-              onChange={handleDeviceOnChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
-
-                  size={'small'}
-                  label="Device"
-                  InputProps={{
-                    ...params.InputProps,
-                    type: 'search'
-                  }}
-                />
-              )}
-            />
+            <InputCombo onSelectedItem={onDeviceChanged} selectedItem={selectedDevice} items={devicesItems} /* handleComboChange={handleDeviceOnChange} */ title="Devices"/>
           </Item>
         </Grid>
         <Grid item xs={12} md={6} xl={6}>
           <Item>
-            <Autocomplete
-              freeSolo
-              id="free-solo-2-demo"
-              disableClearable
-              options={memberCombo}
-              getOptionLabel={option => `${(option as IMemberCombo).member_id} ${(option as IMemberCombo).family_name}`}
-              value={selectedMember}
-              onChange={handleMemberOnChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
-                  size={'small'}
-                  label="Member"
-                  InputProps={{
-                    ...params.InputProps,
-                    type: 'search',
-                  }}
-                />
-              )}
-            />
+          <InputCombo onSelectedItem={onMemberChanged} selectedItem={selectedMember} items={membersItems} /* handleComboChange={handleDeviceOnChange} */ title="Members"/>
 
           </Item>
         </Grid>
-        <Grid item xs={12} md={6} xl={6}>
+        <Grid item xs={12} md={6} xl={6} >
           <Item><Button variant="outlined" sx={{ width: "100%" }}
             onClick={handleOnCancel}>
 
@@ -245,7 +222,7 @@ function AddReservationPage() {
 
     if (isLoading && isDeviceLoading)
       return <RenderLoading />
-    return <RenderAddReservation props={membersCombo?.data === undefined ? [] : membersCombo?.data} />
+    return <RenderAddReservation  />
 
   }
   return (

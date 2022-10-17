@@ -11,10 +11,10 @@ const { IsPasswordValid, passwordRequirement } = require('../Services/passwordGe
 exports.signin = function (req, res, next) {
     const email = req.body.email;
     const password = req.body.password;
+    const username = req.body.username;
+    log.info(`login: ${email} ${password} ${username} `);
 
-    log.info(`login: ${email} ${password} `);
-
-    Member.findOne({ "contact.email": email }, (err, member) => {
+    Member.findOne({ "username": username,"contact.email": email }, (err, member) => {
         if (err) {
             console.info(`${email} Access Denied ${err}`)
         }
@@ -25,7 +25,7 @@ exports.signin = function (req, res, next) {
                 }
                 else if (isMatch) {
 
-                    console.info(`${email} Access Pemitted`)
+                    console.info(`${email} ${username} Access Pemitted`)
                     log.info(`${member.date_of_birth_formatted}`)
 
                     const payLoad = authJWT.payload;
@@ -80,16 +80,17 @@ exports.signin = function (req, res, next) {
 exports.reset = function (req, res, next) {
     console.log("reset.body", req.body);
     const email = req.body.email;
+    const username = req.body.username;
 
     console.log("reset", email);
-    Member.findOne({ "contact.email": email }, (err, member) => {
+    Member.findOne({ "username": username,"contact.email": email }, (err, member) => {
         if (err) {
             console.info(`${email} Not Found ${err}`)
             return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
         }
         if (member) {
             log.info(`phone: ${member.code_area_phone}`)
-            var password = passGen.passwordGenerator(8);
+            var password = passGen.getNewPassword(10);
             member.password = member.hash(password);
             member.updateOne({ password: member.password }).exec((err, result) => {
                 if (err) {

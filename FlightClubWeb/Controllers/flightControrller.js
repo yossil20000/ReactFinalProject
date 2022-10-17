@@ -153,8 +153,8 @@ exports.flight_update = [
 ]
 
 exports.flight_create = [
-  body('device_id').trim().isLength(24).escape().withMessage('device_id must be valid 24 characters'),
-  body('member_id').trim().isLength(24).escape().withMessage('member_id must be valid 24 characters'),
+  body('_id_device').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+  body('_id_member').trim().isLength(24).escape().withMessage('_id_member must be valid 24 characters'),
   body('hobbs_stop', "Value must be greater then zero").custom((value) => {
     if (Number(value) < 0) return false;
     return true;
@@ -189,22 +189,22 @@ exports.flight_create = [
   async (req, res, next) => {
     try {
 
-      
+      log.info("flight_create", req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(401).json({ success: false, errors: [errors], data: req.body });
+        return res.status(401).json({ success: false, validation: errors, data: req.body });
       }
-      const member = await Member.findById(req.body.member_id).exec();
-      //log.info("flight/find/member",member,req.body.member_id)
+      const member = await Member.findById(req.body._id_member).exec();
+      //log.info("flight/find/member",member,req.body._id_member)
       if (member === null | member === undefined) {
         return res.status(401).json({ success: false, errors: ["Member Not Exist"], data: [] })
       }
-      const device = await Device.findById(req.body.device_id).exec();
+      const device = await Device.findById(req.body._id_device).exec();
       if (device === null | device === undefined) {
         return res.status(401).json({ success: false, errors: ["Device Not Exist"], data: [] })
       }
 
-      const maxValues = await deviceMaxValues(req.body.device_id);
+      const maxValues = await deviceMaxValues(req.body._id_device);
       let newFlight = new Flight({
         date_from: req.body.date_from,
         date_to: req.body.date_to,
@@ -218,7 +218,7 @@ exports.flight_create = [
       })
       log.info("newReservation", newFlight._doc);
 
-      const flightValid = await isFlightValid(req.body.device_id,req.body);
+      const flightValid = await isFlightValid(req.body._id_device,req.body);
 
       if (flightValid) {
         const session = await mongoose.startSession();
@@ -230,10 +230,10 @@ exports.flight_create = [
             const hobbs_meter = (maxValues?.length == 0 || req.body.hobbs_stop > maxValues[0]?.max_hobbs_stop) ? req.body.hobbs_stop : maxValues[0].max_hobbs_stop;
             const engien_meter = (maxValues?.length == 0 || req.body.engien_stop > maxValues[0]?.max_engien_stop ) ? req.body.engien_stop : maxValues[0].max_engien_stop;    
             
-            const deviceUpdate = await Device.updateOne({ _id: req.body.device_id }, { $addToSet: { flights: newFlight._doc } ,engien_meter: engien_meter ,hobbs_meter: hobbs_meter}, { session });
+            const deviceUpdate = await Device.updateOne({ _id: req.body._id_device }, { $addToSet: { flights: newFlight._doc } ,engien_meter: engien_meter ,hobbs_meter: hobbs_meter}, { session });
        
             log.info("flightSaveResult/Device.updateOne", deviceUpdate);
-            const memeberUpdate = await Member.updateOne({ _id: req.body.member_id }, { $addToSet: { flights: newFlight._doc } }, { session });
+            const memeberUpdate = await Member.updateOne({ _id: req.body._id_member }, { $addToSet: { flights: newFlight._doc } }, { session });
             log.info("flightSaveResult/Member.updateOne", memeberUpdate);
             if (memeberUpdate.acknowledged == false || deviceUpdate.acknowledged == false) {
               await session.abortTransaction();
@@ -275,11 +275,11 @@ exports.flight_create = [
 exports.flight_delete = [
   body("_id").trim().isLength(24).withMessage("_id must be specified length 24"),
   async (req, res, next) => {
-    const validationError = validationResult(req);
+    const errors = validationResult(req);
     const session = await mongoose.startSession();
     try {
-      if (!validationError.isEmpty()) {
-        return res.status(401).json({ success: false, errors: [validationError], data: req.body });
+      if (!errors.isEmpty()) {
+        return res.status(401).json({ success: false, validation: errors, data: req.body });
       }
       const flight = await Flight.findById(req.body._id).exec();
       if(flight == null){

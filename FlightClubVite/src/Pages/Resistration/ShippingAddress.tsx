@@ -2,6 +2,7 @@ import { Box, Grid, Paper, TextField } from '@mui/material';
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
+import IMemberUpdate from '../../Interfaces/IMemberInfo';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -11,7 +12,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavigate) {
+function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavigate<IMemberUpdate>) {
   const handleContactChange = (prop: any) => (event: any) => {
     setFormData(prev => ({...prev, contact: { ...prev.contact, shipping_address: {...prev.contact.shipping_address, [prop]: event.target.value}} }));
     console.log("formData", formData)

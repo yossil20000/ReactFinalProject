@@ -9,11 +9,13 @@ import SubmitRegistration from './SubmitRegistration';
 import HomeAddress from './HomeAddress';
 import ShippingAddress from './ShippingAddress';
 import { useAppSelector } from '../../app/hooks';
-import { Role } from '../../Interfaces/API/IMember';
+import IMember, { Role } from '../../Interfaces/API/IMember';
+import IMemberCreate from '../../Interfaces/IMemberCreate';
 
 function RegistrationPage() {
   const login = useAppSelector((state) => state.authSlice);
-  const initialForm: IMemberInfo = {
+  const initialForm: IMemberCreate = {
+    _id: '',
     member_id: '',
     family_name: '',
     first_name: '',
@@ -42,9 +44,11 @@ function RegistrationPage() {
       email: ''
     },
     date_of_birth: new Date(),
-    password: "1234",
-    _id: '',
-    role: {roles:[Role.guest]}
+    password: "",
+    username: "",
+    role: {
+      roles: [Role.user]
+  }
   }
   const steps = [
     '25%',
@@ -54,7 +58,7 @@ function RegistrationPage() {
     'Submit',
   ];
   const [page, setPage] = useState(0);
-  const [formData, setFormData] = useState<IMemberInfo>(initialForm);
+  const [formData, setFormData] = useState<IMemberCreate>(initialForm);
   console.log("formData", login.member)
   const numPage = 5;
   const componentList = [

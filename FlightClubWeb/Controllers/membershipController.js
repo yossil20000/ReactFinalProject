@@ -1,9 +1,7 @@
 const Membership = require('../Models/membership');
 
-const async = require('async');
 const log = require('debug-level').log('membershipController');
 
-var {body,validationResult} = require('express-validator');
 
 exports.membership_list = function(req,res,next){
     log.info("membership_list");

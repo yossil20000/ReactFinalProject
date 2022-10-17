@@ -79,7 +79,7 @@ exports.reservation_delete_m2m= async function(req,res,next){
 		body("device_id").trim().isLength({min:1}).withMessage("device_id must be specified");
 		const errors = validationResult(req);
 		if(!errors.isEmpty()) {
-			return res.status(401).json({success: false, errors : errors, data: []});
+			return res.status(401).json({success: false, validation : errors, data: []});
 		};
 		console.log("reservation_delete/id" , req.body);
 
@@ -106,7 +106,7 @@ exports.reservation_delete= function(req,res,next){
 		body("device_id").trim().isLength({min:1}).withMessage("device_id must be specified");
 		const errors = validationResult(req);
 		if(!errors.isEmpty()) {
-			return res.status(401).json({success: false, errors : errors, data: []});
+			return res.status(401).json({success: false, validation : errors, data: []});
 		};
 		console.log("reservation_delete/id" , req.body);
 		const flight2delete =  FlightReservation.findById(req.body._id,(err,doc) => {
@@ -161,8 +161,9 @@ exports.reservation_delete= function(req,res,next){
 }
 exports.reservation_create = async function(req,res,next) {
 	try{
-		body('device_id').trim().isLength({min:1}).escape().withMessage('device_id must be valid'),
-		body('member_id').trim().isLength({min:1}).escape().withMessage('member_id must be valid'),
+		log.info("reservation_create/body", req.body)
+		body('_id_device').trim().isLength(24).escape().withMessage('device_id must be valid'),
+		body('_id_member').trim().isLength(24).escape().withMessage('member_id must be valid'),
 		body('date_from','Invalid date_from').trim().isISO8601().toDate(),
 		body('date_to','Invalid date_to').trim().isISO8601().toDate(),
 		body('date_to','date_to must be greater then date_from').trim().isISO8601().toDate()
@@ -173,10 +174,10 @@ exports.reservation_create = async function(req,res,next) {
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, errors : [errors], data: req.body});
+			return res.status(401).json({success: false, validation : errors, data: req.body});
 		}
-		const member = await Member.findById(req.body.member_id).exec();
-		const device = await Device.findById(req.body.device_id).exec();
+		const member = await Member.findById(req.body._id_member).exec();
+		const device = await Device.findById(req.body._id_device).exec();
 		if(member == null || device == null)
 		{
 			res.status(401).json({success: false, errors : ["Member or Device Not Exist"], data: []});
@@ -185,8 +186,8 @@ exports.reservation_create = async function(req,res,next) {
 		let newReservation = new FlightReservation({
 			date_from: req.body.date_from,
 			date_to: req.body.date_to,
-			member: req.body.member_id,
-			device: req.body.device_id
+			member: req.body._id_member,
+			device: req.body._id_device
 		});
 		log.info("newReservation", newReservation._doc);
 		const found = await FlightReservation.findOne({ $and: [
@@ -262,7 +263,7 @@ exports.reservation_create_old = [
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, errors : errors, data: req.body});
+			return res.status(401).json({success: false, validation : errors, data: req.body});
 		}
 		let newReservation = new FlightReservation({
 			date_from: req.body.date_from.toUTCString(),
@@ -317,7 +318,7 @@ exports.reservation_update = [
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, errors : errors, data: req.body});
+			return res.status(401).json({success: false, validation : errors, data: req.body});
 		}
 		else{
 			FlightReservation.findOneAndUpdate(req.body._id , {date_from: req.body.date_from, date_to: req.body.date_to},(err,results) => {

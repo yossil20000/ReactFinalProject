@@ -12,6 +12,8 @@ import { authSlice, selectCurrentId } from '../../features/Auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import SubmitProfile from './SubmitProfile';
 import { Role } from '../../Interfaces/API/IMember';
+import IMemberCreate from '../../Interfaces/IMemberCreate';
+import IMemberUpdate from '../../Interfaces/IMemberInfo';
 
 function ProfilePage() {
   const steps = [
@@ -21,7 +23,7 @@ function ProfilePage() {
     'Submit',
   ];
 
-  const initialForm: IMemberInfo = {
+  const initialForm: IMemberUpdate = {
     _id: "",
     member_id: '',
     family_name: '',
@@ -50,16 +52,13 @@ function ProfilePage() {
       },
       email: ''
     },
-    date_of_birth: new Date(),
-    role: {
-      roles: [Role.guest]
-    }
+    date_of_birth: new Date()
   }
   const login = useAppSelector((state) => state.authSlice);
   const { data: member, isError,isLoading,isSuccess,error } = useGetMemberByIdQuery(login.member._id);
 
   const [page, setPage] = useState(0);
-  const [formData, setFormData] = useState<IMemberInfo>(initialForm);
+  const [formData, setFormData] = useState<IMemberUpdate>(initialForm);
   console.log("formData", login.member)
   const numPage = 4;
   const componentList = [
@@ -73,10 +72,11 @@ let content;
   useEffect(() => {
 
     if (member?.data) {
-      setFormData(member.data);
-      console.log('UseEffect/rows', member.data);
+      setFormData(member.data as IMemberCreate);
+      console.log('UseEffect/ProfilePage', member.data);
     }
-  }, [member?.data])
+  }, [member?.data]);
+  
   useEffect(() => {
 
   },[])

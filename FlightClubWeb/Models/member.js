@@ -38,7 +38,6 @@ var MemberSchema = new Schema({
         email: {
             type: String,
             lowercase: true ,
-            index: {unique:[true , "email already exist in database"]},
             trim: true,
             required: [true,"email not provided"],
             validate:{
@@ -49,6 +48,12 @@ var MemberSchema = new Schema({
             }
         }
     },
+    
+    username: {
+        type: String,
+         required: true,
+         index: {unique:[true , "username already exist in database"]},
+        },
     password: {type: String, required: true},
     member_type:{type:String, enum:['Normal','Member'] , default: 'Normal'},
     status:{type:String, enum:["Active","Suspended","Removed"], default: "Active"},

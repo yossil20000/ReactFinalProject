@@ -123,9 +123,9 @@ const address = {
 /* const roles = new Role({
     roles: [CE.ROLES[1], CE.ROLES[3]]
 }); */
-function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,password,membership,roles ,cb) {
+function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,password,membership,roles,username ,cb) {
     let memberShip = new Membership();
-    memberdetail = { first_name: first_name, family_name: family_name, member_id: memberId ,
+    memberdetail = { username: username,first_name: first_name, family_name: family_name, member_id: memberId ,
         contact:{
             email: email,
             phone:{number: "9050740"},
@@ -169,19 +169,19 @@ function createMembers(cb) {
             const roles = new Role({
                 roles: [CE.ROLES[1], CE.ROLES[4]]
             })
-            memberCreate("Yosef", "Levy", "1965-08-21", "2011-11-01", "159828392","yos.1965@gmail.com", "password1",memberships[0],roles, callback);
+            memberCreate("Yosef", "Levy", "1965-08-21", "2011-11-01", "159828392","yos.1965@gmail.com", "Pass1000@",memberships[0],roles,"User1000@", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[1], CE.ROLES[3]]
             })
-            memberCreate("Sting", "TV", "1966-09-22", "2012-12-02", "259828392", 'stingTV2010300@gmail.com',"password2",memberships[0], roles,callback);
+            memberCreate("Sting", "TV", "1966-09-22", "2012-12-02", "259828392", 'stingTV2010300@gmail.com',"Pass2000@",memberships[0], roles,"User2000@",callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[0]]
             })
-            memberCreate("Pilot", "Pilot", "1966-09-22", "2012-12-02", "359828392", 'tyy130500@gmail.com',"password2", memberships[0], roles,callback);
+            memberCreate("Pilot", "Pilot", "1966-09-22", "2012-12-02", "359828392", 'tyy130500@gmail.com',"Pass3000@", memberships[0], roles,"User3000@",callback);
         }
     ],
         cb

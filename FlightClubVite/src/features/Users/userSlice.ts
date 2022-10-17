@@ -6,6 +6,8 @@ import IMember from "../../Interfaces/API/IMember";
 import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import { IMemberCombo } from "../../Interfaces/IFlightReservationProps";
+import IMemberUpdate from "../../Interfaces/IMemberInfo";
+import IMemberCreate from "../../Interfaces/IMemberCreate";
 
 
 interface Role {
@@ -98,7 +100,7 @@ export const apiSlice = createApi({
                 }),
                 invalidatesTags: ["Members"]
             }),
-            createMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMember>({
+            createMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMemberCreate>({
                 query: (data) => ({
                     url: `/${URLS.MEMBERS}`,
                     method: "POST",
@@ -107,7 +109,7 @@ export const apiSlice = createApi({
                 }),
                 invalidatesTags: ["Members"]
             }),
-            updateMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMemberInfo>({
+            updateMember: builder.mutation<IResultBaseSingle<IMemberInfo>,IMemberUpdate>({
                 query: (data) => ({
                     url: `/${URLS.MEMBERS}`,
                     method: "PUT",

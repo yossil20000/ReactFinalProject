@@ -1,6 +1,6 @@
 import { Role } from "./API/IMember";
 
-export default interface IMemberInfo{
+export default interface IMemberUpdate{
     _id:string;
     member_id: string
     family_name: string
@@ -30,8 +30,4 @@ export default interface IMemberInfo{
         email: string
     },
     date_of_birth?: Date;
-    
-    role: {
-        roles: Role[]
-    };
 }

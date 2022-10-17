@@ -14,6 +14,7 @@ const role = require('../Models/role');
 exports.member_list = function (req, res, next) {
     log.info("member_list");
     Member.find()
+        .select('-username -password')
         .sort([['family_name', 'ascending']])
         .exec(function (err, list_members) {
             if (err) { return next(err); }
@@ -22,7 +23,7 @@ exports.member_list = function (req, res, next) {
 }
 exports.member_detail = function (req, res, next) {
     log.info(`member_detail`);
-    Member.findById(req.params.id)
+    Member.findById(req.params.id).select('-username -password')
         .exec(function (err, member) {
             if (err) { return next(err); }
             res.status(201).json({ success: true, errors: [], data: member });
@@ -58,21 +59,20 @@ exports.member_active = function (req, res, next) {
         member: function (callback) {
             Member.findById(req.params.memberId).exec(callback);
         }
-       
+
     }, function (err, results) {
         if (err) { return next(err); }
-       if(results)
-       {
+        if (results) {
             results.status = "Suspended";
-            results.save(function(err) {
-                if(err){
+            results.save(function (err) {
+                if (err) {
                     res.status(401).json({ success: false, errors: [err], data: [] });
                 }
-                else{
+                else {
                     res.status(201).json({ success: true, errors: [], data: results });
                 }
             })
-       }
+        }
     });
 }
 exports.member_update = [
@@ -86,7 +86,10 @@ exports.member_update = [
         const errors = validationResult(req);
         log.info(req.body);
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, errors: errors, data: req.body });
+            res.status(401).json({ success: false, validation: errors, data: req.body });
+        }
+        else if (req.body.username || req.body.password) {
+            res.status(401).json({ success: false, errors: ["username / password not allowed"], data: req.body });
         }
         else {
             async.parallel(
@@ -117,18 +120,25 @@ exports.member_create = [
     body('contact.email').trim().isEmail().withMessage('email is invalid'),
     body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601().toDate(),
     body('date_of_join', 'Invalid date_of_join').optional({ checkFalsy: true }).isISO8601().toDate(),
+    body('username', `8-12 characters,  at list one digit lower & upper case. not include ( <>?$&*%()+- )`).custom((value) => {
+        return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,12}$/.test(value);
+    }),
+    body('password', `min 8 characters,  at list one digit lower & upper case. not include ( <>?$&*%()+- )`).custom((value) => {
+        return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,}$/.test(value);
+    }),
     (req, res, next) => {
+        log.info("member_create", req.body)
         const errors = validationResult(req);
         log.info(req.body);
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, errors: errors, data: req.body });
+            res.status(401).json({ success: false, validation: errors, data: req.body });
         }
         else {
             const user = req.body;
-            Member.findOne({ "contact.email": user.contact.email }, (err, member) => {
-               
+            Member.findOne({ "username": user.username }, (err, member) => {
+
                 if (member) {
-                    return res.status(401).json({ success: false, errors: ["email already registered"], message: "email already registered" });
+                    return res.status(401).json({ success: false, errors: ["username already registered"], message: "email already registered" });
                 }
                 else {
                     const member = new Member(
@@ -137,30 +147,30 @@ exports.member_create = [
                             family_name: user.family_name,
                             member_id: req.body.member_id,
                             date_of_birth: user.date_of_birth,
-                            date_of_join: user.date_of_join === undefined ? null : user.date_of_join,
-                            password: user.password === undefined ? passGen.passwordGenerator(8) : user.password,
+                            date_of_join: user.date_of_join === undefined ? new Date() : user.date_of_join,
+                            password: user.password,
                             contact: user.contact,
-                           
+                            username: user.username,
                             role: user.role,
 
                         });
                     console.log("membertosave", member);
-                    member.save((err,result) => {
+                    member.save((err, result) => {
                         if (err) {
-                             return res.status(401).json({ success: false, errors: [err],  message: "Failed To Save" , data: member })
+                            return res.status(401).json({ success: false, errors: [err], message: "Failed To Save", data: member })
                         }
-                        if(result){
+                        if (result) {
                             console.log("membertosave/Result", result);
                             console.log("member.contact.email", member.contact.email)
                             mail.SendMail(user.contact.email, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
-                            .then((result) => {
-                                console.log("Send Mail to:", user.contact.email);
-                                res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail" , data: member })
-                            }).catch((err => {
-                                res.status(401).json({ success: false, errors: [err],  message: "Failed To send Initial passwors to your mail" , data: member })
-                            }));
+                                .then((result) => {
+                                    console.log("Send Mail to:", user.contact.email);
+                                    res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail", data: member })
+                                }).catch((err => {
+                                    res.status(401).json({ success: false, errors: [err], message: "Failed To send Initial passwors to your mail", data: member })
+                                }));
                         }
-                        
+
                     })
                 }
 

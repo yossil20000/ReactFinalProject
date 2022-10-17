@@ -1,9 +1,11 @@
-import { Box, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
-import  { useState } from 'react'
+import { Box, Container, CssBaseline, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
+import { useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import IMemberCreate from '../../Interfaces/IMemberCreate';
+import checkPassword, { checkUsername, ICheckPassword, IsUsernaaameValid } from '../../Utils/registerUtils';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -13,17 +15,32 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-
-function Register({ numPage, page, setPage, formData, setFormData }: IPageNavigate) {
-
+const defaultCheckPassword: ICheckPassword = {
+    valid: false,
+    validation: []
+}
+function Register({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberCreate>) {
+    const [verifiedPassword, setVerifiedPassword] = useState("");
+    const [isPasswordValid, setIsPasswordValid] = useState<ICheckPassword>(defaultCheckPassword);
+    const [isusernameValid, setIsUsernameValid] = useState<ICheckPassword>(defaultCheckPassword);
     const handleChange = (prop: any) => (event: any) => {
-        setFormData({ ...formData, [prop]: event.target.value });
+
+        if (prop == "verified_password") {
+            setIsPasswordValid(checkPassword(formData.password, event.target.value))
+            setVerifiedPassword(event.target.value);
+        }
+        else {
+            if (prop == "username") {
+                setIsUsernameValid(checkUsername(event.target.value))
+            }
+            if (prop == 'password') {
+                setIsPasswordValid(checkPassword(event.target.value, verifiedPassword))
+            }
+            setFormData({ ...formData, [prop]: event.target.value });
+        }
 
     };
-    const handleemailChange = (prop: any) => (event: any) => {
-        setFormData({ ...formData, contact:{...formData.contact, [prop]: event.target.value}  });
-        console.log("formData", formData)
-    };
+
     const [values, setValues] = useState({
         showPassword: false
     })
@@ -35,15 +52,33 @@ function Register({ numPage, page, setPage, formData, setFormData }: IPageNaviga
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
+
                 <Grid item xs={12} md={12}>
                     <Item>
-                        <TextField sx={{ width: "90%", margin: "auto" }}
-                            required
-                            id="email"
-                            label="Email"
-                            value={formData.contact.email}
-                            onChange={handleemailChange("email")}
-                        />
+                        <FormControl sx={{ m: 1, width: '90%', margin: "auto" }} variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-username">Username</InputLabel>
+                            <OutlinedInput
+                                id="username"
+                                type={true ? 'text' : 'password'}
+                                value={formData.username}
+                                onChange={handleChange('username')}
+                                error={!isusernameValid.valid}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPasssword}
+                                            onMouseDown={handleClickShowPasssword}
+                                            edge="end"
+                                        >
+                                            {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Username"
+                            />
+                            <FormHelperText id="outlined-weight-helper-text">{isusernameValid.validation.join(" , ")}</FormHelperText>
+                        </FormControl>
                     </Item>
                 </Grid>
                 <Grid item xs={12} md={12}>
@@ -51,10 +86,11 @@ function Register({ numPage, page, setPage, formData, setFormData }: IPageNaviga
                         <FormControl sx={{ m: 1, width: '90%', margin: "auto" }} variant="outlined">
                             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-password"
+                                id="password"
                                 type={values.showPassword ? 'text' : 'password'}
                                 value={formData.password}
                                 onChange={handleChange('password')}
+                                error={!isPasswordValid.valid}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -75,12 +111,13 @@ function Register({ numPage, page, setPage, formData, setFormData }: IPageNaviga
                 <Grid item xs={12} md={12}>
                     <Item>
                         <FormControl sx={{ m: 1, width: '90%', margin: "auto" }} variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password">Verified Password</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-password"
+                                id="verified-password"
                                 type={values.showPassword ? 'text' : 'password'}
-                                value={formData.password}
-                                onChange={handleChange('password')}
+                                value={verifiedPassword}
+                                onChange={handleChange('verified_password')}
+                                error={!isPasswordValid.valid}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -93,8 +130,9 @@ function Register({ numPage, page, setPage, formData, setFormData }: IPageNaviga
                                         </IconButton>
                                     </InputAdornment>
                                 }
-                                label="Password"
+                                label="Verified Password"
                             />
+                            <FormHelperText id="outlined-weight-helper-text">{isPasswordValid.validation.join(" , ")}</FormHelperText>
                         </FormControl>
                     </Item>
                 </Grid>
@@ -108,6 +146,7 @@ function Register({ numPage, page, setPage, formData, setFormData }: IPageNaviga
                 </Grid>
                 <Grid item xs={6}>
                     <Item><button
+                        disabled={!(isPasswordValid.valid && isusernameValid.valid)}
                         onClick={() => {
                             setPage(page + 1 == numPage ? 0 : page + 1);
                         }}>

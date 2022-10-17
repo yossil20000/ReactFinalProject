@@ -48,8 +48,11 @@ export default interface IMember{
     },
     status: Status
     password: string
+    username: string;
     member_type: MemberType
-    role: Role[]
+    role: {
+        roles: Role[]
+    };
     date_of_birth: Date
     date_of_join: Date
     date_of_leave: Date

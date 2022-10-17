@@ -12,25 +12,31 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import PersonIcon from '@mui/icons-material/Person';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate } from 'react-router-dom';
 import { URLS } from '../../Enums/Routers';
 import { ROUTES } from '../../Types/Urls';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logOut } from '../../features/Auth/authSlice';
 import { setLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
+import RollIcon from '../../Components/Buttons/RollIcon';
+import UserIcon from '../../Components/Buttons/UserIcon';
 
 type page = {
   name: string,
   route: string
 }
-const pages : page[] = [
-  {name:'Home',route: ROUTES.HOME},
-  {name:'Reservations',route: ROUTES.RESERVATION},
-  {name:'Flight',route: ROUTES.Flight},
-  {name: 'Members', route: 'members'} ,
-  {name: "Login" , route: "login"}];
+const pages: page[] = [
+  { name: 'Home', route: ROUTES.HOME },
+  { name: 'Reservations', route: ROUTES.RESERVATION },
+  { name: 'Flight', route: ROUTES.Flight },
+  { name: 'Members', route: 'members' },
+  { name: "Login", route: "login" }];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -55,27 +61,26 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  const handleSettingNavMenu = (event: React.MouseEvent<HTMLElement>, setting:string) => {
+  const handleSettingNavMenu = (event: React.MouseEvent<HTMLElement>, setting: string) => {
     event.preventDefault();
     console.log("handleSettingMenu:Setting", setting)
     console.log("handleSettingMenu", event.target)
     navigate(`${setting}`)
     setAnchorElNav(null);
-    
+
   };
-  
-  const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement>, setting:string) => {
+
+  const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement>, setting: string) => {
     event.preventDefault();
     console.log("handleSettingMenu:Setting", setting)
     console.log("handleSettingMenu", event.target)
-    if(setting == "Logout")
-    {
+    if (setting == "Logout") {
       console.log("Logout")
-      setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO,"")
+      setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "")
       dispatch(logOut());
       navigate("/login");
     }
-    else{
+    else {
       navigate(`${setting}`)
     }
     setAnchorElUser(null);
@@ -84,7 +89,7 @@ const ResponsiveAppBar = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+        
           <Typography
             variant="h6"
             noWrap
@@ -132,14 +137,14 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page,index) => (
-                <MenuItem key={index} onClick={(e) => handleSettingNavMenu(e,page.route)}>
+              {pages.map((page, index) => (
+                <MenuItem key={index} onClick={(e) => handleSettingNavMenu(e, page.route)}>
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+
           <Typography
             variant="h5"
             noWrap
@@ -158,11 +163,12 @@ const ResponsiveAppBar = () => {
           >
             {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name}`}
           </Typography>
+          
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page, index) => (
               <Button
                 key={index}
-                onClick={(e) => handleSettingNavMenu(e,page.route)}
+                onClick={(e) => handleSettingNavMenu(e, page.route)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page.name}
@@ -171,9 +177,12 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
+          <RollIcon roles={login?.member?.roles} />
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                
+              <UserIcon roles={login?.member?.roles} />
+                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
               </IconButton>
             </Tooltip>
             <Menu
@@ -194,7 +203,7 @@ const ResponsiveAppBar = () => {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} >
-                  <Typography key={setting} textAlign="center" onClick={(e) => handleSettingUserMenu(e,setting)} >{setting}</Typography>
+                  <Typography key={setting} textAlign="center" onClick={(e) => handleSettingUserMenu(e, setting)} >{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

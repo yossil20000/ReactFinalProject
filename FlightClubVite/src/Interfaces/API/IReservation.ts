@@ -73,16 +73,16 @@ export interface IReservationCreate{
 export interface IReservationCreateApi{
     date_from: Date | undefined;
     date_to:Date;
-    member_id: string;
-    device_id:string;
+    _id_member: string;
+    _id_device:string;
 }
 
 export function CreateReservationToApi (reservation : IReservationCreate) : IReservationCreateApi  {
  let reservationApi : IReservationCreateApi = {
      date_from: reservation.date_from,
      date_to: reservation.date_to,
-     member_id: reservation.member?._id ?? "",
-     device_id: reservation.device?._id ?? ""
+     _id_member: reservation.member?._id ?? "",
+     _id_device: reservation.device?._id ?? ""
  };
  
  return reservationApi;

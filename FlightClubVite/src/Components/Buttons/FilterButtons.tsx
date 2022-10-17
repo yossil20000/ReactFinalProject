@@ -1,4 +1,4 @@
-import { alpha,Box, createTheme, IconButton, TextField, ThemeProvider, Toolbar, Tooltip } from "@mui/material";
+import { alpha,Box, Button, createTheme, IconButton, TextField, ThemeProvider, Toolbar, Tooltip } from "@mui/material";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
@@ -15,13 +15,14 @@ export interface EnhancedTableToolbarProps {
   OnFilterOwner: () => void;
   handleFilterClick(selectedIndex: number): number;
   isByDateRange: boolean;
+  handleAddFlight: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 const defaultMaterialThem = createTheme({
 
 })
 
 export default  function FilterButtons(props: EnhancedTableToolbarProps) {
-  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
+  const { handleAddFlight,isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
   console.log("isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
@@ -75,7 +76,7 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-
+      <Button onClick={handleAddFlight}>Add</Button>
       {isFilterOwner == false ? (
         <Tooltip title="Show Mine">
           <IconButton onClick={OnFilterOwner}>

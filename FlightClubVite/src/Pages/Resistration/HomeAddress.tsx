@@ -2,6 +2,8 @@ import { Box, Grid, Paper, TextField } from '@mui/material';
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
+import IMemberCreate from '../../Interfaces/IMemberCreate';
+import IMemberUpdate from '../../Interfaces/IMemberInfo';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -11,18 +13,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavigate) {
+function HomeAddress({ numPage ,page, setPage, formData,setFormData }: IPageNavigate<IMemberUpdate>) {
   const handleContactChange = (prop: any) => (event: any) => {
     //setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
     setFormData(prev => ({...prev, contact: { ...prev.contact, billing_address: {...prev.contact.billing_address, [prop]: event.target.value}} }));
     console.log("formData", formData)
   };
-  const handleTimeChange = (newValue: Date | null ) => {
-    if(newValue === null  )
-      return;
-    setFormData({...formData,date_of_birth:newValue});
-    console.log("formData", formData)
-  };
+
  
   return (
     <Box sx={{ flexGrow: 1 }}>

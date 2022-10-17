@@ -3,7 +3,8 @@ import { Role } from "./IMember";
 
 export default interface ILogin{
     email: string | undefined,
-    password: string | undefined
+    password: string | undefined,
+    username: string | undefined,
 } 
 
 export interface ILoginResult {
@@ -19,11 +20,13 @@ export interface ILoginResult {
         first_name: string;
         roles:Role[];
         email: string;
+        
     };
 }
 
 export interface IReset{
     "email": string | undefined;
+    "username": string | undefined;
 }
 export interface IResetResult{
     "newPassword": string;
