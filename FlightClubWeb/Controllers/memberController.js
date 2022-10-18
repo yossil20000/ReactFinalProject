@@ -31,6 +31,7 @@ exports.member_detail = function (req, res, next) {
 }
 exports.member_delete = function (req, res, next) {
     log.info(`member_delete`);
+    
     async.parallel({
         member: function (callback) {
             Member.findById(req.params.memberId).exec(callback);
