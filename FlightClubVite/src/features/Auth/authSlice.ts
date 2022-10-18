@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { LOCAL_STORAGE } from '../../Enums/localStroage';
 import IAuth from '../../Interfaces/API/IAuth';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import { Role } from '../../Interfaces/API/IMember';
 import IMemberInfo from '../../Interfaces/IMemberInfo';
-
-const initialState: ILoginResult = {
+import { getFromLocalStorage, setLocalStorage } from '../../Utils/localStorage';
+let initialState: ILoginResult = {
     access_token: '',
     exp: 0,
     iat: '',
@@ -20,6 +21,12 @@ const initialState: ILoginResult = {
 
     }
 }
+const login_info  =   getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
+if(login_info !== "")
+{
+    initialState = login_info as ILoginResult;
+}
+
 export const authSlice = createSlice({
     name: "authSlice",
     initialState,
@@ -33,6 +40,7 @@ export const authSlice = createSlice({
             state.iat = action.payload.iat;
             console.log("setCredentials/action.payload", action.payload);
             console.log("setCredentials/state", state);
+            setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO, state);
         },
         logOut: (state) => {
             state.member = JSON.parse(JSON.stringify(initialState.member));
@@ -43,6 +51,7 @@ export const authSlice = createSlice({
             state.expDate = "";
             state.iat = ""; 
             console.log("logOut", state);
+            setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "")
         }
     },
 });
@@ -55,4 +64,5 @@ export default authSlice.reducer;
 export const selectCurrentUser = (state: ILoginResult) => state.member;
 export const selectCurrentToken = (state: ILoginResult) => state.access_token;
 export const selectCurrentId = (state: ILoginResult) => state.member._id;
+
 

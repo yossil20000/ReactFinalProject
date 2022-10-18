@@ -8,6 +8,8 @@ import IMember from '../../Interfaces/API/IMember';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
 import { useCreateMemberMutation } from '../../features/Users/userSlice';
 import { green } from '@mui/material/colors';
+import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
+import { IValidation } from '../../Interfaces/IValidation';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -19,15 +21,49 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberCreate>) {
-
+    const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
     const [createMember, { isError, isLoading, isSuccess, error }] = useCreateMemberMutation();
     const onSaveRegisterHandler = async () => {
+        
         console.log("onSaveRegisterHandler/formData", formData);
         const payload = await createMember(formData);
         console.log("useCreateMemberMutation/paylod", payload);
     }
+    const ocValidationAlertClose = () => {
+        setValidationAlert([]);
+    }
     useEffect(() => {
-        if (isError) console.log("SubmitRegistration/error", error);
+        let validation: IValidationAlertProps[];
+        if (isError) {
+            console.log("SubmitRegistration/error", error);
+            if((error as any).data?.errors !== undefined){
+                validation = (error as any).data?.errors.map((item: string) => {
+                    const alert: IValidationAlertProps = {
+                        location: '',
+                        msg: item,
+                        param: '',
+                        value: "",
+                        open: true,
+                        onClose: ocValidationAlertClose
+                        };
+                        return alert;
+                })
+                setValidationAlert(validation);
+            }
+            
+            if ((error as any).data?.validation !== undefined) {
+            
+                validation = (error as any).data.validation.errors.map((item: IValidation) => {
+                    const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
+                    alert.onClose = ocValidationAlertClose;
+                    alert.open = true;
+                    return alert;
+                })
+                console.log("isError/validation", validation)
+                setValidationAlert(validation);
+            }
+        }
+        
         if (isSuccess) {
             console.log("SubmitRegistration/succeed");
         }
@@ -55,6 +91,14 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
                         </Button>
                     </Item>
                 </Grid>
+                {validationAlert.map((item) => (
+                    <Grid item xs={12}>
+                        <Item>
+
+                            <ValidationAlert {...item} />
+                        </Item>
+                    </Grid>
+                ))}
                 <Grid item xs={6}>
                     <Item><button
                         onClick={() => {

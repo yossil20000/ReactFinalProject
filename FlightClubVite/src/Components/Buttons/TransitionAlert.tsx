@@ -35,8 +35,18 @@ export default function TransitionAlert(props: ITransitionAlrertProps) {
 
 export function ValidationAlert(props : IValidationAlertProps) {
   const {open,onClose,msg,param,value} = props;
-  const alertTitle = `${param} not valid`;
-  const alertMessage = `${param} (${value}) : ${msg}`;
+  let alertTitle = "";
+  let alertMessage = "";
+  if(param != "" || value != "")
+  {
+    alertTitle = `${param} not valid`;
+    alertMessage = `${param} (${value}) : ${msg}`;
+  }
+  else{
+    alertTitle = "Operation Failed";
+    alertMessage = msg;
+  }
+  
   return (
     <TransitionAlert severity="error" alertMessage={alertMessage} alertTitle={alertTitle} open={open} onClose={onClose}/>
   )

@@ -68,18 +68,15 @@ function ProfilePage() {
     <SubmitProfile numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />
   ]
 
-let content;
   useEffect(() => {
-
+    console.log('UseEffect/ProfilePage', member?.data,isSuccess);
     if (member?.data) {
-      setFormData(member.data as IMemberCreate);
+      setFormData(member.data as IMemberUpdate);
       console.log('UseEffect/ProfilePage', member.data);
     }
-  }, [member?.data]);
+  }, [isSuccess]);
   
-  useEffect(() => {
 
-  },[])
   return (
     <div className='main' style={{ width: "100vw" }}>
       <Grid container spacing={2}>

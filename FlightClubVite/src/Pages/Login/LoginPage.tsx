@@ -19,7 +19,7 @@ import { useLoginMutation } from '../../features/Auth/authApiSlice'
 import ILogin, { ILoginResult } from '../../Interfaces/API/ILogin';
 import { setCredentials, selectCurrentUser, selectCurrentId } from "../../features/Auth/authSlice"
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import { getFromLocalStorage, setLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
@@ -40,9 +40,13 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  
   const [loging] = useLoginMutation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  let { from } = location.state || { from: { pathname: "/home" } };
+
   const [loginError, setLoginError] = React.useState<string[]>([]);
   const id = useAppSelector((state) => state.authSlice.member._id);
   console.log("id", id)
@@ -68,11 +72,12 @@ export default function LoginPage() {
           let loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
           console.log("localStorage:before", loging_info);
           dispatch(setCredentials(payload.data));
-          setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO, payload.data);
+          /* setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO, payload.data); */
           loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
 
           console.log("localStorage", loging_info);
-          navigate(`/${ROUTES.HOME}`);
+          /* navigate(`/${ROUTES.HOME}`); */
+          navigate(from,{replace:true})
         })
         .catch((err) => {
           console.log("rejected", err);

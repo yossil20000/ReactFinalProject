@@ -24,9 +24,9 @@ const itemData = [
 ];
 
 function HomePage() {
-  useEffect(() => {
+/*   useEffect(() => {
    getMembersAndDevicesCombo(); 
-  })
+  }) */
   const steppersArray : Array<IStepper> = [{
     title: "yossi",
     message: "How Are you"

@@ -7,19 +7,11 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import PersonIcon from '@mui/icons-material/Person';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate } from 'react-router-dom';
-import { URLS } from '../../Enums/Routers';
 import { ROUTES } from '../../Types/Urls';
-import { ILoginResult } from '../../Interfaces/API/ILogin';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logOut } from '../../features/Auth/authSlice';
 import { setLocalStorage } from '../../Utils/localStorage';
@@ -76,9 +68,9 @@ const ResponsiveAppBar = () => {
     console.log("handleSettingMenu", event.target)
     if (setting == "Logout") {
       console.log("Logout")
-      setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "")
+      /* setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "") */
       dispatch(logOut());
-      navigate("/login");
+      /* navigate("/login"); */
     }
     else {
       navigate(`${setting}`)
@@ -94,7 +86,6 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -120,7 +111,7 @@ const ResponsiveAppBar = () => {
               <MenuIcon />
             </IconButton>
             <Menu
-              id="menu-appbar"
+              id="menu-left"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
@@ -178,7 +169,7 @@ const ResponsiveAppBar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
           <RollIcon roles={login?.member?.roles} />
-            <Tooltip title="Open settings">
+            <Tooltip title={`Open settings ${login?.member?.roles.join("/")}`}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 
               <UserIcon roles={login?.member?.roles} />
@@ -187,7 +178,7 @@ const ResponsiveAppBar = () => {
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
-              id="menu-appbar"
+              id="menu-right"
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: 'top',
