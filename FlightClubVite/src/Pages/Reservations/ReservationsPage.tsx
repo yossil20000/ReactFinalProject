@@ -33,8 +33,9 @@ import { DateTime } from 'luxon';
 import { ILoginResult } from "../../Interfaces/API/ILogin.js";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../Types/Urls.js";
-import { IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
+import { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
 import UpdateReservationDialog from "./UpdateReservationDialog";
+import CreateReservationDialog from "./CreateReservationDialog.js";
 
 const todayDate = new Date();
 
@@ -88,10 +89,11 @@ interface IEnhancedTableHeadProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ItableData) => void;
   order: Order;
   orderBy: string;
+  handleReservationAdd: () => void;
 }
 function EnhancedTableHead(props: IEnhancedTableHeadProps) {
-  const navigate = useNavigate();
-  const { order, orderBy, onRequestSort } =
+  
+  const { order, orderBy, onRequestSort,handleReservationAdd} =
     props;
   const createSortHandler = (property: keyof ItableData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
@@ -124,7 +126,7 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 
         </TableCell>
         <TableCell>
-          <Button onClick={() => navigate(`/${ROUTES.RESERVATION_ADD}`)} >Add</Button>
+          <Button onClick={handleReservationAdd} >Add</Button>
         </TableCell>
         <TableCell>
 
@@ -144,6 +146,7 @@ interface EnhancedTableToolbarProps {
   OnFilterOwner: () => void;
   handleFilterClick(selectedIndex: number): number;
   isByDateRange: boolean;
+
 }
 const defaultMaterialThem = createTheme({
 
@@ -264,8 +267,15 @@ let reservationUpdateIntitial: IReservationUpdate = {
   member_name: ""
 
 }
-function ReservationsPage() {
 
+let reservationAddIntitial : IReservationCreateApi = {
+  date_from: new Date(),
+  date_to: new Date(),
+  _id_member: "",
+  _id_device: ""
+}
+function ReservationsPage() {
+  const [openReservationAdd, setOpenReservationAdd] = useState(false);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
   const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery();
   const [rows, setRows] = useState<ItableData[]>([])
@@ -413,14 +423,26 @@ function ReservationsPage() {
     console.log("UpdateReservationDialog/handleOnSave/value", value);
 
   }
+  const handleAddOnSave = (value: IReservationCreateApi) => {
+    refetch();
+    setOpenReservationAdd(false);
+    console.log("ReservationPage/handleAddOnSave/value", value);
 
+  }
+  const handleAddOnClose = () => {
+    setOpenReservationAdd(false);
+  }
+  const handleAddClick = async () => {
+    
+    setOpenReservationAdd(true);
+  }
   return (
     <div className='main' style={{ overflow: 'auto' }}>
       { isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
-
+      {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
       <Box sx={{ width: '100%', height: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
-          <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
+          <EnhancedTableToolbar  isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
           <TablePagination
             rowsPerPageOptions={[1, 5, 10, 25]}
             component="div"
@@ -440,6 +462,7 @@ function ReservationsPage() {
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
+                handleReservationAdd={handleAddClick}
               />
               <MediaQuery minWidth={768}>
                 <TableBody>

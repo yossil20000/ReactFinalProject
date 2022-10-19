@@ -1,12 +1,10 @@
 import { ThemeProvider } from "@emotion/react";
-import { Preview } from "@mui/icons-material";
 import { Dialog, DialogTitle, DialogContent, Grid, Typography, TextField, Button, createTheme, Paper, styled, CircularProgress } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
-import { is } from "immer/dist/internal";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
+import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import { useUpdateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightUpdate, IFlightUpdate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import { IValidation } from "../../Interfaces/IValidation";

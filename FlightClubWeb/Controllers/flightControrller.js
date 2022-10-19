@@ -164,7 +164,7 @@ exports.flight_create = [
     return true;
   }),
   body('hobbs_start', "Value must be less then hobbs_stop").custom((value, { req }) => {
-    if (Number(value) <= Number(req.body.hobbs_stop)) return true;
+    if (Number(value) < Number(req.body.hobbs_stop)) return true;
     return false;
   }),
   body('engien_start', "Value must be greater then zero").custom((value) => {
@@ -176,7 +176,7 @@ exports.flight_create = [
     return true;
   }),
   body('engien_start', "Value must be less then engien_stop").custom((value, { req }) => {
-    if (Number(value) <= Number(req.body.engien_stop)) return true;
+    if (Number(value) < Number(req.body.engien_stop)) return true;
     return false;
   }),
   body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),

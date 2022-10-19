@@ -159,10 +159,8 @@ exports.reservation_delete= function(req,res,next){
 		res.status(401).json({success: false, errors:[err], data: []});
 	}
 }
-exports.reservation_create = async function(req,res,next) {
-	try{
-		log.info("reservation_create/body", req.body)
-		body('_id_device').trim().isLength(24).escape().withMessage('device_id must be valid'),
+exports.reservation_create =[
+	body('_id_device').trim().isLength(24).escape().withMessage('device_id must be valid'),
 		body('_id_member').trim().isLength(24).escape().withMessage('member_id must be valid'),
 		body('date_from','Invalid date_from').trim().isISO8601().toDate(),
 		body('date_to','Invalid date_to').trim().isISO8601().toDate(),
@@ -170,7 +168,11 @@ exports.reservation_create = async function(req,res,next) {
 		.custom((value,{req}) => {
 				if((value -  req.body.date_from) > 0) return true;
 				return false;
-		});
+		})
+		, async function(req,res,next) {
+	try{
+		log.info("reservation_create/body", req.body)
+		
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
@@ -226,7 +228,7 @@ exports.reservation_create = async function(req,res,next) {
 		res.status(501).json({success: false, errors : [err], data: []});
 	}	
 	log.info("Create/end");
-};
+}];
 exports.reservation_create_old = [
 	
 	body('device_id').trim().isLength({min:1}).escape().withMessage('device_id must be valid'),

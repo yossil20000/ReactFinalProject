@@ -11,15 +11,17 @@ import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, Validat
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
+import { useCreateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
+import { IReservationCreateApi } from "../../Interfaces/API/IReservation";
 import { IDeviceCombo, IMemberCombo } from "../../Interfaces/IFlightReservationProps";
 import { IValidation } from "../../Interfaces/IValidation";
 
 
-export interface CreateFlightDialogProps {
-  value: IFlightCreate;
+export interface CreateReservationDialogProps {
+  value: IReservationCreateApi;
   onClose: () => void;
-  onSave: (value: IFlightCreate) => void;
+  onSave: (value: IReservationCreateApi) => void;
   open: boolean;
 }
 const Item = styled(Paper)(({ theme }) => ({
@@ -39,29 +41,20 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFlightDialogProps) {
+function CreateReservationDialog({ value, onClose, onSave, open, ...other }: CreateReservationDialogProps) {
 
-  console.log("CreateFlightDialog/value", value)
+  console.log("CreateReservationDialog/value", value)
 
-  const [CreateFlight, { isError, isLoading, error, isSuccess }] = useCreateFlightMutation();
-  const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
+  const [CreateReservation, { isError, isLoading, error, isSuccess }] = useCreateReservationMutation();
+  const [reservationCreate, setReservationCreate] = useState<IReservationCreateApi>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
 
-  const [devicesItems, setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<InputComboItem | undefined>();
-  const [membersItems, setMembersItem] = useState<InputComboItem[]>([]);
-  const [selectedMember, setSelectedMember] = useState<InputComboItem | undefined>();
-
-  const onCloseDateError = () => {
-    setAlert((prev) => ({ ...prev, open: false }))
-  }
-
   useEffect(() => {
-    console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
+    console.log("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
 
-      setAlert((prev) => ({ ...prev, alertTitle: "Flight Create", alertMessage: "Flight Create Successfully", open: true, onClose: onClose, severity: "success" }))
+      setAlert((prev) => ({ ...prev, alertTitle: "Reservation Create", alertMessage: "Reserva Create Successfully", open: true, onClose: onClose, severity: "success" }))
 
     }
     if (isError) {
@@ -83,7 +76,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           setValidationAlert(validation);
         }
         else {
-          console.log("CreateFlightDialog/useEffect/Error/single", (error as any).data.errors)
+          console.log("CreateReservationDialog/useEffect/Error/single", (error as any).data.errors)
           validation.push({
             location: '',
               msg: (error as any).data.errors,
@@ -98,7 +91,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       
       if ((error as any).data.validation !== undefined) {
         let validation: IValidationAlertProps[];
-        console.log("CreateFlightDialog/useEffect/data", (error as any).data)
+        console.log("CreateReservationDialog/useEffect/data", (error as any).data)
         validation = (error as any).data.validation.errors.map((item: IValidation) => {
           const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
           alert.onClose = handleOnCancel;
@@ -107,7 +100,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
         })
         setValidationAlert(validation);
-        console.log("CreateFlightDialog/useEffect/validation", validation)
+        console.log("CreateReservationDialog/useEffect/validation", validation)
       }
 
     }
@@ -115,68 +108,37 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightCreate(prev => ({ ...prev, date_from: newDate }))
+    setReservationCreate(prev => ({ ...prev, date_from: newDate }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightCreate(prev => ({ ...prev, date_to: newDate }))
+    setReservationCreate(prev => ({ ...prev, date_to: newDate }))
   };
 
-  const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleFligtChange", event.target.name, event.target.value)
-    setFlightCreate(prev => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
-  };
+  
   const handleOnCancel = () => {
     setValidationAlert([])
     onClose()
   }
   const handleOnSave = async () => {
-    console.log("CreateFlightDialog/onSave", flightCreate)
-    let flight = new CFlightCreate();
-    flight.copy(flightCreate);
-    console.log("CreateFlightDialog/onSave/flight", flight)
-    /*     if(!flight.IsDateValid())
-        {
-          setdateErrorAlert((prev) => ({...prev,alertTitle:"Date Input Error",alertMessage:"Date_to must be greater then date_from",open:true,onClose:onCloseDateError}))
-          return;
-        } */
+    console.log("CreateReservationDialog/onSave", reservationCreate)
+    console.log("CreateReservationDialog/onSave/date_from", reservationCreate.date_from?.toUTCString())
 
-    console.log("CreateFlightDialog/onSave/date_from", flightCreate.date_from?.toUTCString())
-
-    await CreateFlight(flightCreate as IFlightCreateApi).unwrap().then((data) => {
+    await CreateReservation(reservationCreate as IFlightCreateApi).unwrap().then((data) => {
       console.log("CreateFlightDialoq/onSave/", data);
-      onSave(flightCreate);
+      onSave(reservationCreate);
     }).catch((err) => {
       console.log("CreateFlightDialoq/onSave/error", err.data.errors);
     });
 
 
   }
-  const handleMemberOnChange = (event: any, newValue: any) => {
-    console.log("Reservation", flightCreate);
-    console.log("member/target", event.target);
-    console.log("Member/newValue", newValue);
 
-    setFlightCreate(prev => ({ ...prev, member: { _id: newValue._id, member_id: newValue.member_id, family_name: newValue.family_name, first_name: newValue.first_name } }))
-    setSelectedMember(newValue);
-
-  }
-  const handleDeviceOnChange = (event: any, newValue: any) => {
-    console.log("Reservation", flightCreate);
-    console.log(event.target);
-    console.log(newValue);
-
-    setFlightCreate(prev => ({ ...prev, device: { _id: newValue._id, device_id: newValue.device_id } }))
-    setSelectedDevice(newValue);
-  }
   const onDeviceChanged = (item: InputComboItem) => {
-    setFlightCreate(prev => ({ ...prev, _id_device: item._id }))
+    setReservationCreate(prev => ({ ...prev, _id_device: item._id }))
   }
   const onMemberChanged = (item: InputComboItem) => {
-    setFlightCreate(prev => ({ ...prev, _id_member: item._id }))
+    setReservationCreate(prev => ({ ...prev, _id_member: item._id }))
   }
   return (
     <Dialog
@@ -184,7 +146,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       maxWidth="sm"
 
       open={open} {...other}>
-      <DialogTitle>Flight Create</DialogTitle>
+      <DialogTitle>Reservation Create</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
 
@@ -196,7 +158,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                     disableMaskedInput
                     label="From Date"
                     mask=''
-                    value={flightCreate.date_from}
+                    value={reservationCreate.date_from}
                     onChange={handleFromDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
@@ -215,7 +177,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                     mask=''
                     disableMaskedInput
                     label="To Date"
-                    value={flightCreate.date_to}
+                    value={reservationCreate.date_to}
                     onChange={handleToDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
                   />
@@ -240,66 +202,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               </Item>
             </Grid>
           ))}
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="engien_start"
-                label="Engien start"
-                value={flightCreate.engien_start}
-                onChange={handleFligtChange}
-              />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="engien_stop"
-                label="Engien stop"
-                value={flightCreate.engien_stop}
-                onChange={handleFligtChange}
-              />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="hobbs_start"
-                id="hobbs_start"
-                label="hobbs_start"
-                key={"hobbs_start"}
-                value={flightCreate.hobbs_start}
-                onChange={handleFligtChange}
-              />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="hobbs_stop"
-                id="hobbs_stop"
-                label="hobbs_stop"
-                key={"hobbs_stop"}
-                value={flightCreate.hobbs_stop}
-                onChange={handleFligtChange}
-              />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
-            <Item>
-              <TextField
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="description"
-                id="outlined-disabled"
-                label="Description"
-                onChange={handleFligtChange}
-                value={flightCreate.description}
-              />
-            </Item>
-          </Grid>
+
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <DevicesCombo onChanged={onDeviceChanged} />
@@ -330,4 +233,4 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   )
 }
 
-export default CreateFlightDialog;
+export default CreateReservationDialog;
