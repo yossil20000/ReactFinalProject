@@ -5,10 +5,13 @@ export  enum URLS{
     RESERVATION_DELETE = 'api/reservation/delete',
     RESERVATION_CREATE = 'api/reservation/create',
     RESERVATION_UPDATE = 'api/reservation/update',
-    CLUB_NOTICE = 'api/club_notice',
     MEMBERS = 'api/members',
     RESET = 'api/reset_password',
     MEMBER_DETAIL = 'api/members/detail',
     DEVICES = 'api/devices',
-    FLIGHT = 'api/flight'
+    FLIGHT = 'api/flight',
+    CLUB_NOTICE = 'api/club_notice',
+    CLUB_NOTICE_UPDATE ='api/club_notice/update',
+    CLUB_NOTICE_DELETE ='api/club_notice/delete',
+    CLUB_NOTICE_CREATE ='api/club_notice/create'
 }
