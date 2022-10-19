@@ -2,7 +2,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import IResultBase, { IResultBaseSingle } from '../../Interfaces/API/IResultBase'
 import {URLS} from '../../Enums/Routers';
 import IClubNotice from "../../Interfaces/API/IClubNotice";
-import IMember from "../../Interfaces/API/IMember";
 import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import { IMemberCombo } from "../../Interfaces/IFlightReservationProps";
@@ -87,11 +86,9 @@ export const apiSlice = createApi({
                 query: (id) => ({
                      url:  `/${URLS.MEMBER_DETAIL}/${id}`,
                      method: "GET"
-                    }
-                ) ,
+                    }),
                 providesTags: ["Members"]
-            }
-            ),
+            }),
             deleteMember: builder.mutation<IResultBaseSingle<IMemberInfo>,string>({
                 query: (_id) => ({
                     url: `/${URLS.MEMBERS}/${_id}`,

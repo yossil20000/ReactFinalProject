@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import IClubNotice from '../Interfaces/API/IClubNotice';
 
 export interface IStepper{
   title : string;
@@ -15,16 +16,15 @@ export interface IStepper{
 }
 export interface IStepperProps{
   header: string;
-  steppers : IStepper[];
+  steppers : IClubNotice[];
 }
 export default function Stepper({header ,steppers} : IStepperProps) {
-    const [steps,setSteps] = React.useState<IStepper[] | null>(steppers);
-    
+
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
-  if(steps === null )
+  if(steppers === null )
   return (<div></div>)
-  const maxSteps = steps.length;
+  const maxSteps = steppers.length;
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => (prevActiveStep + 1) > maxSteps-1 ? 0 : prevActiveStep + 1);
@@ -48,10 +48,10 @@ export default function Stepper({header ,steppers} : IStepperProps) {
           bgcolor: 'background.default',
         }}
       >
-        <Typography>{steps[activeStep]?.title}</Typography>
+        <Typography>{steppers[activeStep]?.title}</Typography>
       </Paper>
       <Box sx={{ height: "15ex", maxWidth: 400, width: '100%', p: 2 }}>
-        {steps[activeStep]?.message}
+        {steppers[activeStep]?.description}
       </Box>
       {/* <BasicCard title={steps[activeStep].label} description={steps[activeStep].description} ></BasicCard> */}
       <MobileStepper

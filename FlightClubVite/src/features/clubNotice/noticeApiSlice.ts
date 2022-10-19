@@ -1,9 +1,9 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
 import { URLS } from "../../Enums/Routers";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import IClubNotice from '../../Interfaces/API/IClubNotice'
-import { GetApp } from "@mui/icons-material";
+
 
 
 export const noticeApiSlice = createApi({
@@ -38,11 +38,19 @@ export const noticeApiSlice = createApi({
         query: (_id) => ({
           url: `/${URLS.CLUB_NOTICE_DELETE}`,
           body: {_id: _id},
+          method: "DELETE"
         }),
-        invalidatesTags: ["ClubNotice"],
+        invalidatesTags: ["ClubNotice"]
       }),
-      
+
 
     }
   }
 })
+
+export const {
+  
+  useDeleteNoticeMutation,
+  useFetchAllNoticesQuery,
+  useFetchNoticeQuery
+} = noticeApiSlice
