@@ -36,6 +36,7 @@ function AddReservationPage() {
   const [selectedDevice, setSelectedDevice] = useState<InputComboItem | undefined>();
   const [membersItems,setMembersItem] = useState<InputComboItem[]>([]);
   const [selectedMember, setSelectedMember] = useState<InputComboItem | undefined>();
+  const [deviceDescription, setDeviceDescriptio] = useState("");
   let initialReservation: IReservationCreateApi = {
     date_from: new Date(),
     date_to: new Date(),
@@ -78,6 +79,7 @@ function AddReservationPage() {
 
   const onDeviceChanged = (item : InputComboItem) =>  {
     setReservation(prev => ({ ...prev, _id_device: item._id}))
+    setDeviceDescriptio(getDeviceDetailed(item._id));
   }
   const handleMemberOnChange = (event: any, newValue: any) => {
     console.log("Reservation", reservation);
@@ -127,7 +129,7 @@ function AddReservationPage() {
 
 
   const devicesToItemCombo = (input: IDevice): InputComboItem => {
-    return {  lable: input.device_id, _id: input._id }
+    return {  lable: input.device_id, _id: input._id ,description: ""}
   }
   const RenderLoading = (): any => {
     return (
@@ -135,7 +137,7 @@ function AddReservationPage() {
     )
   }
   const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
-    return {  lable: `${input.family_name} ${input.member_id}`, _id: input._id }
+    return {  lable: `${input.family_name} ${input.member_id}`, _id: input._id, description: "" }
   }
 
   const RenderError = (): any => {
@@ -144,6 +146,15 @@ function AddReservationPage() {
         <div>Error</div>{members?.errors.map((e) => (<li>{e}</li>))}
       </div>
     )
+  }
+  function getDeviceDetailed(_id: string | undefined) : string {
+    console.log("getDeviceDetailed", _id)
+    if(_id === undefined)
+      return "";
+     const device = devices?.data?.find((i) => i._id == _id);
+     if(device)
+      return `engien_meter: ${device.engien_meter} next_meter: ${device.maintanance.next_meter}`
+     return "";
   }
   function RenderAddReservation(): any {
 
@@ -202,6 +213,19 @@ function AddReservationPage() {
 
           </Item>
         </Grid>
+        <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
+            <Item>
+              <TextField
+                disabled
+                sx={{ marginLeft: "0px", width: "100%" }}
+                name="description"
+                id="outlined-disabled"
+                label="Status"
+                
+                value={selectedDevice?.description}
+              />
+            </Item>
+          </Grid>
         <Grid item xs={12} md={6} xl={6} >
           <Item><Button variant="outlined" sx={{ width: "100%" }}
             onClick={handleOnCancel}>

@@ -12,14 +12,14 @@ var DeviceSchema = new Schema({
     device_status: {type:String, 
         enum:[CE.DEVICE_STATUS[0],CE.DEVICE_STATUS[1],CE.DEVICE_STATUS[2],CE.DEVICE_STATUS[3]], default: CE.DEVICE_STATUS[0]},
     due_date: {type: Date},
-    hobbs_meter: {type: mongoose.Decimal128},
-    engien_meter: {type: mongoose.Decimal128},
+    hobbs_meter: {type: mongoose.Decimal128, get: getDecimal},
+    engien_meter: {type: mongoose.Decimal128, get: getDecimal},
     maintanance: {
         type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2]] , default: CE.DEVICE_MT[0]},
-        next_meter:{type: mongoose.Decimal128}
+        next_meter:{type: mongoose.Decimal128, get: getDecimal}
     },
     price:{
-        base: {type: mongoose.Decimal128},
+        base: {type: mongoose.Decimal128,get: getDecimal},
         meter: {type: String, enum:[CE.DEVICE_MET.HOBBS,CE.DEVICE_MET.ENGIEN], default:CE.DEVICE_MET[1]}
     },
     details:{
@@ -36,5 +36,12 @@ var DeviceSchema = new Schema({
     can_reservs:[{type: Schema.ObjectId, ref: 'Member'}],
     flights: [{type: Schema.ObjectId,ref: 'Flight'}],
     flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}]
-});
+},{toJSON: {getters: true}});
+
+function getDecimal(value) {
+    if (typeof value !== 'undefined') {
+       return parseFloat(value.toString());
+    }
+    return value;
+};
 module.exports = mongoose.model('Device', DeviceSchema);

@@ -3,10 +3,12 @@ import { Autocomplete, TextField } from '@mui/material'
 export interface InputComboItem{
   _id: string;
   lable: string;
+  description: string;
 }
 const defaultValue: InputComboItem = {
   _id: '',
-  lable: ''
+  lable: '',
+  description: ""
 }
 export interface InputComboProps{
   items: InputComboItem[];

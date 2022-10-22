@@ -49,7 +49,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [reservationCreate, setReservationCreate] = useState<IReservationCreateApi>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-
+  const [deviceDescription, setDeviceDescription] = useState("");
   useEffect(() => {
     console.log("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -136,6 +136,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
 
   const onDeviceChanged = (item: InputComboItem) => {
     setReservationCreate(prev => ({ ...prev, _id_device: item._id }))
+    setDeviceDescription(item.description);
   }
   const onMemberChanged = (item: InputComboItem) => {
     setReservationCreate(prev => ({ ...prev, _id_member: item._id }))
@@ -212,6 +213,19 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           <Grid item xs={12} md={6} xl={6}>
             <Item>
               <MembersCombo onChanged={onMemberChanged} />
+            </Item>
+          </Grid>
+          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
+            <Item>
+              <TextField
+                disabled
+                sx={{ marginLeft: "0px", width: "100%" }}
+                name="description"
+                id="outlined-disabled"
+                label="Status"
+                
+                value={deviceDescription}
+              />
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>

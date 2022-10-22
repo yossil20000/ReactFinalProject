@@ -12,9 +12,21 @@ function DevicesCombo(props : ComboProps) {
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<InputComboItem | undefined>();
-  
+  function getDeviceDetailed(_id: string | undefined) : string {
+    console.log("getDeviceDetailed", _id)
+    if(_id === undefined)
+      return "";
+     const device : IDevice | undefined = data?.data?.find((i) => i._id == _id);
+     if(device)
+     {
+      console.log("getDeviceDetailed/dvice",device)
+      return `engien_meter: ${device.engien_meter} next_meter: ${device.maintanance.next_meter}`
+     }
+      
+     return "";
+  }
   const devicesToItemCombo = (input: IDevice): InputComboItem => {
-    return {  lable: input.device_id, _id: input._id }
+    return {  lable: input.device_id, _id: input._id,description: getDeviceDetailed(input._id) }
   }
   console.log("DevicesCombo/selectedDevice" , selectedDevice)
   useEffect(() => {
