@@ -2,12 +2,12 @@
 const passwordRequirement = "Checks that a input has a minimum of 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number , and 1 @ or $ with no spaces."
 const passwordPattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9])(?=\S*?[@$]).{8,})\S$/
 const usernamePattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,12}$/
-export interface ICheckPassword {
+export interface IValidation {
   valid: boolean;
   validation: string[];
 }
-export default function checkPassword(password:string | undefined,verifiedPassword: string) : ICheckPassword {
-  let check : ICheckPassword ={
+export default function checkPassword(password:string | undefined,verifiedPassword: string) : IValidation {
+  let check : IValidation ={
     valid: false,
     validation: []
   }
@@ -37,8 +37,8 @@ export function IsUsernaaameValid(username: string) : boolean{
   return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,12}$/.test(username)
 }
 
-export  function checkUsername(username:string ) : ICheckPassword {
-  let check : ICheckPassword ={
+export  function checkUsername(username:string ) : IValidation {
+  let check : IValidation ={
     valid: false,
     validation: []
   }

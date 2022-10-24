@@ -20,6 +20,7 @@ export interface ILoginResult {
         first_name: string;
         roles:Role[];
         email: string;
+        username:string;
         
     };
 }
@@ -32,7 +33,10 @@ export interface IResetResult{
     "newPassword": string;
 }
 export interface IChangePassword{
-    currentPassword: string | undefined;
+    password: string | undefined;
     newPassword: string | undefined;
-    email:string;
+    username: string;
+}
+export interface IChangePasswordResults{
+    newPassword: string;
 }

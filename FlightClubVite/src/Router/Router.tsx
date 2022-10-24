@@ -7,6 +7,7 @@ import { LOCAL_STORAGE } from '../Enums/localStroage'
 import { setCredentials } from '../features/Auth/authSlice'
 import { ILoginResult } from '../Interfaces/API/ILogin'
 import { Role } from '../Interfaces/API/IMember'
+import AdminPage from '../Pages/Administrator/AdminPage'
 import FlightPage from '../Pages/Flight/FllightPage'
 import HomePage from '../Pages/Home/HomePage'
 import ChangePassword from '../Pages/Login/ChangePassword'
@@ -53,6 +54,9 @@ export function PagesRouter() {
         <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
           <Route path="/home" element={<HomePage></HomePage>} />
         </Route>
+        <Route element={<RequireAuth roles={[Role.admin]} />}>
+          <Route path="/admin" element={<AdminPage></AdminPage>} />
+        </Route>
         <Route element={<RequireAuth roles={[Role.user, Role.desk, Role.admin, Role.account]} />}>
 
           <Route path="/reservations" element={<ReservationsPage></ReservationsPage>} />
@@ -65,6 +69,7 @@ export function PagesRouter() {
           <Route path="/profile" element={<ProfilePage></ProfilePage>} />
           <Route path='/members' element={<MembersTablePage></MembersTablePage>} />
           <Route path='/flights' element={<FlightPage></FlightPage>} />
+          
 
           
         </Route>

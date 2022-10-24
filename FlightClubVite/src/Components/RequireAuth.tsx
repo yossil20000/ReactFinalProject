@@ -14,7 +14,7 @@ function RequireAuth(allowedRoles : IRequireAuthProps) {
   const location = useLocation();
   const RenderAuth = () => {
     console.log("RenderAuth")
-    if(login?.member !== undefined && login?.member._id !== "") {
+    if(login?.member !== undefined && login?.member._id !== "" && login.access_token !="") {
       const role = login.member.roles.find(role => allowedRoles?.roles.includes(role));
       if(role)
         return (<Outlet/>)

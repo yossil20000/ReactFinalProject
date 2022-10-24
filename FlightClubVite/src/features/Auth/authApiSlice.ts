@@ -1,7 +1,7 @@
 import base from "@emotion/styled/types/base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { URLS } from "../../Enums/Routers";
-import ILogin, { ILoginResult, IReset, IResetResult } from "../../Interfaces/API/ILogin";
+import ILogin, { IChangePassword, IChangePasswordResults, ILoginResult, IReset, IResetResult } from "../../Interfaces/API/ILogin";
 import { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import {RootState} from '../../app/userStor'
 
@@ -33,11 +33,22 @@ export const authApiSlice = createApi({
                     method: "PUT",
                     body: reset
                 })
+            }),
+            changePassword: builder.mutation<IResultBaseSingle<IChangePasswordResults>,IChangePassword>({
+                query: (changePassword) => ({
+                    url:`/${URLS.CHANGE_PASSWORD}`,
+                    method: "PUT",
+                    body: changePassword
+                })
             })
         }
     }
 });
 
-export const { useLoginMutation,useResetMutation } = authApiSlice
+export const { 
+    useLoginMutation,
+    useResetMutation,
+    useChangePasswordMutation
+ } = authApiSlice
 
 

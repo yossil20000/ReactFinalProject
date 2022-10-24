@@ -14,7 +14,7 @@ exports.signin = function (req, res, next) {
     const username = req.body.username;
     log.info(`login: ${email} ${password} ${username} `);
 
-    Member.findOne({ "username": username,"contact.email": email }, (err, member) => {
+    Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
         if (err) {
             console.info(`${email} Access Denied ${err}`)
         }
@@ -51,7 +51,8 @@ exports.signin = function (req, res, next) {
                                 member_id: member.member_id,
                                 family_name: member.family_name,
                                 first_name: member.first_name,
-                                roles: member.role.roles
+                                roles: member.role.roles,
+                                username: member.username
                             },
 
                         }
@@ -83,7 +84,7 @@ exports.reset = function (req, res, next) {
     const username = req.body.username;
 
     console.log("reset", email);
-    Member.findOne({ "username": username,"contact.email": email }, (err, member) => {
+    Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
         if (err) {
             console.info(`${email} Not Found ${err}`)
             return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
@@ -130,62 +131,81 @@ exports.reset = function (req, res, next) {
 }
 exports.change_password = function (req, res, next) {
     console.log("change_password", req.body);
-    const email = req.body.email;
-    const newPassowrd = req.body.newPassowrd;
+    
+    const username = req.body.username;
+    const password = req.body.password;
+    const newPassword = req.body.newPassword;
     const user = req.user;
-    console.log("change_password", email, newPassowrd);
-    if (!IsPasswordValid(newPassowrd))
-        return res.status(400).json(
-            {
-                success: false,
-                errors: [],
-                message: passwordRequirement,
-                data: {}
-            });
-    Member.findOne({ "contact.email": email }, (err, member) => {
-        if (err) {
-            console.info(`${email} Not Found ${err}`)
-            return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
+    console.log("change_password", newPassword);
+    try{
+        if (!IsPasswordValid(newPassword)) {
+            return res.status(400).json(
+                {
+                    success: false,
+                    errors: [],
+                    message: passwordRequirement,
+                    data: {}
+                });
         }
-        if (member._id == user.userId) {
-            log.info(`phone: ${member.code_area_phone}`)
-
-            member.password = member.hash(newPassowrd);
-            member.updateOne({ password: member.password }).exec((err, result) => {
-                if (err) {
-                    console.log("Update Mail Failed", err);
-                    return res.status(401).json({ success: false, errors: err, message: [err], data: { newPassword: "" } });
-                }
-                else if (result) {
-                    console.log("result", result)
-                    mail.SendMail(member.contact.email, "Test", `Your temporary paassword is ${newPassowrd}`).then((result) => {
-                        console.log("Send Mail to:", member.contact.email);
-                        return res.status(201).json(
-                            {
-                                success: true,
-                                errors: [],
-                                message: "password renew",
-                                data: { newPassword: newPassowrd }
-                            });
+        Member.findOne({ username: username }, (err, member) => {
+            if (err) {
+                console.info(`${email} Not Found ${err}`)
+                return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
+            }
+    
+            if (member) {
+                log.info(`Change passwor to : ${member.username}`)
+                member.comparePassword(password, (err, isMatch) => {
+                    if (isMatch) {
+                        member.password = member.hash(newPassword);
+                        member.updateOne({ password: member.password }).exec((err, result) => {
+                            if (err) {
+                                console.log("Update Mail Failed", err);
+                                return res.status(401).json({ success: false, errors: err, message: [err], data: { newPassword: "" } });
+                            }
+                            else if (result) {
+                                console.log("result", result)
+                                mail.SendMail(member.contact.email, "Test", `Your temporary paassword is ${newPassword}`).then((result) => {
+                                    console.log("Send Mail to:", member.contact.email);
+                                    return res.status(201).json(
+                                        {
+                                            success: true,
+                                            errors: [],
+                                            message: "password renew",
+                                            data: { newPassword: newPassword }
+                                        });
+                                }
+    
+                                ).catch((err => {
+                                    console.log("Send Mail");
+                                    return res.status(201).json({ success: false, errors: [err], message: "password renew", data: { newPassword: newPassword } });
+                                })
+    
+                                );
+    
+                            }
+    
+                        })
                     }
+                    else if (err) {
+                        return res.status(401).json({ success: false, errors: [err] });
+                    }
+                    else {
+                        return res.status(401).json({ success: false, errors: ["Unknown error"] });
+                    }
+                })
+            }
+            else {
+                return res.status(401).json({ success: false, errors: [err], message: `${member} Not Found` });
+            }
+        })
 
-                    ).catch((err => {
-                        console.log("Send Mail");
-                        return res.status(201).json({ success: false, errors: [err], message: "password renew", data: { newPassword: newPassowrd } });
-                    })
+    }
+    catch(error){
+        return res.status(401).json({ success: false, errors: [error.message] });
+    }
+    
 
-                    );
-
-                }
-
-            })
-
-        }
-
-        else {
-            return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
-        }
-    })
 }
 exports.register = function (req, res, next) {
 
@@ -194,8 +214,8 @@ exports.register = function (req, res, next) {
         if (user) {
             console.log("register", req.body);
             Member.findOne({ "contact.email": user.contact.email }, (err, member) => {
-               
-                if(err){
+
+                if (err) {
                     return res.status(401).json({ success: false, errors: [err], message: `Member Found Error` });
                 }
                 if (member)
@@ -214,6 +234,6 @@ exports.register = function (req, res, next) {
     }
 
 
-    
+
 }
 

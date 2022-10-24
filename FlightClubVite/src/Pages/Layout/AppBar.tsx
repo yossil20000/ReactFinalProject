@@ -18,6 +18,7 @@ import { setLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
 import RollIcon from '../../Components/Buttons/RollIcon';
 import UserIcon from '../../Components/Buttons/UserIcon';
+import { useEffect } from 'react';
 
 type page = {
   name: string,
@@ -28,8 +29,9 @@ const pages: page[] = [
   { name: 'Reservations', route: ROUTES.RESERVATION },
   { name: 'Flight', route: ROUTES.Flight },
   { name: 'Members', route: 'members' },
+  { name: 'Admin', route: 'admin' },
   { name: "Login", route: "login" }];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Dashboard', 'change_password','Logout'];
 
 const ResponsiveAppBar = () => {
   const navigate = useNavigate();
@@ -77,6 +79,9 @@ const ResponsiveAppBar = () => {
     }
     setAnchorElUser(null);
   };
+  useEffect(() => {
+
+  },[login])
   return (
     <AppBar position="static">
       <Container maxWidth="xl">

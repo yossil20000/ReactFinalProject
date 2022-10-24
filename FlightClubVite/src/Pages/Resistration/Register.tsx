@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
-import checkPassword, { checkUsername, ICheckPassword, IsUsernaaameValid } from '../../Utils/registerUtils';
+import checkPassword, { checkUsername, IValidation, IsUsernaaameValid } from '../../Utils/registerUtils';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -15,14 +15,14 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const defaultCheckPassword: ICheckPassword = {
+const defaultCheckPassword: IValidation = {
     valid: false,
     validation: []
 }
 function Register({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberCreate>) {
     const [verifiedPassword, setVerifiedPassword] = useState("");
-    const [isPasswordValid, setIsPasswordValid] = useState<ICheckPassword>(defaultCheckPassword);
-    const [isusernameValid, setIsUsernameValid] = useState<ICheckPassword>(defaultCheckPassword);
+    const [isPasswordValid, setIsPasswordValid] = useState<IValidation>(defaultCheckPassword);
+    const [isusernameValid, setIsUsernameValid] = useState<IValidation>(defaultCheckPassword);
     const handleChange = (prop: any) => (event: any) => {
 
         if (prop == "verified_password") {
