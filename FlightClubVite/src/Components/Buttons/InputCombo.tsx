@@ -19,10 +19,14 @@ export interface InputComboProps{
   /* handleComboChange(event: any, newValue: any) : void ; */
 }
 function InputCombo(props: InputComboProps) {
+
+  console.log("InputCombo/props", props)
   const {items,title,selectedItem ,  onSelectedItem} = props;
   
   
-  const handleSelectedItemChanged = (event: any, newValue: any) => {
+  const handleSelectedItemChanged = (event: React.SyntheticEvent<Element, Event>, newValue: any) => {
+    event.preventDefault;
+    event.stopPropagation;
     console.log("InputCombo/handleSelectedItemChanged", newValue)
     onSelectedItem(newValue)
     
@@ -41,7 +45,7 @@ function InputCombo(props: InputComboProps) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
+                  sx={{ width: "100%", height:"100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
                   size={'small'}
                   label={title}
                   InputProps={{

@@ -1,17 +1,20 @@
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState,useId } from 'react'
 import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import IDevice from '../../Interfaces/API/IDevice'
 import InputCombo, { InputComboItem } from '../Buttons/InputCombo'
+
 interface ComboProps {
   onChanged: (item: InputComboItem) => void;
 }
 function DevicesCombo(props : ComboProps) {
+  const id = useId();
   const {onChanged} = props
   const { data, isError, isLoading, error } = useFetchAllDevicesQuery();
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<InputComboItem | undefined>();
+  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`deviceComb/selDevice/${id}`,undefined);
   function getDeviceDetailed(_id: string | undefined) : string {
     console.log("getDeviceDetailed", _id)
     if(_id === undefined)
@@ -38,7 +41,7 @@ function DevicesCombo(props : ComboProps) {
       setDevicesItem(items);
   }, [data?.data])
   const onSelectedItem = (item : InputComboItem) => {
-    
+    setSelectedDevice(item);
     console.log("DevicesCombo/ DeviceItem", item)
     onChanged(item)
   }

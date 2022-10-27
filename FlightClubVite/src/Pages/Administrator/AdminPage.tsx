@@ -1,40 +1,61 @@
-import React, { useMemo, useState } from 'react'
-import {ColorModeContext,useMode} from "../../theme"
-import { createTheme, CssBaseline,PaletteMode,Theme,ThemeProvider } from '@mui/material'
-import { amber, grey, deepOrange, red } from '@mui/material/colors';
+import React, { createContext, useMemo, useState } from 'react'
+import { ColorModeContext, useMode } from "../../theme"
+import { createTheme, CssBaseline, PaletteMode, Theme, ThemeProvider } from '@mui/material'
+import { amber, grey, deepOrange, red, blue } from '@mui/material/colors';
+import ScrollableTabs, { ScrollableTabsItem } from '../../Components/Buttons/ScrollableTabs';
+import DeviceTab from './Devices/DeviceTab';
+import DevicesCombo from '../../Components/Devices/DevicesCombo';
+
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
     ...(mode === 'dark'
       ? {
-          // palette values for light mode
-          primary: amber,
-          divider: amber[200],
-          text: {
-            primary: grey[900],
-            secondary: grey[800],
-          },
-        }
+        // palette values for light mode
+        primary: amber,
+        divider: amber[200],
+        background: {
+          default: grey[500],
+          paper: red[200],
+        },
+        text: {
+          primary: grey[100],
+          secondary: grey[200],
+        },
+      }
       : {
-          // palette values for dark mode
-          primary: red,
-          divider: deepOrange[700],
-          background: {
-            default: deepOrange[200],
-            paper: deepOrange[200],
-          },
-          text: {
-            primary: '#fff',
-            secondary: grey[500],
-          },
-        }),
+        // palette values for dark mode
+        primary: blue,
+        divider: deepOrange[700],
+        background: {
+          default: grey[500],
+          paper: blue[400],
+        },
+        text: {
+          primary: '#fff',
+          secondary: grey[100],
+        },
+      }),
   },
 });
 
-function AdminPage() {
-const [theme1,colorMode1] = useMode()  
+const items: ScrollableTabsItem[] = [
+  { id: 0, label: "Devices" },
+  { id: 1, label: "Device Type" },
+  { id: 2, label: "Members" }
 
-const [mode, setMode] = useState<PaletteMode>('light');
+]
+
+function AdminPage() {
+  const [theme1, colorMode1] = useMode()
+  const [value, setValue] = React.useState(0);
+  const [mode, setMode] = useState<PaletteMode>('light');
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+    console.log("AdminPage/newValue",newValue)
+  }
+
   const colorMode = useMemo(
     () => ({
       // The dark mode switch would invoke this method
@@ -48,15 +69,37 @@ const [mode, setMode] = useState<PaletteMode>('light');
   );
 
   // Update the theme only if the mode changes
-  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]); 
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  
+  const RederTab = () => {
+    switch(value){
+      case 0:
+        return (<DeviceTab/>) 
+      case 1:
+        return (<div>I am tab 1</div>) 
+      default:
+        return (<div>I am tab </div>) 
+    } 
+  }
   return (
-    <ColorModeContext.Provider value={colorMode1}>
-      <ThemeProvider  theme={theme as Theme}>
-        <CssBaseline/>
-        <div>AdminPage</div>
+    <>
+    {/* <ColorModeContext.Provider value={colorMode1}>
+      <ThemeProvider theme={theme as Theme}>
+     */}    <CssBaseline />
+        <div className='header'>
+        <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
+        </div>
+        <div className='main' style={{ overflow: 'auto' }}>
+          {value === 0 && <DeviceTab/>}
+          {value === 1 && (<div>I am tab 1</div>)}
+          {value === 2 && (<div>I am tab 2</div>)}
+        </div>
+{/* 
       </ThemeProvider>
-    </ColorModeContext.Provider>
+    </ColorModeContext.Provider> */}
+    </>
     
+
   )
 }
 

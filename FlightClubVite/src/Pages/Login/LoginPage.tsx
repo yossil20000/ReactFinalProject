@@ -12,16 +12,12 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-import { ClassNames } from '@emotion/react';
-import { useForm } from 'react-hook-form'
 import { useLoginMutation } from '../../features/Auth/authApiSlice'
 import ILogin, { ILoginResult } from '../../Interfaces/API/ILogin';
-import { setCredentials, selectCurrentUser, selectCurrentId } from "../../features/Auth/authSlice"
+import { setCredentials,  selectCurrentId } from "../../features/Auth/authSlice"
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate , useLocation} from 'react-router-dom';
-import { ROUTES } from '../../Types/Urls';
-import { getFromLocalStorage, setLocalStorage } from '../../Utils/localStorage';
+import { getFromLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
 
 
@@ -145,8 +141,7 @@ export default function LoginPage() {
                 id="username"
                 label="Username"
                 name="username"
-                autoComplete="username"
-                autoFocus
+                
               />
               <TextField
                 margin="normal"
@@ -156,7 +151,6 @@ export default function LoginPage() {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
               />
               {renderError()}
               <FormControlLabel

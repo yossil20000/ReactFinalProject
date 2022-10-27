@@ -54,8 +54,8 @@ export default interface IDevice{
         instruments: DEVICE_INS
     }
     location_zone: string
-    can_reservs:IMember
-    flights: IFlight
-    flight_reservs: IFlightReservation
+    can_reservs:IMember[]
+    flights: IFlight[]
+    flight_reservs: IFlightReservation[]
 
 }
