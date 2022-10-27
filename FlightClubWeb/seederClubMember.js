@@ -78,7 +78,7 @@ function deviceCreate(device_id,device_type,available,device_status,due_date,hob
         due_date: due_date,
         hobbs_meter: hobbs_meter,
         engien_meter: engien_meter,
-        price: {base: 420.4},
+        price: {base: 420.4,meter: "ENGIEN"},
         maintanance: {next_meter: 5670.6},
         description: "Good Aircrapt",
         details: {
@@ -189,7 +189,14 @@ function createMembers(cb) {
 }
 
 function deviceTypeCreate(name, type, descrition, cb) {
-    let deviceTypeDetailes = { name: name, type: type, description: descrition };
+    let deviceTypeDetailes = { 
+        name: name,
+        type: type,
+        class:{
+            engien: "SingleEngien",
+            surface: "Land"
+        },
+        description: descrition };
     let deviceType = new DeviceType(deviceTypeDetailes);
     deviceType.save(function (err) {
         if (err) {

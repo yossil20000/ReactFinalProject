@@ -11,7 +11,7 @@ var DeviceSchema = new Schema({
     available: {type: Boolean, default: false},
     device_status: {type:String, 
         enum:[CE.DEVICE_STATUS[0],CE.DEVICE_STATUS[1],CE.DEVICE_STATUS[2],CE.DEVICE_STATUS[3]], default: CE.DEVICE_STATUS[0]},
-    due_date: {type: Date},
+    due_date: {type: Date, default: new Date()},
     hobbs_meter: {type: mongoose.Decimal128, get: getDecimal},
     engien_meter: {type: mongoose.Decimal128, get: getDecimal},
     maintanance: {
