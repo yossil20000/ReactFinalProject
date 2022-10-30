@@ -14,7 +14,7 @@ function DevicesCombo(props : ComboProps) {
   const { data, isError, isLoading, error } = useFetchAllDevicesQuery();
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`deviceComb/selDevice/${id}`,undefined);
+  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`admin_deviceComb/selDevice/${id}`,undefined);
   function getDeviceDetailed(_id: string | undefined) : string {
     console.log("getDeviceDetailed", _id)
     if(_id === undefined)

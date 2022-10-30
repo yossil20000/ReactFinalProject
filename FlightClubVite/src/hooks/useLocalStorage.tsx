@@ -9,7 +9,7 @@ function useLocalStorage<T>(key: string, initialValue: T): ReturnType<T> {
   const [state, setState] = useState<T | undefined>(() => {
     
     try {
-      const value =  localStorage.getItem(key);
+      const value =  sessionStorage.getItem(key);
       console.log(`useLocalStorage/value/${key} `, value)
       if(value){
         const parsed =  JSON.parse(value);
@@ -30,7 +30,7 @@ function useLocalStorage<T>(key: string, initialValue: T): ReturnType<T> {
     if(state)
     {
       try{
-        localStorage.setItem(key,JSON.stringify(state))
+        sessionStorage.setItem(key,JSON.stringify(state))
       }
       catch(err){
         console.log("useLocalStorage exception: ", err)

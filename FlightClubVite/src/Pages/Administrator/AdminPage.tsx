@@ -1,10 +1,11 @@
 import React, { createContext, useMemo, useState } from 'react'
 import { ColorModeContext, useMode } from "../../theme"
-import { createTheme, CssBaseline, PaletteMode, Theme, ThemeProvider } from '@mui/material'
+import { createTheme, CssBaseline, PaletteMode, Paper, Theme, ThemeProvider } from '@mui/material'
 import { amber, grey, deepOrange, red, blue } from '@mui/material/colors';
 import ScrollableTabs, { ScrollableTabsItem } from '../../Components/Buttons/ScrollableTabs';
 import DeviceTab from './Devices/DeviceTab';
 import DevicesCombo from '../../Components/Devices/DevicesCombo';
+import DeviceTypeTab from './DeviceType/DeviceTypeTab';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -76,7 +77,7 @@ function AdminPage() {
       case 0:
         return (<DeviceTab/>) 
       case 1:
-        return (<div>I am tab 1</div>) 
+        return (<DeviceTypeTab/>) 
       default:
         return (<div>I am tab </div>) 
     } 
@@ -90,9 +91,11 @@ function AdminPage() {
         <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
         </div>
         <div className='main' style={{ overflow: 'auto' }}>
+          <Paper sx={{height: "100%"}}>
           {value === 0 && <DeviceTab/>}
-          {value === 1 && (<div>I am tab 1</div>)}
+          {value === 1 && (<DeviceTypeTab/>)}
           {value === 2 && (<div>I am tab 2</div>)}
+          </Paper>
         </div>
 {/* 
       </ThemeProvider>

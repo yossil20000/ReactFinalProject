@@ -15,4 +15,10 @@ export  enum URLS{
     CLUB_NOTICE_UPDATE ='api/club_notice/update',
     CLUB_NOTICE_DELETE ='api/club_notice/delete',
     CLUB_NOTICE_CREATE ='api/club_notice/create',
+    DEVICE_TYPES = 'api/deviceTypes',
+    DEVICE_TYPES_DETAILES = 'api/deviceTypes',
+    DEVICE_TYPES_DELETE = 'api/deviceTypes',
+    DEVICE_TYPES_UPDATE = 'api/deviceTypes/update',
+    DEVICE_TYPES_CREATE = 'api/deviceTypes/create',
+    
 }

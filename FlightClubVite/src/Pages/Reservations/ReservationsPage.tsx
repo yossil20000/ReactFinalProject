@@ -169,7 +169,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   return (
     <Toolbar
       sx={{
-
+        zIndex:"100",
         pl: { sm: 1 },
         pr: { xs: 1, sm: 1 },
         ...(isFilterOwner && {
@@ -436,6 +436,7 @@ function ReservationsPage() {
     
     setOpenReservationAdd(true);
   }
+  
   return (
     <div className='main' style={{ overflow: 'auto' }}>
       { isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
@@ -453,7 +454,7 @@ function ReservationsPage() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
           <TableContainer>
-            <Table
+            <Table stickyHeader={true}
               sx={{ minWidth: 750 }}
               aria-labelledby="tableTitle"
               size={dense ? 'small' : 'medium'}
@@ -465,7 +466,7 @@ function ReservationsPage() {
                 handleReservationAdd={handleAddClick}
               />
               <MediaQuery minWidth={768}>
-                <TableBody>
+                <TableBody sx={{"& tr:nth-of-type(2n+1)": {backgroundColor: "gray",color:"white" ,"& .MuiTableCell-root" : {color: "white"}}, "color": "red"} }>
                   {
                     
                   rows.filter((r) => {

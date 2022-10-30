@@ -1,5 +1,5 @@
 import "../../Types/date.extensions"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Grid, Paper, TablePagination, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Grid, Paper, styled, TablePagination, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
@@ -15,6 +15,13 @@ import FilterButtons from "../../Components/Buttons/FilterButtons";
 import UpdateFlightDialog from "./UpdateFlightDialog";
 import SortButtons, { ISortCell, Order } from "../../Components/Buttons/SortButtons";
 import CreateFlightDialog from "./CreateFlightDialog";
+
+const StyledAccordion = styled(Box)(({ theme }) => ({
+  color: theme?.palette.primary.main,
+  "& .MuiAccordionSummary-content:nth-of-type(2n+1)":
+    { backgroundColor: "gray", color: "white" }
+}
+))
 
 interface IFlightData {
   _id: string; _id_member: string; name: string; description: string;
@@ -77,7 +84,7 @@ let flightUpdateIntitial: IFlightUpdate = {
   description: "",
   status: Status.CREATED
 }
-let flightAddIntitial : IFlightCreate = {
+let flightAddIntitial: IFlightCreate = {
   date_from: new Date(),
   date_to: new Date(),
 
@@ -95,7 +102,7 @@ let flightAddIntitial : IFlightCreate = {
 const FlightPage = () => {
   const [openFlightAdd, setOpenFlightAdd] = useState(false);
   const [openFlightUpdate, setOpenFlightUpdate] = useState(false);
-  const [flightAdd,setFlightAdd] = useState<IFlightCreate>(flightAddIntitial)
+  const [flightAdd, setFlightAdd] = useState<IFlightCreate>(flightAddIntitial)
   const [flightUpdate, setFlightUpdate] = useState<IFlightUpdate>(flightUpdateIntitial);
   const [DeleteFlight] = useDeleteFlightMutation();
   const [order, setOrder] = useState<Order>('asc');
@@ -241,7 +248,7 @@ const FlightPage = () => {
       setFlightUpdate(flightUpdateIntitial);
     }
   }
-  
+
   const handleUpdateOnSave = (value: IFlightUpdate) => {
     refetch();
     setOpenFlightUpdate(false);
@@ -256,7 +263,7 @@ const FlightPage = () => {
     setOpenFlightUpdate(false);
   }
   const handleAddClick = async (event: React.MouseEvent<unknown>) => {
-    
+
     setOpenFlightAdd(true);
   }
   const handleAddOnSave = (value: IFlightCreate) => {
@@ -271,7 +278,7 @@ const FlightPage = () => {
   return (
     <>
       <div className='header'><Typography variant="h6" align="center">Flight Page</Typography></div>
-      <div className='main' style={{ overflow: 'auto' }}>
+      <div className='main' style={{overflow: "auto"}} >
         {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
         {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
         <Box sx={{ width: '100%', height: '100%' }}>
@@ -279,61 +286,64 @@ const FlightPage = () => {
             <FilterButtons handleAddFlight={handleAddClick} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
               handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
             <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
-            {
+            <StyledAccordion >
+              {
 
-              getFilteredData().sort(getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: IFlightData, index: number) => {
-                  return (
-                    <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
-                      <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                        <Typography variant='caption'> {row.device_id} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Grid container spacing={1}>
-                          <Grid item sm={12}>
-                            <Typography variant='caption'>description: {row.description}</Typography>
-                          </Grid>
-                          <Grid item xs={3} >
+                getFilteredData().sort(getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: IFlightData, index: number) => {
+                    return (
+                      <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
+                      >
+                        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                          <Typography variant='caption'> {row.device_id} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Grid container spacing={1}>
+                            <Grid item sm={12}>
+                              <Typography variant='caption'>description: {row.description}</Typography>
+                            </Grid>
+                            <Grid item xs={3} >
 
-                            <Typography >
-                              {row.name}
-                            </Typography>
-                            <Typography>
-                              {row.member_id}
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={4} >
-                            <Typography>
-                              {`Hobbs Start: ${row.hobbs_start}`}
-                            </Typography>
-                            <Typography>
-                              {`Hobbs Stop: ${row.hobbs_stop}`}
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={4} >
-                            <Typography>
-                              {`Engien Start: ${row.engien_start}`}
-                            </Typography>
-                            <Typography>
-                              {`Engien Stop: ${row.engien_stop}`}
-                            </Typography>
+                              <Typography >
+                                {row.name}
+                              </Typography>
+                              <Typography>
+                                {row.member_id}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={4} >
+                              <Typography>
+                                {`Hobbs Start: ${row.hobbs_start}`}
+                              </Typography>
+                              <Typography>
+                                {`Hobbs Stop: ${row.hobbs_stop}`}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={4} >
+                              <Typography>
+                                {`Engien Start: ${row.engien_start}`}
+                              </Typography>
+                              <Typography>
+                                {`Engien Stop: ${row.engien_stop}`}
+                              </Typography>
 
-                          </Grid>
-                          <Grid item sm={1} >
-                            <Typography>
-                              {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
-                            </Typography>
-                            <Typography>
-                              {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
-                            </Typography>
+                            </Grid>
+                            <Grid item sm={1} >
+                              <Typography>
+                                {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
+                              </Typography>
+                              <Typography>
+                                {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
+                              </Typography>
 
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      </AccordionDetails>
-                    </Accordion>
-                  )
-                })
-            }
+                        </AccordionDetails>
+                      </Accordion>
+                    )
+                  })
+              }
+              </StyledAccordion>
           </Paper>
         </Box>
       </div>

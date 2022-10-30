@@ -13,7 +13,7 @@ interface Role {
     "user": string;
     "account": string;
 }
-interface Member {
+export interface Member {
     "contact": {
         "billing_address": {
             "line1": string;

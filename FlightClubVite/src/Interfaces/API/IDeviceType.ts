@@ -6,9 +6,13 @@ export enum SurfaceType{
     Land,
     Sea
 }
+export enum CategoryType {
+    Airplane,Rotorcraft,FDT
+}
 export default interface IDeviceType {
+    _id: string;
     name: string
-    category: string
+    category: CategoryType
     class:
     {
         engien: EngienType

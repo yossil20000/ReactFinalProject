@@ -45,7 +45,7 @@ function InputCombo(props: InputComboProps) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  sx={{ width: "100%", height:"100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }}
+                  sx={{ width: "100%", height:"100%", label: { color: "#2196f3" }, ml: 0, }}
                   size={'small'}
                   label={title}
                   InputProps={{

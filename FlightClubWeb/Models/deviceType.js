@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 Schema = mongoose.Schema;
 
 var DeviceTypeSchema = new Schema({
-    name: {type: String, unique: true, minLength:5 , required:true},
+    name: {type: String, unique: true,  required:true},
     category: {type: String, enum:["Airplane","Rotorcraft","FDT"], required: true,default: "Airplane"},
     class:
         {

@@ -74,7 +74,6 @@ interface HeadCell {
 const headCells: readonly HeadCell[] = [
   
   { id: "member_id", label: "Id Number", numeric: false, disablePadding: true },
-  { id: "family_name", label: "Famaily", numeric: false, disablePadding: true },
   { id: "first_name", label: "Name", numeric: false, disablePadding: true },
   { id: "email", label: "Email", numeric: false, disablePadding: true },
   { id: "phone", label: "Phone", numeric: false, disablePadding: true },
@@ -100,8 +99,9 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 
         {headCells.map((headCell) => (
           <TableCell
+          
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.numeric ? 'right' : 'center'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}>
             <TableSortLabel
@@ -227,7 +227,7 @@ function MembersTablePage() {
   useEffect(() => {
 
     let rows = members?.data.map((item) => {
-      return createdata(item._id, item.member_id, item.family_name, item.first_name, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`,GeneralCanDo(item._id, login.member._id, login.member.roles))
+      return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`,GeneralCanDo(item._id, login.member._id, login.member.roles))
     })
     console.log('UseEffect/rows/be', rows)
     if (rows === undefined) {
@@ -339,8 +339,8 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
               />
-              <TableContainer>
-                <Table
+              <TableContainer >
+                <Table  
                   sx={{ minWidth: 750 }}
                   aria-labelledby="tableTitle"
                   size={dense ? 'small' : 'medium'}
@@ -374,7 +374,6 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                             selected={isItemSelected}
                           >
                             <TableCell align="left">{row.member_id}</TableCell>
-                            <TableCell align="left">{row.family_name}</TableCell>
                             <TableCell align="left">{row.first_name}</TableCell>
                             <TableCell align="left">{row.email}</TableCell>
                             <TableCell align="left">{row.phone}</TableCell>
