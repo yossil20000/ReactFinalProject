@@ -14,8 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logOut } from '../../features/Auth/authSlice';
-import { setLocalStorage } from '../../Utils/localStorage';
-import { LOCAL_STORAGE } from '../../Enums/localStroage';
 import RollIcon from '../../Components/Buttons/RollIcon';
 import UserIcon from '../../Components/Buttons/UserIcon';
 import { useEffect } from 'react';

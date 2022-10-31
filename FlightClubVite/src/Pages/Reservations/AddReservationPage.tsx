@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import IReservation, { CreateReservationToApi, IReservationCreate, IReservationCreateApi } from '../../Interfaces/API/IReservation';
 import InputCombo, { InputComboItem } from '../../Components/Buttons/InputCombo';
+import ControledCombo from '../../Components/Buttons/ControledCombo';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -204,12 +205,13 @@ function AddReservationPage() {
         </Grid>
         <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
           <Item>
-            <InputCombo onSelectedItem={onDeviceChanged} selectedItem={selectedDevice} items={devicesItems} /* handleComboChange={handleDeviceOnChange} */ title="Devices"/>
+            <ControledCombo onSelectedItem={onDeviceChanged} selectedItem={selectedDevice === undefined ? null : selectedDevice} items={devicesItems}title="Devices"/>
+      
           </Item>
         </Grid>
         <Grid item xs={12} md={6} xl={6}>
           <Item>
-          <InputCombo onSelectedItem={onMemberChanged} selectedItem={selectedMember} items={membersItems} /* handleComboChange={handleDeviceOnChange} */ title="Members"/>
+          <ControledCombo onSelectedItem={onMemberChanged} selectedItem={selectedMember === undefined ? null : selectedMember} items={membersItems} /* handleComboChange={handleDeviceOnChange} */ title="Members"/>
 
           </Item>
         </Grid>

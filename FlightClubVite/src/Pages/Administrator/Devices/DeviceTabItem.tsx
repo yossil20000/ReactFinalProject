@@ -7,7 +7,7 @@ import useId from '@mui/material/utils/useId'
 import { setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
 import { InputComboItem } from '../../../Components/Buttons/InputCombo'
-import {  LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import DeviceStatusCombo from '../../../Components/Devices/DeviceStatusCombo'
 import DeviceMTCombo from '../../../Components/Devices/DeviceMTCombo'
@@ -51,14 +51,14 @@ function DeviceTabItem() {
     const newObj: IDevice = SetProperty(selectedItem, prop, item.lable) as IDevice;
     setSelectedItem(newObj)
   }
-  const handleTimeChange = (newValue: Date | null | undefined, name:string) => {
+  const handleTimeChange = (newValue: Date | null | undefined, name: string) => {
     console.log(`handleTimeChange/newValue , key`, newValue, name);
     if (newValue === null || newValue === undefined)
       return;
-      
-      const newObj: IDevice = SetProperty(selectedItem, name, newValue) as IDevice;
 
-      setSelectedItem(newObj)
+    const newObj: IDevice = SetProperty(selectedItem, name, newValue) as IDevice;
+
+    setSelectedItem(newObj)
   };
   return (
     <>
@@ -79,74 +79,27 @@ function DeviceTabItem() {
         <AccordionDetails>
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 4 }}>
             <Grid item xs={1}>
-              <TextField onChange={handleChange} id="device_id" name="device_id"
+              <TextField fullWidth={true} onChange={handleChange} id="device_id" name="device_id"
                 label="Device Id" placeholder="4xcgc" variant="standard"
                 value={selectedItem?.device_id} required
-                helperText="Helper" error />
+                helperText="" error={false} />
             </Grid>
             <Grid item xs={1}>
-              <TextField onChange={handleChange} id="description" name="description"
+              <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
                 label="Description" placeholder="description" variant="standard"
                 value={selectedItem?.description} required
-                helperText="Helper" error multiline />
+                helperText="" error={false} multiline />
             </Grid>
             <Grid item xs={1}>
-              <Item>
-                <TextField onChange={handleChange} id="hobbs_meter" label="Hobbs"
-                  name="hobbs_meter" placeholder="Hobbs meter" variant="standard"
-                  value={selectedItem?.hobbs_meter} />
-              </Item>
+
+              <TextField fullWidth onChange={handleChange} id="hobbs_meter" label="Hobbs"
+                name="hobbs_meter" placeholder="Hobbs meter" variant="standard"
+                value={selectedItem?.hobbs_meter} />
             </Grid>
             <Grid item xs={1}>
-              <Item>
-                <TextField
-                  id="engien_meter"
-                  label="Engien"
-                  name="engien_meter"
-                  placeholder="Engien meter"
-                  value={selectedItem?.engien_meter}
-                  variant="standard"
-                  onChange={handleChange}
-                />
-              </Item>
-            </Grid>
-            <Grid item xs={1}>
-              <Item>
-                <TextField
-                  id="hobbs_meter"
-                  label="Hobbs"
-                  name="hobbs_meter"
-                  placeholder="Hobbs meter"
-                  value={selectedItem?.hobbs_meter}
-                  variant="standard"
-                  onChange={handleChange}
-                />
-              </Item>
-            </Grid>
-            <Grid item xs={1}>
-              <Item>
-                <TextField
-                  id="hobbs_meter"
-                  label="Hobbs"
-                  name="hobbs_meter"
-                  placeholder="Hobbs meter"
-                  value={selectedItem?.hobbs_meter}
-                  variant="standard"
-                  onChange={handleChange}
-                />
-              </Item>
-            </Grid>
-            <Grid item xs={1}>
-              <Item>
-                <TextField
-                  id="hobbs_meter"
-                  label="Hobbs"
-                  name="hobbs_meter"
-                  placeholder="Hobbs meter"
-                  value={selectedItem?.hobbs_meter}
-                  variant="standard"
-                />
-              </Item>
+              <TextField fullWidth onChange={handleChange} id="engien_meter" label="Engien"
+                name="engien_meter" placeholder="Engien meter"  variant="standard"
+                value={selectedItem?.engien_meter}/>
             </Grid>
           </Grid>
         </AccordionDetails>
@@ -160,54 +113,33 @@ function DeviceTabItem() {
           </Grid>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={0.5} padding={1} columns={{ xs: 2, sm: 2 }}>
+          <Grid container spacing={1} columns={{ xs: 2, sm: 2, md: 3 }}>
             <Grid item xs={1}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <MobileDatePicker
-                 
                   label="Next Service"
                   value={selectedItem?.due_date === null ? new Date() : selectedItem?.due_date}
-                  onChange={(newValue) => handleTimeChange(newValue,"due_date")}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(newValue) => handleTimeChange(newValue, "due_date")}
+                  renderInput={(params) => <TextField {...params} fullWidth={true} />}
                 />
               </LocalizationProvider>
-            </Grid>
-            <Grid item xs={1}>
-              <TextField
-                required
-                error
-                id="next_meter"
-                name="maintanance.next_meter"
-                label="Next meter"
-                placeholder="Next maintanance"
-                variant="standard"
-                value={selectedItem?.maintanance.next_meter}
-                helperText="Helper"
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={1}>
-              <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} />
-            </Grid>
-            <Grid item xs={1}>
-              <TextField disabled id="Device Status" name="device_status"
-                label="Device Status" placeholder="Device Status" variant="standard"
-                value={selectedItem?.device_status} required
-                helperText="Helper" error multiline />
             </Grid>
             <Grid item xs={1}>
               <DeviceMTCombo onChanged={(item) => onComboChanged(item, "maintanance.type")} />
             </Grid>
             <Grid item xs={1}>
-              <TextField disabled id="Service Type" name="maintanance.type"
-                label="Service Type" placeholder="Service Type" variant="standard"
-                value={selectedItem?.maintanance.type} required
-                helperText="Helper" error multiline />
+              <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
+                placeholder="Next maintanance" variant="standard"
+                value={selectedItem?.maintanance.next_meter} error={false} helperText=""/>
+            </Grid>
+            <Grid item xs={1}>
+              <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} />
+            </Grid>
+            <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
+              <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
             </Grid>
           </Grid>
-          <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
-            <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
-          </Grid>
+
         </AccordionDetails>
       </Accordion>
       <Accordion >
@@ -220,35 +152,31 @@ function DeviceTabItem() {
         </AccordionSummary>
 
         <AccordionDetails>
-          <Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
+          <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
             <Grid item xs={1}>
               <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} />
             </Grid>
             <Grid item xs={1}>
-              <TextField disabled name="price.meter" label="Price Method" placeholder="Price Method" variant="standard" value={selectedItem?.price.meter} />
+              <TextField fullWidth onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
+                value={selectedItem?.price.base} helperText="" />
             </Grid>
-            <Grid item xs={1}>
-              <TextField onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
-                value={selectedItem?.price.base} helperText="Helper" />
+
+            <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
+              <Grid item xs={1}>
+                <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} />
+              </Grid>
+              <Grid item xs={1} md={1}>
+                <TextField fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} />
+              </Grid>
+              <Grid item xs={1}>
+                <TextField fullWidth onChange={handleChange} required name="details.seats" label="Seats" placeholder="Seats" variant="standard"
+                  value={selectedItem?.details.seats} helperText="" />
+              </Grid>
+              <Grid item xs={1}>
+                <TextField fullWidth onChange={handleChange} name="details.color" label="Color" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.color} />
+              </Grid>
             </Grid>
-            <Grid item xs={1}>
-              <TextField onChange={handleChange} required name="details.seats" label="Seats" placeholder="Seats" variant="standard"
-                value={selectedItem?.details.seats} helperText="Helper" />
-            </Grid>
-            <Grid container spacing={0.5} padding={1} columns={{ xs: 3 }}>
-            <Grid item xs={1}>
-              <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} />
-            </Grid>
-            <Grid item xs={1}>
-              <TextField disabled name="details.fuel.units" label="Fuel Units" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.units} />
-            </Grid>
-            <Grid item xs={1}>
-              <TextField  onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} />
-            </Grid>
-            </Grid>
-            <Grid item xs={1}>
-              <TextField  onChange={handleChange} name="details.color" label="Color" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.color} />
-            </Grid>
+
           </Grid>
         </AccordionDetails>
       </Accordion>

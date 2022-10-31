@@ -1,14 +1,11 @@
 
-import { useEffect, useState,useId } from 'react'
-import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
+import { useState } from 'react'
 import useLocalStorage from '../../hooks/useLocalStorage';
-import IDevice, { DEVICE_MET, DEVICE_STATUS } from '../../Interfaces/API/IDevice'
 import { EngienType } from '../../Interfaces/API/IDeviceType';
-import InputCombo, { InputComboItem } from '../Buttons/InputCombo'
+import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
+import { InputComboItem } from '../Buttons/InputCombo'
 
-interface ComboProps {
-  onChanged: (item: InputComboItem) => void;
-}
+
 const getInputItems= () => {
   const items : InputComboItem[] = Object.keys(EngienType).filter((v) => isNaN(Number(v))).
   map((name) => {
@@ -23,7 +20,7 @@ const getInputItems= () => {
 }
 function DeviceTypeEngienCombo(props : ComboProps) {
   const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>();
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_engien_type",undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
@@ -31,7 +28,7 @@ function DeviceTypeEngienCombo(props : ComboProps) {
     onChanged(item)
   }
   return (
-    <InputCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem}  items={getInputItems()} /* handleComboChange={handleDeviceOnChange} */ title={`Engien Type`} />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={getInputItems()} /* handleComboChange={handleDeviceOnChange} */ title={`Engien Type`} />
   )
 }
 

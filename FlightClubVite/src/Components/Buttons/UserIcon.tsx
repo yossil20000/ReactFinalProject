@@ -19,8 +19,8 @@ function UserIcon(props: IRollIcon) {
     const iconsArray : JSX.Element[] = [];
     props?.roles?.forEach(element => {
     console.log("RollIcon/element", element)
-    if (element == Role.user) iconsArray.push(<AccountCircleTwoToneIcon/>) ;
-    if (element == Role.guest) iconsArray.push(<NoAccountsIcon/>);
+    if (element == Role.user) iconsArray.push(<AccountCircleTwoToneIcon key="account"/>) ;
+    if (element == Role.guest) iconsArray.push(<NoAccountsIcon key="no-account"/>);
     
 
   });

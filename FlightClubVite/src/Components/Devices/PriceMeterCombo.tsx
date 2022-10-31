@@ -1,13 +1,11 @@
 
-import { useEffect, useState,useId } from 'react'
-import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
+import { useState } from 'react'
 import useLocalStorage from '../../hooks/useLocalStorage';
-import IDevice, { DEVICE_MET } from '../../Interfaces/API/IDevice'
-import InputCombo, { InputComboItem } from '../Buttons/InputCombo'
+import { DEVICE_MET } from '../../Interfaces/API/IDevice'
+import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
+import { InputComboItem } from '../Buttons/InputCombo'
 
-interface ComboProps {
-  onChanged: (item: InputComboItem) => void;
-}
+
 const getInputItems= () => {
   const items : InputComboItem[] = Object.keys(DEVICE_MET).filter((v) => isNaN(Number(v))).
   map((name) => {
@@ -21,12 +19,8 @@ const getInputItems= () => {
   return items;
 }
 function PriceMeterCombo(props : ComboProps) {
-  const id = useId();
   const {onChanged} = props
-  
-  
-  
-  const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>();
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_price_method", undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
@@ -34,7 +28,7 @@ function PriceMeterCombo(props : ComboProps) {
     onChanged(item)
   }
   return (
-    <InputCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem}  items={getInputItems()} /* handleComboChange={handleDeviceOnChange} */ title="Price Method" />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={getInputItems()} title="Price Method" />
   )
 }
 

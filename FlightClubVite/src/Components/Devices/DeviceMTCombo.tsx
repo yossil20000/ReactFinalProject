@@ -1,11 +1,11 @@
 
 import {  useState } from 'react'
+import useLocalStorage from '../../hooks/useLocalStorage';
 import {  DEVICE_MT } from '../../Interfaces/API/IDevice'
-import InputCombo, { InputComboItem } from '../Buttons/InputCombo'
+import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
+import { InputComboItem } from '../Buttons/InputCombo'
 
-interface ComboProps {
-  onChanged: (item: InputComboItem) => void;
-}
+
 const getInputItems= () => {
   const items : InputComboItem[] = Object.keys(DEVICE_MT).filter((v) => isNaN(Number(v))).
   map((name) => {
@@ -20,7 +20,7 @@ const getInputItems= () => {
 }
 function DeviceMTCombo(props : ComboProps) {
   const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>();
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_service_type",undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
@@ -28,7 +28,8 @@ function DeviceMTCombo(props : ComboProps) {
     onChanged(item)
   }
   return (
-    <InputCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem}  items={getInputItems()} /* handleComboChange={handleDeviceOnChange} */ title={`Service Type`} />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={getInputItems()}  title={`Service Type`} />
+    
   )
 }
 

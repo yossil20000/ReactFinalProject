@@ -66,33 +66,21 @@ function DeviceTypeItem() {
   
   return (
  
-      <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} xs={12}>
+      <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12}>
         <Grid item xs={12} sm={12} >
           <TextField onChange={handleChange} fullWidth={true} variant='standard' label="Type name" name="name" value={selected?.name}/>
         </Grid>
         <Grid item xs={12} sm={12} >
         <TextField onChange={handleChange}  fullWidth={true} variant='standard' label="Description" name="description" value={selected?.description}/>
         </Grid>
-        <Grid item xs={12} sm={6} >
+        <Grid item xs={12}>
          <DeviceTypeCategoryCombo onChanged={(item) => onComboChanged(item,"category")}/>
-        </Grid>
-
-        <Grid item xs={12} sm={6} >
-          <TextField fullWidth={true} disabled variant='standard' label="Category" name="category" value={selected?.category}/>
-        </Grid>
-        
-        <Grid item xs={12} sm={6} >
+        </Grid>        
+        <Grid item xs={12}>
          <DeviceTypeEngienCombo onChanged={(item) => onComboChanged(item,"class.engien")}/>
         </Grid>
-        
-        <Grid item xs={12} sm={6} >
-        <TextField disabled  fullWidth={true} variant='standard' label="Engien class" name="class.engien" value={selected?.class.engien}/>
-        </Grid>
-        <Grid item xs={12} sm={6} >
+        <Grid item xs={12}>
          <DeviceTypeSurfaceCombo onChanged={(item) => onComboChanged(item,"class.surface")}/>
-        </Grid>
-        <Grid item xs={12} sm={6} >
-        <TextField  disabled fullWidth={true} variant='standard' label="Surface class" name="class.surface" value={selected?.class.surface}/>
         </Grid>
       </Grid>
  

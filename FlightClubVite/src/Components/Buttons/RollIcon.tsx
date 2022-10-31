@@ -5,7 +5,6 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import BusinessIcon from '@mui/icons-material/Business';
-import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import { Role } from "../../Interfaces/API/IMember";
 
 export interface IRollIcon {
@@ -23,10 +22,10 @@ function RollIcon(props: IRollIcon) {
 
     }); */
     const iconsArray : JSX.Element[] = [];
-    props?.roles?.forEach(element => {
+    props?.roles?.forEach((element) => {
     console.log("RollIcon/element", element)
-    if (element == Role.admin.toString()) iconsArray.push(<AdminPanelSettingsIcon/>) ;
-    if (element == Role.account) iconsArray.push(<ManageAccountsIcon/>);
+    if (element == Role.admin.toString()) iconsArray.push(<AdminPanelSettingsIcon key="admin"/>) ;
+    if (element == Role.account) iconsArray.push(<ManageAccountsIcon key="account"/>);
     if (element == Role.desk) iconsArray.push(<BusinessIcon/>)
     
 

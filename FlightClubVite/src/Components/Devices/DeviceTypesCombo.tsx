@@ -3,18 +3,17 @@ import { useEffect, useState,useId } from 'react'
 import { useFetchAllDeviceTypesQuery } from '../../features/DeviceTypes/deviceTypesApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import IDeviceType from '../../Interfaces/API/IDeviceType';
-import InputCombo, { InputComboItem } from '../Buttons/InputCombo'
+import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
+import { InputComboItem } from '../Buttons/InputCombo'
 
-interface ComboProps {
-  onChanged: (item: InputComboItem) => void;
-}
+
 function DeviceTypesCombo(props : ComboProps) {
   const id = useId();
   const {onChanged} = props
   const { data, isError, isLoading, error } = useFetchAllDeviceTypesQuery();
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`admin_deviceComb/selDevice/${id}`,undefined);
+  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`admin_deviceComb/selDevice}`,undefined);
   function getDeviceDetailed(_id: string | undefined) : string {
     console.log("getDeviceDetailed", _id)
     if(_id === undefined)
@@ -49,7 +48,7 @@ function DeviceTypesCombo(props : ComboProps) {
     onChanged(item)
   }
   return (
-    <InputCombo onSelectedItem={onSelectedItem}  selectedItem={selectedDevice}  items={devicesItems} /* handleComboChange={handleDeviceOnChange} */ title="Device Types" />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedDevice === undefined ? null : selectedDevice}  items={devicesItems} /* handleComboChange={handleDeviceOnChange} */ title="Device Types" />
   )
 }
 

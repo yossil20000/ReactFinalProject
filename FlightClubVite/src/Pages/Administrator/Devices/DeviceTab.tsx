@@ -1,6 +1,9 @@
-import { Accordion, Box, Button, Grid } from '@mui/material'
+import { Label } from '@mui/icons-material';
+import { Accordion, Box, Button, Grid, Typography } from '@mui/material'
 import { createContext, useRef, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
+import ActionCombo from '../../../Components/Buttons/ActionCombo';
+import GitHubLabel, { LabelType } from '../../../Components/Buttons/ComboPicker';
 import { InputComboItem } from '../../../Components/Buttons/InputCombo';
 import DevicesCombo from '../../../Components/Devices/DevicesCombo';
 import { useFetchAllDevicesQuery } from '../../../features/Device/deviceApiSlice'
@@ -32,18 +35,25 @@ function DeviceTab() {
     }
 
   }
+ const onSelecteGit = (items: LabelType[]) =>{
+    console.log("onSelecteGit",items);
+  }
   return (
     <DevicesContext.Provider value={{ devices: devices?.data, selectedItem: selectedDevice, setSelectedItem: setSelectedDevice }}>
-      <Box margin={2}>
-        <Grid container columns={3} >
+      <Box marginTop={1}>
+        <Grid container columns={2} width={"100%"} columnSpacing={1}>
           <Grid item xs={1}>
             <DevicesCombo onChanged={onDeviceChange} />
           </Grid>
           <Grid item xs={1}>
-            <Button>Action</Button>
+            <ActionCombo onChanged={onDeviceChange}/>
           </Grid>
-          <Grid item xs={1}>
-            <DevicesCombo onChanged={onDeviceChange} />
+          <Grid item xs={1} justifySelf={"center"}>
+            
+            {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
+            {/* <GitHubLabel items={[]} onSelected={onSelecteGit}/> */}
+            
+          
           </Grid>
         </Grid>
 
@@ -52,5 +62,15 @@ function DeviceTab() {
     </DevicesContext.Provider>
   )
 }
-
+const labels = [
+  {
+    name: 'good first issue',
+    color: '#7057ff',
+    description: 'Good for newcomers',
+  },
+  {
+    name: 'help wanted',
+    color: '#008672',
+    description: 'Extra attention is needed',
+  }]
 export default DeviceTab

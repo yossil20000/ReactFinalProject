@@ -1,5 +1,8 @@
 import { Autocomplete, TextField } from '@mui/material'
-
+import { useEffect, useState } from 'react';
+interface ComboProps {
+  onChanged: (item: InputComboItem) => void;
+}
 export interface InputComboItem{
   _id: string;
   lable: string;
@@ -18,29 +21,34 @@ export interface InputComboProps{
   onSelectedItem: (item : InputComboItem) => void;
   /* handleComboChange(event: any, newValue: any) : void ; */
 }
-function InputCombo(props: InputComboProps) {
+function InputComboObsulute(props: InputComboProps) {
 
   console.log("InputCombo/props", props)
   const {items,title,selectedItem ,  onSelectedItem} = props;
-  
+  const [selected,setSelected] = useState<InputComboItem>()
   
   const handleSelectedItemChanged = (event: React.SyntheticEvent<Element, Event>, newValue: any) => {
     event.preventDefault;
     event.stopPropagation;
     console.log("InputCombo/handleSelectedItemChanged", newValue)
+    setSelected(newValue)
     onSelectedItem(newValue)
     
     /* handleComboChange(event,newValue); */
   }
+  useEffect(()=> {
+    console.log("InputCombo/useEffect", selectedItem)
+    if(selectedItem !== undefined )
+    setSelected(selectedItem as InputComboItem)
+  },[selectedItem])
   return (
     <Autocomplete
- defaultValue={defaultValue}
               freeSolo
               id="free-solo-2-demo"
               disableClearable
               options={items}
               getOptionLabel={option => `${(option as InputComboItem).lable}`}
-              value={selectedItem} 
+              value={selected}
               onChange={handleSelectedItemChanged}
               renderInput={(params) => (
                 <TextField
@@ -58,4 +66,4 @@ function InputCombo(props: InputComboProps) {
   )
 }
 
-export default InputCombo
+export default InputComboObsulute
