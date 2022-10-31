@@ -112,39 +112,45 @@ const Button = styled(ButtonBase)(({ theme }) => ({
 }));
 
 export type GitHubLabelProps = {
+  selectedItems: LabelType[];
+  onSelected : (items : LabelType[],property:string) => void;
   items: LabelType[];
-  onSelected : (items : LabelType[]) => void
+  label:string;
+  property: string;
 }
-export default function GitHubLabel(props : GitHubLabelProps) {
+export default function GitHubLabel(comboProps : GitHubLabelProps) {
+  const {items: labels,onSelected,selectedItems,label,property} = comboProps;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [value, setValue] = React.useState<LabelType[]>(props.items);
+  const [value, setValue] = React.useState<LabelType[]>(selectedItems);
   const [pendingValue, setPendingValue] = React.useState<LabelType[]>([]);
   const theme = useTheme();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setPendingValue(value);
     setAnchorEl(event.currentTarget);
-    props.onSelected(value)
+    
   };
 
   const handleClose = () => {
     setValue(pendingValue);
-    props.onSelected(pendingValue)
+    
     if (anchorEl) {
       anchorEl.focus();
     }
     setAnchorEl(null);
-    props.onSelected(value)
+    onSelected(pendingValue,property)
   };
 
   const open = Boolean(anchorEl);
   const id = open ? 'github-label' : undefined;
-
+ React.useEffect(()=> {
+setValue(selectedItems)
+ }, selectedItems)
   return (
     <React.Fragment>
-      <Box sx={{ width: 221, fontSize: 13 }}>
+      <Box sx={{ width: "100%"}}>
         <Button disableRipple aria-describedby={id} onClick={handleClick}>
-          <span>Labels</span>
+          <span>{label}</span>
           <SettingsIcon />
         </Button>
         {value.map((label) => (
@@ -280,97 +286,3 @@ export interface LabelType {
   color: string;
   description?: string;
 }
-
-// From https://github.com/abdonrd/github-labels
-const labels = [
-  {
-    name: 'good first issue',
-    color: '#7057ff',
-    description: 'Good for newcomers',
-  },
-  {
-    name: 'help wanted',
-    color: '#008672',
-    description: 'Extra attention is needed',
-  },
-  {
-    name: 'priority: critical',
-    color: '#b60205',
-    description: '',
-  },
-  {
-    name: 'priority: high',
-    color: '#d93f0b',
-    description: '',
-  },
-  {
-    name: 'priority: low',
-    color: '#0e8a16',
-    description: '',
-  },
-  {
-    name: 'priority: medium',
-    color: '#fbca04',
-    description: '',
-  },
-  {
-    name: "status: can't reproduce",
-    color: '#fec1c1',
-    description: '',
-  },
-  {
-    name: 'status: confirmed',
-    color: '#215cea',
-    description: '',
-  },
-  {
-    name: 'status: duplicate',
-    color: '#cfd3d7',
-    description: 'This issue or pull request already exists',
-  },
-  {
-    name: 'status: needs information',
-    color: '#fef2c0',
-    description: '',
-  },
-  {
-    name: 'status: wont do/fix',
-    color: '#eeeeee',
-    description: 'This will not be worked on',
-  },
-  {
-    name: 'type: bug',
-    color: '#d73a4a',
-    description: "Something isn't working",
-  },
-  {
-    name: 'type: discussion',
-    color: '#d4c5f9',
-    description: '',
-  },
-  {
-    name: 'type: documentation',
-    color: '#006b75',
-    description: '',
-  },
-  {
-    name: 'type: enhancement',
-    color: '#84b6eb',
-    description: '',
-  },
-  {
-    name: 'type: epic',
-    color: '#3e4b9e',
-    description: 'A theme of work that contain sub-tasks',
-  },
-  {
-    name: 'type: feature request',
-    color: '#fbca04',
-    description: 'New feature or request',
-  },
-  {
-    name: 'type: question',
-    color: '#d876e3',
-    description: 'Further information is requested',
-  },
-];

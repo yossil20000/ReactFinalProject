@@ -19,11 +19,11 @@ export enum DEVICE_MET  {
     ENGIEN
 }
 export enum DEVICE_INS  {
-    VFR,
-    IFR,
-    G1000,
-    ICE,
-    AIR_CONDITION
+    VFR='#7057ff',
+    IFR = '#008672',
+    G1000 ='#b60205',
+    ICE = '#d93f0b',
+    AIR_CONDITION = '#0e8a16'
 }
 export default interface IDevice{
     _id: string
@@ -51,7 +51,7 @@ export default interface IDevice{
             quantity: number
             units: FuelUnits
         }
-        instruments: DEVICE_INS
+        instruments: DEVICE_INS[]
     }
     location_zone: string
     can_reservs:IMember[]

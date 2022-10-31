@@ -68,7 +68,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       if ((error as any).data.errors !== undefined) {
         let validation: IValidationAlertProps[] = [];
         if (Array.isArray((error as any).data.errors)) {
-          
+
           validation = (error as any).data?.errors.map((item: string) => {
             const alert: IValidationAlertProps = {
               location: '',
@@ -86,16 +86,16 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           console.log("CreateFlightDialog/useEffect/Error/single", (error as any).data.errors)
           validation.push({
             location: '',
-              msg: (error as any).data.errors,
-              param: '',
-              value: "",
-              open: true,
-              onClose: handleOnCancel
+            msg: (error as any).data.errors,
+            param: '',
+            value: "",
+            open: true,
+            onClose: handleOnCancel
           })
           setValidationAlert(validation);
         }
       }
-      
+
       if ((error as any).data.validation !== undefined) {
         let validation: IValidationAlertProps[];
         console.log("CreateFlightDialog/useEffect/data", (error as any).data)
@@ -243,6 +243,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
+                type={"number"}
                 sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_start"
                 label="Engien start"
@@ -254,6 +255,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
+                type={"number"}
                 sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_stop"
                 label="Engien stop"
@@ -265,6 +267,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
+                type={"number"}
                 sx={{ marginLeft: "0px", width: "100%" }}
                 name="hobbs_start"
                 id="hobbs_start"
@@ -278,6 +281,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
+                type={"number"}
                 sx={{ marginLeft: "0px", width: "100%" }}
                 name="hobbs_stop"
                 id="hobbs_stop"

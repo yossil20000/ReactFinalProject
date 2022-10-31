@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
 import React, { useContext } from 'react'
-import IDevice from '../../../Interfaces/API/IDevice'
+import IDevice, { DEVICE_INS } from '../../../Interfaces/API/IDevice'
 import { DevicesContext, DevicesContextType } from './DeviceTab'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import useId from '@mui/material/utils/useId'
@@ -12,6 +12,21 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import DeviceStatusCombo from '../../../Components/Devices/DeviceStatusCombo'
 import DeviceMTCombo from '../../../Components/Devices/DeviceMTCombo'
 import DeviceFuelUnitCombo from '../../../Components/Devices/DeviceFuelUnitCombo'
+import GitHubLabel, { LabelType } from '../../../Components/Buttons/ComboPicker';
+
+const labelsFromDEVICE_INS = (): LabelType[] => {
+  const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
+    map((name, index) => {
+      return {
+        name: name,
+        color: DEVICE_INS[name as keyof typeof DEVICE_INS].toString(),
+        description: name
+      }
+    })
+  return lables;
+}
+const lableItems = labelsFromDEVICE_INS();
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -60,10 +75,33 @@ function DeviceTabItem() {
 
     setSelectedItem(newObj)
   };
+  const onSelecteGit = (items: LabelType[], property: string) => {
+    console.log("onSelecteGit/items", items);
+    const newValues = items.map((item) => (
+      item.name
+    )) as DEVICE_INS[];
+    console.log("onSelecteGit/newValues", newValues);
+    const newObj: IDevice = SetProperty(selectedItem, property, newValues) as IDevice;
+
+    setSelectedItem(newObj)
+  }
+  const getSelectedInstrument = (): LabelType[] => {
+
+    if (selectedItem !== undefined && selectedItem) {
+      const initial = selectedItem.details.instruments.map((item) => {
+        return item.toString();
+      });
+      const result = lableItems.filter((item) =>  (initial.includes(item.name)))
+      return result;
+
+    }
+    return [];
+  }
+  
   return (
     <>
       <Accordion >
-        <AccordionSummary
+        <AccordionSummary style={{height: "48px"}}
           expandIcon={<ExpandMoreIcon />}
           aria-controls="general-content"
           id="general-header"
@@ -98,14 +136,14 @@ function DeviceTabItem() {
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="engien_meter" label="Engien"
-                name="engien_meter" placeholder="Engien meter"  variant="standard"
-                value={selectedItem?.engien_meter}/>
+                name="engien_meter" placeholder="Engien meter" variant="standard"
+                value={selectedItem?.engien_meter} />
             </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>
       <Accordion >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
+        <AccordionSummary style={{height: "48px"}} expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
             <Grid item xs={2}>
               <Typography sx={{ width: "100%", flexShrink: 0 }}>Status Next Service: {selectedItem?.maintanance.next_meter} ({selectedItem?.engien_meter})</Typography>
@@ -130,7 +168,7 @@ function DeviceTabItem() {
             <Grid item xs={1}>
               <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
                 placeholder="Next maintanance" variant="standard"
-                value={selectedItem?.maintanance.next_meter} error={false} helperText=""/>
+                value={selectedItem?.maintanance.next_meter} error={false} helperText="" />
             </Grid>
             <Grid item xs={1}>
               <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} />
@@ -143,7 +181,7 @@ function DeviceTabItem() {
         </AccordionDetails>
       </Accordion>
       <Accordion >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
+        <AccordionSummary style={{height: "48px"}} expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
             <Grid item xs={1}>
               <Typography sx={{ width: "40%", flexShrink: 0 }}>Property</Typography>
@@ -157,7 +195,7 @@ function DeviceTabItem() {
               <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} />
             </Grid>
             <Grid item xs={1}>
-              <TextField fullWidth onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
+              <TextField type={"number"} fullWidth onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
                 value={selectedItem?.price.base} helperText="" />
             </Grid>
 
@@ -166,17 +204,23 @@ function DeviceTabItem() {
                 <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} />
               </Grid>
               <Grid item xs={1} md={1}>
-                <TextField fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} />
+                <TextField type={"number"} fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} />
               </Grid>
               <Grid item xs={1}>
-                <TextField fullWidth onChange={handleChange} required name="details.seats" label="Seats" placeholder="Seats" variant="standard"
+                <TextField type={"number"} fullWidth onChange={handleChange} required name="details.seats" label="Seats" placeholder="Seats" variant="standard"
                   value={selectedItem?.details.seats} helperText="" />
               </Grid>
               <Grid item xs={1}>
                 <TextField fullWidth onChange={handleChange} name="details.color" label="Color" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.color} />
               </Grid>
             </Grid>
+            <Grid item xs={2} justifySelf={"center"}>
 
+              {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
+              <GitHubLabel property={"details.instruments"} label={"Navigation"} selectedItems={getSelectedInstrument()} items={lableItems} onSelected={onSelecteGit} />
+
+
+            </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>

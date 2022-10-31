@@ -13,16 +13,13 @@ import MediaQuery from "react-responsive";
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import MuiAccordionSummary, {
-  AccordionSummaryProps,
-} from '@mui/material/AccordionSummary';
+import MuiAccordionSummary, {AccordionSummaryProps,} from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
-
 
 import { useFetchAllReservationsQuery, useDeleteReservationMutation } from '../../features/Reservations/reservationsApiSlice';
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
-import SplitedButton, { ISplitButtonProps } from '../../Components/Buttons/SplitedButton';
+import SplitedButton from '../../Components/Buttons/SplitedButton';
 
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -31,8 +28,6 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DateTime } from 'luxon';
 import { ILoginResult } from "../../Interfaces/API/ILogin.js";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../Types/Urls.js";
 import { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
@@ -320,7 +315,7 @@ function ReservationsPage() {
   const [orderBy, setOrderBy] = useState<keyof ItableData>('_id_reservaion');
 
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
+  const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
   const [filterBydate, setFilterByDate] = useState(0);
@@ -438,6 +433,9 @@ function ReservationsPage() {
   }
   
   return (
+    <>
+
+    <div className='header'><Typography variant="h6" align="center">Reservation Page</Typography></div>
     <div className='main' style={{ overflow: 'auto' }}>
       { isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
       {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
@@ -542,16 +540,18 @@ function ReservationsPage() {
             }
           </MediaQuery>
         </Paper>
-        <FormControlLabel
+{/*         <FormControlLabel
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dense padding"
-        />
+        /> */}
       </Box>
 
 
 
 
     </div>
+    
+    </>
   )
 }
 

@@ -1,20 +1,16 @@
 import { ThemeProvider } from "@emotion/react";
-import { Preview } from "@mui/icons-material";
-import { Dialog, DialogTitle, DialogContent, Grid, Typography, TextField, Button, createTheme, Paper, styled, CircularProgress, Autocomplete } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
-import { is } from "immer/dist/internal";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import InputCombo, { InputComboItem } from "../../Components/Buttons/InputCombo";
-import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
+import { InputComboItem } from "../../Components/Buttons/InputCombo";
+import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
-import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { useCreateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
-import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
+import { IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { IReservationCreateApi } from "../../Interfaces/API/IReservation";
-import { IDeviceCombo, IMemberCombo } from "../../Interfaces/IFlightReservationProps";
 import { IValidation } from "../../Interfaces/IValidation";
 
 
@@ -150,7 +146,6 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       <DialogTitle>Reservation Create</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
-
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
             <Item sx={{ marginLeft: "0px" }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -163,12 +158,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                     onChange={handleFromDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
-
                 </ThemeProvider>
-
               </LocalizationProvider>
             </Item>
-
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item >
@@ -182,12 +174,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                     onChange={handleToDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
                   />
-
                 </ThemeProvider>
-
               </LocalizationProvider>
             </Item>
-
           </Grid>
           {/*     <Grid item xs={12}>
       <Item>
@@ -198,7 +187,6 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           {validationAlert.map((item) => (
             <Grid item xs={12}>
               <Item>
-
                 <ValidationAlert {...item} />
               </Item>
             </Grid>
@@ -207,7 +195,6 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <DevicesCombo onChanged={onDeviceChanged} />
-
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
@@ -223,8 +210,8 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                 name="description"
                 id="outlined-disabled"
                 label="Status"
-                
                 value={deviceDescription}
+                multiline
               />
             </Item>
           </Grid>

@@ -45,7 +45,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
   const onCloseDateError = () => {
     setAlert((prev) => ({ ...prev, open: false }))
   }
-  
+
   useEffect(() => {
     console.log("UpdateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -68,14 +68,14 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
         let validation: IValidationAlertProps[];
         console.log("UpdateFlightDialog/useEffect/data", (error as any).data)
         validation = (error as any).data.validation.errors.map((item: IValidation) => {
-          const alert : IValidationAlertProps  = {...(item as IValidationAlertProps)};
+          const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
           alert.onClose = handleOnCancel;
           alert.open = true
           return alert;
 
         })
         setValidationAlert(validation);
-        console.log("UpdateFlightDialog/useEffect/validation", validation )
+        console.log("UpdateFlightDialog/useEffect/validation", validation)
       }
 
     }
@@ -120,7 +120,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
     }).catch((err) => {
       console.log("updateFlightDialoq/onSave/error", err.data.errors);
     });
-    
+
 
   }
   return (
@@ -179,16 +179,16 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
     </Grid> */}
           {validationAlert.map((item) => (
             <Grid item xs={12}>
-            <Item>
-            
-              <ValidationAlert {...item}/>
-            </Item>
-          </Grid> 
+              <Item>
+                <ValidationAlert {...item} />
+              </Item>
+            </Grid>
           ))}
-           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                type={"number"}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_start"
                 label="Engien start"
                 value={flightUpdate.engien_start}
@@ -199,7 +199,8 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                type={"number"}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_stop"
                 label="Engien stop"
                 value={flightUpdate.engien_stop}
@@ -210,7 +211,8 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                type={"number"}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="hobbs_start"
                 id="hobbs_start"
                 label="hobbs_start"
@@ -223,7 +225,8 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                type={"number"}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="hobbs_stop"
                 id="hobbs_stop"
                 label="hobbs_stop"
@@ -233,10 +236,10 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
               />
             </Item>
           </Grid>
-          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px" , width:"100%"}}>
+          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
             <Item>
               <TextField
-                sx={{ marginLeft: "0px" , width:"100%"}}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 name="description"
                 id="outlined-disabled"
                 label="Description"
@@ -248,38 +251,39 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
-               sx={{ marginLeft: "0px" , width:"100%"}}
+                sx={{ marginLeft: "0px", width: "100%" }}
                 disabled
                 id="outlined-disabled"
                 label="Device"
-
                 value={flightUpdate.device_name}
               />
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-              <TextField sx={{ marginLeft: "0px" , width:"100%"}}
+              <TextField sx={{ marginLeft: "0px", width: "100%" }}
                 disabled
                 id="outlined-disabled"
                 label="Member"
                 defaultValue={flightUpdate.member_name}
               />
-
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
-              onClick={handleOnCancel}>
-
-              Cancle
-            </Button></Item>
+            <Item>
+              <Button variant="outlined" sx={{ width: "100%" }}
+                onClick={handleOnCancel}>
+                Cancle
+              </Button>
+            </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
-              onClick={handleOnSave}>
-              Save
-            </Button></Item>
+            <Item>
+              <Button variant="outlined" sx={{ width: "100%" }}
+                onClick={handleOnSave}>
+                Save
+              </Button>
+            </Item>
           </Grid>
         </Grid>
       </DialogContent>
