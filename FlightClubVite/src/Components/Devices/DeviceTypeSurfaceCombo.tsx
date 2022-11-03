@@ -19,8 +19,8 @@ const getInputItems= () => {
   return items;
 }
 function DeviceTypeSurfaceCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_surface_type",undefined);
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypeSurface`,undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);

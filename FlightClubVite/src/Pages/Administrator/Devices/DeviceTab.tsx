@@ -1,34 +1,33 @@
-import { Label } from '@mui/icons-material';
-import { Accordion, Box, Button, Grid, Typography } from '@mui/material'
-import { createContext, useRef, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { Box, Grid } from '@mui/material'
+import { useContext } from 'react';
+import { DevicesContext, DevicesContextType } from '../../../app/Context/DevicesContext';
+import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext';
 import ActionCombo from '../../../Components/Buttons/ActionCombo';
-import GitHubLabel, { LabelType } from '../../../Components/Buttons/ComboPicker';
 import { InputComboItem } from '../../../Components/Buttons/InputCombo';
 import DevicesCombo from '../../../Components/Devices/DevicesCombo';
-import { useFetchAllDevicesQuery } from '../../../features/Device/deviceApiSlice'
+import { useFetchAllDevicesQuery, useUpdateDeviceMutation } from '../../../features/Device/deviceApiSlice'
+import { useFetchAllDeviceTypesQuery } from '../../../features/DeviceTypes/deviceTypesApiSlice';
 import useLocalStorage from '../../../hooks/useLocalStorage';
-import IDevice, { DEVICE_INS } from '../../../Interfaces/API/IDevice';
+import IDevice, { DEVICE_MET, DEVICE_MT, DEVICE_STATUS } from '../../../Interfaces/API/IDevice';
+import IDeviceType from '../../../Interfaces/API/IDeviceType';
+import { FuelUnits } from '../../../Types/FuelUnits';
 import DeviceTabItem from './DeviceTabItem';
 
+const source: string = "DeviceTab"
 
-export type DevicesContextType = {
-  selectedItem: IDevice | null | undefined;
-  setSelectedItem: React.Dispatch<React.SetStateAction<IDevice | null | undefined>>
-  devices: IDevice[] | undefined;
-}
-export const DevicesContext = createContext<DevicesContextType | null | undefined>(null)
 
 function DeviceTab() {
-  const { data: devices, isError, isLoading, isSuccess, error } = useFetchAllDevicesQuery();
-  const [selectedDevice, setSelectedDevice] = useLocalStorage<IDevice | null | undefined>("admin_selectedDevice", null);
+  
+  const { selectedItem: selectedDevice, setSelectedItem: setSelectedDevice, devices } = useContext(DevicesContext) as DevicesContextType;
+  const { selectedItem: selectedDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
 
+  const [updateDevice] = useUpdateDeviceMutation();
 
-  if (devices?.data) {
+  if (devices) {
     console.log("DevicesTab/devices", devices);
   }
   const onDeviceChange = (item: InputComboItem) => {
-    const foundItem = devices?.data.find((i) => item._id === i._id);
+    const foundItem = devices?.find((i) => item._id === i._id);
     if (foundItem && foundItem !== null) {
       setSelectedDevice(foundItem);
       console.log("onDeviceChange/foundItem", foundItem)
@@ -37,22 +36,71 @@ function DeviceTab() {
 
   }
 
+  const onActionChange = async (item: InputComboItem) => {
+    console.log("onActionChange/foundItem", item.lable)
+    switch (item.lable) {
+      case "ADD":
+        const newDEvice: IDevice = {
+          _id: '',
+          device_id: 'newDevice',
+          device_type: "",
+          description: '',
+          available: false,
+          device_status: DEVICE_STATUS.NOT_EXIST,
+          due_date: new Date(),
+          hobbs_meter: 0,
+          engien_meter: 0,
+          maintanance: {
+            type: DEVICE_MT.hr50,
+            next_meter: 0
+          },
+          price: {
+            base: 0,
+            meter: DEVICE_MET.HOBBS
+          },
+          details: {
+            image: '',
+            color: '',
+            seats: 0,
+            fuel: {
+              quantity: 0,
+              units: FuelUnits.galon
+            },
+            instruments: []
+          },
+          location_zone: '',
+          can_reservs: [],
+          flights: [],
+          flight_reservs: []
+        }
+        setSelectedDevice(newDEvice);
+        break;
+      case "UPDATE":
+        if (selectedDevice)
+          await updateDevice(selectedDevice);
+        break;
+    }
+    const foundItem = devices?.find((i) => item._id === i._id);
+    if (foundItem && foundItem !== null) {
+
+      console.log("onActionChange/foundItem", foundItem)
+
+    }
+
+  }
+
   return (
-    <DevicesContext.Provider value={{ devices: devices?.data, selectedItem: selectedDevice, setSelectedItem: setSelectedDevice }}>
-      <Box marginTop={1}>
-        <Grid container columns={2} width={"100%"} columnSpacing={1}>
-          <Grid item xs={1}>
-            <DevicesCombo onChanged={onDeviceChange} />
-          </Grid>
-          <Grid item xs={1}>
-            <ActionCombo onChanged={onDeviceChange}/>
-          </Grid>
-
+    <Box marginTop={1}>
+      <Grid container columns={2} width={"100%"} columnSpacing={1}>
+        <Grid item xs={1}>
+          <DevicesCombo onChanged={onDeviceChange} source={source} />
         </Grid>
-
-        <DeviceTabItem />
-      </Box>
-    </DevicesContext.Provider>
+        <Grid item xs={1}>
+          <ActionCombo onChanged={onActionChange} source={source}/>
+        </Grid>
+      </Grid>
+      <DeviceTabItem />
+    </Box>
   )
 }
 
@@ -68,7 +116,7 @@ const selectedLables = [
     description: 'Extra attention is needed',
   }]
 
-  
+
 // From https://github.com/abdonrd/github-labels
 const labels = [
   {

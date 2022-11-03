@@ -5,7 +5,6 @@ import {  DEVICE_MT } from '../../Interfaces/API/IDevice'
 import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
 import { InputComboItem } from '../Buttons/InputCombo'
 
-
 const getInputItems= () => {
   const items : InputComboItem[] = Object.keys(DEVICE_MT).filter((v) => isNaN(Number(v))).
   map((name) => {
@@ -19,8 +18,8 @@ const getInputItems= () => {
   return items;
 }
 function DeviceMTCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_service_type",undefined);
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceMT`,undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);

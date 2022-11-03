@@ -1,12 +1,11 @@
-import { useState } from 'react'
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { CategoryType } from '../../Interfaces/API/IDeviceType';
 import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
 import { InputComboItem } from '../Buttons/InputCombo'
 
-function DeviceFuelUnitCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_category",undefined);
+function DeviceTypeCategoryCombo(props : ComboProps) {
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypeCategory`,undefined);
   function getInputItems<T> (): InputComboItem[] {
     const items : InputComboItem[] = Object.keys(CategoryType).filter((v) => isNaN(Number(v))).
     map((name) => {
@@ -16,12 +15,12 @@ function DeviceFuelUnitCombo(props : ComboProps) {
         lable: name
       }
     })
-    console.log("DeviceFuelUnitCombo/items",items)
+    console.log("DeviceTypeCategoryCombo/items",items)
     return items;
   }
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
-    console.log("DeviceFuelUnitCombo/ DeviceItem", item)
+    console.log("DeviceTypeCategoryCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (
@@ -29,4 +28,4 @@ function DeviceFuelUnitCombo(props : ComboProps) {
   )
 }
 
-export default DeviceFuelUnitCombo
+export default DeviceTypeCategoryCombo

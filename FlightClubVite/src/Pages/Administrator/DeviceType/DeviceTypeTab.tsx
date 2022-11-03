@@ -7,7 +7,8 @@ import { useFetchAllDeviceTypesQuery } from '../../../features/DeviceTypes/devic
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import DeviceTypesCombo from '../../../Components/Devices/DeviceTypesCombo'
 import DeviceTypeItem from './DeviceTypeItem'
-
+import { DeviceTypesContext } from '../../../app/Context/DeviceTypesContext'
+const source: string = "DeviceTypeTab"
 const initialValues: IDeviceType = {
   _id: "",
   name: '',
@@ -39,16 +40,11 @@ const inlineStyle = {
   backgroundColor: '#f5f5dc',
 
 }
-export type DeviceTypesContextType = {
-  selected: IDeviceType | null | undefined;
-  setSelected: React.Dispatch<React.SetStateAction<IDeviceType | null | undefined>>;
-  items: IDeviceType[] | undefined
-}
-export const DeviceTypesContext = createContext<DeviceTypesContextType | null | undefined>(null)
+
 function DeviceTypeTab() {
 
   const {data: items,isError,isLoading,isSuccess,error} = useFetchAllDeviceTypesQuery();
-  const [selected, setSelected] = useLocalStorage<IDeviceType | null | undefined>('admin_selectedDeviceType',null);
+  const [selected, setSelected] = useLocalStorage<IDeviceType | null | undefined>('_admin/DeviceTab/DeviceType',null);
   if(items?.data){
     console.log("DeviceTypeTab/items",items)
   }
@@ -63,11 +59,11 @@ function DeviceTypeTab() {
   }
 
   return (
-    <DeviceTypesContext.Provider value={{items: items?.data,selected:selected,setSelected: setSelected}}>
+    <DeviceTypesContext.Provider value={{deviceTypes: items?.data,selectedItem:selected,setSelectedItem: setSelected}}>
       <Box margin={2}>
       <Grid container width={"100%"} height={"100%"} gap={2}>
         <Grid item xs={12}>
-        <DeviceTypesCombo onChanged={onDeviceTypeChanged}/>
+        <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source}/>
         </Grid>
         
         <DeviceTypeItem/>

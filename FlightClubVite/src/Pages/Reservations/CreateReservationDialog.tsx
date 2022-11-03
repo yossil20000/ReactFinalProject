@@ -12,7 +12,7 @@ import { useCreateReservationMutation } from "../../features/Reservations/reserv
 import { IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { IReservationCreateApi } from "../../Interfaces/API/IReservation";
 import { IValidation } from "../../Interfaces/IValidation";
-
+const source: string = "CreateReservation"
 
 export interface CreateReservationDialogProps {
   value: IReservationCreateApi;
@@ -194,12 +194,12 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
 
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
-              <DevicesCombo onChanged={onDeviceChanged} />
+              <DevicesCombo onChanged={onDeviceChanged} source={source}/>
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-              <MembersCombo onChanged={onMemberChanged} />
+              <MembersCombo onChanged={onMemberChanged} source={source}/>
             </Item>
           </Grid>
           <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>

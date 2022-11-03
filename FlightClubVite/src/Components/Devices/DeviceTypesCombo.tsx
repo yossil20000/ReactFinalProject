@@ -9,11 +9,11 @@ import { InputComboItem } from '../Buttons/InputCombo'
 
 function DeviceTypesCombo(props : ComboProps) {
   const id = useId();
-  const {onChanged} = props
+  const {onChanged,source} = props
   const { data, isError, isLoading, error } = useFetchAllDeviceTypesQuery();
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`admin_deviceComb/selDevice}`,undefined);
+  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypes}`,undefined);
   function getDeviceDetailed(_id: string | undefined) : string {
     console.log("getDeviceDetailed", _id)
     if(_id === undefined)

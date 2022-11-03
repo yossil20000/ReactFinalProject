@@ -4,7 +4,6 @@ import { CRUDActions } from '../../Types/ItemsProps';
 import { InputComboItem } from '../Buttons/InputCombo'
 import ControledCombo, { ComboProps } from './ControledCombo';
 
-
 const getInputItems= () => {
   const items : InputComboItem[] = Object.keys(CRUDActions).filter((v) => isNaN(Number(v))).
   map((name) => {
@@ -18,8 +17,8 @@ const getInputItems= () => {
   return items;
 }
 function ActionCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_action_combo",undefined);
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Action`,undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);

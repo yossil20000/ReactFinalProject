@@ -1,20 +1,17 @@
 import { ThemeProvider } from "@emotion/react";
-import { Preview } from "@mui/icons-material";
-import { Dialog, DialogTitle, DialogContent, Grid, Typography, TextField, Button, createTheme, Paper, styled, CircularProgress, Autocomplete } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
-import { is } from "immer/dist/internal";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import InputCombo, { InputComboItem } from "../../Components/Buttons/InputCombo";
-import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
+import { InputComboItem } from "../../Components/Buttons/InputCombo";
+import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
-import { IDeviceCombo, IMemberCombo } from "../../Interfaces/IFlightReservationProps";
 import { IValidation } from "../../Interfaces/IValidation";
-
+const source: string = "CreateFlight"
 
 export interface CreateFlightDialogProps {
   value: IFlightCreate;
@@ -306,13 +303,13 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
-              <DevicesCombo onChanged={onDeviceChanged} />
+              <DevicesCombo onChanged={onDeviceChanged} source={source}/>
 
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-              <MembersCombo onChanged={onMemberChanged} />
+              <MembersCombo onChanged={onMemberChanged} source={source}/>
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>

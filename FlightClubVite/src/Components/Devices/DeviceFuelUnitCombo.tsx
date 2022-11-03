@@ -1,14 +1,11 @@
-import { useState } from 'react'
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { FuelUnits } from '../../Types/FuelUnits';
 import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
 import { InputComboItem } from '../Buttons/InputCombo'
 
-
-
-function DeviceTypeFuelUnitCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_fuel_units",undefined);
+function DeviceFuelUnitCombo(props : ComboProps) {
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceFuelUnit`,undefined);
   function getInputItems<T> (): InputComboItem[] {
     const items : InputComboItem[] = Object.keys(FuelUnits).filter((v) => isNaN(Number(v))).
     map((name) => {
@@ -18,12 +15,12 @@ function DeviceTypeFuelUnitCombo(props : ComboProps) {
         lable: name
       }
     })
-    console.log("DeviceTypeFuelUnitCombo/items",items)
+    console.log("DeviceFuelUnitCombo/items",items)
     return items;
   }
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
-    console.log("DeviceTypeFuelUnitCombo/ DeviceItem", item)
+    console.log("DeviceFuelUnitCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (
@@ -31,4 +28,4 @@ function DeviceTypeFuelUnitCombo(props : ComboProps) {
   )
 }
 
-export default DeviceTypeFuelUnitCombo
+export default DeviceFuelUnitCombo

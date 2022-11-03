@@ -19,8 +19,8 @@ const getInputItems= () => {
   return items;
 }
 function PriceMeterCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_price_method", undefined);
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/PriceMeter`, undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);

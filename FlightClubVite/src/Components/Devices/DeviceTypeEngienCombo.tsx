@@ -19,8 +19,8 @@ const getInputItems= () => {
   return items;
 }
 function DeviceTypeEngienCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_engien_type",undefined);
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypeEngien`,undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);

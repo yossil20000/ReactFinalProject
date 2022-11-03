@@ -28,7 +28,7 @@ export enum DEVICE_INS  {
 export default interface IDevice{
     _id: string
     device_id: string
-    device_type: IDeviceType
+    device_type: (IDeviceType | string)
     description: string
     available: boolean
     device_status: DEVICE_STATUS

@@ -1,9 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
-import React, { useContext } from 'react'
-import IDevice, { DEVICE_INS } from '../../../Interfaces/API/IDevice'
-import { DevicesContext, DevicesContextType } from './DeviceTab'
+import React, { useContext } from 'react';
+import IDevice, { DEVICE_INS } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import useId from '@mui/material/utils/useId'
 import { setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
 import { InputComboItem } from '../../../Components/Buttons/InputCombo'
@@ -13,7 +11,10 @@ import DeviceStatusCombo from '../../../Components/Devices/DeviceStatusCombo'
 import DeviceMTCombo from '../../../Components/Devices/DeviceMTCombo'
 import DeviceFuelUnitCombo from '../../../Components/Devices/DeviceFuelUnitCombo'
 import GitHubLabel, { LabelType } from '../../../Components/Buttons/ComboPicker';
-
+import DeviceTypesCombo from '../../../Components/Devices/DeviceTypesCombo';
+import { DevicesContext, DevicesContextType } from '../../../app/Context/DevicesContext';
+import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext';
+const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
   const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
     map((name, index) => {
@@ -37,8 +38,10 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function DeviceTabItem() {
-  const id = useId();
+  
+  
   const { setSelectedItem, selectedItem } = useContext(DevicesContext) as DevicesContextType;
+  const {selectedItem: selectdDeviceTypes,setSelectedItem: setSelectedDeviceTypes,deviceTypes} =useContext(DeviceTypesContext)  as DeviceTypesContextType
 
   console.log("DeviceTabItem/deviceItem.current", selectedItem?.description);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,17 +94,29 @@ function DeviceTabItem() {
       const initial = selectedItem.details.instruments.map((item) => {
         return item.toString();
       });
-      const result = lableItems.filter((item) =>  (initial.includes(item.name)))
+      const result = lableItems.filter((item) => (initial.includes(item.name)))
       return result;
 
     }
     return [];
   }
-  
+  const onDeviceTypeChanged = (item: InputComboItem) => {
+    const foundItem = deviceTypes?. find((i) => item._id === i._id);
+    if(foundItem && foundItem !== null) {
+      setSelectedDeviceTypes(foundItem) ;
+      console.log("onDeviceTypeChanged/foundItem",foundItem)
+      const newObj: IDevice = SetProperty(selectedItem, "device_type", foundItem) as IDevice;
+
+      setSelectedItem(newObj)
+    }
+      
+  }
+
+
   return (
     <>
       <Accordion >
-        <AccordionSummary style={{height: "48px"}}
+        <AccordionSummary style={{ height: "48px" }}
           expandIcon={<ExpandMoreIcon />}
           aria-controls="general-content"
           id="general-header"
@@ -110,9 +125,6 @@ function DeviceTabItem() {
               <Typography sx={{ width: "100%", flexShrink: 0 }}>General Device {selectedItem?.device_id}</Typography>
             </Grid>
           </Grid>
-
-
-
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 4 }}>
@@ -121,6 +133,9 @@ function DeviceTabItem() {
                 label="Device Id" placeholder="4xcgc" variant="standard"
                 value={selectedItem?.device_id} required
                 helperText="" error={false} />
+            </Grid>
+            <Grid item xs={1}>
+              <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
@@ -143,7 +158,7 @@ function DeviceTabItem() {
         </AccordionDetails>
       </Accordion>
       <Accordion >
-        <AccordionSummary style={{height: "48px"}} expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
+        <AccordionSummary style={{ height: "48px" }} expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
             <Grid item xs={2}>
               <Typography sx={{ width: "100%", flexShrink: 0 }}>Status Next Service: {selectedItem?.maintanance.next_meter} ({selectedItem?.engien_meter})</Typography>
@@ -163,7 +178,7 @@ function DeviceTabItem() {
               </LocalizationProvider>
             </Grid>
             <Grid item xs={1}>
-              <DeviceMTCombo onChanged={(item) => onComboChanged(item, "maintanance.type")} />
+              <DeviceMTCombo onChanged={(item) => onComboChanged(item, "maintanance.type")} source={source}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
@@ -171,7 +186,7 @@ function DeviceTabItem() {
                 value={selectedItem?.maintanance.next_meter} error={false} helperText="" />
             </Grid>
             <Grid item xs={1}>
-              <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} />
+              <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source}/>
             </Grid>
             <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
               <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
@@ -181,7 +196,7 @@ function DeviceTabItem() {
         </AccordionDetails>
       </Accordion>
       <Accordion >
-        <AccordionSummary style={{height: "48px"}} expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
+        <AccordionSummary style={{ height: "48px" }} expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
             <Grid item xs={1}>
               <Typography sx={{ width: "40%", flexShrink: 0 }}>Property</Typography>
@@ -192,7 +207,7 @@ function DeviceTabItem() {
         <AccordionDetails>
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
             <Grid item xs={1}>
-              <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} />
+              <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} source={source}/>
             </Grid>
             <Grid item xs={1}>
               <TextField type={"number"} fullWidth onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
@@ -201,7 +216,7 @@ function DeviceTabItem() {
 
             <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
               <Grid item xs={1}>
-                <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} />
+                <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source}/>
               </Grid>
               <Grid item xs={1} md={1}>
                 <TextField type={"number"} fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} />

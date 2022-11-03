@@ -19,8 +19,8 @@ const getInputItems= () => {
   return items;
 }
 function DeviceStatusCombo(props : ComboProps) {
-  const {onChanged} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>("admin_device_status",undefined);
+  const {onChanged,source} = props
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`${source}/DeviceStatus`,undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
