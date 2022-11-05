@@ -1,6 +1,6 @@
 import React, { createContext, useMemo, useState } from 'react'
 import { ColorModeContext, useMode } from "../../theme"
-import { createTheme, CssBaseline, PaletteMode, Paper, Theme, ThemeProvider } from '@mui/material'
+import { Box, Button, createTheme, CssBaseline, PaletteMode, Paper, Theme, ThemeProvider } from '@mui/material'
 import { amber, grey, deepOrange, red, blue } from '@mui/material/colors';
 import ScrollableTabs, { ScrollableTabsItem } from '../../Components/Buttons/ScrollableTabs';
 import DeviceTab from './Devices/DeviceTab';
@@ -13,7 +13,10 @@ import { useFetchAllDeviceTypesQuery } from '../../features/DeviceTypes/deviceTy
 import useLocalStorage from '../../hooks/useLocalStorage';
 import IDevice from '../../Interfaces/API/IDevice';
 import IDeviceType from '../../Interfaces/API/IDeviceType';
-
+import MemberTab from './Members/MemberTab';
+import { useFetchMembersComboQuery } from '../../features/Users/userSlice';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
@@ -59,6 +62,7 @@ function AdminPage() {
   const [value, setValue] = React.useState(0);
   const [mode, setMode] = useState<PaletteMode>('light');
   const { data: devices, isError, isLoading, isSuccess, error } = useFetchAllDevicesQuery();
+  const { data: membersCombo  } = useFetchMembersComboQuery();
   const { data: deviceTypes } = useFetchAllDeviceTypesQuery();
   const [selectedDevice, setSelectedDevice] = useLocalStorage<IDevice | null | undefined>("_admin/selectedDevice", null);
   const [selectedDeviceTypes, setSelectedDeviceTypes] = useLocalStorage<IDeviceType | null | undefined>("_admin/selectedDeviceType", null);
@@ -102,18 +106,22 @@ function AdminPage() {
         <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
       </div>
 
-      <div className='main' style={{ overflow: 'auto' }}>
-        <DevicesContext.Provider value={{ devices: devices?.data, selectedItem: selectedDevice, setSelectedItem: setSelectedDevice }}>
+      <div className='main' style={{ overflow: 'auto' ,position:'relative'}}>
+        <DevicesContext.Provider value={{ devices: devices?.data, selectedItem: selectedDevice, setSelectedItem: setSelectedDevice ,membersCombo: membersCombo?.data}}>
           <DeviceTypesContext.Provider value={{ deviceTypes: deviceTypes?.data, selectedItem: selectedDeviceTypes, setSelectedItem: setSelectedDeviceTypes }}>
-            <Paper sx={{ height: "100%" }}>
+            <Box height={"100%"} sx={{backgroundColor: "white"}}>
+            <Paper>
               {value === 0 && <DeviceTab />}
               {value === 1 && (<DeviceTypeTab />)}
-              {value === 2 && (<div>I am tab 2</div>)}
+              {value === 2 && (<MemberTab/>)}
             </Paper>
+            </Box>
+            
           </DeviceTypesContext.Provider>
         </DevicesContext.Provider>
 
       </div>
+
       {/* 
       </ThemeProvider>
     </ColorModeContext.Provider> */}

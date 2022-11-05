@@ -12,6 +12,7 @@ import Autocomplete, {
 import ButtonBase from '@mui/material/ButtonBase';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 
 interface PopperComponentProps {
   anchorEl?: any;
@@ -111,14 +112,14 @@ const Button = styled(ButtonBase)(({ theme }) => ({
   },
 }));
 
-export type GitHubLabelProps = {
+export type MultiOptionComboProps = {
   selectedItems: LabelType[];
   onSelected : (items : LabelType[],property:string) => void;
   items: LabelType[];
   label:string;
   property: string;
 }
-export default function GitHubLabel(comboProps : GitHubLabelProps) {
+export default function MultiOptionCombo(comboProps : MultiOptionComboProps) {
   const {items: labels,onSelected,selectedItems,label,property} = comboProps;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [value, setValue] = React.useState<LabelType[]>(selectedItems);
@@ -150,7 +151,8 @@ setValue(selectedItems)
     <React.Fragment>
       <Box sx={{ width: "100%"}}>
         <Button disableRipple aria-describedby={id} onClick={handleClick}>
-          <span>{label}</span>
+          
+          <Typography sx={{ width: "100%", flexShrink: 1 }}>{label}</Typography>
           <SettingsIcon />
         </Button>
         {value.map((label) => (
@@ -158,11 +160,11 @@ setValue(selectedItems)
             key={label.name}
             sx={{
               mt: '3px',
-              height: 20,
+              height: "1.5em",
               padding: '.15em 4px',
               fontWeight: 600,
-              lineHeight: '15px',
-              borderRadius: '2px',
+              lineHeight: '1.5em',
+              borderRadius: '1px',
             }}
             style={{
               backgroundColor: label.color,
@@ -176,7 +178,7 @@ setValue(selectedItems)
       <StyledPopper id={id} open={open} anchorEl={anchorEl} placement="bottom-start">
         <ClickAwayListener onClickAway={handleClose}>
           <div>
-            <Box
+{/*             <Box
               sx={{
                 borderBottom: `1px solid ${
                   theme.palette.mode === 'light' ? '#eaecef' : '#30363d'
@@ -186,7 +188,7 @@ setValue(selectedItems)
               }}
             >
               Apply labels to this pull request
-            </Box>
+            </Box> */}
             <Autocomplete
               open
               multiple
@@ -285,4 +287,5 @@ export interface LabelType {
   name: string;
   color: string;
   description?: string;
+  _id: string;
 }

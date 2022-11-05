@@ -13,12 +13,6 @@ export interface ISacrollableTabsProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
 }
 export default function ScrollableTabs(props: ISacrollableTabsProps) {
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    props.setValue(newValue); 
-    setValue(newValue);
-  };
 
   return (
     <Box
@@ -31,8 +25,10 @@ export default function ScrollableTabs(props: ISacrollableTabsProps) {
       <Tabs
         value={props.value}
         onChange={props.handleChange}
+        scrollButtons="auto"
         variant="scrollable"
-        scrollButtons
+        allowScrollButtonsMobile
+        
         aria-label="visible arrows tabs example"
         sx={{
           [`& .${tabsClasses.scrollButtons}`]: {

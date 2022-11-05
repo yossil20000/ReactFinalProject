@@ -1,4 +1,4 @@
-import { Role } from "./API/IMember";
+
 
 export default interface IMemberUpdate{
     _id:string;

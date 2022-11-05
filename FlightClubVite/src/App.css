@@ -48,7 +48,7 @@ button {
   
   grid-template-areas: "nav nav nav nav" "header header header header" ". main main ." "footer footer footer footer";
   grid-template-columns: 1% 5fr 2fr 1%;
-  grid-template-rows: auto auto 1fr 5ch;
+  grid-template-rows: auto auto 1fr auto;
   align-content: center;
 }
 .yl__container .l_nav{
@@ -85,7 +85,7 @@ button {
 }
 
 ::-webkit-scrollbar {
-  width: 20px;
+  width: 10px;
 }
 /* track */
 ::-webkit-scrollbar-track {

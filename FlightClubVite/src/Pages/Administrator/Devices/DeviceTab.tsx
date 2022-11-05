@@ -1,18 +1,16 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Button, Grid } from '@mui/material'
 import { useContext } from 'react';
 import { DevicesContext, DevicesContextType } from '../../../app/Context/DevicesContext';
 import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext';
 import ActionCombo from '../../../Components/Buttons/ActionCombo';
 import { InputComboItem } from '../../../Components/Buttons/InputCombo';
 import DevicesCombo from '../../../Components/Devices/DevicesCombo';
-import { useFetchAllDevicesQuery, useUpdateDeviceMutation } from '../../../features/Device/deviceApiSlice'
-import { useFetchAllDeviceTypesQuery } from '../../../features/DeviceTypes/deviceTypesApiSlice';
-import useLocalStorage from '../../../hooks/useLocalStorage';
-import IDevice, { DEVICE_MET, DEVICE_MT, DEVICE_STATUS } from '../../../Interfaces/API/IDevice';
-import IDeviceType from '../../../Interfaces/API/IDeviceType';
+import { useUpdateDeviceMutation } from '../../../features/Device/deviceApiSlice'
+import IDevice, { DEVICE_INS, DEVICE_MET, DEVICE_MT, DEVICE_STATUS } from '../../../Interfaces/API/IDevice';
 import { FuelUnits } from '../../../Types/FuelUnits';
 import DeviceTabItem from './DeviceTabItem';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 const source: string = "DeviceTab"
 
 
@@ -66,7 +64,7 @@ function DeviceTab() {
               quantity: 0,
               units: FuelUnits.galon
             },
-            instruments: []
+            instruments: [DEVICE_INS.VFR]
           },
           location_zone: '',
           can_reservs: [],
@@ -91,124 +89,24 @@ function DeviceTab() {
 
   return (
     <Box marginTop={1}>
-      <Grid container columns={2} width={"100%"} columnSpacing={1}>
+      <Grid container columns={2} width={"100%"} columnSpacing={1} >
         <Grid item xs={1}>
           <DevicesCombo onChanged={onDeviceChange} source={source} />
         </Grid>
         <Grid item xs={1}>
-          <ActionCombo onChanged={onActionChange} source={source}/>
+          <ActionCombo  onChanged={onActionChange} source={source}/>
         </Grid>
       </Grid>
       <DeviceTabItem />
+      <Box style={{position:'absolute', bottom: "1ch" , width:'100%', height:'5ch',display: 'flex',alignContent:'center', justifyContent:'space-around'}}>
+      <Button variant='outlined' color='success' startIcon={<AddCircleOutlineIcon />}>Add</Button>
+        <Button variant='outlined' color='secondary' startIcon={<DeleteIcon />}>Delete</Button>
+        <Button variant='contained'>Save</Button>
+      </Box>
     </Box>
   )
 }
 
-const selectedLables = [
-  {
-    name: 'good first issue',
-    color: '#7057ff',
-    description: 'Good for newcomers',
-  },
-  {
-    name: 'help wanted',
-    color: '#008672',
-    description: 'Extra attention is needed',
-  }]
 
-
-// From https://github.com/abdonrd/github-labels
-const labels = [
-  {
-    name: 'good first issue',
-    color: '#7057ff',
-    description: 'Good for newcomers',
-  },
-  {
-    name: 'help wanted',
-    color: '#008672',
-    description: 'Extra attention is needed',
-  },
-  {
-    name: 'priority: critical',
-    color: '#b60205',
-    description: '',
-  },
-  {
-    name: 'priority: high',
-    color: '#d93f0b',
-    description: '',
-  },
-  {
-    name: 'priority: low',
-    color: '#0e8a16',
-    description: '',
-  },
-  {
-    name: 'priority: medium',
-    color: '#fbca04',
-    description: '',
-  },
-  {
-    name: "status: can't reproduce",
-    color: '#fec1c1',
-    description: '',
-  },
-  {
-    name: 'status: confirmed',
-    color: '#215cea',
-    description: '',
-  },
-  {
-    name: 'status: duplicate',
-    color: '#cfd3d7',
-    description: 'This issue or pull request already exists',
-  },
-  {
-    name: 'status: needs information',
-    color: '#fef2c0',
-    description: '',
-  },
-  {
-    name: 'status: wont do/fix',
-    color: '#eeeeee',
-    description: 'This will not be worked on',
-  },
-  {
-    name: 'type: bug',
-    color: '#d73a4a',
-    description: "Something isn't working",
-  },
-  {
-    name: 'type: discussion',
-    color: '#d4c5f9',
-    description: '',
-  },
-  {
-    name: 'type: documentation',
-    color: '#006b75',
-    description: '',
-  },
-  {
-    name: 'type: enhancement',
-    color: '#84b6eb',
-    description: '',
-  },
-  {
-    name: 'type: epic',
-    color: '#3e4b9e',
-    description: 'A theme of work that contain sub-tasks',
-  },
-  {
-    name: 'type: feature request',
-    color: '#fbca04',
-    description: 'New feature or request',
-  },
-  {
-    name: 'type: question',
-    color: '#d876e3',
-    description: 'Further information is requested',
-  },
-];
 
 export default DeviceTab

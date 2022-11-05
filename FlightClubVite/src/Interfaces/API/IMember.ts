@@ -16,9 +16,7 @@ export enum Role{
     "account" = 'account',
     "admin" = "admin"
 }
-
-export default interface IMember{
-    _id:string
+export interface IMemberBase {
     member_id: string
     family_name: string
     first_name: string
@@ -45,7 +43,10 @@ export default interface IMember{
             number: string
         },
         email: string
-    },
+    }
+}
+export default interface IMember  extends IMemberBase{
+    _id:string
     status: Status
     password: string
     username: string;
@@ -56,7 +57,8 @@ export default interface IMember{
     date_of_birth: Date
     date_of_join: Date
     date_of_leave: Date
+    membership: IMembership
     flights: IFlight,
     flight_reserv: IFlightReservation
-    membership: IMembership
+
 }

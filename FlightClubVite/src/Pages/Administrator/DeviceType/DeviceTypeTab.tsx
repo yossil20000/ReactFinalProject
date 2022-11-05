@@ -60,7 +60,7 @@ function DeviceTypeTab() {
 
   return (
     <DeviceTypesContext.Provider value={{deviceTypes: items?.data,selectedItem:selected,setSelectedItem: setSelected}}>
-      <Box margin={2}>
+      <Box marginTop={2}>
       <Grid container width={"100%"} height={"100%"} gap={2}>
         <Grid item xs={12}>
         <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source}/>
