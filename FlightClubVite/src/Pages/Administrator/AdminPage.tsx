@@ -102,15 +102,17 @@ function AdminPage() {
       {/* <ColorModeContext.Provider value={colorMode1}>
       <ThemeProvider theme={theme as Theme}>
      */}    <CssBaseline />
+
+      <>
       <div className='header'>
         <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
       </div>
-
       <div className='main' style={{ overflow: 'auto' ,position:'relative'}}>
         <DevicesContext.Provider value={{ devices: devices?.data, selectedItem: selectedDevice, setSelectedItem: setSelectedDevice ,membersCombo: membersCombo?.data}}>
           <DeviceTypesContext.Provider value={{ deviceTypes: deviceTypes?.data, selectedItem: selectedDeviceTypes, setSelectedItem: setSelectedDeviceTypes }}>
+          
             <Box height={"100%"} sx={{backgroundColor: "white"}}>
-            <Paper>
+            <Paper style={{height: "100%"}}>
               {value === 0 && <DeviceTab />}
               {value === 1 && (<DeviceTypeTab />)}
               {value === 2 && (<MemberTab/>)}
@@ -122,6 +124,8 @@ function AdminPage() {
 
       </div>
 
+      </>
+      
       {/* 
       </ThemeProvider>
     </ColorModeContext.Provider> */}

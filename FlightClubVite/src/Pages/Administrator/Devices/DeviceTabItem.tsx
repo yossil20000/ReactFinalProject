@@ -149,16 +149,17 @@ function DeviceTabItem() {
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 4 }}>
+          <Grid item xs={1} >
+              <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source} />
+            </Grid>
             <Grid item xs={1}>
               <TextField fullWidth={true} onChange={handleChange} id="device_id" name="device_id"
                 label="Device Id" placeholder="4xcgc" variant="standard"
                 value={selectedItem?.device_id} required
                 helperText="" error={false} />
             </Grid>
-            <Grid item xs={1}>
-              <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source} />
-            </Grid>
-            <Grid item xs={1}>
+
+            <Grid item xs={2} md={2}>
               <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
                 label="Description" placeholder="description" variant="standard"
                 value={selectedItem?.description} required
@@ -174,6 +175,10 @@ function DeviceTabItem() {
               <TextField fullWidth onChange={handleChange} id="engien_meter" label="Engien"
                 name="engien_meter" placeholder="Engien meter" variant="standard"
                 value={selectedItem?.engien_meter} />
+            </Grid>
+            <Grid item xs={2} justifySelf={"center"}>
+              {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
+              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={[]} items={memberCanReserve() === undefined ? [] : memberCanReserve() } onSelected={onSelecteCanReserv} />
             </Grid>
           </Grid>
         </AccordionDetails>
@@ -231,14 +236,15 @@ function DeviceTabItem() {
               <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} source={source} />
             </Grid>
             <Grid item xs={1}>
+                <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source} />
+              </Grid>
+            
+            <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
+            <Grid item xs={1}>
               <TextField type={"number"} fullWidth onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
                 value={selectedItem?.price.base} helperText="" />
             </Grid>
 
-            <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
-              <Grid item xs={1}>
-                <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source} />
-              </Grid>
               <Grid item xs={1} md={1}>
                 <TextField type={"number"} fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} />
               </Grid>
@@ -249,18 +255,17 @@ function DeviceTabItem() {
               <Grid item xs={1}>
                 <TextField fullWidth onChange={handleChange} name="details.color" label="Color" placeholder="device out color" variant="standard" value={selectedItem?.details.color} />
               </Grid>
+
+            <Grid item xs={2} justifySelf={"center"}>
+              {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
+              <MultiOptionCombo property={"details.instruments"} label={"Adtional Systems "} selectedItems={getSelectedInstrument()} items={navLableItems} onSelected={onSelecteAditionaSystem} />
+            </Grid>
             </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>
-      <Grid item xs={2} justifySelf={"center"}>
-              {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
-              <MultiOptionCombo property={"details.instruments"} label={"Adtional Systems "} selectedItems={getSelectedInstrument()} items={navLableItems} onSelected={onSelecteAditionaSystem} />
-            </Grid>
-            <Grid item xs={2} justifySelf={"center"}>
-              {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
-              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={[]} items={memberCanReserve() === undefined ? [] : memberCanReserve() } onSelected={onSelecteCanReserv} />
-            </Grid>
+
+
     </>
   )
 }

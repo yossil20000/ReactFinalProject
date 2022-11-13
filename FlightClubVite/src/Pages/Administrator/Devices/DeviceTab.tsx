@@ -15,7 +15,7 @@ const source: string = "DeviceTab"
 
 
 function DeviceTab() {
-  
+
   const { selectedItem: selectedDevice, setSelectedItem: setSelectedDevice, devices } = useContext(DevicesContext) as DevicesContextType;
   const { selectedItem: selectedDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
 
@@ -88,22 +88,39 @@ function DeviceTab() {
   }
 
   return (
-    <Box marginTop={1}>
-      <Grid container columns={2} width={"100%"} columnSpacing={1} >
-        <Grid item xs={1}>
-          <DevicesCombo onChanged={onDeviceChange} source={source} />
-        </Grid>
-        <Grid item xs={1}>
-          <ActionCombo  onChanged={onActionChange} source={source}/>
-        </Grid>
-      </Grid>
-      <DeviceTabItem />
-      <Box style={{position:'absolute', bottom: "1ch" , width:'100%', height:'5ch',display: 'flex',alignContent:'center', justifyContent:'space-around'}}>
-      <Button variant='outlined' color='success' startIcon={<AddCircleOutlineIcon />}>Add</Button>
-        <Button variant='outlined' color='secondary' startIcon={<DeleteIcon />}>Delete</Button>
-        <Button variant='contained'>Save</Button>
-      </Box>
-    </Box>
+    <>
+      <div className='yl__container' style={{ height:"100%" ,position:"relative"}}>
+        <div className='header'>
+          <Box marginTop={1}>
+            <Grid container columns={2} width={"100%"} columnSpacing={1} style={{paddingLeft: 0}} >
+              <Grid item xs={1} style={{paddingLeft: 0}}>
+                <DevicesCombo onChanged={onDeviceChange} source={source} />
+              </Grid>
+              <Grid item xs={1} style={{paddingLeft: 0}}>
+                <ActionCombo onChanged={onActionChange} source={source} />
+              </Grid>
+            </Grid>
+
+          </Box>
+
+        </div>
+        <div className='main' style={{ overflow: "auto" ,height:"100%"}}>
+          <Box marginTop={1} height={"100%"}>
+            <DeviceTabItem />
+
+          </Box>
+
+        </div>
+        <div className='footer' >
+          <Box style={{ width: '100%', height: '5ch', display: 'flex', alignContent: 'center', justifyContent: 'space-around' }}>
+            <Button variant='outlined' color='success' startIcon={<AddCircleOutlineIcon />}>Add</Button>
+            <Button variant='outlined' color='secondary' startIcon={<DeleteIcon />}>Delete</Button>
+            <Button variant='contained'>Save</Button>
+          </Box>
+        </div>
+      </div>
+
+    </>
   )
 }
 
