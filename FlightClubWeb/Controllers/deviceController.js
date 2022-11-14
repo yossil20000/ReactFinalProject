@@ -86,7 +86,7 @@ exports.device_flights = function (req, res, next) {
             .exec(function (err, results) {
                 if (err) {
                     log.error(err);
-                    res.status(401).json({ success: false,errors: [err], data: [] });
+                    res.status(400).json({ success: false,errors: [err], data: [] });
                     return ;
                 }
                 log.info(results);
@@ -101,7 +101,7 @@ exports.device_flights = function (req, res, next) {
                 FlightReservation.find().where('_id').in(data).populate('member').exec((err, records) => {
                     log.info(records);
                     if (err) {
-                        res.status(401).json({ success: false, errors:[err], data: records });
+                        res.status(400).json({ success: false, errors:[err], data: records });
                         return
                     }
                     else {
@@ -123,29 +123,33 @@ exports.create = [
         return /^[A-Z0-9]{4,}$/.test(value)
     } ),
     async function(req,res,next){
+        let newDevice1;
         try{
-            log.info("device/create/body", req.body);
+            newDevice1 =  req.body;
+            newDevice1._id = null
+            
+            log.info("device/create/body", req.body,newDevice1);
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return res.status(401).json({success: false, validation : errors, data: req.body});
+                return res.status(400).json({success: false, validation : errors, data: req.body});
             }
             const device_type = await DeviceType.findById(req.body.device_type).exec();
             if(device_type == null){
-                res.status(401).json({success: false, errors : ["DeviceType Not Exist"], data: []});
+                res.status(400).json({success: false, errors : ["DeviceType Not Exist"], data: []});
                 return;
             }
             const isExsit = await Device.findOne({device_id: req.body.device_id}).exec();
             if(isExsit){
-                res.status(401).json({success: false, errors : ["device_id already Exist"], data: []});
+                res.status(400).json({success: false, errors : ["device_id already Exist"], data: []});
                 return;
             }
-            let newDevice = new Device(req.body);
+            let newDevice = new Device(newDevice1);
             
             log.info("device/create/newDevice",newDevice);
             newDevice.save((err,result) => {
                 if(err){
-                    return res.status(401).json({ success: false, errors: [err], message: "Failed To Save", data: newDevice })
+                    return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: newDevice })
                 }
                 if(result){
                     log.info("notice_create/save/Result", result);
@@ -174,22 +178,22 @@ exports.update = [
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return res.status(401).json({success: false, validation : errors, data: req.body});
+                return res.status(400).json({success: false, validation : errors, data: req.body});
             }
             const device_type = await DeviceType.findById(req.body.device_type).exec();
             if(device_type == null){
-                res.status(401).json({success: false, errors : ["DeviceType Not Exist"], data: []});
+                res.status(400).json({success: false, errors : ["DeviceType Not Exist"], data: []});
                 return;
             }
             
             const _id = req.body._id;
-            delete req.body._id
+            
             let newDevice = new Device(req.body);
             
             log.info("device/update/newDevice",newDevice);
             Device.updateOne({_id: _id},req.body,(err,result) => {
                 if(err){
-                    return res.status(401).json({ success: false, errors: [err.message], message: "Failed To Save", data: newDevice })
+                    return res.status(400).json({ success: false, errors: [err.message], message: "Failed To Save", data: newDevice })
                 }
                 if(result){
                     log.info("notice_create/save/Result", result);
