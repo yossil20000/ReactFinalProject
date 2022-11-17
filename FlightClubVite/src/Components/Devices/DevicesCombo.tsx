@@ -3,8 +3,8 @@ import { useEffect, useState,useId } from 'react'
 import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import IDevice from '../../Interfaces/API/IDevice'
-import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
-import { InputComboItem } from '../Buttons/InputCombo'
+import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
+
 
 
 function DevicesCombo(props : ComboProps) {

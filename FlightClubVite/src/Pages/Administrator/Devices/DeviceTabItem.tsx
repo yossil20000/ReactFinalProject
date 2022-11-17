@@ -4,17 +4,19 @@ import IDevice, { DEVICE_INS } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
-import { InputComboItem } from '../../../Components/Buttons/InputCombo'
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import DeviceStatusCombo from '../../../Components/Devices/DeviceStatusCombo'
 import DeviceMTCombo from '../../../Components/Devices/DeviceMTCombo'
 import DeviceFuelUnitCombo from '../../../Components/Devices/DeviceFuelUnitCombo'
-import GitHubLabel, { LabelType } from '../../../Components/Buttons/MultiOptionCombo';
+import { LabelType } from '../../../Components/Buttons/MultiOptionCombo';
 import DeviceTypesCombo from '../../../Components/Devices/DeviceTypesCombo';
 import { DevicesContext, DevicesContextType } from '../../../app/Context/DevicesContext';
 import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext';
 import MultiOptionCombo from '../../../Components/Buttons/MultiOptionCombo';
+import MUISelect from '../../../Components/Buttons/MUISelect';
+import { CRUDActions } from '../../../Types/ItemsProps';
+import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
   const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
@@ -120,6 +122,19 @@ function DeviceTabItem() {
     }
     return [];
   }
+  const getSelectedCanreserve = (): LabelType[] => {
+
+    if (selectedItem !== undefined && selectedItem) {
+      const initial = selectedItem.can_reservs.map((item) => {
+        return item.toString();
+      });
+      const result = navLableItems.filter((item) => (initial.includes(item.name)))
+      return result;
+
+    }
+    return [];
+  }
+ 
  
   const onDeviceTypeChanged = (item: InputComboItem) => {
     const foundItem = deviceTypes?.find((i) => item._id === i._id);
@@ -132,9 +147,15 @@ function DeviceTabItem() {
     }
 
   }
-
-
-  return (
+  const getSelectedItem = (property: any) : InputComboItem => {
+    const prop : string = selectedItem?[property].toString() : "";
+    const selected : InputComboItem = {
+      lable: selectedItem?[property].toString() : "",
+      _id: "",
+      description: ""}
+      return selected;
+  }
+    return (
     <>
       <Accordion  >
         <AccordionSummary style={{ height: "48px" }}
@@ -149,6 +170,7 @@ function DeviceTabItem() {
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 4 }}>
+
           <Grid item xs={1} >
               <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source} />
             </Grid>
@@ -178,7 +200,7 @@ function DeviceTabItem() {
             </Grid>
             <Grid item xs={2} justifySelf={"center"}>
               {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
-              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={[]} items={memberCanReserve() === undefined ? [] : memberCanReserve() } onSelected={onSelecteCanReserv} />
+              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={getSelectedCanreserve()} items={memberCanReserve() === undefined ? [] : memberCanReserve() } onSelected={onSelecteCanReserv} />
             </Grid>
           </Grid>
         </AccordionDetails>
@@ -204,7 +226,7 @@ function DeviceTabItem() {
               </LocalizationProvider>
             </Grid>
             <Grid item xs={1}>
-              <DeviceMTCombo onChanged={(item) => onComboChanged(item, "maintanance.type")} source={source} />
+              <DeviceMTCombo onChanged={(item) => onComboChanged(item, "maintanance.type")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.maintanance.type.toString(),_id: "",description: ""}}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
@@ -212,7 +234,7 @@ function DeviceTabItem() {
                 value={selectedItem?.maintanance.next_meter} error={false} helperText="" />
             </Grid>
             <Grid item xs={1}>
-              <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} />
+              <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.device_status.toString() ,_id: "",description: ""}}/>
             </Grid>
             <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
               <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
@@ -233,10 +255,10 @@ function DeviceTabItem() {
         <AccordionDetails>
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
             <Grid item xs={1}>
-              <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} source={source} />
+              <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.price.meter.toString() ,_id: "",description: ""}}/>
             </Grid>
             <Grid item xs={1}>
-                <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source} />
+                <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.details.fuel.units.toString() ,_id: "",description: ""}}/>
               </Grid>
             
             <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>

@@ -50,6 +50,8 @@ button {
   grid-template-columns: auto 5fr 2fr auto;
   grid-template-rows: auto auto 1fr auto;
   align-content: center;
+  background-color: white;
+  padding: 2px
 }
 .yl__container .l_nav{
   grid-area: l_nav;
@@ -68,7 +70,8 @@ button {
   display: flex;
   flex-direction: column;
   grid-area: main;
-  background-color: rgb(235, 239, 239);
+  background-color: white;
+ 
 }
 .yl__container .l_footer {
   grid-area: l_footer;
@@ -84,7 +87,15 @@ button {
   grid-area: r_footer;
   background-color: rgb(122, 15, 15);
 }
-
+.yl__action_button {
+  width: 100%;
+  height: 5ch;
+  display: flex;
+  align-content: center;
+  justify-content: space-around;
+  padding:0.5ch;
+  display:flex;
+}
 ::-webkit-scrollbar {
   width: 10px;
 }

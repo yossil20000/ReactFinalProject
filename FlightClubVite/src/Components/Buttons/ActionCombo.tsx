@@ -1,8 +1,7 @@
 
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { CRUDActions } from '../../Types/ItemsProps';
-import { InputComboItem } from '../Buttons/InputCombo'
-import ControledCombo, { ComboProps } from './ControledCombo';
+import ControledCombo, { ComboProps, InputComboItem } from './ControledCombo';
 
 const getInputItems= () => {
   const items : InputComboItem[] = Object.keys(CRUDActions).filter((v) => isNaN(Number(v))).

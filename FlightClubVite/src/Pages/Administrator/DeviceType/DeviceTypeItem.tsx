@@ -1,13 +1,13 @@
 import { Grid,  TextField,Theme,styled } from '@mui/material'
 import DeviceTypeEngienCombo from '../../../Components/Devices/DeviceTypeEngienCombo'
-import { InputComboItem } from '../../../Components/Buttons/InputCombo'
 import  { useContext, useState } from 'react'
 import IDeviceType, { CategoryType, EngienType, SurfaceType } from '../../../Interfaces/API/IDeviceType'
 import { useFetchAllDeviceTypesQuery } from '../../../features/DeviceTypes/deviceTypesApiSlice';
-import { setProperty } from '../../../Utils/setProperty'
+import { getSelectedItem, setProperty } from '../../../Utils/setProperty'
 import DeviceTypeSurfaceCombo from '../../../Components/Devices/DeviceTypeSurfaceCombo'
 import DeviceTypeCategoryCombo from '../../../Components/Devices/DeviceTypeCategoryCombo'
 import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext'
+import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 const source: string = "DeviceTypeItem"
 const initialValues: IDeviceType = {
   _id: "",
@@ -63,7 +63,6 @@ function DeviceTypeItem() {
     console.log("SetProperty/newobj", newObj)
     return newObj;
   }
-  
   return (
  
       <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12}>
@@ -74,13 +73,13 @@ function DeviceTypeItem() {
         <TextField onChange={handleChange}  fullWidth={true} variant='standard' label="Description" name="description" value={selectedItem?.description}/>
         </Grid>
         <Grid item xs={12}  >
-         <DeviceTypeCategoryCombo onChanged={(item) => onComboChanged(item,"category")} source={source}/>
+         <DeviceTypeCategoryCombo onChanged={(item) => onComboChanged(item,"category")} source={source} selectedItem={getSelectedItem(selectedItem?.category.toString())}/>
         </Grid>        
         <Grid item xs={12} >
-         <DeviceTypeEngienCombo onChanged={(item) => onComboChanged(item,"class.engien")} source={source}/>
+         <DeviceTypeEngienCombo onChanged={(item) => onComboChanged(item,"class.engien")} source={source} selectedItem={getSelectedItem(selectedItem?.class.engien.toString())}/>
         </Grid>
         <Grid item xs={12}>
-         <DeviceTypeSurfaceCombo onChanged={(item) => onComboChanged(item,"class.surface")} source={source}/>
+         <DeviceTypeSurfaceCombo onChanged={(item) => onComboChanged(item,"class.surface")} source={source} selectedItem={getSelectedItem(selectedItem?.class.surface.toString())}/>
         </Grid>
       </Grid>
  

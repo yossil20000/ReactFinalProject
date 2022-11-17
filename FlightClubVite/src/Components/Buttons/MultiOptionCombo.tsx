@@ -13,6 +13,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
+import { useEffect } from 'react';
 
 interface PopperComponentProps {
   anchorEl?: any;
@@ -131,6 +132,7 @@ export default function MultiOptionCombo(comboProps : MultiOptionComboProps) {
     setAnchorEl(event.currentTarget);
     
   };
+  
 
   const handleClose = () => {
     setValue(pendingValue);

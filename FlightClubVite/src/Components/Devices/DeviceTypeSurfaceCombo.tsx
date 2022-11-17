@@ -1,34 +1,17 @@
 
-import { useState } from 'react'
-import useLocalStorage from '../../hooks/useLocalStorage';
+import { useRef } from 'react'
 import { SurfaceType } from '../../Interfaces/API/IDeviceType';
-import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
-import { InputComboItem } from '../Buttons/InputCombo'
+import { Enum2ComboItem } from '../../Utils/enums';
+import ControledCombo, { InputComboItem, StateComboProps } from '../Buttons/ControledCombo';
 
-
-const getInputItems= () => {
-  const items : InputComboItem[] = Object.keys(SurfaceType).filter((v) => isNaN(Number(v))).
-  map((name) => {
-    return {
-      _id: SurfaceType[name as keyof typeof SurfaceType].toString(),
-      description: "",
-      lable: name
-    }
-  })
-  console.log("DeviceTypeSurfaceCombo/items",items)
-  return items;
-}
-function DeviceTypeSurfaceCombo(props : ComboProps) {
-  const {onChanged,source} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypeSurface`,undefined);
-  
+function DeviceTypeSurfaceCombo(props : StateComboProps) {
+  const {onChanged,source, selectedItem} = props
+  const items = useRef(new Enum2ComboItem(SurfaceType).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    setSelectedItem(item);
-    console.log("DeviceTypeSurfaceCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={getInputItems()} /* handleComboChange={handleDeviceOnChange} */ title={`Surface Type`} />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={items.current} /* handleComboChange={handleDeviceOnChange} */ title={`Surface Type`} />
   )
 }
 

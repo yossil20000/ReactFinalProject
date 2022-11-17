@@ -1,30 +1,18 @@
+import { useRef } from 'react';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { CategoryType } from '../../Interfaces/API/IDeviceType';
-import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
-import { InputComboItem } from '../Buttons/InputCombo'
+import { Enum2ComboItem } from '../../Utils/enums';
+import ControledCombo, { ComboProps, InputComboItem, StateComboProps } from '../Buttons/ControledCombo';
 
-function DeviceTypeCategoryCombo(props : ComboProps) {
-  const {onChanged,source} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypeCategory`,undefined);
-  function getInputItems<T> (): InputComboItem[] {
-    const items : InputComboItem[] = Object.keys(CategoryType).filter((v) => isNaN(Number(v))).
-    map((name) => {
-      return {
-        _id: CategoryType[name as keyof typeof CategoryType].toString(),
-        description: "",
-        lable: name
-      }
-    })
-    console.log("DeviceTypeCategoryCombo/items",items)
-    return items;
-  }
+
+function DeviceTypeCategoryCombo(props : StateComboProps) {
+  const {onChanged,source,selectedItem} = props
+  const items = useRef(new Enum2ComboItem(CategoryType).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    setSelectedItem(item);
-    console.log("DeviceTypeCategoryCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={getInputItems()} title={`Category`} />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={items.current} title={`Category`} />
   )
 }
 

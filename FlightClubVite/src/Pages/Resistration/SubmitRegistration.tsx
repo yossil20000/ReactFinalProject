@@ -29,7 +29,7 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
         const payload = await createMember(formData);
         console.log("useCreateMemberMutation/paylod", payload);
     }
-    const ocValidationAlertClose = () => {
+    const onValidationAlertClose = () => {
         setValidationAlert([]);
     }
     useEffect(() => {
@@ -44,7 +44,7 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
                         param: '',
                         value: "",
                         open: true,
-                        onClose: ocValidationAlertClose
+                        onClose: onValidationAlertClose
                         };
                         return alert;
                 })
@@ -55,7 +55,7 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
             
                 validation = (error as any).data.validation.errors.map((item: IValidation) => {
                     const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
-                    alert.onClose = ocValidationAlertClose;
+                    alert.onClose = onValidationAlertClose;
                     alert.open = true;
                     return alert;
                 })

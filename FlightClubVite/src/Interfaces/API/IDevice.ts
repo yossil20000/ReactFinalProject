@@ -10,9 +10,9 @@ export enum DEVICE_STATUS  {
     NOT_EXIST
 }
 export enum DEVICE_MT{
-    hr50,
-    hr100,
-    Annual
+    "50hr",
+    "100hr",
+    "Annual"
 }
 export enum DEVICE_MET  {
     HOBBS,
@@ -25,8 +25,8 @@ export enum DEVICE_INS  {
     ICE = '#d93f0b',
     AIR_CONDITION = '#0e8a16'
 }
-export default interface IDevice{
-    _id: string
+interface IDeviceBase{
+    
     device_id: string
     device_type: (IDeviceType | string)
     description: string
@@ -54,6 +54,24 @@ export default interface IDevice{
         instruments: DEVICE_INS[]
     }
     location_zone: string
+}
+
+export  interface IDeviceCreate extends IDeviceBase {
+    
+    can_reservs:IMember[]
+    flights: IFlight[]
+    flight_reservs: IFlightReservation[]
+
+}
+
+
+export  interface IDeviceAdminUpdate extends IDeviceBase {
+    _id: string
+    can_reservs:IMember[]
+}
+
+export default interface IDevice extends IDeviceBase {
+    _id: string
     can_reservs:IMember[]
     flights: IFlight[]
     flight_reservs: IFlightReservation[]

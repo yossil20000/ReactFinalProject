@@ -20,9 +20,9 @@ export  enum URLS{
     DEVICE_TYPES_DELETE = 'api/deviceTypes',
     DEVICE_TYPES_UPDATE = 'api/deviceTypes/update',
     DEVICE_TYPES_CREATE = 'api/deviceTypes/create',
-    DEVICE_DETAILES = 'api/deviceTypes',
+    DEVICE_DETAILES = 'api/devices',
     DEVICE_DELETE = 'api/devices/delete',
     DEVICE_UPDATE = 'api/devices/update',
-    DEVICE_CREATE = 'api/deviceTypes/create',
+    DEVICE_CREATE = 'api/devices/create',
     
 }

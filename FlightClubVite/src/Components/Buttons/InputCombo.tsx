@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 interface ComboProps {
   onChanged: (item: InputComboItem) => void;
 }
-export interface InputComboItem{
+interface InputComboItem{
   _id: string;
   lable: string;
   description: string;

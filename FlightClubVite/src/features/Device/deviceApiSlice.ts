@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { URLS } from "../../Enums/Routers"
-import IDevice from "../../Interfaces/API/IDevice"
+import IDevice, { IDeviceCreate } from "../../Interfaces/API/IDevice"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 
 export const deviceApiSlice = createApi({
@@ -48,7 +48,7 @@ endpoints(builder){
       }),
       invalidatesTags: [{type: "Devices"}]
     }),
-    createDevice : builder.mutation<IResultBaseSingle<IDevice>,IDevice>({
+    createDevice : builder.mutation<IResultBaseSingle<IDevice>,IDeviceCreate>({
       query:(device) =>({
         url: `/${URLS.DEVICE_CREATE}`,
         method: 'POST',

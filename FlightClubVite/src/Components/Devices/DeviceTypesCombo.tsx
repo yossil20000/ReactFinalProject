@@ -3,12 +3,12 @@ import { useEffect, useState,useId } from 'react'
 import { useFetchAllDeviceTypesQuery } from '../../features/DeviceTypes/deviceTypesApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import IDeviceType from '../../Interfaces/API/IDeviceType';
-import ControledCombo, { ComboProps } from '../Buttons/ControledCombo';
-import { InputComboItem } from '../Buttons/InputCombo'
+import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
+
 
 
 function DeviceTypesCombo(props : ComboProps) {
-  const id = useId();
+ 
   const {onChanged,source} = props
   const { data, isError, isLoading, error } = useFetchAllDeviceTypesQuery();
   

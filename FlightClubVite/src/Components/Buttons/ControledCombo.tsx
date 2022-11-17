@@ -6,6 +6,12 @@ export interface ComboProps {
   onChanged: (item: InputComboItem) => void;
   source: string;
 }
+export interface StateComboProps {
+  onChanged: (item: InputComboItem) => void;
+  source: string;
+  selectedItem: InputComboItem
+}
+
 export interface InputComboItem{
   _id: string;
   lable: string;
@@ -46,7 +52,7 @@ export default function ControledCombo(props: InputComboProps) {
         options={items}
         getOptionLabel={option => `${(option as InputComboItem).lable}`}
         
-        renderInput={(params) => <TextField {...params} label={title} />}
+        renderInput={(params) => <TextField {...params} label={title} variant="standard" />}
       />
   );
 }
