@@ -19,7 +19,7 @@ exports.register = function(req,res,next){
         }
         if(member)
         {
-            return res.status(401).json({ success: false, errors: ["email already registered"], message: "email already registered" });
+            return res.status(400).json({ success: false, errors: ["email already registered"], message: "email already registered" });
         }
         else
         {

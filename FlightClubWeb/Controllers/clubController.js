@@ -8,7 +8,7 @@ exports.club = async function (req, res, next) {
     if(club){
       return res.status(201).json({ success: true, errors: [err], data: club});  
     }
-    return res.status(401).json({ success: false, errors: ["club not exist"], data: [] });
+    return res.status(400).json({ success: false, errors: ["club not exist"], data: [] });
 
   }
   catch (err) {

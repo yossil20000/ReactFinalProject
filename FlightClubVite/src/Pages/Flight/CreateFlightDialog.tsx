@@ -3,8 +3,8 @@ import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createThem
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
-import { InputComboItem } from "../../Components/Buttons/InputCombo";
+import { useCallback, useEffect, useState } from "react";
+import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
@@ -73,7 +73,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               param: '',
               value: "",
               open: true,
-              onClose: handleOnCancel
+              onClose: handleOnValidatiobClose
             };
             return alert;
           })
@@ -87,7 +87,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
             param: '',
             value: "",
             open: true,
-            onClose: handleOnCancel
+            onClose: handleOnValidatiobClose
           })
           setValidationAlert(validation);
         }
@@ -98,7 +98,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
         console.log("CreateFlightDialog/useEffect/data", (error as any).data)
         validation = (error as any).data.validation.errors.map((item: IValidation) => {
           const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
-          alert.onClose = handleOnCancel;
+          alert.onClose = handleOnValidatiobClose;
           alert.open = true
           return alert;
 
@@ -130,6 +130,10 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     setValidationAlert([])
     onClose()
   }
+  const handleOnValidatiobClose = useCallback(() => {
+    setValidationAlert([])
+    
+  },[])
   const handleOnSave = async () => {
     console.log("CreateFlightDialog/onSave", flightCreate)
     let flight = new CFlightCreate();
@@ -151,23 +155,6 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     });
 
 
-  }
-  const handleMemberOnChange = (event: any, newValue: any) => {
-    console.log("Reservation", flightCreate);
-    console.log("member/target", event.target);
-    console.log("Member/newValue", newValue);
-
-    setFlightCreate(prev => ({ ...prev, member: { _id: newValue._id, member_id: newValue.member_id, family_name: newValue.family_name, first_name: newValue.first_name } }))
-    setSelectedMember(newValue);
-
-  }
-  const handleDeviceOnChange = (event: any, newValue: any) => {
-    console.log("Reservation", flightCreate);
-    console.log(event.target);
-    console.log(newValue);
-
-    setFlightCreate(prev => ({ ...prev, device: { _id: newValue._id, device_id: newValue.device_id } }))
-    setSelectedDevice(newValue);
   }
   const onDeviceChanged = (item: InputComboItem) => {
     setFlightCreate(prev => ({ ...prev, _id_device: item._id }))
@@ -229,14 +216,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
         <TransitionAlert {...dateErrorAlert}/>
       </Item>
     </Grid> */}
-          {validationAlert.map((item) => (
-            <Grid item xs={12}>
-              <Item>
 
-                <ValidationAlert {...item} />
-              </Item>
-            </Grid>
-          ))}
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
@@ -325,6 +305,14 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               Save
             </Button></Item>
           </Grid>
+          {validationAlert.map((item) => (
+            <Grid item xs={12}>
+              <Item>
+
+                <ValidationAlert {...item} />
+              </Item>
+            </Grid>
+          ))}
         </Grid>
       </DialogContent>
     </Dialog>

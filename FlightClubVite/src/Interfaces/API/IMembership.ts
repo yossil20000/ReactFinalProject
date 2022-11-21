@@ -16,3 +16,11 @@ export default interface IMembership{
     rank: Rank
     status: Status
 }
+
+export const  NewMembership : IMembership = {
+    entry_price: 0,
+    montly_price: 0,
+    hour_disc_percet: 0,
+    rank: Rank.Bronze,
+    status: Status.Created
+}

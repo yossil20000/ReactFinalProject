@@ -1,6 +1,6 @@
-import { IDeviceCombo, IMemberCombo } from "../IFlightReservationProps"
-import IDevice from "./IDevice"
-import IMember from "./IMember"
+
+import IDevice, { IDeviceCombo } from "./IDevice"
+import IMember, { IMemberCombo } from "./IMember"
 
 export default interface IReservation{
     _id:string

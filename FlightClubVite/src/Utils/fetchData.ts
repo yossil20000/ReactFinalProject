@@ -1,8 +1,7 @@
-import { useFetchAllDevicesQuery } from "../features/Device/deviceApiSlice";
-import { apiSlice, useFetchMembersComboQuery } from "../features/Users/userSlice";
-import { IDeviceCombo, IMemberCombo } from "../Interfaces/IFlightReservationProps"
-import {useAppDispatch,useAppSelector} from '../app/hooks'
+import { apiSlice } from "../features/Users/userSlice";
 import {storeUser} from '../app/userStor'
+import { IDeviceCombo } from "../Interfaces/API/IDevice";
+import { IMemberCombo } from "../Interfaces/API/IMember";
 
 export interface IDevicesMembers {
   memberscombo: IMemberCombo[];

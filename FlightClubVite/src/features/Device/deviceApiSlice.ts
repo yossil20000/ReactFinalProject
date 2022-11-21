@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { URLS } from "../../Enums/Routers"
-import IDevice, { IDeviceCreate } from "../../Interfaces/API/IDevice"
+import IDevice, { IDeviceCombo, IDeviceCreate } from "../../Interfaces/API/IDevice"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 
 export const deviceApiSlice = createApi({
@@ -40,11 +40,10 @@ endpoints(builder){
       }),
       invalidatesTags: [{type: "Devices"}]
     }),
-    deleteDevice : builder.mutation<IResultBaseSingle<IDevice>,IDevice>({
-      query:(device) => ({
-        url:`/${URLS.DEVICE_DELETE}`,
-        method: "DELETE",
-        body: device
+    deleteDevice : builder.mutation<IResultBaseSingle<IDevice>,string>({
+      query:(_id) => ({
+        url:`/${URLS.DEVICE_DELETE}/${_id}`,
+        method: "DELETE"
       }),
       invalidatesTags: [{type: "Devices"}]
     }),
@@ -55,7 +54,13 @@ endpoints(builder){
         body: device
       }),
       invalidatesTags: [{type: "Devices"}]
-    })
+    }),
+    fetchDevicsCombo : builder.query<IResultBase<IDeviceCombo>,void>({
+      query: () => ({
+          url: `/${URLS.DEVICES_COMBO}`,
+          method: "GET"
+      })
+  }),
   }
 }
 
@@ -66,5 +71,6 @@ useFetchAllDevicesQuery,
 useUpdateDeviceMutation,
 useCreateDeviceMutation,
 useDeleteDeviceMutation,
-useFetchDeviceQuery
+useFetchDeviceQuery,
+useFetchDevicsComboQuery
 } = deviceApiSlice;

@@ -4,7 +4,6 @@ import Stepper,{IStepperProps,IStepper} from '../../Components/Stepper'
 import imege1 from '../../Asset/TileBar/IMG-20190715-WA0002.jpg';
 import imege2 from '../../Asset/TileBar/IMG-20200222-WA0010.jpg';
 import imege3 from '../../Asset/TileBar/IMG-20200221-WA0098.jpg';
-import { getMembersAndDevicesCombo } from '../../Utils/fetchData';
 import IClubNotice from '../../Interfaces/API/IClubNotice';
 import { useFetchAllNoticesQuery } from '../../features/clubNotice/noticeApiSlice';
 const itemData = [

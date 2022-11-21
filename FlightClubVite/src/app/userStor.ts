@@ -7,6 +7,7 @@ import { deviceApiSlice } from "../features/Device/deviceApiSlice";
 import { flightApi } from "../features/Flight/flightApi";
 import { noticeApiSlice } from "../features/clubNotice/noticeApiSlice";
 import { deviceTypesApiSlice } from "../features/DeviceTypes/deviceTypesApiSlice";
+import { membershipApiSlice } from "../features/membership/membershipApiSlice";
 
 export const storeUser = configureStore({
     reducer:{
@@ -17,10 +18,19 @@ export const storeUser = configureStore({
         [flightApi.reducerPath] : flightApi.reducer,
         [noticeApiSlice.reducerPath] : noticeApiSlice.reducer,
         [deviceTypesApiSlice.reducerPath] : deviceTypesApiSlice.reducer,
+        [membershipApiSlice.reducerPath] : membershipApiSlice.reducer,
         authSlice: authSliceReducer ,
     },
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(apiSlice.middleware).concat(authApiSlice.middleware).concat(deviceApiSlice.middleware).concat(reservationApiSlice.middleware).concat(flightApi.middleware).concat(noticeApiSlice.middleware).concat(deviceTypesApiSlice.middleware)
+        return getDefaultMiddleware()
+        .concat(apiSlice.middleware)
+        .concat(authApiSlice.middleware)
+        .concat(deviceApiSlice.middleware)
+        .concat(reservationApiSlice.middleware)
+        .concat(flightApi.middleware)
+        .concat(noticeApiSlice.middleware)
+        .concat(deviceTypesApiSlice.middleware)
+        .concat(membershipApiSlice.middleware)
     }
 });
 

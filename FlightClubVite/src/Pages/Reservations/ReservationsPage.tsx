@@ -148,7 +148,7 @@ const defaultMaterialThem = createTheme({
 })
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
-  console.log("isbydateRange", isByDateRange);
+  console.log("EnhancedTableToolbar/isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
     if (newDate && toDateFilter && newDate <= toDateFilter)

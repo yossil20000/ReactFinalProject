@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import IDevice from "../../Interfaces/API/IDevice";
-import { IMemberCombo } from "../../Interfaces/IFlightReservationProps";
+import { IMemberCombo } from "../../Interfaces/API/IMember";
+
 
 export type DevicesContextType = {
   selectedItem: IDevice | null | undefined;

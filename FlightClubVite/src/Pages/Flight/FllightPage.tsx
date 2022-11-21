@@ -1,6 +1,6 @@
 import "../../Types/date.extensions"
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Grid, Paper, styled, TablePagination, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
 import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightUpdate, Status } from "../../Interfaces/API/IFlight";
@@ -102,7 +102,6 @@ let flightAddIntitial: IFlightCreate = {
 const FlightPage = () => {
   const [openFlightAdd, setOpenFlightAdd] = useState(false);
   const [openFlightUpdate, setOpenFlightUpdate] = useState(false);
-  const [flightAdd, setFlightAdd] = useState<IFlightCreate>(flightAddIntitial)
   const [flightUpdate, setFlightUpdate] = useState<IFlightUpdate>(flightUpdateIntitial);
   const [DeleteFlight] = useDeleteFlightMutation();
   const [order, setOrder] = useState<Order>('asc');
@@ -115,7 +114,6 @@ const FlightPage = () => {
   const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
   const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(1));
   const [page, setPage] = useState(0);
-  const [filteredData, setFilteredData] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
   const { isLoading, isError, isSuccess, error, data: flights, refetch } = useGetAllFlightsQuery();
@@ -130,30 +128,29 @@ const FlightPage = () => {
   }, [isLoading]);
   const getFilteredData = (): IFlightData[] => {
     console.log("getFilteredData/flightData", flightsData)
+    if(flightsData === undefined) return [];
     const filterdData: IFlightData[] = flightsData?.filter((flight) => {
       console.log("flightdat/filter", flightsData);
       if (!isInDateRange(flight)) return false;
       if (!isFilterOwner) return true;
       if (isFilterOwner && flight.validOperation & CanDo.Owner) return true;
       return true;
-    }).sort(getComparator(order, orderBy));
+    })
+    .sort(getComparator(order, orderBy))
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     return filterdData;
   }
+
   useEffect(() => {
     console.log("FlightPage/useEffect/flight.data", flights === undefined ? "Undefined" : flights)
     if (flights?.data !== undefined) {
-
       setFilghtData(getFlightData(flights?.data));
-      //setFilteredData( getFilteredData());
     }
 
   }, [flights?.data])
 
-  useEffect(() => {
-    // setFilteredData( getFilteredData());
-
-  }, [order, orderBy, isByDateRange, filterBydate, fromDateFilter, toDateFilter])
+  
 
   if (isLoading) {
     return (
@@ -162,25 +159,23 @@ const FlightPage = () => {
       </div>
     )
   }
-  if (flights !== undefined || flights !== null) {
-    console.log("Flights", flights);
-  }
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof IFlightData) => {
+
+  const handleRequestSort = useCallback((event: React.MouseEvent<unknown>, property: keyof IFlightData) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  }
+  },[orderBy,order])
 
 
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+  const handleChange = useCallback((panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
       setExpanded(newExpanded ? panel : false);
-    };
+    },[]);
 
-  const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
+  const handleDeleteClick = useCallback(async (event: React.MouseEvent<unknown>, _id: string) => {
     const flightDelete: IFlightDeleteApi = {
       _id: _id
     }
+
     console.log("Flight/Delete /", _id);
     try {
       await DeleteFlight(flightDelete)
@@ -193,20 +188,20 @@ const FlightPage = () => {
     catch (err) {
       console.log("DeleteFlight/err", err)
     }
-  }
-  const handleFilterOwner = () => {
+  },[])
+  const handleFilterOwner = useCallback(() => {
     setIsFilterOwner(!isFilterOwner);
-  }
-  const handleFilterClick = (selectedIndex: number): number => {
-    console.log("handleFilterClick", selectedIndex);
+  },[])
+  const handleFilterClick = useCallback((selectedIndex: number): number => {
+    /* console.log("handleFilterClick", selectedIndex); */
     if (selectedIndex == 3)
       setIsByDateRange(true);
     else
       setIsByDateRange(false);
     setFilterByDate(selectedIndex);
-    console.log("handleFilterClick", selectedIndex, isByDateRange);
+    /* console.log("handleFilterClick", selectedIndex, isByDateRange); */
     return selectedIndex;
-  }
+  },[])
   const isInDateRange = (row: IFlightData): boolean => {
     console.log("isInDateRange/filterBydate", filterBydate)
     switch (filterBydate) {
@@ -223,14 +218,14 @@ const FlightPage = () => {
     }
     return true;
   }
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = useCallback((event: unknown, newPage: number) => {
     setPage(newPage);
-  };
+  },[]);
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
+  },[]);
   function fillFlightUpdate(id: string) {
     const flight = flightsData.filter(item => item._id === id)
     if (flight.length === 1) {
@@ -245,36 +240,38 @@ const FlightPage = () => {
       flightUpdateIntitial.engien_start = flight[0].engien_start;
       flightUpdateIntitial.engien_stop = flight[0].engien_stop;
       flightUpdateIntitial.description = flight[0].description;
-      setFlightUpdate(flightUpdateIntitial);
+      /* setFlightUpdate(flightUpdateIntitial); */
     }
   }
 
-  const handleUpdateOnSave = (value: IFlightUpdate) => {
+  const handleUpdateOnSave = useCallback((value: IFlightUpdate) => {
     refetch();
     setOpenFlightUpdate(false);
-    console.log("FlightPage/handleOnSave/value", value);
-
-  }
-  const handleEditClick = async (event: React.MouseEvent<unknown>, _id: string) => {
+    /* console.log("FlightPage/handleOnSave/value", value); */
+  },[])
+  const handleEditClick = useCallback( async (event: React.MouseEvent<unknown>, _id: string) => {
     fillFlightUpdate(_id);
     setOpenFlightUpdate(true);
-  }
-  const handleUpdateOnClose = () => {
+  },[])
+  const handleUpdateOnClose = useCallback(() => {
     setOpenFlightUpdate(false);
-  }
-  const handleAddClick = async (event: React.MouseEvent<unknown>) => {
+  },[])
 
+  const handleAddClick = useCallback(async (event: React.MouseEvent<unknown>) => { 
     setOpenFlightAdd(true);
-  }
-  const handleAddOnSave = (value: IFlightCreate) => {
+},[])
+  const handleAddOnSave = useCallback((value: IFlightCreate) => {
     refetch();
     setOpenFlightAdd(false);
     console.log("FlightPage/handleAddOnSave/value", value);
 
-  }
-  const handleAddOnClose = () => {
+  },[])
+
+  const handleAddOnClose = useCallback(() => {
     setOpenFlightAdd(false);
-  }
+  },[])
+  const getFilteredDataMemo = useMemo<IFlightData[]>(() => getFilteredData(),
+  [flightsData,isFilterOwner,page,rowsPerPage,filterBydate,order,orderBy])
   return (
     <>
       <div className='header'><Typography variant="h6" align="center">Flight Page</Typography></div>
@@ -289,8 +286,7 @@ const FlightPage = () => {
             <StyledAccordion >
               {
 
-                getFilteredData().sort(getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: IFlightData, index: number) => {
+               getFilteredDataMemo.map((row: IFlightData, index: number) => {
                     return (
                       <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
                       >

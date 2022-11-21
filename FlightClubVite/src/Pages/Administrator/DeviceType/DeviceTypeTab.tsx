@@ -82,7 +82,7 @@ function DeviceTypeTab() {
         <div className='footer' >
 
           <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction}/>
+            <ActionButtons OnAction={onAction} show={[EAction.DELETE,EAction.SAVE,EAction.ADD]}/>
           </Box>
         </div>
       </div>

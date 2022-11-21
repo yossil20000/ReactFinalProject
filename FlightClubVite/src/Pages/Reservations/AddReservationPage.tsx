@@ -1,20 +1,17 @@
-import { Margin, NestCamWiredStandTwoTone } from '@mui/icons-material';
-import { Autocomplete, Box, Button, createTheme, Grid, Paper, Stack, styled, TextField, ThemeProvider, Typography } from '@mui/material'
-import { DateTimePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
+import { Box, Button, createTheme, Grid, Paper, styled, TextField, ThemeProvider, Typography } from '@mui/material'
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
-import React, { useEffect, useState } from 'react'
-import { IDeviceCombo, IFlightReservationProps } from '../../Interfaces/IFlightReservationProps';
+import { useEffect, useState } from 'react'
 import { useFetchMembersComboQuery } from '../../features/Users/userSlice'
-import { IMemberCombo } from '../../Interfaces/IFlightReservationProps'
 import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
-import { useDeleteReservationMutation, useCreateReservationMutation, useFetchAllReservationsQuery } from '../../features/Reservations/reservationsApiSlice'
+import { useCreateReservationMutation, useFetchAllReservationsQuery } from '../../features/Reservations/reservationsApiSlice'
 import IDevice from '../../Interfaces/API/IDevice';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
-import IReservation, { CreateReservationToApi, IReservationCreate, IReservationCreateApi } from '../../Interfaces/API/IReservation';
-import InputCombo, { InputComboItem } from '../../Components/Buttons/InputCombo';
-import ControledCombo from '../../Components/Buttons/ControledCombo';
+import { IReservationCreateApi } from '../../Interfaces/API/IReservation';
+import ControledCombo, { InputComboItem } from '../../Components/Buttons/ControledCombo';
+import { IMemberCombo } from '../../Interfaces/API/IMember';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',

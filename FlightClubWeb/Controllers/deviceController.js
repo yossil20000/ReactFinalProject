@@ -1,6 +1,6 @@
 const log = require('debug-level').log('DeviceController');
 const async = require('async');
-const { body, validationResult } = require('express-validator');
+const { body,param, validationResult } = require('express-validator');
 
 const Device = require('../Models/device');
 const DeviceType = require('../Models/deviceType');
@@ -20,7 +20,16 @@ exports.device_list = function (req, res, next) {
             }
         });
 }
-
+exports.combo = function (req, res, next) {
+    log.info("combo");
+    Device.find()
+        .select('_id device_id engien_meter maintanance')
+        .sort([['device_id', 'ascending']])
+        .exec(function (err, list_combo) {
+            if (err) { return next(err); }
+            res.status(201).json({ success: true, errors: [], data: list_combo });
+        })
+}
 exports.device = function (req, res, next) {
     try{
         Device.findById(req.params._id)
@@ -47,7 +56,7 @@ exports.device_reservation = function (req, res, next) {
             .exec(function (err, results) {
                 if (err) {
                     log.error(err);
-                    res.status(401).json({ success: false,errors: [err], data: [] });
+                    res.status(400).json({ success: false,errors: [err], data: [] });
                     return ;
                 }
                 log.info(results);
@@ -62,7 +71,7 @@ exports.device_reservation = function (req, res, next) {
                 FlightReservation.find().where('_id').in(data).populate('member').exec((err, records) => {
                     log.info(records);
                     if (err) {
-                        res.status(401).json({ success: false, errors:[err], data: records });
+                        res.status(400).json({ success: false, errors:[err], data: records });
                         return
                     }
                     else {
@@ -196,7 +205,7 @@ exports.update = [
                     return res.status(400).json({ success: false, errors: [err.message], message: "Failed To Save", data: newDevice })
                 }
                 if(result){
-                    log.info("notice_create/save/Result", result);
+                    log.info("device/update/Result", result);
                     return res.status(201).json({ success: true, errors: [], data: result })
                 }
             })
@@ -210,6 +219,34 @@ exports.update = [
 
 ]
 
+exports.delete = [
+    param('_id').trim().isLength(24).escape().withMessage('_id'),
+    async function(req,res,next){
+        try{
+            log.info("device/delete/params", req.params);
+            const errors = validationResult(req);
+            if(!errors.isEmpty())
+            {
+                return res.status(400).json({success: false, validation : errors, data: req.body});
+            }
+            Device.deleteOne({_id: req.params._id},(err,result) => {
+                if(err){
+                    return res.status(400).json({ success: false, errors: [err.message], message: "Failed To Save", data: newDevice })
+                }
+                if(result){
+                    log.info("device/delete/Result", result);
+                    return res.status(201).json({ success: true, errors: [], data: result })
+                }
+            })
+            
+        }
+        catch(err){
+            log.error("device/delete/exception", err);
+            res.status(501).json({success: false, errors : [err], data: []});
+        }
+    }
+
+]
 
 
 /// Filtetering via body

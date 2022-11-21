@@ -35,16 +35,15 @@ const StyledAutocompletePopper = styled('div')(({ theme }) => ({
       minHeight: 'auto',
       alignItems: 'flex-start',
       padding: 8,
-      borderBottom: `1px solid  ${
-        theme.palette.mode === 'light' ? ' #eaecef' : '#30363d'
-      }`,
+      borderBottom: `1px solid  ${theme.palette.mode === 'light' ? ' #eaecef' : '#30363d'
+        }`,
       '&[aria-selected="true"]': {
         backgroundColor: 'transparent',
       },
       [`&.${autocompleteClasses.focused}, &.${autocompleteClasses.focused}[aria-selected="true"]`]:
-        {
-          backgroundColor: theme.palette.action.hover,
-        },
+      {
+        backgroundColor: theme.palette.action.hover,
+      },
     },
   },
   [`&.${autocompleteClasses.popperDisablePortal}`]: {
@@ -59,9 +58,8 @@ function PopperComponent(props: PopperComponentProps) {
 
 const StyledPopper = styled(Popper)(({ theme }) => ({
   border: `1px solid ${theme.palette.mode === 'light' ? '#e1e4e8' : '#30363d'}`,
-  boxShadow: `0 8px 24px ${
-    theme.palette.mode === 'light' ? 'rgba(149, 157, 165, 0.2)' : 'rgb(1, 4, 9)'
-  }`,
+  boxShadow: `0 8px 24px ${theme.palette.mode === 'light' ? 'rgba(149, 157, 165, 0.2)' : 'rgb(1, 4, 9)'
+    }`,
   borderRadius: 6,
   width: 300,
   zIndex: theme.zIndex.modal,
@@ -73,9 +71,8 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
 const StyledInput = styled(InputBase)(({ theme }) => ({
   padding: 10,
   width: '100%',
-  borderBottom: `1px solid ${
-    theme.palette.mode === 'light' ? '#eaecef' : '#30363d'
-  }`,
+  borderBottom: `1px solid ${theme.palette.mode === 'light' ? '#eaecef' : '#30363d'
+    }`,
   '& input': {
     borderRadius: 4,
     backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#0d1117',
@@ -84,11 +81,10 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
     border: `1px solid ${theme.palette.mode === 'light' ? '#eaecef' : '#30363d'}`,
     fontSize: 14,
     '&:focus': {
-      boxShadow: `0px 0px 0px 3px ${
-        theme.palette.mode === 'light'
+      boxShadow: `0px 0px 0px 3px ${theme.palette.mode === 'light'
           ? 'rgba(3, 102, 214, 0.3)'
           : 'rgb(12, 45, 107)'
-      }`,
+        }`,
       borderColor: theme.palette.mode === 'light' ? '#0366d6' : '#388bfd',
     },
   },
@@ -115,13 +111,13 @@ const Button = styled(ButtonBase)(({ theme }) => ({
 
 export type MultiOptionComboProps = {
   selectedItems: LabelType[];
-  onSelected : (items : LabelType[],property:string) => void;
+  onSelected: (items: LabelType[], property: string) => void;
   items: LabelType[];
-  label:string;
+  label: string;
   property: string;
 }
-export default function MultiOptionCombo(comboProps : MultiOptionComboProps) {
-  const {items: labels,onSelected,selectedItems,label,property} = comboProps;
+export default function MultiOptionCombo(comboProps: MultiOptionComboProps) {
+  const { items: labels, onSelected, selectedItems, label, property } = comboProps;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [value, setValue] = React.useState<LabelType[]>(selectedItems);
   const [pendingValue, setPendingValue] = React.useState<LabelType[]>([]);
@@ -130,30 +126,30 @@ export default function MultiOptionCombo(comboProps : MultiOptionComboProps) {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setPendingValue(value);
     setAnchorEl(event.currentTarget);
-    
+
   };
-  
+
 
   const handleClose = () => {
     setValue(pendingValue);
-    
+
     if (anchorEl) {
       anchorEl.focus();
     }
     setAnchorEl(null);
-    onSelected(pendingValue,property)
+    onSelected(pendingValue, property)
   };
 
   const open = Boolean(anchorEl);
   const id = open ? 'github-label' : undefined;
- React.useEffect(()=> {
-setValue(selectedItems)
- }, selectedItems)
+  React.useEffect(() => {
+    setValue(selectedItems)
+  }, selectedItems)
   return (
     <React.Fragment>
-      <Box sx={{ width: "100%"}}>
+      <Box sx={{ width: "100%" }}>
         <Button disableRipple aria-describedby={id} onClick={handleClick}>
-          
+
           <Typography sx={{ width: "100%", flexShrink: 1 }}>{label}</Typography>
           <SettingsIcon />
         </Button>
@@ -180,7 +176,7 @@ setValue(selectedItems)
       <StyledPopper id={id} open={open} anchorEl={anchorEl} placement="bottom-start">
         <ClickAwayListener onClickAway={handleClose}>
           <div>
-{/*             <Box
+            {/*             <Box
               sx={{
                 borderBottom: `1px solid ${
                   theme.palette.mode === 'light' ? '#eaecef' : '#30363d'

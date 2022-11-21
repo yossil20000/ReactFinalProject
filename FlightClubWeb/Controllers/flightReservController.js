@@ -16,7 +16,7 @@ exports.reservation = function(req,res,next) {
 	.populate('member')
 	.exec((err,results) => {
 		if(err){
-			return res.status(401).json({success: false, errors : ["FlightReservation Not Exist", err], data: results});	
+			return res.status(400).json({success: false, errors : ["FlightReservation Not Exist", err], data: results});	
 		}
 		else{
 			res.status(201).json({success: true, errors : [], data: results});
@@ -53,7 +53,7 @@ function(err, results){
 	if(results.member == null || results.device == null)
 	{
 		log.info(results);
-		res.status(401).json({success: false, errors : ["Member or Device Not Exist"], data: results});
+		res.status(400).json({success: false, errors : ["Member or Device Not Exist"], data: results});
 		return;
 	}
 
@@ -79,7 +79,7 @@ exports.reservation_delete_m2m= async function(req,res,next){
 		body("device_id").trim().isLength({min:1}).withMessage("device_id must be specified");
 		const errors = validationResult(req);
 		if(!errors.isEmpty()) {
-			return res.status(401).json({success: false, validation : errors, data: []});
+			return res.status(400).json({success: false, validation : errors, data: []});
 		};
 		console.log("reservation_delete/id" , req.body);
 
@@ -106,13 +106,13 @@ exports.reservation_delete= function(req,res,next){
 		body("device_id").trim().isLength({min:1}).withMessage("device_id must be specified");
 		const errors = validationResult(req);
 		if(!errors.isEmpty()) {
-			return res.status(401).json({success: false, validation : errors, data: []});
+			return res.status(400).json({success: false, validation : errors, data: []});
 		};
 		console.log("reservation_delete/id" , req.body);
 		const flight2delete =  FlightReservation.findById(req.body._id,(err,doc) => {
 			if(err){
 				console.log("FlightReservation.findById/err", err);
-				res.status(401).json({success: false, errors:[err], data: results});
+				res.status(400).json({success: false, errors:[err], data: results});
 				return;
 			}
 			if(doc){
@@ -129,13 +129,13 @@ exports.reservation_delete= function(req,res,next){
 		
 				}, function(err,results){
 					if(err){
-						res.status(401).json({success: false, errors:[err], data: results});		
+						res.status(400).json({success: false, errors:[err], data: results});		
 						return;
 					}
 					else{
 						FlightReservation.findByIdAndDelete(req.body._id, (err,doc) => {
 							if(err){
-								res.status(401).json({success: false, errors:[err], data: doc});
+								res.status(400).json({success: false, errors:[err], data: doc});
 							}
 							else{
 								res.status(201).json({success: true, errors:["delete"], data: doc});
@@ -156,7 +156,7 @@ exports.reservation_delete= function(req,res,next){
 	catch(err){
 		log.log(err);
 		return next(err);
-		res.status(401).json({success: false, errors:[err], data: []});
+		res.status(400).json({success: false, errors:[err], data: []});
 	}
 }
 exports.reservation_create =[
@@ -176,13 +176,13 @@ exports.reservation_create =[
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, validation : errors, data: req.body});
+			return res.status(400).json({success: false, validation : errors, data: req.body});
 		}
 		const member = await Member.findById(req.body._id_member).exec();
 		const device = await Device.findById(req.body._id_device).exec();
 		if(member == null || device == null)
 		{
-			res.status(401).json({success: false, errors : ["Member or Device Not Exist"], data: []});
+			res.status(400).json({success: false, errors : ["Member or Device Not Exist"], data: []});
 			return;
 		}
 		let newReservation = new FlightReservation({
@@ -220,7 +220,7 @@ exports.reservation_create =[
 			return;
 		}
 		else{
-			res.status(401).json({success: false, errors : ["Reservation Already Exist"], data: newReservation});
+			res.status(400).json({success: false, errors : ["Reservation Already Exist"], data: newReservation});
 		}
 	}
 	catch(err){
@@ -257,7 +257,7 @@ exports.reservation_create_old = [
 		if(results.member == null || results.device == null)
 		{
 			log.info(results);
-			res.status(401).json({success: false, errors : ["Member or Device Not Exist"], data: results});
+			res.status(400).json({success: false, errors : ["Member or Device Not Exist"], data: results});
 			return;
 		}
 			
@@ -265,7 +265,7 @@ exports.reservation_create_old = [
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, validation : errors, data: req.body});
+			return res.status(400).json({success: false, validation : errors, data: req.body});
 		}
 		let newReservation = new FlightReservation({
 			date_from: req.body.date_from.toUTCString(),
@@ -320,12 +320,12 @@ exports.reservation_update = [
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, validation : errors, data: req.body});
+			return res.status(400).json({success: false, validation : errors, data: req.body});
 		}
 		else{
 			FlightReservation.findOneAndUpdate(req.body._id , {date_from: req.body.date_from, date_to: req.body.date_to},(err,results) => {
 				if(err){
-					return res.status(401).json({success: false, errors:[err], data: req.body});
+					return res.status(400).json({success: false, errors:[err], data: req.body});
 				}
 				else{
 					return res.status(201).json({success: true, errors : [], data: results});

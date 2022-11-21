@@ -1,9 +1,8 @@
 import { Box, Grid } from '@mui/material'
 import { useContext, useState } from 'react';
 import { DevicesContext, DevicesContextType } from '../../../app/Context/DevicesContext';
-import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext';
 import DevicesCombo from '../../../Components/Devices/DevicesCombo';
-import { useCreateDeviceMutation, useUpdateDeviceMutation } from '../../../features/Device/deviceApiSlice'
+import { useCreateDeviceMutation, useDeleteDeviceMutation, useFetchAllDevicesQuery, useUpdateDeviceMutation } from '../../../features/Device/deviceApiSlice'
 import IDevice, { DEVICE_MET, DEVICE_MT, DEVICE_STATUS, IDeviceCreate } from '../../../Interfaces/API/IDevice';
 import { FuelUnits } from '../../../Types/FuelUnits';
 import DeviceTabItem from './DeviceTabItem';
@@ -53,10 +52,11 @@ function DeviceTab() {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
 
   const { selectedItem: selectedDevice, setSelectedItem: setSelectedDevice, devices } = useContext(DevicesContext) as DevicesContextType;
-  const { selectedItem: selectedDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
-
+  
   const [updateDevice] = useUpdateDeviceMutation();
-  const [createDevice] = useCreateDeviceMutation()
+  const [createDevice] = useCreateDeviceMutation();
+  const [deleteDevice] = useDeleteDeviceMutation();
+  const {refetch} = useFetchAllDevicesQuery();
   const onValidationAlertClose = () => {
     setValidationAlert([]);
   }
@@ -71,6 +71,20 @@ function DeviceTab() {
 
     }
 
+  }
+  async function onDelete() : Promise<void> {
+    let payload: any;
+    try{
+      if(selectedDevice?._id){
+        payload = await deleteDevice(selectedDevice._id);
+        refetch();
+        setSelectedDevice(null)
+      }
+    }
+    catch(error){
+      console.error("DeviceTab/OnSave/error", error);
+      setValidationAlert(getValidationFromError(error, onValidationAlertClose));
+    }
   }
   async function onSave(): Promise<void> {
     let payLoad: any;
@@ -88,7 +102,7 @@ function DeviceTab() {
       }
     }
     catch (error) {
-      console.log("DeviceTab/OnSave/error", error);
+      console.error("DeviceTab/OnSave/error", error);
       setValidationAlert(getValidationFromError(error, onValidationAlertClose));
     }
 
@@ -101,6 +115,7 @@ function DeviceTab() {
         setSelectedDevice(newDevice());
         break;
       case EAction.DELETE:
+        onDelete();
         break;
       case EAction.SAVE:
         onSave()
@@ -130,7 +145,7 @@ function DeviceTab() {
         <div className='footer' >
 
           <Box className='yl__action_button' >
-            <ActionButtons OnAction={onAction} />
+            <ActionButtons OnAction={onAction} show={[EAction.DELETE,EAction.SAVE,EAction.ADD]} />
 
           </Box>
           <Grid container>

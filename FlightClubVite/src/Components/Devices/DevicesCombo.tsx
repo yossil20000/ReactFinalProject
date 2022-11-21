@@ -1,16 +1,12 @@
-
 import { useEffect, useState,useId } from 'react'
-import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
+import { useFetchDevicsComboQuery } from '../../features/Device/deviceApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import IDevice from '../../Interfaces/API/IDevice'
+import { IDeviceCombo } from '../../Interfaces/API/IDevice'
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
-
-
 function DevicesCombo(props : ComboProps) {
-  const id = useId();
   const {onChanged,source} = props
-  const { data, isError, isLoading, error } = useFetchAllDevicesQuery();
+  const { data, isError, isLoading, error } = useFetchDevicsComboQuery();
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
   const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`_${source}/Device`,undefined);
@@ -18,7 +14,7 @@ function DevicesCombo(props : ComboProps) {
     console.log("getDeviceDetailed", _id)
     if(_id === undefined)
       return "";
-     const device : IDevice | undefined = data?.data?.find((i) => i._id == _id);
+     const device : IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
      if(device)
      {
       console.log("getDeviceDetailed/dvice",device)
@@ -27,7 +23,7 @@ function DevicesCombo(props : ComboProps) {
       
      return "";
   }
-  const devicesToItemCombo = (input: IDevice): InputComboItem => {
+  const devicesToItemCombo = (input: IDeviceCombo): InputComboItem => {
     return {  lable: input.device_id, _id: input._id,description: getDeviceDetailed(input._id) }
   }
   console.log("DevicesCombo/selectedDevice" , selectedDevice)
@@ -38,7 +34,14 @@ function DevicesCombo(props : ComboProps) {
     console.log("DevicesCombo/ DeviceItem", items)
     if (items !== undefined)
       setDevicesItem(items);
-  }, [data?.data])
+    if(isError){
+        console.log("DeviceTypesCombo/error", error)
+    }
+  }, [data?.data,isError])
+  useEffect(()=> {
+    if(selectedDevice)
+      onChanged(selectedDevice)
+  },[])
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedDevice(item);
     console.log("DevicesCombo/ DeviceItem", item)

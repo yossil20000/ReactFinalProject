@@ -21,6 +21,16 @@ exports.member_list = function (req, res, next) {
             res.status(201).json({ success: true, errors: [], data: list_members });
         })
 }
+exports.combo = function (req, res, next) {
+    log.info("combo");
+    Member.find()
+        .select('family_name _id member_id first_name')
+        .sort([['family_name', 'ascending']])
+        .exec(function (err, list_members) {
+            if (err) { return next(err); }
+            res.status(201).json({ success: true, errors: [], data: list_members });
+        })
+}
 exports.member_detail = function (req, res, next) {
     log.info(`member_detail`);
     Member.findById(req.params.id).select('-username -password')
@@ -43,7 +53,7 @@ exports.member_delete = function (req, res, next) {
         if (err) { return next(err); }
         log.info(results.reservations_member);
         if (results.reservations_member == req.params.memberId) {
-            res.status(401).json({ success: false, errors: ["member has link reservation"], data: results.reservations_member })
+            res.status(400).json({ success: false, errors: ["member has link reservation"], data: results.reservations_member })
             return;
         }
         else {
@@ -67,7 +77,7 @@ exports.member_active = function (req, res, next) {
             results.status = "Suspended";
             results.save(function (err) {
                 if (err) {
-                    res.status(401).json({ success: false, errors: [err], data: [] });
+                    res.status(400).json({ success: false, errors: [err], data: [] });
                 }
                 else {
                     res.status(201).json({ success: true, errors: [], data: results });
@@ -87,10 +97,10 @@ exports.member_update = [
         const errors = validationResult(req);
         log.info(req.body);
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, validation: errors, data: req.body });
+            res.status(400).json({ success: false, validation: errors, data: req.body });
         }
         else if (req.body.username || req.body.password) {
-            res.status(401).json({ success: false, errors: ["username / password not allowed"], data: req.body });
+            res.status(400).json({ success: false, errors: ["username / password not allowed"], data: req.body });
         }
         else {
             async.parallel(
@@ -132,14 +142,14 @@ exports.member_create = [
         const errors = validationResult(req);
         log.info(req.body);
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, validation: errors, data: req.body });
+            res.status(400).json({ success: false, validation: errors, data: req.body });
         }
         else {
             const user = req.body;
             Member.findOne({ "username": user.username }, (err, member) => {
 
                 if (member) {
-                    return res.status(401).json({ success: false, errors: ["username already registered"], message: "email already registered" });
+                    return res.status(400).json({ success: false, errors: ["username already registered"], message: "email already registered" });
                 }
                 else {
                     const member = new Member(
@@ -158,7 +168,7 @@ exports.member_create = [
                     console.log("membertosave", member);
                     member.save((err, result) => {
                         if (err) {
-                            return res.status(401).json({ success: false, errors: [err], message: "Failed To Save", data: member })
+                            return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: member })
                         }
                         if (result) {
                             console.log("membertosave/Result", result);
@@ -168,7 +178,7 @@ exports.member_create = [
                                     console.log("Send Mail to:", user.contact.email);
                                     res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail", data: member })
                                 }).catch((err => {
-                                    res.status(401).json({ success: false, errors: [err], message: "Failed To send Initial passwors to your mail", data: member })
+                                    res.status(400).json({ success: false, errors: [err], message: "Failed To send Initial passwors to your mail", data: member })
                                 }));
                         }
 
@@ -208,7 +218,7 @@ exports.members_flights_reserv = function (req, res, next) {
     }
     catch (err) {
         log.info(err);
-        res.status(401).json({ success: false, errors: [err], data: [] });
+        res.status(400).json({ success: false, errors: [err], data: [] });
     }
 
 }

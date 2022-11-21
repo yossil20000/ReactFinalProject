@@ -8,7 +8,7 @@ exports.membership_list = function(req,res,next){
     Membership.find()
     .exec(function(err,list_memberships) {
         if(err){
-            res.status(401).json({success: false, errors :[err], data: []});
+            res.status(400).json({success: false, errors :[err], data: []});
             return;
         }
         else{

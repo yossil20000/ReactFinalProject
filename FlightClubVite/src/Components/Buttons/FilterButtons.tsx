@@ -23,7 +23,7 @@ const defaultMaterialThem = createTheme({
 
 export default  function FilterButtons(props: EnhancedTableToolbarProps) {
   const { handleAddFlight,isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
-  console.log("isbydateRange", isByDateRange);
+  console.log("FilterButtons/isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
     if (newDate && toDateFilter && newDate <= toDateFilter)

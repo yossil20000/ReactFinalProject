@@ -23,11 +23,11 @@ exports.notice = [
             log.info("club_notice/req", req.params);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(401).json({ success: false, validation: errors, data: req.params });
+                return res.status(400).json({ success: false, validation: errors, data: req.params });
             }
             const notice = await ClubNotice.findById(req.params._id).exec();
             if (notice === null || notice === undefined) {
-                return res.status(401).json({ success: false, errors: ["Notice Not Exist"], data: [] })
+                return res.status(400).json({ success: false, errors: ["Notice Not Exist"], data: [] })
             }
             return res.status(201).json({ success: true, errors: [], data: notice })
         }
@@ -48,7 +48,7 @@ exports.notice_create = [
             log.info("notice_create", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(401).json({ success: false, validation: errors, data: req.body });
+                return res.status(400).json({ success: false, validation: errors, data: req.body });
             }
             const notice = new ClubNotice({
                 title: req.body.title,
@@ -58,7 +58,7 @@ exports.notice_create = [
             })
             notice.save((err,result) => {
                 if(err){
-                    return res.status(401).json({ success: false, errors: [err], message: "Failed To Save", data: notice })
+                    return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: notice })
                 }
                 if(result){
                     log.info("notice_create/save/Result", result);
@@ -83,13 +83,13 @@ exports.notice_update = [
             log.info("notice_update", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(401).json({ success: false, validation: errors, data: req.body });
+                return res.status(400).json({ success: false, validation: errors, data: req.body });
             }
             const notice = await ClubNotice.findByIdAndUpdate(req.body._id,req.body).exec();
             if(notice){
                 return res.status(201).json({ success: true, errors: [], data: notice })
             }
-            return res.status(401).json({ success: false, errors: ["Notice update failed"], data: [] })
+            return res.status(400).json({ success: false, errors: ["Notice update failed"], data: [] })
         }
         catch(error){
             return res.status(501).json({ success: false, errors: [error.message], data: [] })
@@ -104,11 +104,11 @@ exports.notice_delete = [
             log.info("notice_delete/req", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(401).json({ success: false, validation: errors, data: req.body });
+                return res.status(400).json({ success: false, validation: errors, data: req.body });
             }
             const notice = await ClubNotice.findByIdAndDelete(req.body._id).exec();
             if (notice === null || notice === undefined) {
-                return res.status(401).json({ success: false, errors: ["Notice Not Exist"], data: [] })
+                return res.status(400).json({ success: false, errors: ["Notice Not Exist"], data: [] })
             }
             return res.status(201).json({ success: true, errors: [], data: notice })
         }

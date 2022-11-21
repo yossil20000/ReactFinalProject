@@ -18,7 +18,7 @@ exports.flight = function (req, res, next) {
     populate('device').populate('member').
     exec((err, results) => {
       if (err) {
-        return res.status(401).json({ success: false, errors: [err], data: [] })
+        return res.status(400).json({ success: false, errors: [err], data: [] })
       }
       else {
         return res.status(201).json({ success: true, errors: [], data: results })
@@ -32,7 +32,7 @@ exports.flight_list = function (req, res, next) {
     exec((err, results) => {
       if (err) {
         log.info('flight_list', err);
-        return res.status(401).json({ success: false, errors: [err], data: [] })
+        return res.status(400).json({ success: false, errors: [err], data: [] })
       }
       else {
         log.info('flight_list', results);
@@ -80,13 +80,13 @@ exports.flight_update = [
       
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(401).json({ success: false, validation: errors, data: req.body });
+        return res.status(400).json({ success: false, validation: errors, data: req.body });
       }
 
       const flightToUpdate = await Flight.findById(req.body._id).exec();
       if(flightToUpdate == null)
       {
-        return res.status(401).json({ success: false, errors: ["Flight not exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Flight not exist"], data: [] })
       }
 
       
@@ -119,7 +119,7 @@ exports.flight_update = [
             if ( deviceUpdate.acknowledged == false) {
               await session.abortTransaction();
               log.info("trananctionResult/flight update aborted due to Devie/Member update failed");
-              return res.status(401).json({ success: false, errors: ["Flight update aborted due to Devie update failed"], data: [] })
+              return res.status(400).json({ success: false, errors: ["Flight update aborted due to Devie update failed"], data: [] })
             }
           }, transactionOptions);
           if (trananctionResult) {
@@ -128,12 +128,12 @@ exports.flight_update = [
           }
           else {
             log.info("trananctionResult/flight update intentionally aborted");
-            return res.status(401).json({ success: false, errors: ["Flight  update intentionally aborted"], data: [] })
+            return res.status(400).json({ success: false, errors: ["Flight  update intentionally aborted"], data: [] })
           }
         }
         catch (error) {
           log.info("trananctionResult/flight/update error", error);
-          return res.status(401).json({ success: false, errors: [error], data: [] })
+          return res.status(400).json({ success: false, errors: [error], data: [] })
         }
         finally {
           await session.endSession();
@@ -142,7 +142,7 @@ exports.flight_update = [
       }
       else {
         
-        return res.status(401).json({ success: false, errors: ["Flight Already exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Flight Already exist"], data: [] })
       }
 
     }
@@ -192,16 +192,16 @@ exports.flight_create = [
       log.info("flight_create", req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(401).json({ success: false, validation: errors, data: req.body });
+        return res.status(400).json({ success: false, validation: errors, data: req.body });
       }
       const member = await Member.findById(req.body._id_member).exec();
       //log.info("flight/find/member",member,req.body._id_member)
       if (member === null | member === undefined) {
-        return res.status(401).json({ success: false, errors: ["Member Not Exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Member Not Exist"], data: [] })
       }
       const device = await Device.findById(req.body._id_device).exec();
       if (device === null | device === undefined) {
-        return res.status(401).json({ success: false, errors: ["Device Not Exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Device Not Exist"], data: [] })
       }
 
       const maxValues = await deviceMaxValues(req.body._id_device);
@@ -238,7 +238,7 @@ exports.flight_create = [
             if (memeberUpdate.acknowledged == false || deviceUpdate.acknowledged == false) {
               await session.abortTransaction();
               log.info("trananctionResult/flight created aborted due to Devie/Member update failed");
-              return res.status(401).json({ success: false, errors: ["Flight created aborted due to Devie/Member update failed"], data: [] })
+              return res.status(400).json({ success: false, errors: ["Flight created aborted due to Devie/Member update failed"], data: [] })
             }
           }, transactionOptions);
           if (trananctionResult) {
@@ -247,12 +247,12 @@ exports.flight_create = [
           }
           else {
             log.info("trananctionResult/flight created intentionally aborted");
-            return res.status(401).json({ success: false, errors: ["Flight  create intentionally aborted"], data: [] })
+            return res.status(400).json({ success: false, errors: ["Flight  create intentionally aborted"], data: [] })
           }
         }
         catch (error) {
           log.info("trananctionResult/flight error", error);
-          return res.status(401).json({ success: false, errors: [error], data: [] })
+          return res.status(400).json({ success: false, errors: [error], data: [] })
         }
         finally {
           await session.endSession();
@@ -261,7 +261,7 @@ exports.flight_create = [
       }
       else {
         log.info("Flight Already exist")
-        return res.status(401).json({ success: false, errors: ["Flight Already exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Flight Already exist"], data: [] })
       }
 
     }
@@ -279,21 +279,21 @@ exports.flight_delete = [
     const session = await mongoose.startSession();
     try {
       if (!errors.isEmpty()) {
-        return res.status(401).json({ success: false, validation: errors, data: req.body });
+        return res.status(400).json({ success: false, validation: errors, data: req.body });
       }
       const flight = await Flight.findById(req.body._id).exec();
       if(flight == null){
-        return res.status(401).json({ success: false, errors: ["Flight  delete Not exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Flight  delete Not exist"], data: [] })
       }
 
   /*     const member = await Member.findById(flight.member._id).exec();
       //log.info("flight/find/member",member,req.body.member_id)
       if (member === null | member === undefined) {
-        return res.status(401).json({ success: false, errors: ["Member Not Exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Member Not Exist"], data: [] })
       }
       const device = await Device.findById(req.body.device_id).exec();
       if (device === null | device === undefined) {
-        return res.status(401).json({ success: false, errors: ["Device Not Exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Device Not Exist"], data: [] })
       } */
  
       
@@ -304,7 +304,7 @@ exports.flight_delete = [
         if (memberUpdate.acknowledged == false || deviceUpdate.acknowledged == false) {
           await session.abortTransaction();
           log.info("trananctionResult/flight delete aborted due to Devie/Member update failed");
-          return res.status(401).json({ success: false, errors: ["Flight delete aborted due to Devie/Member update failed"], data: [] })
+          return res.status(400).json({ success: false, errors: ["Flight delete aborted due to Devie/Member update failed"], data: [] })
         }
       },transactionOptions);
       if (trananctionResult) {
@@ -313,13 +313,13 @@ exports.flight_delete = [
       }
       else {
         log.info("trananctionResult/flight delete intentionally aborted");
-        return res.status(401).json({ success: false, errors: ["Flight  delete intentionally aborted"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Flight  delete intentionally aborted"], data: [] })
       }
 
     }
     catch (error) {
       log.info("trananctionResult/flight delete", error);
-      return res.status(401).json({ success: false, errors: [error], data: [] })
+      return res.status(400).json({ success: false, errors: [error], data: [] })
     }
     finally {
       await session.endSession();

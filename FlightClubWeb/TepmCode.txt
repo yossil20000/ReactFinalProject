@@ -43,7 +43,7 @@ exports.reservation_create = [
 		if(results.member == null || results.device == null)
 		{
 			
-			res.status(401).json({success: false, errors : ["Member or Device Not Exist"], data: results});
+			res.status(400).json({success: false, errors : ["Member or Device Not Exist"], data: results});
 			return;
 		}
 		log.info("parallael", results.founded);
@@ -51,7 +51,7 @@ exports.reservation_create = [
 		const errors = validationResult(req);
 		if(!errors.isEmpty())
 		{
-			return res.status(401).json({success: false, errors : errors, data: req.body});
+			return res.status(400).json({success: false, errors : errors, data: req.body});
 		}
 		let newReservation = new FlightReservation({
 			data_from: req.body.date_from.toUTCString(),
@@ -88,5 +88,5 @@ exports.reservation_create = [
  const flightToUpdate = await Flight.findById(req.body._id);
       if(flightToUpdate == null)
       {
-        return res.status(401).json({ success: false, errors: ["Flight Already exist"], data: [] })
+        return res.status(400).json({ success: false, errors: ["Flight Already exist"], data: [] })
       }

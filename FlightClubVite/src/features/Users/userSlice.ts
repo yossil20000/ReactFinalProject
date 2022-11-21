@@ -4,9 +4,9 @@ import {URLS} from '../../Enums/Routers';
 import IClubNotice from "../../Interfaces/API/IClubNotice";
 import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
-import { IMemberCombo } from "../../Interfaces/IFlightReservationProps";
 import IMemberUpdate from "../../Interfaces/IMemberInfo";
 import IMemberCreate from "../../Interfaces/IMemberCreate";
+import { IMemberAdmin, IMemberCombo } from "../../Interfaces/API/IMember";
 
 
 interface Role {
@@ -117,6 +117,12 @@ export const apiSlice = createApi({
             }),
             fetchMembersCombo : builder.query<IResultBase<IMemberCombo>,void>({
                 query: () => ({
+                    url: `/${URLS.MEMBERS_COMBO}`,
+                    method: "GET"
+                })
+            }),
+            fetchMembersAdmin : builder.query<IResultBase<IMemberAdmin>,void>({
+                query: () => ({
                     url: `/${URLS.MEMBERS}`,
                     method: "GET"
                 })
@@ -132,7 +138,8 @@ export const {
     useDeleteMemberMutation, 
     useCreateMemberMutation,
     useUpdateMemberMutation,
-    useFetchMembersComboQuery
+    useFetchMembersComboQuery,
+    useFetchMembersAdminQuery
  } = apiSlice
 
 

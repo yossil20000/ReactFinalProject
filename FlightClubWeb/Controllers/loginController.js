@@ -62,7 +62,7 @@ exports.signin = function (req, res, next) {
                 else {
                     console.info(`${email}  Access Denied ElseIf`)
                     log.info(member);
-                    return res.status(401).json({
+                    return res.status(400).json({
                         success: false,
                         errors: ["Accss Denied"],
                         message: "Access Denied"
@@ -72,7 +72,7 @@ exports.signin = function (req, res, next) {
             })
         }
         else {
-            return res.status(401).json({ success: false, errors: ["Access Denied"], message: "Access Denied" });
+            return res.status(400).json({ success: false, errors: ["Access Denied"], message: "Access Denied" });
         }
 
     })
@@ -87,7 +87,7 @@ exports.reset = function (req, res, next) {
     Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
         if (err) {
             console.info(`${email} Not Found ${err}`)
-            return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
+            return res.status(400).json({ success: false, errors: [err], message: `${email} Not Found` });
         }
         if (member) {
             log.info(`phone: ${member.code_area_phone}`)
@@ -96,7 +96,7 @@ exports.reset = function (req, res, next) {
             member.updateOne({ password: member.password }).exec((err, result) => {
                 if (err) {
                     console.log("Update Mail Failed", err);
-                    return res.status(401).json({ success: false, errors: err, message: password, data: { newPassword: "" } });
+                    return res.status(400).json({ success: false, errors: err, message: password, data: { newPassword: "" } });
                 }
                 else if (result) {
                     console.log("result", result)
@@ -125,7 +125,7 @@ exports.reset = function (req, res, next) {
         }
 
         else {
-            return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
+            return res.status(400).json({ success: false, errors: [err], message: `${email} Not Found` });
         }
     })
 }
@@ -150,7 +150,7 @@ exports.change_password = function (req, res, next) {
         Member.findOne({ username: username }, (err, member) => {
             if (err) {
                 console.info(`${email} Not Found ${err}`)
-                return res.status(401).json({ success: false, errors: [err], message: `${email} Not Found` });
+                return res.status(400).json({ success: false, errors: [err], message: `${email} Not Found` });
             }
     
             if (member) {
@@ -161,7 +161,7 @@ exports.change_password = function (req, res, next) {
                         member.updateOne({ password: member.password }).exec((err, result) => {
                             if (err) {
                                 console.log("Update Mail Failed", err);
-                                return res.status(401).json({ success: false, errors: err, message: [err], data: { newPassword: "" } });
+                                return res.status(400).json({ success: false, errors: err, message: [err], data: { newPassword: "" } });
                             }
                             else if (result) {
                                 console.log("result", result)
@@ -188,21 +188,21 @@ exports.change_password = function (req, res, next) {
                         })
                     }
                     else if (err) {
-                        return res.status(401).json({ success: false, errors: [err] });
+                        return res.status(400).json({ success: false, errors: [err] });
                     }
                     else {
-                        return res.status(401).json({ success: false, errors: ["Unknown error"] });
+                        return res.status(400).json({ success: false, errors: ["Unknown error"] });
                     }
                 })
             }
             else {
-                return res.status(401).json({ success: false, errors: [err], message: `${member} Not Found` });
+                return res.status(400).json({ success: false, errors: [err], message: `${member} Not Found` });
             }
         })
 
     }
     catch(error){
-        return res.status(401).json({ success: false, errors: [error.message] });
+        return res.status(400).json({ success: false, errors: [error.message] });
     }
     
 
@@ -216,10 +216,10 @@ exports.register = function (req, res, next) {
             Member.findOne({ "contact.email": user.contact.email }, (err, member) => {
 
                 if (err) {
-                    return res.status(401).json({ success: false, errors: [err], message: `Member Found Error` });
+                    return res.status(400).json({ success: false, errors: [err], message: `Member Found Error` });
                 }
                 if (member)
-                    return res.status(401).json({ success: false, errors: [], message: `${user.contact.email}  Already Register` });
+                    return res.status(400).json({ success: false, errors: [], message: `${user.contact.email}  Already Register` });
                 else {
                     next();
                 }

@@ -1,10 +1,9 @@
-import React, { createContext, useMemo, useState } from 'react'
-import { ColorModeContext, useMode } from "../../theme"
-import { Box, Button, createTheme, CssBaseline, PaletteMode, Paper, Theme, ThemeProvider } from '@mui/material'
+import React, { useMemo, useState } from 'react'
+import { useMode } from "../../theme"
+import { Box, createTheme, CssBaseline, PaletteMode, Paper } from '@mui/material'
 import { amber, grey, deepOrange, red, blue } from '@mui/material/colors';
 import ScrollableTabs, { ScrollableTabsItem } from '../../Components/Buttons/ScrollableTabs';
 import DeviceTab from './Devices/DeviceTab';
-import DevicesCombo from '../../Components/Devices/DevicesCombo';
 import DeviceTypeTab from './DeviceType/DeviceTypeTab';
 import { DevicesContext } from '../../app/Context/DevicesContext';
 import { DeviceTypesContext } from '../../app/Context/DeviceTypesContext';
@@ -14,9 +13,9 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import IDevice from '../../Interfaces/API/IDevice';
 import IDeviceType from '../../Interfaces/API/IDeviceType';
 import MemberTab from './Members/MemberTab';
-import { useFetchMembersComboQuery } from '../../features/Users/userSlice';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+import { useFetchMembersAdminQuery, useFetchMembersComboQuery } from '../../features/Users/userSlice';
+import { MembersContext } from '../../app/Context/MemberContext';
+import { IMemberAdmin } from '../../Interfaces/API/IMember';
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
@@ -62,11 +61,13 @@ function AdminPage() {
   const [value, setValue] = React.useState(0);
   const [mode, setMode] = useState<PaletteMode>('light');
   const { data: devices, isError, isLoading, isSuccess, error } = useFetchAllDevicesQuery();
+  const { data: members} = useFetchMembersAdminQuery();
   const { data: membersCombo  } = useFetchMembersComboQuery();
   const { data: deviceTypes } = useFetchAllDeviceTypesQuery();
   const [selectedDevice, setSelectedDevice] = useLocalStorage<IDevice | null | undefined>("_admin/selectedDevice", null);
   const [selectedDeviceTypes, setSelectedDeviceTypes] = useLocalStorage<IDeviceType | null | undefined>("_admin/selectedDeviceType", null);
-  
+  const [selectedMember,setSelectedMember] =useLocalStorage<IMemberAdmin | null>("_admin/selectedMember", null);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
     console.log("AdminPage/newValue", newValue)
@@ -110,7 +111,7 @@ function AdminPage() {
       <div className='main' style={{ overflow: 'auto' ,position:'relative'}}>
         <DevicesContext.Provider value={{ devices: devices?.data, selectedItem: selectedDevice, setSelectedItem: setSelectedDevice ,membersCombo: membersCombo?.data}}>
           <DeviceTypesContext.Provider value={{ deviceTypes: deviceTypes?.data, selectedItem: selectedDeviceTypes, setSelectedItem: setSelectedDeviceTypes }}>
-          
+          <MembersContext.Provider value={{selectedItem:selectedMember,setSelectedItem:setSelectedMember,members: members?.data}}>
             <Box height={"100%"} sx={{backgroundColor: "white"}}>
             <Paper style={{height: "100%"}}>
               {value === 0 && <DeviceTab />}
@@ -118,7 +119,7 @@ function AdminPage() {
               {value === 2 && (<MemberTab/>)}
             </Paper>
             </Box>
-            
+            </MembersContext.Provider>
           </DeviceTypesContext.Provider>
         </DevicesContext.Provider>
 

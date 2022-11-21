@@ -31,7 +31,7 @@ exports.deviceType_delete = function (req, res, next) {
     Device.find({ device_type: req.params._id }).exec((err, results) => {
         if (err) { return next(err); }
         else if (results === null) {
-            res.status(401).json({ success: false, errors: ["Remove Device before Delete"], data: results });
+            res.status(400).json({ success: false, errors: ["Remove Device before Delete"], data: results });
             return;
         }
         DeviceType.findByIdAndDelete(req.params._id).exec((err, results) => {
@@ -54,17 +54,17 @@ exports.deviceType_update = [
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, validation: errors, data: req.body });
+            res.status(400).json({ success: false, validation: errors, data: req.body });
             return;
         }
         else {
             DeviceType.findById(req.body._id, (err, results) => {
                 if (err  ) {
-                    res.status(401).json({ success: false, errors:[err], data: [] });
+                    res.status(400).json({ success: false, errors:[err], data: [] });
                     return;
                 }
                 if(!results){
-                    res.status(401).json({ success: false, errors: [`Can find _id`], data: [] });
+                    res.status(400).json({ success: false, errors: [`Can find _id`], data: [] });
                     return;
                 }
                 results.name = req.body.name;
@@ -92,7 +92,7 @@ exports.deviceType_create = [
         log.info(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            res.status(401).json({ success: false, validation: errors, data: req.body });
+            res.status(400).json({ success: false, validation: errors, data: req.body });
             return;
         }
         else {
@@ -107,7 +107,7 @@ exports.deviceType_create = [
             })
             newDeviceType.save((err, result) => {
                 if (err) { return next(err); }
-                res.status(401).json({ success: true, errors:[err], data: result });
+                res.status(400).json({ success: true, errors:[err], data: result });
                 return;
             });
         }

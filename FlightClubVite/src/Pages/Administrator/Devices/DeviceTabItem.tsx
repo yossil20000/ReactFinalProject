@@ -1,8 +1,8 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import IDevice, { DEVICE_INS } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { setProperty } from '../../../Utils/setProperty'
+import { getSelectedItem, setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
@@ -10,13 +10,13 @@ import DeviceStatusCombo from '../../../Components/Devices/DeviceStatusCombo'
 import DeviceMTCombo from '../../../Components/Devices/DeviceMTCombo'
 import DeviceFuelUnitCombo from '../../../Components/Devices/DeviceFuelUnitCombo'
 import { LabelType } from '../../../Components/Buttons/MultiOptionCombo';
-import DeviceTypesCombo from '../../../Components/Devices/DeviceTypesCombo';
+import DeviceTypesCombo, { deviceTypeToItemCombo } from '../../../Components/Devices/DeviceTypesCombo';
 import { DevicesContext, DevicesContextType } from '../../../app/Context/DevicesContext';
 import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext';
 import MultiOptionCombo from '../../../Components/Buttons/MultiOptionCombo';
 import MUISelect from '../../../Components/Buttons/MUISelect';
-import { CRUDActions } from '../../../Types/ItemsProps';
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
+import IDeviceType from '../../../Interfaces/API/IDeviceType';
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
   const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
@@ -47,14 +47,14 @@ function DeviceTabItem() {
   const { setSelectedItem, selectedItem ,membersCombo} = useContext(DevicesContext) as DevicesContextType;
   const { selectedItem: selectdDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
  
-  const memberCanReserve = () : (LabelType[] ) => {
+  const memberCanReserve = useCallback(() : (LabelType[] ) => {
       const labels : (LabelType[] | undefined) = membersCombo?.map((item) => ({_id: item._id,name: `${item.family_name} ${item.member_id}`, description: "", color: '#fff'} ));
       console.log("memberCanReserve/labels",labels)
       if(labels === undefined || labels === null)
         return []
       return labels;
-  }
-  memberCanReserve()
+  },[membersCombo])
+
   console.log("DeviceTabItem/deviceItem.current", selectedItem?.description);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
@@ -147,14 +147,15 @@ function DeviceTabItem() {
     }
 
   }
-  const getSelectedItem = (property: any) : InputComboItem => {
+
+/*   const getSelectedItem = (property: any) : InputComboItem => {
     const prop : string = selectedItem?[property].toString() : "";
     const selected : InputComboItem = {
       lable: selectedItem?[property].toString() : "",
       _id: "",
       description: ""}
       return selected;
-  }
+  } */
     return (
     <>
       <Accordion  >
@@ -172,10 +173,11 @@ function DeviceTabItem() {
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 4 }}>
 
           <Grid item xs={1} >
-              <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source} />
+              <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source} selectedItem={deviceTypeToItemCombo(selectedItem?.device_type)} />
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth={true} onChange={handleChange} id="device_id" name="device_id"
+                
                 label="Device Id" placeholder="4xcgc" variant="standard"
                 value={selectedItem?.device_id} required
                 helperText="" error={false} />

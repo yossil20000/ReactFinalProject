@@ -45,6 +45,18 @@ export interface IMemberBase {
         email: string
     }
 }
+export interface IMemberAdmin  extends IMemberBase{
+    _id:string
+    status: Status
+    member_type: MemberType
+    role: {
+        roles: Role[]
+    };
+    date_of_birth: Date
+    date_of_join: Date
+    date_of_leave: Date | null
+    membership: IMembership
+}
 export default interface IMember  extends IMemberBase{
     _id:string
     status: Status
@@ -62,3 +74,9 @@ export default interface IMember  extends IMemberBase{
     flight_reserv: IFlightReservation
 
 }
+export interface IMemberCombo{
+    _id:string;
+    member_id: string;
+    family_name: string;
+    first_name: string;
+  }

@@ -6,7 +6,7 @@ import { IMemberCombo } from '../../Interfaces/API/IMember';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
 
-function MembersCombo(props : ComboProps) {
+function MembershipCombo(props : ComboProps) {
   const {onChanged,source} = props;
   const { data, isError, isLoading, error } = useFetchMembersComboQuery();
   
@@ -19,10 +19,10 @@ function MembersCombo(props : ComboProps) {
   }
   
   useEffect(() => {
-    console.log("MembersCombo/ data", data?.data)
+    console.log("MembershipCombo/ data", data?.data)
     
     let items  =   data?.data.map((item) => devicesToItemCombo(item));
-    console.log("MembersCombo/ Item", items)
+    console.log("MembershipCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
   }, [data?.data])
@@ -41,4 +41,4 @@ function MembersCombo(props : ComboProps) {
   )
 }
 
-export default MembersCombo
+export default MembershipCombo

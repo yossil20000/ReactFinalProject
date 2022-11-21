@@ -77,3 +77,12 @@ export default interface IDevice extends IDeviceBase {
     flight_reservs: IFlightReservation[]
 
 }
+export interface IDeviceCombo {
+    _id:string;
+    device_id: string;
+    engien_meter: number;
+    maintanance: {
+        type : DEVICE_MT
+        next_meter: number
+    } 
+  }

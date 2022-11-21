@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 export interface ComboProps {
   onChanged: (item: InputComboItem) => void;
   source: string;
+  selectedItem?: InputComboItem;
 }
 export interface StateComboProps {
   onChanged: (item: InputComboItem) => void;
