@@ -15,7 +15,7 @@ const SetProperty = (obj: any, path: string, value: any): any => {
   console.log("SetProperty/newobj", newObj)
   return newObj;
 }
-function Addreses() {
+function AddresesTab() {
 
   const { setSelectedItem, selectedItem, members } = useContext(MembersContext) as MembersContextType;
   const { membersCombo } = useContext(DevicesContext) as DevicesContextType;
@@ -203,4 +203,4 @@ function Addreses() {
   )
 }
 
-export default Addreses
+export default AddresesTab

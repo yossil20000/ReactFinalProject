@@ -1,4 +1,4 @@
-import { Box, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField, Typography } from '@mui/material';
 import { useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
@@ -43,7 +43,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 ,width:"100%"}}>
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -110,20 +110,20 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
           </Item>
         </Grid>
         <Grid item xs={6}>
-          <Item><button
+          <Item><Button sx={{ width: "90%", margin: "auto" }}
             onClick={() => {
               setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
             }}>
             Previous
-          </button></Item>
+          </Button></Item>
         </Grid>
         <Grid item xs={6}>
-          <Item><button
+          <Item><Button sx={{ width: "90%", margin: "auto" }}
             onClick={() => {
               setPage(page + 1 == numPage ? 0 : page + 1);
             }}>
             Next
-          </button></Item>
+          </Button></Item>
         </Grid>
       </Grid>
     </Box>

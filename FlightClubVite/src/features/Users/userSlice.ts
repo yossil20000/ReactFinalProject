@@ -6,7 +6,7 @@ import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import IMemberUpdate from "../../Interfaces/IMemberInfo";
 import IMemberCreate from "../../Interfaces/IMemberCreate";
-import { IMemberAdmin, IMemberCombo } from "../../Interfaces/API/IMember";
+import { IMemberAdmin, IMemberCombo, IMemberStatus, Status } from "../../Interfaces/API/IMember";
 
 
 interface Role {
@@ -14,6 +14,7 @@ interface Role {
     "account": string;
 }
 export interface Member {
+    "status": Status,
     "contact": {
         "billing_address": {
             "line1": string;
@@ -126,7 +127,16 @@ export const apiSlice = createApi({
                     url: `/${URLS.MEMBERS}`,
                     method: "GET"
                 })
-            })
+            }),
+            updateStatus: builder.mutation<IResultBaseSingle<IMemberInfo>,IMemberStatus>({
+                query: (status) => ({
+                    url: `/${URLS.MEMBERS_STATUS}`,
+                    method: "PUT",
+                    body:status,
+
+                }),
+                invalidatesTags: ["Members"]
+            }),
         }
     }
 });
@@ -139,7 +149,8 @@ export const {
     useCreateMemberMutation,
     useUpdateMemberMutation,
     useFetchMembersComboQuery,
-    useFetchMembersAdminQuery
+    useFetchMembersAdminQuery,
+    useUpdateStatusMutation
  } = apiSlice
 
 

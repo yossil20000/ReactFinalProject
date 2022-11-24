@@ -8,6 +8,7 @@ import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "
 import { useUpdateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightUpdate, IFlightUpdate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import { IValidation } from "../../Interfaces/IValidation";
+import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 
 
 export interface UpdateFlightDialogProps {
@@ -54,6 +55,9 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
 
     }
     if (isError) {
+      const validation = getValidationFromError(error,handleOnCancel);
+      setValidationAlert(validation);
+      return;
       if ((error as any).data.errors !== undefined) {
         if (Array.isArray((error as any).data.errors)) {
           (error as any).data.errors.forEach((element: any) => {

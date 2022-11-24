@@ -1,26 +1,13 @@
 import { Grid, TextField } from "@mui/material"
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { DevicesContext, DevicesContextType } from "../../../app/Context/DevicesContext";
 import { MembersContext, MembersContextType } from "../../../app/Context/MemberContext";
-import { EAction } from "../../../Components/Buttons/ActionButtons";
-import CheckSelect from "../../../Components/Buttons/CheckSelect";
 import { InputComboItem } from "../../../Components/Buttons/ControledCombo"
 import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
-import { IValidationAlertProps } from "../../../Components/Buttons/TransitionAlert";
-import MembersCombo from "../../../Components/Members/MembersCombo"
-import StatusCombo from "../../../Components/Members/StatusCombo";
-import MemberRoleCombo from "../../../Components/Members/StatusCombo";
-import { useFetchAllDevicesQuery } from "../../../features/Device/deviceApiSlice";
-import { useCreateMemberMutation, useDeleteMemberMutation, useUpdateMemberMutation } from "../../../features/Users/userSlice";
-import IMember, { IMemberAdmin, MemberType, Role, Status } from "../../../Interfaces/API/IMember";
-import { NewMembership } from "../../../Interfaces/API/IMembership";
-import IMemberCreate from "../../../Interfaces/IMemberCreate";
-import IMemberUpdate from "../../../Interfaces/IMemberInfo";
-import { getValidationFromError } from "../../../Utils/apiValidation.Parser";
-import { Enum2ComboItem } from "../../../Utils/enums";
-import { getSelectedItem, setProperty } from "../../../Utils/setProperty";
+import { IMemberAdmin,  Role } from "../../../Interfaces/API/IMember";
+import { setProperty } from "../../../Utils/setProperty";
 const source = "admin/member/general"
 
 const SetProperty = (obj: any, path: string, value: any): any => {
@@ -29,11 +16,11 @@ const SetProperty = (obj: any, path: string, value: any): any => {
   console.log("SetProperty/newobj", newObj)
   return newObj;
 }
-function Permissions() {
-
-  const { setSelectedItem, selectedItem, members } = useContext(MembersContext) as MembersContextType;
-  const { membersCombo } = useContext(DevicesContext) as DevicesContextType;
-
+function GeneralTab() {
+  
+  const { setSelectedItem, selectedItem,members } = useContext(MembersContext) as MembersContextType;
+  const { membersCombo} = useContext(DevicesContext) as DevicesContextType;
+  
 
   const handleTimeChange = (newValue: Date | null | undefined, name: string) => {
     console.log(`handleTimeChange/newValue , key`, newValue, name);
@@ -89,33 +76,31 @@ function Permissions() {
   return (
     <>
       <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} alignContent={'start'}>
-        <Grid item xs={12}>
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <MobileDatePicker
-              label="Date of join"
-              value={selectedItem?.date_of_join === null ? new Date() : selectedItem?.date_of_join}
-              onChange={(newValue) => handleTimeChange(newValue, "date_of_join")}
-              renderInput={(params) => <TextField {...params} fullWidth={true} />}
-            />
-          </LocalizationProvider>
-        </Grid>
-          <Grid item xs={12}>
-            <LocalizationProvider dateAdapter={AdapterLuxon}>
-              <MobileDatePicker
-                label="Date of leave"
-                value={selectedItem?.date_of_leave === null ? new Date() : selectedItem?.date_of_leave}
-                onChange={(newValue) => handleTimeChange(newValue, "date_of_leave")}
-                renderInput={(params) => <TextField {...params} fullWidth={true} />}
-              />
-            </LocalizationProvider>
-          </Grid>
         <Grid item xs={12} sm={6}>
-          <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={getSelectedItem(selectedItem?.status.toString())} />
+          <TextField  onChange={handleChange} name="first_name" fullWidth value={selectedItem?.first_name} variant={"standard"}  label={"First Name"}/>
         </Grid>
-        <Grid item xs={12} sm={12}>
-
-          <CheckSelect selectedItems={getSelectedRoles()} items={labelsFromRole()} onSelected={onRoleChanged} label={"Roles"} property={'role.roles'} />
+        <Grid item xs={12} sm={6}>
+          <TextField onChange={handleChange} name="family_name" fullWidth value={selectedItem?.family_name} variant={"standard"}  label={"Famaily Name"}/>
         </Grid>
+        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
+              <LocalizationProvider dateAdapter={AdapterLuxon}>
+                <MobileDatePicker
+                  label="Date Of Birth"
+                  value={selectedItem?.date_of_birth === null ? new Date() : selectedItem?.date_of_birth}
+                  onChange={(newValue) => handleTimeChange(newValue, "date_of_birth")}
+                  renderInput={(params) => <TextField {...params} fullWidth={true} />}
+                />
+              </LocalizationProvider>
+            </Grid>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"}  label={"Member Id"}/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact.email} variant={"standard"}  label={"email"}/>
+        </Grid>
+        
 
 
       </Grid>
@@ -123,4 +108,4 @@ function Permissions() {
   )
 }
 
-export default Permissions
+export default GeneralTab

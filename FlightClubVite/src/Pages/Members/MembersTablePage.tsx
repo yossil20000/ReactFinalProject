@@ -19,13 +19,14 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { useFetcAllMembersQuery, useFetchAllClubNoticeQuery,useDeleteMemberMutation } from '../../features/Users/userSlice'
 import { useAppSelector } from '../../app/hooks'
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
+import { Status } from '../../Interfaces/API/IMember';
 
 interface ItableData {
-  _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string,validOperation: CanDo
+  _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string,validOperation: CanDo,status: Status
 }
 
-function createdata(_id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string, validOperation: CanDo): ItableData {
-  return { _id, member_id, family_name, first_name, email, phone,validOperation } as ItableData
+function createdata(_id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string, validOperation: CanDo,status:Status): ItableData {
+  return { _id, member_id, family_name, first_name, email, phone,validOperation,status } as ItableData
 }
 
 
@@ -101,7 +102,7 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
           <TableCell
           
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'center'}
+            align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}>
             <TableSortLabel
@@ -118,12 +119,6 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-                <TableCell>
-
-</TableCell>
-<TableCell>
-
-</TableCell>
       </TableRow>
     </TableHead>
 
@@ -227,7 +222,7 @@ function MembersTablePage() {
   useEffect(() => {
 
     let rows = members?.data.map((item) => {
-      return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`,GeneralCanDo(item._id, login.member._id, login.member.roles))
+      return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`,GeneralCanDo(item._id, login.member._id, login.member.roles),item.status)
     })
     console.log('UseEffect/rows/be', rows)
     if (rows === undefined) {
@@ -377,8 +372,8 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                             <TableCell align="left">{row.first_name}</TableCell>
                             <TableCell align="left">{row.email}</TableCell>
                             <TableCell align="left">{row.phone}</TableCell>
-                            <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}</TableCell>
-                            <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}</TableCell>
+                            {/* <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}</TableCell>
+                            <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>{row.status === Status.Active ? "Susspend" : "Activate"}</Button> : null}</TableCell> */}
                           </TableRow>
                         );
                       })}

@@ -116,7 +116,7 @@ const FlightPage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { isLoading, isError, isSuccess, error, data: flights, refetch } = useGetAllFlightsQuery();
+  const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery();
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login.member._id, login.member.roles)))
   }
@@ -160,18 +160,18 @@ const FlightPage = () => {
     )
   }
 
-  const handleRequestSort = useCallback((event: React.MouseEvent<unknown>, property: keyof IFlightData) => {
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof IFlightData) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  },[orderBy,order])
+  }
 
 
-  const handleChange = useCallback((panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+  const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
       setExpanded(newExpanded ? panel : false);
-    },[]);
+    };
 
-  const handleDeleteClick = useCallback(async (event: React.MouseEvent<unknown>, _id: string) => {
+  const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     const flightDelete: IFlightDeleteApi = {
       _id: _id
     }
@@ -188,11 +188,11 @@ const FlightPage = () => {
     catch (err) {
       console.log("DeleteFlight/err", err)
     }
-  },[])
-  const handleFilterOwner = useCallback(() => {
+  }
+  const handleFilterOwner = () => {
     setIsFilterOwner(!isFilterOwner);
-  },[])
-  const handleFilterClick = useCallback((selectedIndex: number): number => {
+  }
+  const handleFilterClick = (selectedIndex: number): number => {
     /* console.log("handleFilterClick", selectedIndex); */
     if (selectedIndex == 3)
       setIsByDateRange(true);
@@ -201,7 +201,7 @@ const FlightPage = () => {
     setFilterByDate(selectedIndex);
     /* console.log("handleFilterClick", selectedIndex, isByDateRange); */
     return selectedIndex;
-  },[])
+  }
   const isInDateRange = (row: IFlightData): boolean => {
     console.log("isInDateRange/filterBydate", filterBydate)
     switch (filterBydate) {
@@ -218,14 +218,14 @@ const FlightPage = () => {
     }
     return true;
   }
-  const handleChangePage = useCallback((event: unknown, newPage: number) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
-  },[]);
+  }
 
-  const handleChangeRowsPerPage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  },[]);
+  }
   function fillFlightUpdate(id: string) {
     const flight = flightsData.filter(item => item._id === id)
     if (flight.length === 1) {
@@ -244,34 +244,33 @@ const FlightPage = () => {
     }
   }
 
-  const handleUpdateOnSave = useCallback((value: IFlightUpdate) => {
+  const handleUpdateOnSave = () => {
     refetch();
     setOpenFlightUpdate(false);
     /* console.log("FlightPage/handleOnSave/value", value); */
-  },[])
-  const handleEditClick = useCallback( async (event: React.MouseEvent<unknown>, _id: string) => {
+  }
+  const handleEditClick =  async (event: React.MouseEvent<unknown>, _id: string) => {
     fillFlightUpdate(_id);
     setOpenFlightUpdate(true);
-  },[])
-  const handleUpdateOnClose = useCallback(() => {
+  }
+  const handleUpdateOnClose = () => {
     setOpenFlightUpdate(false);
-  },[])
+  }
 
-  const handleAddClick = useCallback(async (event: React.MouseEvent<unknown>) => { 
+  const handleAddClick = async () => { 
     setOpenFlightAdd(true);
-},[])
-  const handleAddOnSave = useCallback((value: IFlightCreate) => {
+}
+  const handleAddOnSave = (value: IFlightCreate) => {
     refetch();
     setOpenFlightAdd(false);
     console.log("FlightPage/handleAddOnSave/value", value);
 
-  },[])
+  }
 
-  const handleAddOnClose = useCallback(() => {
+  const handleAddOnClose = () => {
     setOpenFlightAdd(false);
-  },[])
-  const getFilteredDataMemo = useMemo<IFlightData[]>(() => getFilteredData(),
-  [flightsData,isFilterOwner,page,rowsPerPage,filterBydate,order,orderBy])
+  }
+  const getFilteredDataMemo =  getFilteredData()
   return (
     <>
       <div className='header'><Typography variant="h6" align="center">Flight Page</Typography></div>

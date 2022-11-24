@@ -4,7 +4,7 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { InputComboItem } from "../../Components/Buttons/InputCombo";
+import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
@@ -12,6 +12,7 @@ import { useCreateReservationMutation } from "../../features/Reservations/reserv
 import { IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { IReservationCreateApi } from "../../Interfaces/API/IReservation";
 import { IValidation } from "../../Interfaces/IValidation";
+import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 const source: string = "CreateReservation"
 
 export interface CreateReservationDialogProps {
@@ -54,6 +55,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
 
     }
     if (isError) {
+      const validation = getValidationFromError(error,handleOnCancel);
+      setValidationAlert(validation);
+      return;
       if ((error as any).data.errors !== undefined) {
         let validation: IValidationAlertProps[] = [];
         if (Array.isArray((error as any).data.errors)) {

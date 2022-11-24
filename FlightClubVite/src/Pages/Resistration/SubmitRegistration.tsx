@@ -10,6 +10,7 @@ import { useCreateMemberMutation } from '../../features/Users/userSlice';
 import { green } from '@mui/material/colors';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import { IValidation } from '../../Interfaces/IValidation';
+import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,6 +37,9 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
         let validation: IValidationAlertProps[];
         if (isError) {
             console.log("SubmitRegistration/error", error);
+            let validation = getValidationFromError(error,onValidationAlertClose);
+            setValidationAlert(validation);
+            return;
             if((error as any).data?.errors !== undefined){
                 validation = (error as any).data?.errors.map((item: string) => {
                     const alert: IValidationAlertProps = {

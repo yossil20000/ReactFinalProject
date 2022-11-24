@@ -16,6 +16,7 @@ import MemberTab from './Members/MemberTab';
 import { useFetchMembersAdminQuery, useFetchMembersComboQuery } from '../../features/Users/userSlice';
 import { MembersContext } from '../../app/Context/MemberContext';
 import { IMemberAdmin } from '../../Interfaces/API/IMember';
+import MembershipTab from './Membership/MembershipTab';
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
@@ -52,7 +53,8 @@ const getDesignTokens = (mode: PaletteMode) => ({
 const items: ScrollableTabsItem[] = [
   { id: 0, label: "Devices" },
   { id: 1, label: "Device Type" },
-  { id: 2, label: "Members" }
+  { id: 2, label: "Members" },
+  { id: 3, label: "Membership" }
 
 ]
 
@@ -117,6 +119,7 @@ function AdminPage() {
               {value === 0 && <DeviceTab />}
               {value === 1 && (<DeviceTypeTab />)}
               {value === 2 && (<MemberTab/>)}
+              {value === 3 && (<MembershipTab/>)}
             </Paper>
             </Box>
             </MembersContext.Provider>

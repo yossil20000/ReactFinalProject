@@ -9,16 +9,16 @@ import { IValidationAlertProps, ValidationAlert } from '../../../Components/Butt
 import MembersCombo from '../../../Components/Members/MembersCombo';
 import { useFetchAllDevicesQuery } from '../../../features/Device/deviceApiSlice';
 import { useFetchAllMembershipQuery } from '../../../features/membership/membershipApiSlice';
-import { useCreateMemberMutation, useDeleteMemberMutation, useFetcAllMembersQuery, useUpdateMemberMutation } from '../../../features/Users/userSlice';
-import { IMemberAdmin, MemberType, Role, Status } from '../../../Interfaces/API/IMember';
+import { useCreateMemberMutation, useFetcAllMembersQuery, useUpdateMemberMutation, useUpdateStatusMutation } from '../../../features/Users/userSlice';
+import { IMemberAdmin, IMemberStatus, MemberType, Role, Status } from '../../../Interfaces/API/IMember';
 import IMembership, { NewMembership } from '../../../Interfaces/API/IMembership';
 import IMemberCreate from '../../../Interfaces/IMemberCreate';
 import IMemberUpdate from '../../../Interfaces/IMemberInfo';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
 import { setProperty } from '../../../Utils/setProperty';
-import Addreses from './Addreses';
-import General from './General';
-import Permissions from './Permissions';
+import AddresesTab from './AddresesTab';
+import GeneralTab from './GeneralTab';
+import PermissionsTab from './PermissionsTab';
 
 const items: ScrollableTabsItem[] = [
   { id: 0, label: "General" },
@@ -33,7 +33,7 @@ function MemberTab() {
   const [value, setValue] = React.useState(0);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [createMember] = useCreateMemberMutation();
-  const [deleteMember] = useDeleteMemberMutation();
+  const [statusMember] = useUpdateStatusMutation();
   const [updateMember] = useUpdateMemberMutation();
   const {refetch} = useFetcAllMembersQuery();
   const {data: memberships,isError,isLoading,isFetching,isSuccess,error} = useFetchAllMembershipQuery();
@@ -104,11 +104,15 @@ function MemberTab() {
     } 
     return newMember;
   }
-  async function onDelete() : Promise<void> {
+  async function onDelete(newStatus: Status) : Promise<void> {
     let payload: any;
     try{
       if(selectedItem?._id){
-        payload = await deleteMember(selectedItem._id);
+        const status : IMemberStatus = {
+          _id: selectedItem?._id,
+          status: newStatus
+        }
+        payload = await statusMember(status);
         refetch();
         setSelectedItem(null)
       }
@@ -147,9 +151,6 @@ function MemberTab() {
       case EAction.ADD:
         setSelectedItem(newMember());
         break;
-      case EAction.DELETE:
-        onDelete();
-        break;
       case EAction.SAVE:
         onSave()
         break;
@@ -178,9 +179,9 @@ function MemberTab() {
       <div className='main' style={{ overflow: "auto" ,height:"100%"}}>
         <Box marginTop={1} height={"100%"} >
 
-          {value === 0 && <General/>}
-          {value === 1 && (<Addreses/>)}
-          {value === 2 && (<Permissions/>)}
+          {value === 0 && <GeneralTab/>}
+          {value === 1 && (<AddresesTab/>)}
+          {value === 2 && (<PermissionsTab/>)}
         </Box>
 
       </div>

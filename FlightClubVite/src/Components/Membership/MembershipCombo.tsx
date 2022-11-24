@@ -1,21 +1,23 @@
 
 import { useEffect, useState } from 'react'
+import { useFetchAllMembershipQuery } from '../../features/membership/membershipApiSlice';
 import { useFetchMembersComboQuery } from '../../features/Users/userSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { IMemberCombo } from '../../Interfaces/API/IMember';
+import IMembership from '../../Interfaces/API/IMembership';
+
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
 
 function MembershipCombo(props : ComboProps) {
   const {onChanged,source} = props;
-  const { data, isError, isLoading, error } = useFetchMembersComboQuery();
+  const { data, isError, isLoading, error } = useFetchAllMembershipQuery();
   
   const [items,setItems] = useState<InputComboItem[]>([]);
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
   const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
  
-  const devicesToItemCombo = (input: IMemberCombo): InputComboItem => {
-    return {  lable: `${input.family_name} ${input.member_id}`, _id: input._id ,description: ""}
+  const devicesToItemCombo = (input: IMembership): InputComboItem => {
+    return {  lable: `${input.name} (${input.rank})`, _id: input._id ,description: ""}
   }
   
   useEffect(() => {

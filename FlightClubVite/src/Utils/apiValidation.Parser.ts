@@ -8,7 +8,7 @@ export function apiValidationParse(validation: IValidation): string {
 
 export function getValidationFromError(error: any, onclose: () => void): IValidationAlertProps[] {
   let validation: IValidationAlertProps[] = [];
-  if ((error as any).data?.errors !== undefined) {
+  if ((error as any).data?.errorType === undefined) {
     validation = (error as any).data?.errors.map((item: string) => {
       const alert: IValidationAlertProps = {
         location: '',
@@ -22,9 +22,9 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
     })
   }
 
-  if ((error as any).data?.validation !== undefined) {
+  if ((error as any).data?.errorType !== undefined && (error as any).data?.errorType === "VALIDATION" ) {
 
-    validation = (error as any).data.validation.errors.map((item: IValidation) => {
+    validation = (error as any).data.errors.map((item: IValidation) => {
       const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
       alert.onClose = onclose;
       alert.open = true;

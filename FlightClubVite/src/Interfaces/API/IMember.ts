@@ -80,3 +80,8 @@ export interface IMemberCombo{
     family_name: string;
     first_name: string;
   }
+
+  export interface IMemberStatus {
+    _id: string
+    status: Status
+  }

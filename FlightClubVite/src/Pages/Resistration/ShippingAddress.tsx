@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, TextField } from '@mui/material';
+import { Box, Button, Grid, Paper, TextField } from '@mui/material';
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
@@ -99,20 +99,20 @@ function ShippingAddress({ numPage ,page, setPage, formData,setFormData }: IPage
         </Item>
       </Grid>
       <Grid item xs={6}>
-          <Item><button
+          <Item><Button
             onClick={() => {
               setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
             }}>
             Previous
-          </button></Item>
+          </Button></Item>
         </Grid>
         <Grid item xs={6}>
-          <Item><button
+          <Item><Button
             onClick={() => {
               setPage(page + 1 == numPage ? 0 : page + 1);
             }}>
             Next
-          </button></Item>
+          </Button></Item>
         </Grid>
     </Grid>
   </Box>

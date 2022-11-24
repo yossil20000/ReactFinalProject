@@ -10,6 +10,7 @@ export  enum URLS{
     MEMBERS = 'api/members',
     MEMBER_DETAIL = 'api/members/detail',
     MEMBERS_COMBO = 'api/members/combo',
+    MEMBERS_STATUS = 'api/members/status',
     DEVICES = 'api/devices',
     DEVICES_COMBO = 'api/devices/combo',
     FLIGHT = 'api/flight',

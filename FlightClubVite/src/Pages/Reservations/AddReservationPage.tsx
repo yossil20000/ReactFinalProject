@@ -159,10 +159,10 @@ function AddReservationPage() {
 
     return (
       <Grid container sx={{ width: "100%" }} justifyContent="center">
-        <Grid item xs={12} >
+        <Grid key={"create_header"} item xs={12} >
           <Typography variant='h5' component="div" align='center'>New Reservation</Typography>
         </Grid>
-        <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
+        <Grid key={"create_date_from"} item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
           <Item sx={{ marginLeft: "0px" }}>
             <LocalizationProvider dateAdapter={AdapterLuxon}>
               <ThemeProvider theme={defaultMaterialThem}>
@@ -181,7 +181,7 @@ function AddReservationPage() {
           </Item>
 
         </Grid>
-        <Grid item xs={12} md={6} xl={6}>
+        <Grid key={"create_date_to"} item xs={12} md={6} xl={6}>
           <Item >
             <LocalizationProvider dateAdapter={AdapterLuxon}>
               <ThemeProvider theme={defaultMaterialThem}>
@@ -200,19 +200,19 @@ function AddReservationPage() {
           </Item>
 
         </Grid>
-        <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+        <Grid key={"create_device"} item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
           <Item>
             <ControledCombo onSelectedItem={onDeviceChanged} selectedItem={selectedDevice === undefined ? null : selectedDevice} items={devicesItems}title="Devices"/>
       
           </Item>
         </Grid>
-        <Grid item xs={12} md={6} xl={6}>
+        <Grid key={"create_menber"} item xs={12} md={6} xl={6}>
           <Item>
           <ControledCombo onSelectedItem={onMemberChanged} selectedItem={selectedMember === undefined ? null : selectedMember} items={membersItems} /* handleComboChange={handleDeviceOnChange} */ title="Members"/>
 
           </Item>
         </Grid>
-        <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
+        <Grid key={"create_description"} item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
             <Item>
               <TextField
                 disabled
@@ -225,7 +225,7 @@ function AddReservationPage() {
               />
             </Item>
           </Grid>
-        <Grid item xs={12} md={6} xl={6} >
+        <Grid key={"create_cancle"} item xs={12} md={6} xl={6} >
           <Item><Button variant="outlined" sx={{ width: "100%" }}
             onClick={handleOnCancel}>
 

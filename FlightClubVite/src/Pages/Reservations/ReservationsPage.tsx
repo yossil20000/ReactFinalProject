@@ -28,7 +28,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DateTime } from 'luxon';
 import { ILoginResult } from "../../Interfaces/API/ILogin.js";
-import { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
+import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 
@@ -41,7 +41,7 @@ interface ItableData {
 
 function createdata(_id_reservaion: string, _id_member: string, member_id: string,
   name: string, device_name: string, date_from: Date, date_to: Date, validOperation: CanDo): ItableData {
-  return { _id_reservaion, _id_member, member_id, name: name, device_name, date_from: new Date(date_from), date_to: new Date(date_to), validOperation } as ItableData
+  return { _id_reservaion, _id_member, member_id,  name, device_name, date_from: new Date(date_from), date_to: new Date(date_to), validOperation } as ItableData
 }
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   /* console.log("descendingComparator", a, b, orderBy) */
@@ -286,7 +286,7 @@ function ReservationsPage() {
 
   function SetReservationUpdate(id_reservation: string) {
     const reservation = rows.filter(item => item._id_reservaion === id_reservation)
-    if (reservation.length === 1) {
+    if (reservation.length === 1 && reservation[0].name ) {
       console.log("RenderReservationUpdate/filter", reservation);
       reservationUpdateIntitial._id = reservation[0]._id_reservaion;
       reservationUpdateIntitial.date_from = reservation[0].date_from;
@@ -297,10 +297,14 @@ function ReservationsPage() {
     }
   }
   useEffect(() => {
-
-    let rows = reservations?.data.map((item) => {
-      return createdata(item._id, item.member._id, item.member.member_id, `${item.member.family_name} ${item.member.first_name}`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo(item.member._id, login.member._id, login.member.roles))
+    let rows : ItableData[] =[]
+    if(reservations?.data){
+     rows = reservations?.data.map((item) => {
+      if(item.member)
+        return createdata(item._id, item.member._id, item.member.member_id, `${item.member.family_name} ${item.member.first_name}`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo(item.member._id, login.member._id, login.member.roles))
+      return createdata(item._id, "_id", "member_id", `family_name .first_name`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo("_id", login.member._id, login.member.roles))
     })
+  }
     console.log('UseEffect/rows/be', rows)
     if (rows === undefined) {
       rows = [];

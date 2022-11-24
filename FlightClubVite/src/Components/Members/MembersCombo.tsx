@@ -21,7 +21,7 @@ function MembersCombo(props : ComboProps) {
   useEffect(() => {
     console.log("MembersCombo/ data", data?.data)
     
-    let items  =   data?.data.map((item) => devicesToItemCombo(item));
+    let items  =   data?.data.map((item: IMemberCombo) => devicesToItemCombo(item));
     console.log("MembersCombo/ Item", items)
     if (items !== undefined)
       setItems(items);

@@ -11,6 +11,7 @@ import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { IValidation } from "../../Interfaces/IValidation";
+import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 const source: string = "CreateFlight"
 
 export interface CreateFlightDialogProps {
@@ -62,6 +63,10 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
     }
     if (isError) {
+
+      const validation = getValidationFromError(error,handleOnValidatiobClose);
+      setValidationAlert(validation);
+      return;
       if ((error as any).data.errors !== undefined) {
         let validation: IValidationAlertProps[] = [];
         if (Array.isArray((error as any).data.errors)) {
