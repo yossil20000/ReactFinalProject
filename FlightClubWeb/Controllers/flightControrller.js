@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const log = require('debug-level').log('flightController');
-const { resSerializer } = require('debug-level/src/serializers');
+const { ApplicationError } = require('../middleware/baseErrors');
 const { body, validationResult } = require('express-validator');
 const Flight = require('../Models/flight');
 const Member = require('../Models/member');
@@ -80,7 +80,7 @@ exports.flight_update = [
       
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, validation: errors, data: req.body });
+        return next(new ApplicationError("flight_update","400","CONTROLLER.FLIGHT.STATUS.VALIDATION",{name: "ExpressValidator", errors}));
       }
 
       const flightToUpdate = await Flight.findById(req.body._id).exec();
@@ -147,7 +147,7 @@ exports.flight_update = [
 
     }
     catch (error) {
-      return res.status(501).json({ success: false, errors: [error.message], data: [] })
+      return next(new ApplicationError("flight_update", "400", "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -192,7 +192,7 @@ exports.flight_create = [
       log.info("flight_create", req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, validation: errors, data: req.body });
+        return next(new ApplicationError("flight_create","400","CONTROLLER.FLIGHT.STATUS.VALIDATION",{name: "ExpressValidator", errors}));
       }
       const member = await Member.findById(req.body._id_member).exec();
       //log.info("flight/find/member",member,req.body._id_member)
@@ -266,7 +266,7 @@ exports.flight_create = [
 
     }
     catch (error) {
-      return res.status(501).json({ success: false, errors: [error], data: [] })
+      return next(new ApplicationError("flight_create", "400", "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -279,7 +279,7 @@ exports.flight_delete = [
     const session = await mongoose.startSession();
     try {
       if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, validation: errors, data: req.body });
+        return next(new ApplicationError("flight_delete","400","CONTROLLER.FLIGHT.STATUS.VALIDATION",{name: "ExpressValidator", errors}));
       }
       const flight = await Flight.findById(req.body._id).exec();
       if(flight == null){
@@ -318,8 +318,7 @@ exports.flight_delete = [
 
     }
     catch (error) {
-      log.info("trananctionResult/flight delete", error);
-      return res.status(400).json({ success: false, errors: [error], data: [] })
+      return next(new ApplicationError("flight_delete", "400", "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
     finally {
       await session.endSession();

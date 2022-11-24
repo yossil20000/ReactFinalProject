@@ -19,8 +19,20 @@ const DEVICE_MET = {
 const DEVICE_INS = {
     VFR:"VFR",IFR:"IFR",G1000:"G1000",ICE:"ICE",AIR_CONDITION:"AIR_CONDITION"
 }
+const STATUS = {
+    "Active": "Active",
+    "Suspended":"Suspended",
+    "Removed":"Removed" 
+}
+const ERROR_TYPE = {
+    DB : "DB",
+    DB_RESULT: "DB_RESULT",
+    EXCEPTION: "EXCEPTION",
+}
+module.exports.ERROR_TYPE = ERROR_TYPE;
 module.exports.ROLES = ROLES;
 module.exports.DEVICE_STATUS = DEVICE_STATUS;
 module.exports.DEVICE_MT = DEVICE_MT;
 module.exports.DEVICE_MET = DEVICE_MET;
 module.exports.DEVICE_INS = DEVICE_INS;
+module.exports.STATUS = STATUS;

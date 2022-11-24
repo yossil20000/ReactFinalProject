@@ -1,10 +1,12 @@
 var mongoose = require('mongoose');
 const { DataTime } = require('luxon');
+
+const constants = require('../Models/constants');
 const CE = require('../Models/constants');
 var Schema = mongoose.Schema;
 
 var DeviceSchema = new Schema({
-    
+    status:{type:String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active},
     device_id: {type: String, unique: true, required: true},
     device_type: {type: Schema.Types.ObjectId , ref: 'DeviceType' },
     description: {type: String, maxLength: 200},

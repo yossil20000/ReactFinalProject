@@ -4,31 +4,41 @@ const { body,param, validationResult } = require('express-validator');
 
 const Device = require('../Models/device');
 const DeviceType = require('../Models/deviceType');
-const FlightReservation = require('../Models/flightReservation');
+const { ApplicationError } = require('../middleware/baseErrors');
 
 exports.device_list = function (req, res, next) {
+    try{
     log.info('device_list',req.body.filter);
     Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
         .populate("device_type")
         .select(req.body.select === undefined ? "" : req.body.select)
         .sort([['device_id', 'ascending']])
         .exec(function (err, list_devices) {
-            if (err) { return next(err); log.debug(err); }
+            if (err) { return next(err); }
             else {
                 res.status(201).json({ success: true, errors: [], data: list_devices });
                 return;
             }
         });
+    }
+    catch(error){
+        return next(new ApplicationError("device_list","400","CONTROLLER.DEVICE.DEVICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
+    }
 }
 exports.combo = function (req, res, next) {
-    log.info("combo");
-    Device.find()
+    try{
+    log.info("combo", req.body);
+    Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
         .select('_id device_id engien_meter maintanance')
         .sort([['device_id', 'ascending']])
         .exec(function (err, list_combo) {
             if (err) { return next(err); }
             res.status(201).json({ success: true, errors: [], data: list_combo });
         })
+    }
+    catch(error){
+        return next(new ApplicationError("combo","400","CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION",{name: "EXCEPTION", error}));
+    }
 }
 exports.device = function (req, res, next) {
     try{
@@ -43,7 +53,7 @@ exports.device = function (req, res, next) {
         });
     }
     catch(err){
-
+        return next(new ApplicationError("device","400","CONTROLLER.DEVICE.DEVICE.EXCEPTION",{name: "EXCEPTION", error}));
     }
 
 };
@@ -67,23 +77,11 @@ exports.device_reservation = function (req, res, next) {
                 let data = results[0].flight_reservs;
                 console.log(data);
                 res.status(201).json({ success: true, errors: [],data: data });
-                    return;
-                FlightReservation.find().where('_id').in(data).populate('member').exec((err, records) => {
-                    log.info(records);
-                    if (err) {
-                        res.status(400).json({ success: false, errors:[err], data: records });
-                        return
-                    }
-                    else {
-                        res.status(202).json({ success: true,errors:[], data: records });
-                        return
-                    }
-                });
+                return;
             })
     }
     catch (err) {
-        log.fatal(err);
-        res.status(501).json({ success: false, errors:[err], data: [] });
+        return next(new ApplicationError("device_reservation","400","CONTROLLER.DEVICE.DEVICE_RESERV.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 exports.device_flights = function (req, res, next) {
@@ -101,28 +99,10 @@ exports.device_flights = function (req, res, next) {
                 log.info(results);
                 res.status(202).json({ success: true, errors: [],data: results[0].flights });
                return;
-                if (list_members.length == 0) {
-                    res.status(202).json({ success: true, errors: [],data: [] });
-                    return;
-                }
-                let data = list_members[0].flights;
-                console.log(data);
-                FlightReservation.find().where('_id').in(data).populate('member').exec((err, records) => {
-                    log.info(records);
-                    if (err) {
-                        res.status(400).json({ success: false, errors:[err], data: records });
-                        return
-                    }
-                    else {
-                        res.status(202).json({ success: true,errors:[], data: records });
-                        return
-                    }
-                });
             })
     }
     catch (err) {
-        log.fatal(err);
-        res.status(501).json({ success: false, errors:[err], data: [] });
+        return next(new ApplicationError("device_flights","400","CONTROLLER.DEVICE.DEVICE_FLIGHT.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 
@@ -141,7 +121,7 @@ exports.create = [
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return res.status(400).json({success: false, validation : errors, data: req.body});
+                return next(new ApplicationError("create","400","CONTROLLER.DEVICE.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const device_type = await DeviceType.findById(req.body.device_type).exec();
             if(device_type == null){
@@ -168,8 +148,7 @@ exports.create = [
             
         }
         catch(err){
-            log.error("device/create/exception", err);
-            res.status(501).json({success: false, errors : [err], data: []});
+            return next(new ApplicationError("create","400","CONTROLLER.DEVICE.CREATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 
@@ -187,7 +166,7 @@ exports.update = [
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return res.status(400).json({success: false, validation : errors, data: req.body});
+                return next(new ApplicationError("update","400","CONTROLLER.DEVICE.UPDATE.VALIDATION",{name: "ExpressValidator", errors}))
             }
             const device_type = await DeviceType.findById(req.body.device_type).exec();
             if(device_type == null){
@@ -212,8 +191,7 @@ exports.update = [
             
         }
         catch(err){
-            log.error("device/update/exception", err);
-            res.status(501).json({success: false, errors : [err], data: []});
+            return next(new ApplicationError("update","400","CONTROLLER.DEVICE.UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 
@@ -221,13 +199,14 @@ exports.update = [
 
 exports.delete = [
     param('_id').trim().isLength(24).escape().withMessage('_id'),
+    body('passcode').equals('force_delete').withMessage("Invalid passcode"),
     async function(req,res,next){
         try{
             log.info("device/delete/params", req.params);
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return res.status(400).json({success: false, validation : errors, data: req.body});
+                return next(new ApplicationError("delete","400","CONTROLLER.DEVICE.DELETE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             Device.deleteOne({_id: req.params._id},(err,result) => {
                 if(err){
@@ -241,13 +220,53 @@ exports.delete = [
             
         }
         catch(err){
-            log.error("device/delete/exception", err);
-            res.status(501).json({success: false, errors : [err], data: []});
+            return next(new ApplicationError("delete","400","CONTROLLER.DEVICE.DELETE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 
 ]
 
+exports.status = [
+    body('_id').trim().isLength(24).escape().withMessage('_id must be valid 24 characters'),
+    body('status').trim().isLength({ min: 4 }).escape().withMessage('memberId must be valid 24 characters'),
+    function (req, res, next) {
+    log.info(`device_status`, req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(new ApplicationError("status","400","CONTROLLER.DEVICE.STATUS.VALIDATION",{name: "ExpressValidator", errors}))
+    }
+    try {
+        
+        async.parallel({
+            device: function (callback) {
+                Device.updateOne({},req.body,{ runValidators: true }).exec(callback);
+            }
+
+        }, function (error, results) {
+            if (error) { 
+
+                let appError = new ApplicationError("Status update","400","CONTROLLER.DEVICE.STATUS.DB",error);
+                
+                return next(appError);
+                //return  res.status(400).json({ success: false, dbEerror: error, data: [] }) 
+            }
+            if (results.device) {
+
+                if (results.device.acknowledged == false) {
+                    return next(new ApplicationError("Status update","400","CONTROLLER.DEVICE.STATUS.DB",{name: "Acknowledged",message: `matchedCount: ${results.device.matchedCount}`}));
+                }
+                else {
+                    return res.status(201).json({ success: true, data: [results] });
+                }
+
+            }
+        });
+    }
+    catch (error) {
+        return next(new ApplicationError("Status update","400","CONTROLLER.DEVICE.STATUS.EXCEPTION",{name: "EXCEPTION", error}));
+    }
+
+}]
 
 /// Filtetering via body
 /* {

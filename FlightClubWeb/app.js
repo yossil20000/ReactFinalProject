@@ -57,50 +57,64 @@ app.use('/api/members', membersRouter);
 app.use('/api/devices', deviceRouter);
 app.use('/api/deviceTypes', deviceTypeRouter);
 app.use('/api/reservation', flightReservRouter);
-app.use('/api',loginRouter);
+app.use('/api', loginRouter);
 app.use('/api/memberships', membershipRouter);
-app.use('/api/club_notice',clubNoticeRouter);
-app.use("/api/flight",flightRouter);
+app.use('/api/club_notice', clubNoticeRouter);
+app.use("/api/flight", flightRouter);
+app.use((err, req, res, next) => {
+  console.error(err);
+  next(err);
+});
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+/* app.use(function(req, res, next) {
   next(createError(404));
 });
-
+ */
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
+  /*   res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {}; */
+  /*   {
+      "success": false,
+      "errorSource": "CONTROLLER.DEVICE.STATUS.DB",
+      "errorType": "MongoServerError",
+      "errors": [
+          "Performing an update on the path '_id' would modify the immutable field '_id'"
+      ]
+  } */
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  if (err instanceof ApplicationError)
+    res.status(err.errorCode).json({  "success": false, ...err.serializeError() });
+  else 
+  res.status(500).json({"success": false , errors: ["General Error"]});
+  return
 });
 var userArgs = process.argv.slice(2);
 console.log(userArgs);
 const loadApi = require("./loadApi");
 const { dbs } = require('./database/database');
-if(userArgs[0] == "yossi" )
-{
+const { ApplicationError } = require("./middleware/baseErrors");
+if (userArgs[0] == "yossi") {
   console.log(userArgs[0]);
-   loadApi(process.env.LOAD_API_ADDRESS).then(function(res) {
+  loadApi(process.env.LOAD_API_ADDRESS).then(function (res) {
     console.log('Sync result:', res);
-    
-    res.forEach((element,index) => {
+
+    res.forEach((element, index) => {
       console.log(`${index}`);
       console.log(element);
-     db.collection("cripto").insertOne(element);
+      db.collection("cripto").insertOne(element);
     });
-    
+
   }
-    
+
   );
-  
-/*   (async function main() {
-    var result = await loadApi(process.env.LOAD_API_ADDRESS);
+
+  /*   (async function main() {
+      var result = await loadApi(process.env.LOAD_API_ADDRESS);
+      
     
-  
-    console.log('async result:', result);
-})() */
+      console.log('async result:', result);
+  })() */
 }
 module.exports = app;
