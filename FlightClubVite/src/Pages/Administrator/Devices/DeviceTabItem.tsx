@@ -17,6 +17,7 @@ import MultiOptionCombo from '../../../Components/Buttons/MultiOptionCombo';
 import MUISelect from '../../../Components/Buttons/MUISelect';
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import IDeviceType from '../../../Interfaces/API/IDeviceType';
+import StatusCombo from '../../../Components/Buttons/StatusCombo';
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
   const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
@@ -240,6 +241,9 @@ function DeviceTabItem() {
             </Grid>
             <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
               <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
+            </Grid>
+            <Grid item xs={1}>
+              <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={{lable: selectedItem?.status === undefined ? "" : selectedItem?.status.toString() ,_id: "",description: ""}}/>
             </Grid>
           </Grid>
 

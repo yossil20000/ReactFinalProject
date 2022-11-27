@@ -9,6 +9,11 @@ enum Status {
     Active,
     Susspende
 }
+export interface IMembershipCombo {
+    _id: string;
+    name: string;
+    rank: Rank;
+}
 export  interface IMembershipBase{
     
     entry_price: number

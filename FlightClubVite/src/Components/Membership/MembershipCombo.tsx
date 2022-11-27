@@ -39,7 +39,7 @@ function MembershipCombo(props : ComboProps) {
       onChanged(selectedItem)
   },[])
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title="Members" />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title="Rank" />
   )
 }
 

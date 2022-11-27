@@ -51,9 +51,25 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
             Personal Info
           </Typography>
         </Grid>
+        <Grid item xs={6}>
+          <Item><Button sx={{ width: "100%", margin: "auto" }}
+            onClick={() => {
+              setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+            }}>
+            Previous
+          </Button></Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item><Button sx={{ width: "100%", margin: "auto" }}
+            onClick={() => {
+              setPage(page + 1 == numPage ? 0 : page + 1);
+            }}>
+            Next
+          </Button></Item>
+        </Grid>
         <Grid item xs={12} md={12}>
           <Item>
-            <TextField sx={{ width: "90%", margin: "auto" }}
+            <TextField sx={{ width: "100%", margin: "auto" }}
               required
               id="email"
               label="Email"
@@ -64,7 +80,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>
-            <TextField sx={{ width: "90%", margin: "auto" }}
+            <TextField sx={{ width: "100%", margin: "auto" }}
               required
               id="member_id"
               label="MemberID"
@@ -75,7 +91,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>
-            <TextField sx={{ width: "90%", margin: "auto" }}
+            <TextField sx={{ width: "100%", margin: "auto" }}
               required
               id="family_name"
               label="Family Name"
@@ -86,7 +102,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>
-            <TextField sx={{ width: "90%", margin: "auto" }}
+            <TextField sx={{ width: "100%", margin: "auto" }}
               required
               id="first_name"
               label="First Name"
@@ -104,27 +120,12 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
                 value={formData.date_of_birth}
                 onChange={handleTimeChange}
                 renderInput={(params) =>
-                  <TextField sx={{ width: "90%", margin: "auto" }} {...params} />}
+                  <TextField sx={{ width: "100%", margin: "auto" }} {...params} />}
               />
             </LocalizationProvider>
           </Item>
         </Grid>
-        <Grid item xs={6}>
-          <Item><Button sx={{ width: "90%", margin: "auto" }}
-            onClick={() => {
-              setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-            }}>
-            Previous
-          </Button></Item>
-        </Grid>
-        <Grid item xs={6}>
-          <Item><Button sx={{ width: "90%", margin: "auto" }}
-            onClick={() => {
-              setPage(page + 1 == numPage ? 0 : page + 1);
-            }}>
-            Next
-          </Button></Item>
-        </Grid>
+
       </Grid>
     </Box>
 

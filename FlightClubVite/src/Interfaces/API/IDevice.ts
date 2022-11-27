@@ -3,6 +3,7 @@ import IDeviceType from "./IDeviceType"
 import IFlight from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
 import IMember from "./IMember"
+import { Status } from "./IStatus"
 export enum DEVICE_STATUS  {
     IN_SERVICE,
     OUT_OFSERVICE,
@@ -54,6 +55,7 @@ interface IDeviceBase{
         instruments: DEVICE_INS[]
     }
     location_zone: string
+    status: Status
 }
 
 export  interface IDeviceCreate extends IDeviceBase {

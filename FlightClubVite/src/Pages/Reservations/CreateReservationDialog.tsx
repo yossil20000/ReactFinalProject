@@ -55,7 +55,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
 
     }
     if (isError) {
-      const validation = getValidationFromError(error,handleOnCancel);
+      const validation = getValidationFromError(error,handleCloseValidarion);
       setValidationAlert(validation);
       return;
       if ((error as any).data.errors !== undefined) {
@@ -119,6 +119,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const handleOnCancel = () => {
     setValidationAlert([])
     onClose()
+  }
+  const handleCloseValidarion = () => {
+    setValidationAlert([])
   }
   const handleOnSave = async () => {
     console.log("CreateReservationDialog/onSave", reservationCreate)

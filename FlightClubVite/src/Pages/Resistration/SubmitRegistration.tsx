@@ -1,4 +1,4 @@
-import { Box, Button, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
+import { Box, Button, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
@@ -25,7 +25,7 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
     const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
     const [createMember, { isError, isLoading, isSuccess, error }] = useCreateMemberMutation();
     const onSaveRegisterHandler = async () => {
-        
+
         console.log("onSaveRegisterHandler/formData", formData);
         const payload = await createMember(formData);
         console.log("useCreateMemberMutation/paylod", payload);
@@ -37,10 +37,10 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
         let validation: IValidationAlertProps[];
         if (isError) {
             console.log("SubmitRegistration/error", error);
-            let validation = getValidationFromError(error,onValidationAlertClose);
+            let validation = getValidationFromError(error, onValidationAlertClose);
             setValidationAlert(validation);
             return;
-            if((error as any).data?.errors !== undefined){
+            if ((error as any).data?.errors !== undefined) {
                 validation = (error as any).data?.errors.map((item: string) => {
                     const alert: IValidationAlertProps = {
                         location: '',
@@ -49,14 +49,14 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
                         value: "",
                         open: true,
                         onClose: onValidationAlertClose
-                        };
-                        return alert;
+                    };
+                    return alert;
                 })
                 setValidationAlert(validation);
             }
-            
+
             if ((error as any).data?.validation !== undefined) {
-            
+
                 validation = (error as any).data.validation.errors.map((item: IValidation) => {
                     const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
                     alert.onClose = onValidationAlertClose;
@@ -67,7 +67,7 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
                 setValidationAlert(validation);
             }
         }
-        
+
         if (isSuccess) {
             console.log("SubmitRegistration/succeed");
         }
@@ -83,6 +83,27 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Typography variant="h5" component="div" align='center'>
+                        Submit Registration
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Item><button
+                        onClick={() => {
+                            setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+                        }}>
+                        Previous
+                    </button></Item>
+                </Grid>
+                <Grid item xs={6}>
+                    <Item><button
+                        onClick={() => {
+                            setPage(page + 1 == numPage ? 0 : page + 1);
+                        }}>
+                        Next
+                    </button></Item>
+                </Grid>
                 <Grid item xs={12}>
                     <Item>
                         <Button
@@ -103,22 +124,7 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
                         </Item>
                     </Grid>
                 ))}
-                <Grid item xs={6}>
-                    <Item><button
-                        onClick={() => {
-                            setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-                        }}>
-                        Previous
-                    </button></Item>
-                </Grid>
-                <Grid item xs={6}>
-                    <Item><button
-                        onClick={() => {
-                            setPage(page + 1 == numPage ? 0 : page + 1);
-                        }}>
-                        Next
-                    </button></Item>
-                </Grid>
+
 
             </Grid>
         </Box>

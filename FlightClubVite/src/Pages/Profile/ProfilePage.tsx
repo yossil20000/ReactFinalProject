@@ -78,7 +78,7 @@ function ProfilePage() {
   
 
   return (
-    <div className='main' style={{ width: "100vw" }}>
+    <div className='main' style={{ width: "99%", margin: "1% auto" }}>
       <Grid container spacing={2}>
         <Grid item xs={12} >
           <Box sx={{ width: '100%' }}>

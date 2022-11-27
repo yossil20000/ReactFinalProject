@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor";
 import { URLS } from "../../Enums/Routers";
-import IMembership from "../../Interfaces/API/IMembership";
+import IMembership, { IMembershipCombo } from "../../Interfaces/API/IMembership";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 
 
@@ -29,6 +29,14 @@ export const membershipApiSlice = createApi({
                     url: `/${URLS.MEMBERSHIP_DETAILES}`
                 }),
                 providesTags: ["Membership"]
+            }),
+            fetchMembershipCombo: builder.query<IResultBase<IMembershipCombo>,void>({
+                query: () => ({
+                    url: `/${URLS.MEMBERSHIP_COMBO}`,
+                    method: "GET"
+                }),
+                providesTags: ["Membership"]
+
             }),
             deleteMembership: builder.mutation<IResultBaseSingle<IMembership>,IMembership>({
                 query: (membershipDelete) => ({
@@ -64,5 +72,11 @@ export const membershipApiSlice = createApi({
     
 });
 
-export const {useFetchAllMembershipQuery, useDeleteMembershipMutation, useCreateMembershipMutation, useUpdateMembershipMutation} = membershipApiSlice;
+export const {
+    useFetchAllMembershipQuery,
+    useDeleteMembershipMutation,
+    useCreateMembershipMutation,
+    useUpdateMembershipMutation,
+    useFetchMembershipComboQuery
+} = membershipApiSlice;
 

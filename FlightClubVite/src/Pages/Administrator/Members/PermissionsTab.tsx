@@ -7,7 +7,7 @@ import { MembersContext, MembersContextType } from "../../../app/Context/MemberC
 import CheckSelect from "../../../Components/Buttons/CheckSelect";
 import { InputComboItem } from "../../../Components/Buttons/ControledCombo"
 import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
-import StatusCombo from "../../../Components/Members/StatusCombo";
+import StatusCombo from "../../../Components/Buttons/StatusCombo";
 import MembershipCombo from "../../../Components/Membership/MembershipCombo";
 import { IMemberAdmin, Role, Status } from "../../../Interfaces/API/IMember";
 import { getSelectedItem, setProperty } from "../../../Utils/setProperty";
@@ -104,7 +104,7 @@ function PermissionsTab() {
           <CheckSelect selectedItems={getSelectedRoles()} items={labelsFromRole()} onSelected={onRoleChanged} label={"Roles"} property={'role.roles'} />
         </Grid>
         <Grid item xs={12} sm={12}>
-          <MembershipCombo onChanged={onMemberTypeChanged} source={"MembershipCombo"}/>
+          <MembershipCombo onChanged={onMemberTypeChanged} source={"Permission/MembershipCombo"}/>
         </Grid>
 
       </Grid>

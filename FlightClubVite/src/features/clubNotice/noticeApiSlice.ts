@@ -42,6 +42,22 @@ export const noticeApiSlice = createApi({
         }),
         invalidatesTags: ["ClubNotice"]
       }),
+      createNotice: builder.mutation<IResultBaseSingle<IClubNotice>,IClubNotice>({
+        query: (message) => ({
+          url: `/${URLS.CLUB_NOTICE_CREATE}`,
+          body: message,
+          method: "POST"
+        }),
+        invalidatesTags: ["ClubNotice"]
+      }),
+      updateNotice: builder.mutation<IResultBaseSingle<IClubNotice>,IClubNotice>({
+        query: (message) => ({
+          url: `/${URLS.CLUB_NOTICE_UPDATE}`,
+          body: message,
+          method: "PUT"
+        }),
+        invalidatesTags: ["ClubNotice"]
+      }),
 
 
     }
@@ -52,5 +68,7 @@ export const {
   
   useDeleteNoticeMutation,
   useFetchAllNoticesQuery,
-  useFetchNoticeQuery
+  useFetchNoticeQuery,
+  useCreateNoticeMutation,
+  useUpdateNoticeMutation
 } = noticeApiSlice

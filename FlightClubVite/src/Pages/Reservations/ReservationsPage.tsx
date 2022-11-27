@@ -95,7 +95,7 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
   };
   return (
 
-    <TableHead>
+    <TableHead style={{minWidth:"320px"}}>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
@@ -122,9 +122,6 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
         </TableCell>
         <TableCell>
           <Button onClick={handleReservationAdd} >Add</Button>
-        </TableCell>
-        <TableCell>
-
         </TableCell>
       </TableRow>
     </TableHead>

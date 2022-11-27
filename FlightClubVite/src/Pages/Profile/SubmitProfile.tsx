@@ -1,17 +1,14 @@
-import { Box, Button, CircularProgress, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, Paper, Typography } from '@mui/material';
 import { useEffect, useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
-import { TonalitySharp, Visibility, VisibilityOff } from '@mui/icons-material';
 import { useUpdateMemberMutation } from '../../features/Users/userSlice'
 import { useNavigate } from 'react-router-dom';
-import { URLS } from '../../Enums/Routers';
-import { ROUTES } from '../../Types/Urls';
 import { green } from '@mui/material/colors';
 import IMemberInfo from '../../Interfaces/IMemberInfo';
-import IMemberCreate from '../../Interfaces/IMemberCreate';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
+import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
+import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -24,15 +21,23 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
     const navigate = useNavigate();
+    const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
+    
     const [updateMember, { isError, isLoading, isSuccess, error }] = useUpdateMemberMutation();
     const onSaveProfileHandler = async () => {
         console.log("onSaveProfileHandler", formData);
         const payload = await updateMember(formData as IMemberInfo).unwrap();
         console.log("useUpdateMemberMutation/payload", payload)
     }
+    const onValidationAlertClose = () => {
+        setValidationAlert([]);
+    }
     useEffect(() => {
         if (isError) {
-            console.log("SubmitProfile/error", error);
+            console.log("SubmitRegistration/error", error);
+            let validation = getValidationFromError(error, onValidationAlertClose);
+            setValidationAlert(validation);
+            return;
         }
         if (isSuccess) {
             console.log("SubmitProfile/Success");
@@ -54,6 +59,27 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageN
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
+            <Grid item xs={12}>
+          <Typography variant="h5" component="div" align='center'>
+           Submit Profile
+          </Typography>
+        </Grid>
+            <Grid item xs={6}>
+                    <Item><button
+                        onClick={() => {
+                            setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+                        }}>
+                        Previous
+                    </button></Item>
+                </Grid>
+                <Grid item xs={6}>
+                    <Item><button
+                        onClick={() => {
+                            setPage(page + 1 == numPage ? 0 : page + 1);
+                        }}>
+                        Next
+                    </button></Item>
+                </Grid>
                 <Grid item xs={12}>
                     <Item>
                         <Box sx={{ m: 1, position: 'relative' }}>
@@ -81,26 +107,14 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageN
                         </Box>
                     </Item>
                 </Grid>
-                <Grid item xs={6}>
-                    <Item><button
-                        onClick={() => {
-                            setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-                        }}>
-                        Previous
-                    </button></Item>
-                </Grid>
-                <Grid item xs={6}>
-                    <Item>
-                        <button
+                {validationAlert.map((item) => (
+                    <Grid item xs={12}>
+                        <Item>
 
-                            onClick={() => {
-                                setPage(page + 1 == numPage ? 0 : page + 1);
-                            }}>
-                            Next
-                        </button>
-                    </Item>
-                </Grid>
-
+                            <ValidationAlert {...item} />
+                        </Item>
+                    </Grid>
+                ))}
             </Grid>
         </Box>
 

@@ -29,6 +29,22 @@ function HomeAddress({ numPage, page, setPage, formData, setFormData }: IPageNav
             Home Address
           </Typography>
         </Grid>
+        <Grid item xs={6}>
+          <Item><Button sx={{ width: "100%", margin: "auto" }}
+            onClick={() => {
+              setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+            }}>
+            Previous
+          </Button></Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item><Button sx={{ width: "100%", margin: "auto" }}
+            onClick={() => {
+              setPage(page + 1 == numPage ? 0 : page + 1);
+            }}>
+            Next
+          </Button></Item>
+        </Grid>
         <Grid item xs={12} md={12}>
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
@@ -94,22 +110,6 @@ function HomeAddress({ numPage, page, setPage, formData, setFormData }: IPageNav
               onChange={handleContactChange("state")}
             />
           </Item>
-        </Grid>
-        <Grid item xs={6}>
-          <Item><Button
-            onClick={() => {
-              setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-            }}>
-            Previous
-          </Button></Item>
-        </Grid>
-        <Grid item xs={6}>
-          <Item><Button
-            onClick={() => {
-              setPage(page + 1 == numPage ? 0 : page + 1);
-            }}>
-            Next
-          </Button></Item>
         </Grid>
       </Grid>
     </Box>

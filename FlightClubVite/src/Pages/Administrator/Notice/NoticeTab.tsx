@@ -5,30 +5,33 @@ import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import StatusCombo from '../../../Components/Buttons/StatusCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert'
 import MembershipCombo from '../../../Components/Membership/MembershipCombo';
+import { useCreateNoticeMutation, useUpdateNoticeMutation } from '../../../features/clubNotice/noticeApiSlice';
 import { useCreateMembershipMutation, useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
+import { useFetchAllClubNoticeQuery } from '../../../features/Users/userSlice';
 import useLocalStorage from '../../../hooks/useLocalStorage';
+import IClubNotice, { NewNotice } from '../../../Interfaces/API/IClubNotice';
 import IMembership, { IMembershipBase, NewMembership } from '../../../Interfaces/API/IMembership';
 import IMemberUpdate from '../../../Interfaces/IMemberInfo';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
 import { getSelectedItem, setProperty } from '../../../Utils/setProperty';
-const source = "MembershipTab/status"
-function MembershipTab() {
+const source = "NoticeTab/status"
+function NoticeTab() {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [selectedItem, setSelectedItem] = useLocalStorage<IMembership>("MembershipTab/selectedItem", NewMembership);
-  const {data,isError,error} = useFetchAllMembershipQuery();
+  const [selectedItem, setSelectedItem] = useLocalStorage<IClubNotice>("NoticeTab/selectedItem", NewNotice);
+  const {data,isError,error} = useFetchAllClubNoticeQuery();
 
-  const [updateMembership] = useUpdateMembershipMutation();
-  const [createMembership] = useCreateMembershipMutation()
-  const { refetch } = useFetchAllMembershipQuery();
+  const [updateNotice] = useUpdateNoticeMutation();
+  const [createNotice] = useCreateNoticeMutation()
+  const { refetch } = useFetchAllClubNoticeQuery();
 
   useEffect(() => {
     if(error){
-      console.log("MembershipTab/errors",error);
+      console.log("NoticeTab/errors",error);
     }
   },[isError])
   useEffect(() => {
     if(data){
-      console.log("MembershipTab/data",data);
+      console.log("NoticeTab/data",data);
       setSelectedItem(data.data[0])
     }
   },[data])
@@ -40,8 +43,8 @@ function MembershipTab() {
     try {
       setValidationAlert([]);
       if (selectedItem !== undefined && selectedItem?._id !== "") {
-        payLoad = await updateMembership(selectedItem as unknown as IMembership).unwrap();
-        console.log("MembershipTab/OnSave/payload", payLoad);
+        payLoad = await updateNotice(selectedItem as unknown as IClubNotice).unwrap();
+        console.log("NoticeTab/OnSave/payload", payLoad);
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
@@ -66,7 +69,7 @@ function MembershipTab() {
     console.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
-        setSelectedItem(NewMembership);
+        setSelectedItem(NewNotice);
         break;
       case EAction.SAVE:
         onSave()
@@ -93,46 +96,24 @@ function MembershipTab() {
   }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
-    const newObj: IMembership = SetProperty(selectedItem, event.target.name, event.target.value) as IMembership;
+    const newObj: IClubNotice = SetProperty(selectedItem, event.target.name, event.target.value) as IClubNotice;
 
     setSelectedItem(newObj)
   };
-  const onComboChanged = useCallback((item: InputComboItem, prop: string): void => {
-    console.log("onComboChanged/item", item, prop);
-    const newObj: IMembership = SetProperty(selectedItem, prop, item.lable) as IMembership;
-    setSelectedItem(newObj)
-  },[selectedItem])
   return (
     <div className='yl__container' style={{ height: "100%", position: "relative" }}>
       <div className='header'>
         <Box marginTop={2}>
           <Grid container width={"100%"} height={"100%"} gap={2}>
             <Grid item xs={12}>
-              <MembershipCombo onChanged={onMemberTypeChanged} source={"MembershipCombo"} />
+    
             </Grid>
           </Grid>
         </Box>
       </div>
       <div className='main' style={{ overflow: "auto", height: "100%" }}>
         <Box marginTop={3} >
-          <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} margin={0}>
-            <Grid item xs={12} sm={12} >
-              <TextField type={"text"} fullWidth onChange={handleChange} name="name" label="Name" placeholder="Name" variant="standard" value={selectedItem?.name} />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="entry_price" label="Entry Price" placeholder="Intitial Entry Price" variant="standard" value={selectedItem?.entry_price} />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="montly_price" label="Montly Price" placeholder="Montly Price" variant="standard" value={selectedItem?.montly_price} />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="hour_disc_percet" label="Discount" placeholder="Discount %" variant="standard" value={selectedItem?.hour_disc_percet} />
-            </Grid>
-            <Grid item xs={12}>
-            <StatusCombo onChanged={(item) => onComboChanged(item, "status")} selectedItem={getSelectedItem(selectedItem?.status.toString())} source={source}/>
-            </Grid>
-          </Grid>
-
+    
         </Box>
       </div>
       <div className='footer'>
@@ -152,4 +133,4 @@ function MembershipTab() {
   )
 }
 
-export default MembershipTab
+export default NoticeTab

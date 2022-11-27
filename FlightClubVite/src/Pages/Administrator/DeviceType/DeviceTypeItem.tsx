@@ -1,24 +1,16 @@
 import { Grid,  TextField,Theme,styled } from '@mui/material'
 import DeviceTypeEngienCombo from '../../../Components/Devices/DeviceTypeEngienCombo'
 import  { useContext, useState } from 'react'
-import IDeviceType, { CategoryType, EngienType, SurfaceType } from '../../../Interfaces/API/IDeviceType'
+import IDeviceType, { CategoryType, EngienType, newDeviceType, SurfaceType } from '../../../Interfaces/API/IDeviceType'
 import { useFetchAllDeviceTypesQuery } from '../../../features/DeviceTypes/deviceTypesApiSlice';
 import { getSelectedItem, setProperty } from '../../../Utils/setProperty'
 import DeviceTypeSurfaceCombo from '../../../Components/Devices/DeviceTypeSurfaceCombo'
 import DeviceTypeCategoryCombo from '../../../Components/Devices/DeviceTypeCategoryCombo'
 import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext'
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
+import StatusCombo from '../../../Components/Buttons/StatusCombo';
 const source: string = "DeviceTypeItem"
-const initialValues: IDeviceType = {
-  _id: "",
-  name: '',
-  category: CategoryType.Airplane,
-  class: {
-    engien: EngienType.SingleEngien,
-    surface: SurfaceType.Land
-  },
-  description: ''
-}
+const initialValues =  newDeviceType;
 
 
 //emotion
@@ -80,6 +72,9 @@ function DeviceTypeItem() {
         </Grid>
         <Grid item xs={12}>
          <DeviceTypeSurfaceCombo onChanged={(item) => onComboChanged(item,"class.surface")} source={source} selectedItem={getSelectedItem(selectedItem?.class.surface.toString())}/>
+        </Grid>
+        <Grid item xs={12}>
+         <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={getSelectedItem(selectedItem?.status.toString())} />
         </Grid>
       </Grid>
  

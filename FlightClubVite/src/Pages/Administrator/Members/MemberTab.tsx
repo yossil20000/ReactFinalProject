@@ -28,25 +28,24 @@ const items: ScrollableTabsItem[] = [
 ];
 
 function MemberTab() {
-  const { setSelectedItem, selectedItem,members } = useContext(MembersContext) as MembersContextType;
-  const [selecteMembership,setSelecteMembership] = useState<IMembership | null>();
+  const { setSelectedItem, selectedItem, members } = useContext(MembersContext) as MembersContextType;
+  const [selecteMembership, setSelecteMembership] = useState<IMembership | null>();
   const [value, setValue] = React.useState(0);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [createMember] = useCreateMemberMutation();
   const [statusMember] = useUpdateStatusMutation();
   const [updateMember] = useUpdateMemberMutation();
-  const {refetch} = useFetcAllMembersQuery();
-  const {data: memberships,isError,isLoading,isFetching,isSuccess,error} = useFetchAllMembershipQuery();
-   
-  
+  const { refetch } = useFetcAllMembersQuery();
+  const { data: memberships, isError, isLoading, isFetching, isSuccess, error } = useFetchAllMembershipQuery();
+
+
 
   useEffect(() => {
-    
-    if(isError){
+
+    if (isError) {
       console.log("MemberTab/useEffect/iserror", error)
     }
-  },[isError])
-  
+  }, [isError])
+
   const onValidationAlertClose = () => {
     setValidationAlert([]);
   }
@@ -57,13 +56,13 @@ function MemberTab() {
 
   const handleMemberChange = (item: InputComboItem) => {
     console.log("MemberTab/General/handleChange/item", item)
-    const member = members?.find((member) => item._id == member._id )
+    const member = members?.find((member) => item._id == member._id)
     console.log("MemberTab/General/member", member)
     setSelectedItem(member)
   };
 
   function newMember(): IMemberAdmin {
-    const newMember : IMemberAdmin ={
+    const newMember: IMemberAdmin = {
       _id: "",
       status: Status.Suspended,
       member_type: MemberType.Normal,
@@ -101,46 +100,55 @@ function MemberTab() {
         },
         email: ""
       }
-    } 
+    }
     return newMember;
   }
-  async function onDelete(newStatus: Status) : Promise<void> {
-    let payload: any;
-    try{
-      if(selectedItem?._id){
-        const status : IMemberStatus = {
+  async function onDelete(newStatus: Status): Promise<void> {
+    let payLoad: any;
+    try {
+      if (selectedItem?._id) {
+        const status: IMemberStatus = {
           _id: selectedItem?._id,
           status: newStatus
         }
-        payload = await statusMember(status);
-        refetch();
-        setSelectedItem(null)
+        payLoad = await statusMember(status);
+        if (payLoad.error) {
+          setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
+        }
+        else {
+          refetch();
+          setSelectedItem(null)
+        }
       }
     }
-    catch(error){
+    catch (error) {
       console.error("DeviceTab/OnSave/error", error);
-      setValidationAlert(getValidationFromError(error, onValidationAlertClose));
+      setValidationAlert(getValidationFromError([error], onValidationAlertClose));
     }
   }
   async function onSave(): Promise<void> {
     let payLoad: any;
     try {
-      if (selectedItem?._id.length == 0) {
-        let newDevice: IMemberAdmin;
-        newDevice = { ...selectedItem };
-        console.log("General/OnCreate/newDevice", newDevice);
-        payLoad = await createMember(newDevice as unknown as IMemberCreate).unwrap();
-        console.log("General/OnCreate/payload", payLoad);
-      }
-      else if (selectedItem) {
+      setValidationAlert([]);
+    if (selectedItem !== undefined &&  selectedItem?._id !== "" ) {
         payLoad = await updateMember(selectedItem as unknown as IMemberUpdate).unwrap();
         console.log("General/OnUpdate/payload", payLoad);
+        if(payLoad.error){
+          setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
+        }
+        
       }
-      refetch();
+      else{
+        throw new Error("Selected Member Un Defined") ;
+      }
     }
     catch (error) {
       console.error("DeviceTab/OnSave/error", error);
       setValidationAlert(getValidationFromError(error, onValidationAlertClose));
+      
+    }
+    finally{
+      refetch();
     }
 
   }
@@ -156,51 +164,51 @@ function MemberTab() {
         break;
     }
   }
-  
+
   return (
-    <MembershipContext.Provider value={{membership: memberships?.data ?? [], selectedItem: selecteMembership,setSelectedItem: setSelecteMembership}}>
-    <div className='yl__container' style={{ height: "100%", position: "relative" }}>
-      <div className='header'>
-        <Box marginTop={1}>
-          <Grid container columns={12}>
-            <Grid item xs={12}>
-            <MembersCombo onChanged={handleMemberChange} source={"source"}/>
+    <MembershipContext.Provider value={{ membership: memberships?.data ?? [], selectedItem: selecteMembership, setSelectedItem: setSelecteMembership }}>
+      <div className='yl__container' style={{ height: "100%", position: "relative" }}>
+        <div className='header'>
+          <Box marginTop={1}>
+            <Grid container columns={12}>
+              <Grid item xs={12}>
+                <MembersCombo onChanged={handleMemberChange} source={"source"} />
+              </Grid>
+              <Grid item xs={12}>
+                <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-            <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
-            </Grid>
-          </Grid>
-        
-        
-          
 
-        </Box>
-      </div>
-      <div className='main' style={{ overflow: "auto" ,height:"100%"}}>
-        <Box marginTop={1} height={"100%"} >
 
-          {value === 0 && <GeneralTab/>}
-          {value === 1 && (<AddresesTab/>)}
-          {value === 2 && (<PermissionsTab/>)}
-        </Box>
 
-      </div>
-      <div className='footer'>
 
-      <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction} show={[EAction.DELETE,EAction.SAVE]}/>
+          </Box>
+        </div>
+        <div className='main' style={{ overflow: "auto", height: "100%" }}>
+          <Box marginTop={1} height={"100%"} >
+
+            {value === 0 && <GeneralTab />}
+            {value === 1 && (<AddresesTab />)}
+            {value === 2 && (<PermissionsTab />)}
+          </Box>
+
+        </div>
+        <div className='footer'>
+
+          <Box className='yl__action_button'>
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} />
           </Box>
           <Grid container>
-              {validationAlert.map((item) => (
-                <Grid item xs={12}>
+            {validationAlert.map((item) => (
+              <Grid item xs={12}>
 
-                  <ValidationAlert {...item} />
+                <ValidationAlert {...item} />
 
-                </Grid>
-              ))}
-            </Grid>
+              </Grid>
+            ))}
+          </Grid>
+        </div>
       </div>
-    </div>
     </MembershipContext.Provider>
   )
 }

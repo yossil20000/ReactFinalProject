@@ -16,10 +16,10 @@ import MuiAccordionSummary, {
 } from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
-import { useFetcAllMembersQuery, useFetchAllClubNoticeQuery,useDeleteMemberMutation } from '../../features/Users/userSlice'
+import { useFetcAllMembersQuery, useFetchAllClubNoticeQuery,useUpdateStatusMutation } from '../../features/Users/userSlice'
 import { useAppSelector } from '../../app/hooks'
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
-import { Status } from '../../Interfaces/API/IMember';
+import { IMemberStatus, Status } from '../../Interfaces/API/IMember';
 
 interface ItableData {
   _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string,validOperation: CanDo,status: Status
@@ -209,7 +209,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 function MembersTablePage() {
   const login = useAppSelector((state) => state.authSlice);
-  const [deleteMember] = useDeleteMemberMutation();
+  const [updateStatsMember] = useUpdateStatusMutation();
   const { data: members, isFetching } = useFetcAllMembersQuery();
   const { data: message, isFetching: isFetchingMessage } = useFetchAllClubNoticeQuery();
   const [rows, setRows] = useState<ItableData[]>([])
@@ -235,7 +235,7 @@ function MembersTablePage() {
 
   /* Table Section */
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof ItableData>('_id');
+const [orderBy, setOrderBy] = useState<keyof ItableData>('_id');
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
@@ -258,7 +258,11 @@ function MembersTablePage() {
   const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     console.log("Delete /",_id);
     try{
-      const payload = await deleteMember(_id)
+      const newStatus : IMemberStatus = {
+        _id: _id,
+        status: Status.Suspended
+      }
+      const payload = await updateStatsMember(newStatus)
       .unwrap()
       .then((payload) => {
         console.log("DeleteMember Fullfill", payload)

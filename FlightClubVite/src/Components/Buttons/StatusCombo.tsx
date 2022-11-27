@@ -2,7 +2,7 @@
 import { useCallback, useRef } from 'react'
 import { Status} from '../../Interfaces/API/IMember';
 import { Enum2ComboItem } from '../../Utils/enums';
-import ControledCombo, {  InputComboItem, StateComboProps } from '../Buttons/ControledCombo';
+import ControledCombo, {  InputComboItem, StateComboProps } from './ControledCombo';
 
 
 function StatusCombo(props : StateComboProps) {

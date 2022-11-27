@@ -1,3 +1,5 @@
+import { Status } from "./IStatus";
+
 export enum EngienType{
     SingleEngien,
     Multiengien
@@ -20,4 +22,17 @@ export default interface IDeviceType {
     }
     ,
     description: string
+    status: Status
+}
+
+export const newDeviceType : IDeviceType = {
+    _id: "",
+    name: "",
+    category: CategoryType.Airplane,
+    class: {
+        engien: EngienType.SingleEngien,
+        surface: SurfaceType.Land
+    },
+    description: "",
+    status: Status.Suspended
 }

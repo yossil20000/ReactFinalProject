@@ -3,74 +3,85 @@ import { RootState } from "../../app/userStor"
 import { URLS } from "../../Enums/Routers"
 import IDevice, { IDeviceCombo, IDeviceCreate } from "../../Interfaces/API/IDevice"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
+import { IStatus } from "../../Interfaces/API/IStatus"
 
 export const deviceApiSlice = createApi({
-reducerPath: "deviceApiSlice",
-baseQuery: fetchBaseQuery({
-  baseUrl: URLS.BACKEND_URL,
-  prepareHeaders: (headers, { getState }) => {
-    // By default, if we have a token in the store, let's use that for authenticated requests
-    const token : string = (getState() as RootState).authSlice.access_token
-    if (token) {
-      headers.set('authorization', `Bearer ${token}`)
-    }
-    return headers
-  },
-}),
-tagTypes: ["Devices","Device"],
-endpoints(builder){
-  return {
-    fetchAllDevices: builder.query<IResultBase<IDevice>,void>({
-      query: () => `/${URLS.DEVICES}`,
-      providesTags: ["Devices"]
-    }),
-    fetchDevice: builder.query<IResultBase<IDevice>,string>({
-      query: (_id) => ({
-        url: `/${URLS.DEVICES}/${_id}`,
-        method: "GET"
-      }),  
-      providesTags: ["Device"],
-      
-    }),
-    updateDevice : builder.mutation<IResultBaseSingle<IDevice>,IDevice>({
-      query:(device) =>({
-        url: `/${URLS.DEVICE_UPDATE}`,
-        method: 'PUT',
-        body: device
+  reducerPath: "deviceApiSlice",
+  baseQuery: fetchBaseQuery({
+    baseUrl: URLS.BACKEND_URL,
+    prepareHeaders: (headers, { getState }) => {
+      // By default, if we have a token in the store, let's use that for authenticated requests
+      const token: string = (getState() as RootState).authSlice.access_token
+      if (token) {
+        headers.set('authorization', `Bearer ${token}`)
+      }
+      return headers
+    },
+  }),
+  tagTypes: ["Devices", "Device"],
+  endpoints(builder) {
+    return {
+      fetchAllDevices: builder.query<IResultBase<IDevice>, void>({
+        query: () => `/${URLS.DEVICES}`,
+        providesTags: ["Devices"]
       }),
-      invalidatesTags: [{type: "Devices"}]
-    }),
-    deleteDevice : builder.mutation<IResultBaseSingle<IDevice>,string>({
-      query:(_id) => ({
-        url:`/${URLS.DEVICE_DELETE}/${_id}`,
-        method: "DELETE"
+      fetchDevice: builder.query<IResultBase<IDevice>, string>({
+        query: (_id) => ({
+          url: `/${URLS.DEVICES}/${_id}`,
+          method: "GET"
+        }),
+        providesTags: ["Device"],
+
       }),
-      invalidatesTags: [{type: "Devices"}]
-    }),
-    createDevice : builder.mutation<IResultBaseSingle<IDevice>,IDeviceCreate>({
-      query:(device) =>({
-        url: `/${URLS.DEVICE_CREATE}`,
-        method: 'POST',
-        body: device
+      updateDevice: builder.mutation<IResultBaseSingle<IDevice>, IDevice>({
+        query: (device) => ({
+          url: `/${URLS.DEVICE_UPDATE}`,
+          method: 'PUT',
+          body: device
+        }),
+        invalidatesTags: [{ type: "Devices" }]
       }),
-      invalidatesTags: [{type: "Devices"}]
-    }),
-    fetchDevicsCombo : builder.query<IResultBase<IDeviceCombo>,void>({
-      query: () => ({
+      deleteDevice: builder.mutation<IResultBaseSingle<IDevice>, string>({
+        query: (_id) => ({
+          url: `/${URLS.DEVICE_DELETE}/${_id}`,
+          method: "DELETE"
+        }),
+        invalidatesTags: [{ type: "Devices" }]
+      }),
+      createDevice: builder.mutation<IResultBaseSingle<IDevice>, IDeviceCreate>({
+        query: (device) => ({
+          url: `/${URLS.DEVICE_CREATE}`,
+          method: 'POST',
+          body: device
+        }),
+        invalidatesTags: [{ type: "Devices" }]
+      }),
+      fetchDevicsCombo: builder.query<IResultBase<IDeviceCombo>, void>({
+        query: () => ({
           url: `/${URLS.DEVICES_COMBO}`,
           method: "GET"
-      })
-  }),
+        })
+      }),
+      updateStatusDevice: builder.mutation<IResultBaseSingle<IDevice>, IStatus>({
+        query: (status) => ({
+          url: `/${URLS.DEVICE_STATUS}`,
+          method: "PUT",
+          body: status,
+
+        }),
+        invalidatesTags: [{ type: "Devices" }]
+      }),
+    }
   }
-}
 
 });
 
 export const {
-useFetchAllDevicesQuery,
-useUpdateDeviceMutation,
-useCreateDeviceMutation,
-useDeleteDeviceMutation,
-useFetchDeviceQuery,
-useFetchDevicsComboQuery
+  useFetchAllDevicesQuery,
+  useUpdateDeviceMutation,
+  useCreateDeviceMutation,
+  useDeleteDeviceMutation,
+  useFetchDeviceQuery,
+  useFetchDevicsComboQuery,
+  useUpdateStatusDeviceMutation
 } = deviceApiSlice;
