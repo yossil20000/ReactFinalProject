@@ -21,7 +21,7 @@ class ApplicationError extends Error {
   serializeError() {
 
     const parse = parseApplicationError(this.errors)
-    console.log("serializeError/result", parse.errorSource,parse.errors)
+    console.log("serializeError/result", this.errorSource,parse.errors)
     return {errorSource:this.errorSource ,...parse};
   }
 }

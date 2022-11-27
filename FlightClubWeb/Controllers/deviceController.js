@@ -136,9 +136,12 @@ exports.create = [
             let newDevice = new Device(newDevice1);
             
             log.info("device/create/newDevice",newDevice);
-            newDevice.save((err,result) => {
-                if(err){
-                    return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: newDevice })
+            newDevice.save((error,result) => {
+                if(error){
+                    let appError = new ApplicationError("DeviceCreate","400","CONTROLLER.DEVICE.CREATE.DB",error);
+                
+                    return next(appError);
+            
                 }
                 if(result){
                     log.info("notice_create/save/Result", result);

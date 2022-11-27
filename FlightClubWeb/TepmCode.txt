@@ -86,3 +86,63 @@
                 "name": "ValidationError",
                 "message": "Validation failed: status: `Removed2` is not a valid enum value for path `status`."
             }
+
+
+{status: 400, data: {…}}
+data
+: 
+data
+: 
+{status: 'Suspended', device_id: '4XGBN', device_type: '6382392e893a3d65f7af5d01', description: '', available: false, …}
+errors
+: 
+Array(1)
+0
+: 
+errors
+: 
+details.fuel.units
+: 
+{name: 'ValidatorError', message: '`0` is not a valid enum value for path `details.fuel.units`.', properties: {…}, kind: 'enum', path: 'details.fuel.units', …}
+device_status
+: 
+{name: 'ValidatorError', message: '`3` is not a valid enum value for path `device_status`.', properties: {…}, kind: 'enum', path: 'device_status', …}
+maintanance.type
+: 
+{name: 'ValidatorError', message: '`0` is not a valid enum value for path `maintanance.type`.', properties: {…}, kind: 'enum', path: 'maintanance.type', …}
+price.meter
+: 
+{name: 'ValidatorError', message: '`0` is not a valid enum value for path `price.meter`.', properties: {…}, kind: 'enum', path: 'price.meter', …}
+[[Prototype]]
+: 
+Object
+message
+: 
+"Device validation failed: device_status: `3` is not a valid enum value for path `device_status`., maintanance.type: `0` is not a valid enum value for path `maintanance.type`., details.fuel.units: `0` is not a valid enum value for path `details.fuel.units`., price.meter: `0` is not a valid enum value for path `price.meter`."
+name
+: 
+"ValidationError"
+_message
+: 
+"Device validation failed"
+[[Prototype]]
+: 
+Object
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+message
+: 
+"Failed To Save"
+success
+: 
+false
+[[Prototype]]
+: 
+Object
+status
+: 
+400

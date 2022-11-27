@@ -3,7 +3,13 @@ const parseValidationError = (error) => {
   let err = {}
   let errors = []
   try {
-    const obj = JSON.parse(JSON.stringify(error.errors))
+    let errortoParse = error;
+    if(error.errors !== undefined)
+    {
+      errortoParse = error.errors
+    }
+
+    const obj = JSON.parse(JSON.stringify(errortoParse))
     const [keys] = Object.entries(obj) 
     console.log("parseValidationError/key", keys,keys[1].name)
     for (const [key, value] of Object.entries(obj)) {
@@ -55,17 +61,19 @@ const parseExpressValidator = (error) => {
   }
 }
 const parseApplicationError = (error) => {
-  switch (error.name || "") {
+  let {name, errors} = error;
+  name = name == "" ? errors.name : name;
+  switch (name) {
     case "ValidationError":
-      return { errorType: "VALIDATION", errors: parseValidationError(error) };
+      return { errorType: "VALIDATION", errors: parseValidationError(errors) };
     case "CastError":
-      return { errorType: error.name.toUpperCase(), errors: parseCastError(error) };
+      return { errorType: name.toUpperCase(), errors: parseCastError(errors) };
     case "ExpressValidator":
-      return { errorType: "VALIDATION", errors: error.errors.errors };
+      return { errorType: "VALIDATION",  ...error.errors };
     case "EXCEPTION":
-      return { errorType: error.name, errors: [error.error] };
+      return { errorType: name, errors: [errors.error] };
     case "MongoServerError":
-      return { errorType: error.name.toUpperCase(), errors: error.message };
+      return { errorType: name.toUpperCase(), errors: [errors.message] };
     default:
       return { errorType: "", errors: [error] };
   }

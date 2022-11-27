@@ -6,8 +6,6 @@ const log = require('debug-level').log('MemberController');
 const mail = require("../Services/mailService");
 
 var { body, validationResult } = require('express-validator');
-const passGen = require('../Services/passwordGenerator');
-const role = require('../Models/role');
 
 
 exports.member_list = function (req, res, next) {
@@ -61,7 +59,7 @@ exports.member_delete = [
         log.info(`member_delete`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("member_delete", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+            return next(new ApplicationError("member_delete", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         try {
             async.parallel({
@@ -98,7 +96,7 @@ exports.member_status = [
         log.info(`member_stats`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("member_status", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+            return next(new ApplicationError("member_status", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         try {
             async.parallel({
@@ -127,6 +125,12 @@ exports.member_status = [
 exports.member_update = [
     body('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
     body('member_id').trim().isLength({ min: 1 }).escape().withMessage('member_id must be specified'),
+    body('contact.email').isEmail().escape().withMessage('email must be specified'),
+    body('contact.billing_address.line1').trim().isLength({ min: 1 }).escape(),
+    body('contact.billing_address.city').trim().isLength({ min: 1 }).escape(),
+    body('contact.billing_address.postcode').trim().isLength({ min: 1 }).escape(),
+    body('contact.billing_address.province').trim().isLength({ min: 1 }).escape(),
+    body('contact.billing_address.state').trim().isLength({ min: 1 }).escape(),
     body('first_name').trim().isLength({ min: 1 }).escape().withMessage('first_name must be specified '),
     body('family_name').trim().isLength({ min: 1 }).escape().withMessage('family_name must be specified'),
     body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601().toDate(),
@@ -136,7 +140,7 @@ exports.member_update = [
             const errors = validationResult(req);
             log.info("member_update", req.body);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("member_update", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+                return next(new ApplicationError("member_update", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
             }
             else if (req.body.username || req.body.password) {
                 return res.status(400).json({ success: false, errors: ["username / password not allowed"], data: req.body });
@@ -186,7 +190,7 @@ exports.member_create = [
             const errors = validationResult(req);
             log.info(req.body);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("member_create", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+                return next(new ApplicationError("member_create", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
             }
             else {
                 const user = req.body;
@@ -218,7 +222,7 @@ exports.member_create = [
                                 console.log("membertosave/Result", result);
                                 console.log("member.contact.email", member.contact.email)
                                 mail.SendMail(user.contact.email, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
-                                    .then((result) => {
+                                    .then(() => {
                                         console.log("Send Mail to:", user.contact.email);
                                         res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail", data: member })
                                     }).catch((err => {

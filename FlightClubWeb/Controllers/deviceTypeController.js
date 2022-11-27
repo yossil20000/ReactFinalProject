@@ -34,7 +34,7 @@ exports.deviceType_delete = [
             log.info('deviceType_delete', req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("deviceType_delete", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+                return next(new ApplicationError("deviceType_delete", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
             }
             Device.find({ device_type: req.body._id }).exec((err, results) => {
                 if (err) { return next(err); }
@@ -62,16 +62,16 @@ exports.deviceType_status = [
         log.info(`deviceType_status`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("deviceType_status", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+            return next(new ApplicationError("deviceType_status", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         try {
             async.parallel({
                 deviceType: function (callback) {
-                    DeviceType.updateOne({}, req.body, { runValidators: true }).exec(callback);
+                    DeviceType.updateOne({_id: req.body._id}, {status : req.body.status}, { runValidators: true }).exec(callback);
                 }
 
-            }, function (err, results) {
-                if (err) { return next(err); }
+            }, function (errors, results) {
+                if (errors) { return next(new ApplicationError("deviceType_status", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "", errors })); }
                 if (results.deviceType.acknowledged) {
 
                     if (results.deviceType.acknowledged == false) {
@@ -100,7 +100,7 @@ exports.deviceType_update = [
         log.info(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("deviceType_update", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+            return next(new ApplicationError("deviceType_update", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         else {
             DeviceType.findById(req.body._id, (err, results) => {
@@ -142,7 +142,7 @@ exports.deviceType_create = [
         log.info(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("deviceType_create", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+            return next(new ApplicationError("deviceType_create", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         else {
             let newDeviceType = new DeviceType({
@@ -156,7 +156,7 @@ exports.deviceType_create = [
             })
             newDeviceType.save((err, result) => {
                 if (err) { return next(err); }
-                res.status(400).json({ success: true, errors: [err], data: result });
+                res.status(201).json({ success: true, errors: [err], data: result });
                 return;
             });
         }
