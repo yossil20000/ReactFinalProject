@@ -13,6 +13,7 @@ exports.notice_list = function (req, res, next) {
                     return next(err); log.debug(err);
                 }
                 else {
+                    log.info('notice_list/results',list_notices.length );
                     res.status(201).json({ success: true, errors: [], data: list_notices });
                     return;
                 }

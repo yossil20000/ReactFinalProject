@@ -62,7 +62,7 @@ app.use('/api/memberships', membershipRouter);
 app.use('/api/club_notice', clubNoticeRouter);
 app.use("/api/flight", flightRouter);
 app.use((err, req, res, next) => {
-  console.error(err);
+  console.error('\x1b[31m',err);
   next(err);
 });
 // catch 404 and forward to error handler
