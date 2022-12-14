@@ -1,40 +1,57 @@
-import { Box, Grid, TextField } from '@mui/material'
-import React, { useCallback, useEffect, useState } from 'react'
+import "../../../Types/date.extensions"
+import { Box, Button, Checkbox, Divider, FormControlLabel, Grid } from '@mui/material'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { NoticeContext, NoticeContextType } from '../../../app/Context/NoticeContext';
 import ActionButtons, { EAction } from '../../../Components/Buttons/ActionButtons'
-import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
-import StatusCombo from '../../../Components/Buttons/StatusCombo';
+import Stepper from '../../../Components/Buttons/Stepper';
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert'
-import MembershipCombo from '../../../Components/Membership/MembershipCombo';
-import { useCreateNoticeMutation, useUpdateNoticeMutation } from '../../../features/clubNotice/noticeApiSlice';
-import { useCreateMembershipMutation, useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
+import { useCreateNoticeMutation, useDeleteNoticeMutation, useFetchAllNoticesQuery, useUpdateNoticeMutation } from '../../../features/clubNotice/noticeApiSlice';
 import { useFetchAllClubNoticeQuery } from '../../../features/Users/userSlice';
 import useLocalStorage from '../../../hooks/useLocalStorage';
-import IClubNotice, { NewNotice } from '../../../Interfaces/API/IClubNotice';
-import IMembership, { IMembershipBase, NewMembership } from '../../../Interfaces/API/IMembership';
-import IMemberUpdate from '../../../Interfaces/IMemberInfo';
+import IClubNotice, { INoticeFilter, NewNotice, NewNoticeFilter } from '../../../Interfaces/API/IClubNotice';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
-import { getSelectedItem, setProperty } from '../../../Utils/setProperty';
+import { setProperty } from '../../../Utils/setProperty';
+import NoticeEdit from './NoticeEdit';
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { setNotice } from "../../../features/clubNotice/noticeSlice";
 const source = "NoticeTab/status"
 function NoticeTab() {
+  const { isError, isLoading, isSuccess, isFetching, error, data: notices } = useFetchAllNoticesQuery();
+  const notice: IClubNotice = useAppSelector((state) => state.selectedNotice as IClubNotice);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [selectedItem, setSelectedItem] = useLocalStorage<IClubNotice>("NoticeTab/selectedItem", NewNotice);
-  const {data,isError,error} = useFetchAllClubNoticeQuery();
-
+  const [noticeFilter, setNoticeFilter] = useLocalStorage<INoticeFilter>("NoticeTab/Filter", NewNoticeFilter);
   const [updateNotice] = useUpdateNoticeMutation();
-  const [createNotice] = useCreateNoticeMutation()
+  const [createNotice] = useCreateNoticeMutation();
+  const [deleteNotice] = useDeleteNoticeMutation();
   const { refetch } = useFetchAllClubNoticeQuery();
+  const noticeDispatch = useAppDispatch();
 
-  useEffect(() => {
-    if(error){
-      console.log("NoticeTab/errors",error);
-    }
-  },[isError])
-  useEffect(() => {
-    if(data){
-      console.log("NoticeTab/data",data);
-      setSelectedItem(data.data[0])
-    }
-  },[data])
+  const filter = useCallback(() => {
+    console.log("NoticeTab/callback/notice")
+    const now = new Date();
+    const filtered = notices?.data?.filter((notice) => {
+      console.log("Filter/notice.due_date < new Date(): ", new Date(notice.due_date).getTime(), new Date().getTime(), new Date(notice.due_date).getTime() < new Date().getTime())
+      if (noticeFilter.public && !notice.isPublic) return false;
+      if (noticeFilter.expired && !notice.isExpired) return false;
+      if (noticeFilter.isValid && notice.isExpired) {
+        if (new Date(notice.due_date).getTime() < new Date().getTime())
+          return false;
+      }
+      if (noticeFilter.isValid === false ) {
+        if (notice.isExpired && new Date(notice.due_date).getTime() <= new Date().getTime())
+          return true;
+        return false
+      }
+      return true;
+    })
+    console.log("NoticeTab/callback/filteed", filtered)
+    return filtered?.sort((left,right) => {
+      if(noticeFilter.isValid)
+        return new Date(left.issue_date).getTime() - new Date(right.issue_date).getTime();
+      else 
+      return new Date(left.due_date).getTime() - new Date(right.due_date).getTime();
+    });
+  }, [noticeFilter])
   const onValidationAlertClose = () => {
     setValidationAlert([]);
   }
@@ -42,8 +59,8 @@ function NoticeTab() {
     let payLoad: any;
     try {
       setValidationAlert([]);
-      if (selectedItem !== undefined && selectedItem?._id !== "") {
-        payLoad = await updateNotice(selectedItem as unknown as IClubNotice).unwrap();
+      if (notice !== undefined && notice?._id !== "") {
+        payLoad = await updateNotice(notice as unknown as IClubNotice).unwrap();
         console.log("NoticeTab/OnSave/payload", payLoad);
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
@@ -51,7 +68,35 @@ function NoticeTab() {
 
       }
       else {
-        throw new Error("Selected Membership UnDefined");
+        payLoad = await createNotice(notice as unknown as IClubNotice).unwrap();
+        console.log("NoticeTab/OnSave/payload", payLoad);
+        if (payLoad.error) {
+          setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
+        }
+
+      }
+    }
+    catch (error) {
+      console.error("DeviceTab/OnSave/error", error);
+      setValidationAlert(getValidationFromError(error, onValidationAlertClose));
+
+    }
+    finally {
+      refetch();
+    }
+
+  }
+  async function onDelete(): Promise<void> {
+    let payLoad: any;
+    try {
+      setValidationAlert([]);
+      if (notice !== undefined && notice?._id !== "") {
+        payLoad = await deleteNotice(notice._id).unwrap();
+        console.log("NoticeTab/OnDelete/payload", payLoad);
+        if (payLoad.error) {
+          setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
+        }
+
       }
     }
     catch (error) {
@@ -69,57 +114,89 @@ function NoticeTab() {
     console.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
-        setSelectedItem(NewNotice);
+        noticeDispatch(setNotice(NewNotice));
         break;
       case EAction.SAVE:
         onSave()
         break;
+      case EAction.DELETE:
+        onDelete();
+
     }
   }
 
-  const onMemberTypeChanged = (item: InputComboItem) => {
-    console.log("onMemberTypeChanged/Item", item)
-    const foundItem = data?.data.find((i) => item._id === i._id);
-    if (foundItem && foundItem !== null) {
-      setSelectedItem(foundItem);
-     /* console.log("onMemberTypeChanged/foundItem", foundItem) */
 
-    } 
+  const onStepChange = (step: number) => {
+    const notice = filter()?.at(step);
+    console.log("NoticeTab/OnStepChanged/notice/step", notice, step)
+    if (notice === undefined) {
+      console.log("NoticeTab/OnStepChanged/empty")
+      return;
+    };
+    console.log("NoticeTab/OnStepChanged/Set")
+    noticeDispatch(setNotice(notice));
+    if (filter()?.at(step) === undefined || filter()?.at(step) === null) {
+      console.log("NoticeTab/OnStepChanged/empty")
+      noticeDispatch(setNotice(NewNotice));
+    }
+    else {
+      console.log("NoticeTab/OnStepChanged/notice", notice)
+      noticeDispatch(setNotice(notice));
+    }
+
 
   }
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("NoticeEdit/handleBoolainChange", event.target.name, event.target.checked)
 
-  const SetProperty = (obj: any, path: string, value: any): any => {
-    let newObj = { ...obj };
-    newObj = setProperty(newObj, path, value);
-    console.log("SetProperty/newobj", newObj)
-    return newObj;
-  }
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
-    const newObj: IClubNotice = SetProperty(selectedItem, event.target.name, event.target.value) as IClubNotice;
-
-    setSelectedItem(newObj)
+    setNoticeFilter((prev: any) => ({
+      ...prev,
+      [event.target.name]: event.target.checked,
+    }));
   };
+  const getMaxSteps = (): number => {
+    const maxLength = filter()?.length;
+    if (maxLength === undefined) return 0;
+    return maxLength;
+  }
   return (
     <div className='yl__container' style={{ height: "100%", position: "relative" }}>
       <div className='header'>
-        <Box marginTop={2}>
-          <Grid container width={"100%"} height={"100%"} gap={2}>
-            <Grid item xs={12}>
-    
-            </Grid>
+        <Grid container columns={12} width={"100%"}>
+
+          <Grid item xs={12}>
+            <Divider textAlign="left">Sort & Navigation</Divider>
           </Grid>
-        </Box>
+          <Grid item xs={3}><Button>fff</Button> </Grid>
+          <Grid item xs={8}><Stepper initialStep={0} maxSteps={getMaxSteps()} leftButton='Prev' rightButton='Next' onStepChange={onStepChange} /></Grid>
+        </Grid>
+        <Grid container columns={12} width={"100%"}>
+
+          <Grid item xs={12}>
+            <Divider textAlign="left">Filter</Divider>
+          </Grid>
+          <Grid item xs={4}  >
+            <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"isValid"} checked={noticeFilter?.isValid} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Valid" />
+          </Grid>
+
+          <Grid item xs={4} >
+            <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"expired"} checked={noticeFilter?.expired} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Expired" />
+          </Grid>
+          <Grid item xs={4} >
+            <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"public"} checked={noticeFilter?.public} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Public" />
+          </Grid>
+
+        </Grid>
+        <Divider variant="fullWidth" textAlign="left">Current Messgae</Divider>
       </div>
       <div className='main' style={{ overflow: "auto", height: "100%" }}>
-        <Box marginTop={3} >
-    
+        <Box marginTop={2}>
+          {getMaxSteps() === 0 ? null : <NoticeEdit />}
         </Box>
       </div>
       <div className='footer'>
-
         <Box className='yl__action_button'>
-          <ActionButtons OnAction={onAction} show={[EAction.SAVE]} />
+          <ActionButtons OnAction={onAction} show={[EAction.SAVE, EAction.ADD, EAction.DELETE]} />
         </Box>
         <Grid container>
           {validationAlert.map((item) => (

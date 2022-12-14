@@ -8,6 +8,7 @@ import { flightApi } from "../features/Flight/flightApi";
 import { noticeApiSlice } from "../features/clubNotice/noticeApiSlice";
 import { deviceTypesApiSlice } from "../features/DeviceTypes/deviceTypesApiSlice";
 import { membershipApiSlice } from "../features/membership/membershipApiSlice";
+import noticeSliceReducer from "../features/clubNotice/noticeSlice";
 
 export const storeUser = configureStore({
     reducer:{
@@ -20,9 +21,12 @@ export const storeUser = configureStore({
         [deviceTypesApiSlice.reducerPath] : deviceTypesApiSlice.reducer,
         [membershipApiSlice.reducerPath] : membershipApiSlice.reducer,
         authSlice: authSliceReducer ,
+        selectedNotice: noticeSliceReducer
     },
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware()
+        return getDefaultMiddleware({
+            serializableCheck: false
+        })
         .concat(apiSlice.middleware)
         .concat(authApiSlice.middleware)
         .concat(deviceApiSlice.middleware)

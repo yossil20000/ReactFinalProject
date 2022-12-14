@@ -1,8 +1,7 @@
-import { Grid,  TextField,Theme,styled } from '@mui/material'
+import { Grid,  TextField } from '@mui/material'
 import DeviceTypeEngienCombo from '../../../Components/Devices/DeviceTypeEngienCombo'
-import  { useContext, useState } from 'react'
-import IDeviceType, { CategoryType, EngienType, newDeviceType, SurfaceType } from '../../../Interfaces/API/IDeviceType'
-import { useFetchAllDeviceTypesQuery } from '../../../features/DeviceTypes/deviceTypesApiSlice';
+import  { useContext } from 'react'
+import IDeviceType, {  } from '../../../Interfaces/API/IDeviceType'
 import { getSelectedItem, setProperty } from '../../../Utils/setProperty'
 import DeviceTypeSurfaceCombo from '../../../Components/Devices/DeviceTypeSurfaceCombo'
 import DeviceTypeCategoryCombo from '../../../Components/Devices/DeviceTypeCategoryCombo'
@@ -10,7 +9,6 @@ import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import StatusCombo from '../../../Components/Buttons/StatusCombo';
 const source: string = "DeviceTypeItem"
-const initialValues =  newDeviceType;
 
 
 //emotion
@@ -23,15 +21,7 @@ const initialValues =  newDeviceType;
   
 }
 ` */
-const StyledGrid = styled(Grid)(({theme}) => ({
-color: theme?.palette.primary.main,
-}))
 
-const inlineStyle = {
-  fontSize: '1rem',
-  backgroundColor: '#f5f5dc',
-
-}
 
 function DeviceTypeItem() {
   const { selectedItem, setSelectedItem } = useContext(DeviceTypesContext) as DeviceTypesContextType;

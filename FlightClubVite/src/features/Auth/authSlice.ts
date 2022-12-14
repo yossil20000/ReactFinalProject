@@ -1,9 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
-import IAuth from '../../Interfaces/API/IAuth';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import { Role } from '../../Interfaces/API/IMember';
-import IMemberInfo from '../../Interfaces/IMemberInfo';
 import { getFromLocalStorage, setLocalStorage } from '../../Utils/localStorage';
 let initialState: ILoginResult = {
     access_token: '',
@@ -17,7 +15,8 @@ let initialState: ILoginResult = {
         family_name: "",
         first_name: "",
         roles: [Role.guest],
-        email: ""
+        email: "",
+        username:""
 
     }
 }

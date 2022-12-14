@@ -62,7 +62,7 @@ const items: ScrollableTabsItem[] = [
 
 function AdminPage() {
   const [theme1, colorMode1] = useMode()
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useLocalStorage<number>("_adminPage",0);
   const [mode, setMode] = useState<PaletteMode>('light');
   const { data: devices, isError, isLoading, isSuccess, error } = useFetchAllDevicesQuery();
   const { data: members} = useFetchMembersAdminQuery();

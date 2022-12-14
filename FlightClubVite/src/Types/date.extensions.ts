@@ -11,6 +11,7 @@ declare global {
       isSameDate(date: Date): boolean;
       getWeek() : number;
       isSameMonth(date : Date) : boolean;
+      getDisplayDate() : string;
    }
 }
 
@@ -55,3 +56,7 @@ Date.prototype.getWeek = function () : number  {
 Date.prototype.isSameMonth = function (date: Date): boolean  {
   return date && this.getFullYear() === date.getFullYear() && this.getMonth() === date.getMonth();
 };
+
+Date.prototype.getDisplayDate = function () : string {
+   return this.toDateString()
+}

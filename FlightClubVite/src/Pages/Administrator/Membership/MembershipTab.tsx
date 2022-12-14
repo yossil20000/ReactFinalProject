@@ -7,8 +7,7 @@ import { IValidationAlertProps, ValidationAlert } from '../../../Components/Butt
 import MembershipCombo from '../../../Components/Membership/MembershipCombo';
 import { useCreateMembershipMutation, useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
 import useLocalStorage from '../../../hooks/useLocalStorage';
-import IMembership, { IMembershipBase, NewMembership } from '../../../Interfaces/API/IMembership';
-import IMemberUpdate from '../../../Interfaces/IMemberInfo';
+import IMembership, { NewMembership } from '../../../Interfaces/API/IMembership';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
 import { getSelectedItem, setProperty } from '../../../Utils/setProperty';
 const source = "MembershipTab/status"
@@ -18,7 +17,6 @@ function MembershipTab() {
   const {data,isError,error} = useFetchAllMembershipQuery();
 
   const [updateMembership] = useUpdateMembershipMutation();
-  const [createMembership] = useCreateMembershipMutation()
   const { refetch } = useFetchAllMembershipQuery();
 
   useEffect(() => {

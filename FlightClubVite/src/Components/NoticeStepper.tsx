@@ -1,3 +1,4 @@
+import '../Types/date.extensions.ts';
 import '../index.css'
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -9,16 +10,53 @@ import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import IClubNotice from '../Interfaces/API/IClubNotice';
+import { Role } from '../Interfaces/API/IMember';
+import { TextField } from '@mui/material';
+import styled from '@emotion/styled';
+import { red } from '@mui/material/colors';
 
-export interface IStepper{
-  title : string;
-  message: string;
-}
-export interface IStepperProps{
+
+const CssTextField = styled(TextField)({
+  "& .MuiInputBase-root.Mui-disabled": {
+    color: '#5E07A0' // (default alpha is 0.38)
+  },
+  '& input.Mui-disabled': {
+      color: "blue"
+  },
+  '& label.Mui-focused': {
+      color: '#5E07A0'
+  },
+  '& .MuiFilledInput-root': {
+      backgroundColor: '#ffff',
+      borderRadius: '12px'
+  },
+  '& .MuiFilledInput-root.Mui-focused': {
+      backgroundColor:'#ffff',
+      border: '1px solid #8000C7',
+      boxSizing: 'border-box'
+  },
+  '& .MuiFilledInput-root:hover': {
+      backgroundColor:'#ffff',
+      border: '1px solid #8000C7',
+      boxSizing: 'border-box'
+  },
+  '& .MuiFilledInput-root.Mui-disabled': {
+      backgroundColor:'#E5E5E5',
+      border: '1px solid #8000C7',
+      boxSizing: 'border-box'
+  },
+  '& .MuiFormHelperText-root': {
+      color: '#F53938',
+  }
+})
+export interface INoticeStepperProps{
   header: string;
   steppers : IClubNotice[];
+  role: Role;
+  editMode: boolean;
+  children: JSX.Element;
 }
-export default function Stepper({header ,steppers} : IStepperProps) {
+export default function NoticeStepper({header ,steppers,editMode,role,children} : INoticeStepperProps) {
 
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -33,15 +71,17 @@ export default function Stepper({header ,steppers} : IStepperProps) {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => (prevActiveStep - 1) < 0 ? maxSteps-1 : prevActiveStep - 1);
   };
-
+ 
   return (
-    <Box sx={{ width: '100%', flexGrow: 1 }}>
+    <Box sx={{ width: '100%', flexGrow: 1}}>
       <Typography sx={{ height: "4ex", textAlign: "center" }}>{header}</Typography>
       <Paper
         square
         elevation={10}
         sx={{
           display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-around',
           alignItems: 'center',
           height: 30,
           pl: 2,
@@ -49,10 +89,26 @@ export default function Stepper({header ,steppers} : IStepperProps) {
         }}
       >
         <Typography>{steppers[activeStep]?.title}</Typography>
+       
+        
       </Paper>
-      <Box sx={{ height: "15ex", maxWidth: 400, width: '100%', p: 2 }}>
-        {steppers[activeStep]?.description}
+      <Box sx={{ minHeight: "15ex", width: '100%', p: 2 }}>
+      <TextField
+            variant="standard"
+            sx={{ marginLeft: "0px", width: "100%" ,height:"100%" , "& .Mui-disabled": {
+              color: '#500DB0' // (default alpha is 0.38)
+            },"& .MuiInputBase-input-MuiInput-input.Mui-disabled":{color: '#5A0DB0'}}}
+            name="description"
+            
+            helperText={`Issue: ${steppers[activeStep]?.issue_date.getDisplayDate()} Due: ${steppers[activeStep]?.due_date.getDisplayDate()}`}
+            value={steppers[activeStep]?.description}
+            disabled
+            multiline
+            fullWidth
+            
+          />
       </Box>
+     
       {/* <BasicCard title={steps[activeStep].label} description={steps[activeStep].description} ></BasicCard> */}
       <MobileStepper
         variant="text"
@@ -84,6 +140,7 @@ export default function Stepper({header ,steppers} : IStepperProps) {
           </Button>
         }
       />
+       
     </Box>
   );
 }

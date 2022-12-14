@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react'
+
+import { useContext, useEffect, useState } from 'react'
 import TitlebarBelowMasonryImageList from '../../Components/Masonry/TitlebarImages';
-import Stepper,{IStepperProps,IStepper} from '../../Components/Stepper'
+import NoticeStepper from '../../Components/NoticeStepper'
 import imege1 from '../../Asset/TileBar/IMG-20190715-WA0002.jpg';
 import imege2 from '../../Asset/TileBar/IMG-20200222-WA0010.jpg';
 import imege3 from '../../Asset/TileBar/IMG-20200221-WA0098.jpg';
+import { Role } from '../../Interfaces/API/IMember';
+import { NoticeContext, NoticeContextType } from '../../app/Context/NoticeContext';
 import IClubNotice from '../../Interfaces/API/IClubNotice';
 import { useFetchAllNoticesQuery } from '../../features/clubNotice/noticeApiSlice';
+
 const itemData = [
   {
     img: imege1,
@@ -39,12 +43,15 @@ function HomePage() {
     }
         },[data])
 
+ 
   return (
+    
     <div className='main'>
     
-    <Stepper header='Club Messages' steppers={notices}/>
+    <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>}/>
     <TitlebarBelowMasonryImageList imageList={itemData}/>
     </div>
+    
   )
 }
 

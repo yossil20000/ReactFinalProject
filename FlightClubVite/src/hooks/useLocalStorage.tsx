@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
 type ReturnType<T> = [
-  T | undefined,
-  React.Dispatch<React.SetStateAction<T | undefined>>
+  T,
+  React.Dispatch<React.SetStateAction<T>>
 ]
 
 function useLocalStorage<T>(key: string, initialValue: T): ReturnType<T> {
-  const [state, setState] = useState<T | undefined>(() => {
+  const [state, setState] = useState<T>(() => {
     
     try {
       const value =  sessionStorage.getItem(key);

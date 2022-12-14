@@ -181,14 +181,14 @@ function DeviceTabItem() {
                 
                 label="Device Id" placeholder="4xcgc" variant="standard"
                 value={selectedItem?.device_id} required
-                helperText="" error={false} />
+                helperText="" error={false} InputLabelProps={{ shrink: true }}/>
             </Grid>
 
             <Grid item xs={2} md={2}>
               <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
                 label="Description" placeholder="description" variant="standard"
                 value={selectedItem?.description} required
-                helperText="" error={false} multiline />
+                helperText="" error={false} multiline InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
 
