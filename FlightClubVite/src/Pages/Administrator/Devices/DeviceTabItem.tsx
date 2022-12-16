@@ -14,7 +14,6 @@ import DeviceTypesCombo, { deviceTypeToItemCombo } from '../../../Components/Dev
 import { DevicesContext, DevicesContextType } from '../../../app/Context/DevicesContext';
 import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext';
 import MultiOptionCombo from '../../../Components/Buttons/MultiOptionCombo';
-import MUISelect from '../../../Components/Buttons/MUISelect';
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import IDeviceType from '../../../Interfaces/API/IDeviceType';
 import StatusCombo from '../../../Components/Buttons/StatusCombo';
@@ -26,7 +25,7 @@ const labelsFromDEVICE_INS = (): LabelType[] => {
         name: name,
         color: DEVICE_INS[name as keyof typeof DEVICE_INS].toString(),
         description: name,
-        _id: ""
+        _id: index.toString()
       }
     })
   return lables;
@@ -43,19 +42,19 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function DeviceTabItem() {
-
+  
 
   const { setSelectedItem, selectedItem ,membersCombo} = useContext(DevicesContext) as DevicesContextType;
   const { selectedItem: selectdDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
  
   const memberCanReserve = useCallback(() : (LabelType[] ) => {
-      const labels : (LabelType[] | undefined) = membersCombo?.map((item) => ({_id: item._id,name: `${item.family_name} ${item.member_id}`, description: "", color: '#fff'} ));
+      const labels : (LabelType[] | undefined) = membersCombo?.map((item) => ({_id: item._id,name: `${item.family_name} ${item.member_id}`, description: "", color: '#008672'} ));
       console.log("memberCanReserve/labels",labels)
       if(labels === undefined || labels === null)
         return []
       return labels;
   },[membersCombo])
-
+  const permissionLabelItems = memberCanReserve();
   console.log("DeviceTabItem/deviceItem.current", selectedItem?.description);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
@@ -124,16 +123,26 @@ function DeviceTabItem() {
     return [];
   }
   const getSelectedCanreserve = (): LabelType[] => {
-
+    let canReserve : LabelType[] = [];
     if (selectedItem !== undefined && selectedItem) {
+      console.log("canreserv/memberCanReserve()",memberCanReserve(),selectedItem.can_reservs)
       const initial = selectedItem.can_reservs.map((item) => {
-        return item.toString();
+        if(typeof item === 'string'){
+          const found = memberCanReserve().find((i : LabelType) => i._id === item);
+          if(found !== undefined){
+            
+          
+            canReserve.push(found)
+            console.log("canreserv/getSelectedCanreserve/found",found)
+          }
+        }
+        
       });
-      const result = navLableItems.filter((item) => (initial.includes(item.name)))
-      return result;
+      console.log("canreserv/getSelectedCanreserve",canReserve)
+      return canReserve;
 
     }
-    return [];
+    return canReserve;
   }
  
  
@@ -166,7 +175,7 @@ function DeviceTabItem() {
           id="general-header"
         ><Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
             <Grid item xs={2}>
-              <Typography sx={{ width: "100%", flexShrink: 0 }}>General Device {selectedItem?.device_id}</Typography>
+              <Typography sx={{ width: "100%", flexShrink: 0 }}>General Device {selectedItem?.device_id} {(selectedItem?.device_type as IDeviceType).name}</Typography>
             </Grid>
           </Grid>
         </AccordionSummary>
@@ -194,16 +203,16 @@ function DeviceTabItem() {
 
               <TextField fullWidth onChange={handleChange} id="hobbs_meter" label="Hobbs"
                 name="hobbs_meter" placeholder="Hobbs meter" variant="standard"
-                value={selectedItem?.hobbs_meter} />
+                value={selectedItem?.hobbs_meter} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="engien_meter" label="Engien"
                 name="engien_meter" placeholder="Engien meter" variant="standard"
-                value={selectedItem?.engien_meter} />
+                value={selectedItem?.engien_meter} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={2} justifySelf={"center"}>
               {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
-              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={getSelectedCanreserve()} items={memberCanReserve() === undefined ? [] : memberCanReserve() } onSelected={onSelecteCanReserv} />
+              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={getSelectedCanreserve()} items={permissionLabelItems === undefined ? [] : memberCanReserve() } onSelected={onSelecteCanReserv} />
             </Grid>
           </Grid>
         </AccordionDetails>
@@ -234,7 +243,7 @@ function DeviceTabItem() {
             <Grid item xs={1}>
               <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
                 placeholder="Next maintanance" variant="standard"
-                value={selectedItem?.maintanance.next_meter} error={false} helperText="" />
+                value={selectedItem?.maintanance.next_meter} error={false} helperText=""InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.device_status.toString() ,_id: "",description: ""}}/>
@@ -270,18 +279,18 @@ function DeviceTabItem() {
             <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
             <Grid item xs={1}>
               <TextField type={"number"} fullWidth onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
-                value={selectedItem?.price.base} helperText="" />
+                value={selectedItem?.price.base} helperText="" InputLabelProps={{ shrink: true }}/>
             </Grid>
 
               <Grid item xs={1} md={1}>
-                <TextField type={"number"} fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} />
+                <TextField type={"number"} fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} InputLabelProps={{ shrink: true }}/>
               </Grid>
               <Grid item xs={1}>
                 <TextField type={"number"} fullWidth onChange={handleChange} required name="details.seats" label="Seats" placeholder="Seats" variant="standard"
-                  value={selectedItem?.details.seats} helperText="" />
+                  value={selectedItem?.details.seats} helperText="" InputLabelProps={{ shrink: true }}/>
               </Grid>
               <Grid item xs={1}>
-                <TextField fullWidth onChange={handleChange} name="details.color" label="Color" placeholder="device out color" variant="standard" value={selectedItem?.details.color} />
+                <TextField fullWidth onChange={handleChange} name="details.color" label="Color" placeholder="device out color" variant="standard" value={selectedItem?.details.color} InputLabelProps={{ shrink: true }}/>
               </Grid>
 
             <Grid item xs={2} justifySelf={"center"}>

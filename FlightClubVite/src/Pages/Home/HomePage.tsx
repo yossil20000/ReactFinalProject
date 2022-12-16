@@ -9,6 +9,7 @@ import { Role } from '../../Interfaces/API/IMember';
 import { NoticeContext, NoticeContextType } from '../../app/Context/NoticeContext';
 import IClubNotice from '../../Interfaces/API/IClubNotice';
 import { useFetchAllNoticesQuery } from '../../features/clubNotice/noticeApiSlice';
+import { Box } from '@mui/material';
 
 const itemData = [
   {
@@ -47,9 +48,11 @@ function HomePage() {
   return (
     
     <div className='main'>
-    
+    <Box marginTop={2} display={'flex'} flexDirection={'column'}>
     <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>}/>
     <TitlebarBelowMasonryImageList imageList={itemData}/>
+    </Box>
+
     </div>
     
   )

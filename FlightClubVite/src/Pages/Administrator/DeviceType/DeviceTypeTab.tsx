@@ -4,10 +4,10 @@ import { useCreateDeviceTypeMutation, useFetchAllDeviceTypesQuery, useUpdateDevi
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import DeviceTypesCombo from '../../../Components/Devices/DeviceTypesCombo'
 import DeviceTypeItem from './DeviceTypeItem'
-import { DeviceTypesContext } from '../../../app/Context/DeviceTypesContext'
+import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext'
 import ActionButtons,{ EAction} from '../../../Components/Buttons/ActionButtons'
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert'
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser'
 import { IStatus, Status } from '../../../Interfaces/API/IStatus'
@@ -36,13 +36,14 @@ const inlineStyle = {
 }
 
 function DeviceTypeTab() {
+  const { selectedItem, setSelectedItem } = useContext(DeviceTypesContext) as DeviceTypesContextType;
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const { data: items, isError, isLoading, isSuccess, error } = useFetchAllDeviceTypesQuery();
   const [updateDeviceType] = useUpdateDeviceTypeMutation();
   const [createDeviceType] = useCreateDeviceTypeMutation();
   const [updateStatusDeviceType] = useUpdateStatusDeviceTypeMutation();
   const { refetch } = useFetchAllDeviceTypesQuery();
-  const [selected, setSelected] = useLocalStorage<IDeviceType | null | undefined>('_admin/DeviceTab/DeviceType', null);
+  
   
   const onValidationAlertClose = () => {
     setValidationAlert([]);
@@ -51,7 +52,7 @@ function DeviceTypeTab() {
   const onDeviceTypeChanged = (item: InputComboItem) => {
     const foundItem = items?.data.find((i) => item._id === i._id);
     if (foundItem && foundItem !== null) {
-      setSelected(foundItem);
+      setSelectedItem(foundItem);
       console.log("onDeviceTypeChanged/foundItem", foundItem)
 
     }
@@ -61,15 +62,15 @@ function DeviceTypeTab() {
     let payLoad: any;
     try {
       setValidationAlert([]);
-      if (selected?._id.length == 0) {
+      if (selectedItem?._id.length == 0) {
         let newDevice: IDeviceType;
-        newDevice = { ...selected };
+        newDevice = { ...selectedItem };
         console.log("DeviceTypeTab/OnCreate/newDevice", newDevice);
         payLoad = await createDeviceType(newDevice).unwrap();
         console.log("DeviceTypeTab/OnCreate/payload", payLoad);
       }
-      else if (selected) {
-        payLoad = await updateDeviceType(selected).unwrap();
+      else if (selectedItem) {
+        payLoad = await updateDeviceType(selectedItem).unwrap();
         console.log("DeviceTypeTab/OnUpdate/payload", payLoad);
       }
       if(payLoad.error){
@@ -86,9 +87,9 @@ function DeviceTypeTab() {
   async function onDelete(): Promise<void> {
     let payLoad: any;
     try {
-      if (selected?._id) {
+      if (selectedItem?._id) {
         const updateStatus: IStatus = {
-          _id: selected?._id,
+          _id: selectedItem?._id,
           status: Status.Suspended
         }
         payLoad = await updateStatusDeviceType(updateStatus);
@@ -98,7 +99,7 @@ function DeviceTypeTab() {
         }
         else{
           refetch();
-          setSelected(null)
+          setSelectedItem(null)
         }
         
       }
@@ -113,7 +114,7 @@ function DeviceTypeTab() {
     console.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
-        setSelected(newDeviceType);
+        setSelectedItem(newDeviceType);
         break;
       case EAction.DELETE:
         onDelete();
@@ -124,7 +125,7 @@ function DeviceTypeTab() {
     }
   }
   return (
-    <DeviceTypesContext.Provider value={{ deviceTypes: items?.data, selectedItem: selected, setSelectedItem: setSelected }}>
+    
       <div className='yl__container' style={{ height: "100%", position: "relative" }}>
         <div className='header'>
           <Box marginTop={2}>
@@ -160,7 +161,7 @@ function DeviceTypeTab() {
       </div>
  
       
-    </DeviceTypesContext.Provider>
+    
   )
 }
 

@@ -34,7 +34,7 @@ function DeviceTypeItem() {
     setSelectedItem(newObj)
   };
   const onComboChanged = (item: InputComboItem, prop:string): void => {
-    console.log("onComboChanged/item", item, prop);
+    console.log("DeviceTypeItem/onComboChanged/item", item, prop,selectedItem);
     const newObj: IDeviceType = SetProperty(selectedItem, prop, item.lable) as IDeviceType;
     setSelectedItem(newObj)
   }
@@ -42,7 +42,7 @@ function DeviceTypeItem() {
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("SetProperty/newobj", newObj)
+    console.log("DeviceTypeItem/SetProperty/newobj", newObj)
     return newObj;
   }
   return (
