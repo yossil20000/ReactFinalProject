@@ -7,7 +7,7 @@ const authorize = require('../middleware/authorize');
 const { ROLES } = require('../Models/constants');
 
 router.put('/login', loginController.signin);
-router.put('/logout',)
+router.put('/logout',loginController.logout)
 router.put('/reset_password', loginController.reset);
 router.get('/hidden', authJWT.authenticate, function(req,res,next) {
 

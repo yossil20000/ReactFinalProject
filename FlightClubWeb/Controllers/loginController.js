@@ -6,6 +6,7 @@ const mail = require("../Services/mailService");
 const jwtService = require('../Services/jwtService');
 const authJWT = require('../middleware/authJWT');
 const passGen = require('../Services/passwordGenerator');
+const cookieParser = require('cookie-parser');
 const { IsPasswordValid, passwordRequirement } = require('../Services/passwordGenerator');
 
 exports.signin = function (req, res, next) {
@@ -37,6 +38,12 @@ exports.signin = function (req, res, next) {
                     const token = authJWT.signToken(payLoad);
                     const decodeJWT = jwtService.decodeJWT(token);
                     console.log("tokenExp", decodeJWT.exp);
+                    res.cookie("token",token, {
+                        path: '/',
+                        httpOnly : true,
+                        maxAge: 360000,
+                        secure: true
+                    })
                     return res.status(201).json({
                         success: true,
                         errors: [],
@@ -77,6 +84,20 @@ exports.signin = function (req, res, next) {
 
     })
 
+}
+exports.logout = function(req,res,next) {
+    try{
+        res.cookie("token","", {
+            path: '/',
+            httpOnly : true,
+            maxAge: 0,
+            secure: true
+        })
+        res.status(200).json({success: true, errors: [], message: "logout" })
+    }
+    catch (error) {
+        return next(new ApplicationError("notice_list","400","CONTROLLER.NOTICE.NOTICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
+    }
 }
 exports.reset = function (req, res, next) {
     console.log("reset.body", req.body);
