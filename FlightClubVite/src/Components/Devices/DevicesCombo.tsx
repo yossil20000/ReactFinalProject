@@ -35,7 +35,7 @@ function DevicesCombo(props : ComboProps) {
     if (items !== undefined)
       setDevicesItem(items);
     if(isError){
-        console.log("DeviceTypesCombo/error", error)
+        console.log("DevicesCombo/error", error)
     }
   }, [data?.data,isError])
   useEffect(()=> {

@@ -8,7 +8,6 @@ function DeviceStatusCombo(props : StateComboProps) {
   const {onChanged,selectedItem} = props 
   const items = useRef(new Enum2ComboItem(DEVICE_STATUS).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    
     console.log("DeviceStatusCombo/ DeviceItem", item)
     onChanged(item)
   }

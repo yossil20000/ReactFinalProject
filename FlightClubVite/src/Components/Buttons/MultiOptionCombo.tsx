@@ -13,7 +13,6 @@ import ButtonBase from '@mui/material/ButtonBase';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import { useEffect } from 'react';
 
 interface PopperComponentProps {
   anchorEl?: any;
@@ -144,7 +143,8 @@ export default function MultiOptionCombo(comboProps: MultiOptionComboProps) {
   const id = open ? 'github-label' : undefined;
   React.useEffect(() => {
     setValue(selectedItems)
-  }, selectedItems)
+    console.log("MultiOptionCombo/useEffect/selectedItems",selectedItems)
+  }, [selectedItems])
   return (
     <React.Fragment>
       <Box sx={{ width: "100%" }}>
@@ -155,7 +155,7 @@ export default function MultiOptionCombo(comboProps: MultiOptionComboProps) {
         </Button>
         {value.map((label) => (
           <Box
-            key={label.name}
+            key={label._id}
             sx={{
               mt: '3px',
               height: "1.5em",
@@ -173,7 +173,7 @@ export default function MultiOptionCombo(comboProps: MultiOptionComboProps) {
           </Box>
         ))}
       </Box>
-      <StyledPopper id={id} open={open} anchorEl={anchorEl} placement="bottom-start">
+      <StyledPopper id={id} open={open} anchorEl={anchorEl} placement="bottom-start" nonce={undefined} onResize={undefined} onResizeCapture={undefined}>
         <ClickAwayListener onClickAway={handleClose}>
           <div>
             {/*             <Box

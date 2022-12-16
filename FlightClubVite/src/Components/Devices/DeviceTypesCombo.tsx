@@ -13,7 +13,7 @@ function DeviceTypesCombo(props : ComboProps) {
   const { data, isError, isLoading, error } = useFetchAllDeviceTypesQuery();
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypes}`,undefined);
+  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceTypes`,undefined);
   
 
   console.log("DeviceTypesCombo/selectedDevice" , selectedDevice)
@@ -21,7 +21,7 @@ function DeviceTypesCombo(props : ComboProps) {
     console.log("DeviceTypesCombo/ Devices.data", data?.data)
     
     let items  =   data?.data.map((item) => deviceTypeToItemCombo(item));
-    console.log("DeviceTypesCombo/ DeviceItem", items)
+    console.log("DeviceTypesCombo/useEffect", items)
     if (items !== undefined)
       setDevicesItem(items);
       if(isError){
