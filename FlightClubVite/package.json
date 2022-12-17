@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite --port 4000",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "https": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem vite --port 4000"
   },
   "dependencies": {
     "@date-io/luxon": "^2.14.0",
@@ -46,6 +47,7 @@
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.5",
     "typescript": "^4.6.3",
-    "vite": "^2.9.9"
+    "vite": "^4.0.1",
+    "vite-plugin-mkcert": "^1.10.1"
   }
 }
