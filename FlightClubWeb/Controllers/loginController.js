@@ -59,7 +59,9 @@ exports.signin = function (req, res, next) {
                                 family_name: member.family_name,
                                 first_name: member.first_name,
                                 roles: member.role.roles,
-                                username: member.username
+                                username: member.username,
+                                image: member.image,
+                                gender: member.gender
                             },
 
                         }

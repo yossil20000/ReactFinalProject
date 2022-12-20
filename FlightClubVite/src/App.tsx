@@ -31,7 +31,8 @@ export function LocalStorage() {
                     first_name: "user",
                     roles: [Role.guest],
                     email: "",
-                    username:""
+                    username:"",
+                    image: ""
                 }
             }
         }

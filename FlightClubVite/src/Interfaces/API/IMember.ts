@@ -1,7 +1,11 @@
 import IFlight from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
 import IMembership from "./IMembership"
-
+export enum Gender {
+    "male" = "male",
+    "female" = "female",
+    "other" = "other"
+}
 export enum MemberType{
     Normal,
     Member    
@@ -20,6 +24,8 @@ export interface IMemberBase {
     member_id: string
     family_name: string
     first_name: string
+    image: string,
+    gender: Gender,
     contact:{
         billing_address: {
             line1: string
@@ -42,9 +48,10 @@ export interface IMemberBase {
             area: string
             number: string
         },
-        email: string
+        email: string,
     }
 }
+
 export interface IMemberAdmin  extends IMemberBase{
     _id:string
     status: Status

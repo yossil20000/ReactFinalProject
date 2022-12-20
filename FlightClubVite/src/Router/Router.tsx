@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { useAppDispatch } from '../app/hooks'
 import Layout from '../Components/Layout'
 import RequireAuth from '../Components/RequireAuth'
-import { LOCAL_STORAGE } from '../Enums/localStroage'
-import { setCredentials } from '../features/Auth/authSlice'
-import { ILoginResult } from '../Interfaces/API/ILogin'
 import { Role } from '../Interfaces/API/IMember'
 import AdminPage from '../Pages/Administrator/AdminPage'
 import FlightPage from '../Pages/Flight/FllightPage'
+import GalleryPage from '../Pages/Gallery/GalleryPage'
 import HomePage from '../Pages/Home/HomePage'
 import ChangePassword from '../Pages/Login/ChangePassword'
 import LoginPage from '../Pages/Login/LoginPage'
@@ -19,7 +15,6 @@ import ProfilePage from '../Pages/Profile/ProfilePage'
 import AddReservationPage from '../Pages/Reservations/AddReservationPage'
 import ReservationsPage from '../Pages/Reservations/ReservationsPage'
 import RegistrationPage from '../Pages/Resistration/RegistrationPage'
-import { getFromLocalStorage } from '../Utils/localStorage'
 
 
 
@@ -61,7 +56,7 @@ export function PagesRouter() {
 
           <Route path="/reservations" element={<ReservationsPage></ReservationsPage>} />
           <Route path="/reservationsadd" element={<AddReservationPage></AddReservationPage>} />
-
+          <Route path='gallery' element={<GalleryPage></GalleryPage>}/>
           <Route path="/logout" element={<LogoutPage></LogoutPage>} />
 
           <Route path='change_password' element={<ChangePassword></ChangePassword>} />

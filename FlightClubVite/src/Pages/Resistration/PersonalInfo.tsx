@@ -1,15 +1,16 @@
-import { Box, Button, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField, Typography } from '@mui/material';
-import { useState } from 'react'
+/* https://www.youtube.com/watch?v=pfxd7L1kzio */
+import { Box, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { useAppSelector } from '../../app/hooks';
-import { useGetMemberByIdQuery } from '../../features/Users/userSlice';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
+import { Gender } from '../../Interfaces/API/IMember';
+import FemaleIcon from '@mui/icons-material/Female';
+import { convertFileTobase64 } from '../../Utils/files';
+import GenderCombo from '../../Components/Buttons/GenderCombo';
+import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -21,8 +22,31 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
 
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : "";
+    console.log("PersonalInfo/handleImageChange/file", file);
+    if (file) {
+      /* const base64 = await convertFileTobase64(file); */
+      await convertFileTobase64(file).then((result) => {
+        console.log("PersonalInfo/handleImageChange/result", result);
+        setFormData({ ...formData, image: result as string });
 
+      }
 
+      ).catch((error) => {
+        console.log("PersonalInfo/handleImageChange/error", error);
+      }
+
+      )
+      /* console.log("PersonalInfo/handleImageChange/base64", base64) */
+    }
+    
+  }
+  const onComboChanged = (item: InputComboItem, prop: string): void => {
+    
+    setFormData({ ...formData, [prop]: item.lable });
+    console.log("formData", formData)
+  }
   const handlePersonChange = (prop: any) => (event: any) => {
     setFormData({ ...formData, [prop]: event.target.value });
     console.log("formData", formData)
@@ -43,7 +67,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
   };
 
   return (
-    <Box sx={{ flexGrow: 1 ,width:"100%"}}>
+    <Box sx={{ flexGrow: 1, width: "100%" ,overflow:"auto"}}>
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -125,7 +149,29 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
             </LocalizationProvider>
           </Item>
         </Grid>
+        <Grid item xs={12}>
+          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={"gender"} selectedItem={{lable: formData?.gender === undefined ? "" : formData?.gender.toString() ,_id: "",description: ""}}/>
+        </Grid>
+        <Grid item xs={12}>
+          <img src={formData?.image} alt="My Image" />
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            component="label"
+          >
+            Upload File
+            <input
+              hidden
+              type="file"
+              name='image'
+              id='file-upload'
+              accept='.jpg, .png , .jpg'
+              onChange={(e) => handleImageChange(e)}
+            />
+          </Button>
 
+        </Grid>
       </Grid>
     </Box>
 

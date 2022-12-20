@@ -49,10 +49,10 @@ function DeviceTypeItem() {
  
       <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12}>
         <Grid item xs={12} sm={12} >
-          <TextField onChange={handleChange} fullWidth={true} variant='standard' label="Type name" name="name" value={selectedItem?.name}/>
+          <TextField onChange={handleChange} fullWidth={true} variant='standard' label="Type name" name="name" value={selectedItem?.name} InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={12} sm={12} >
-        <TextField onChange={handleChange}  fullWidth={true} variant='standard' label="Description" name="description" value={selectedItem?.description}/>
+        <TextField onChange={handleChange}  fullWidth={true} variant='standard' label="Description" name="description" value={selectedItem?.description}InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={12}  >
          <DeviceTypeCategoryCombo onChanged={(item) => onComboChanged(item,"category")} source={source} selectedItem={getSelectedItem(selectedItem?.category.toString())}/>

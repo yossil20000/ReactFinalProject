@@ -21,7 +21,7 @@ export interface ILoginResult {
         roles:Role[];
         email: string;
         username:string;
-        
+        image: string;
     };
 }
 

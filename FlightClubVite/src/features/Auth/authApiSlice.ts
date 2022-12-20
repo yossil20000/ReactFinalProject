@@ -1,6 +1,6 @@
 import base from "@emotion/styled/types/base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { URLS } from "../../Enums/Routers";
+import { getServerAddress, URLS } from "../../Enums/Routers";
 import ILogin, { IChangePassword, IChangePasswordResults, ILoginResult, IReset, IResetResult } from "../../Interfaces/API/ILogin";
 import { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import {RootState} from '../../app/userStor'
@@ -8,7 +8,7 @@ import {RootState} from '../../app/userStor'
 export const authApiSlice = createApi({
     reducerPath: 'apiAuthSlice',
     baseQuery: fetchBaseQuery({
-        baseUrl: URLS.BACKEND_URL,
+        baseUrl: getServerAddress(),
         prepareHeaders: (headers, { getState }) => {
             // By default, if we have a token in the store, let's use that for authenticated requests
             const token = (getState() as RootState).authSlice.access_token

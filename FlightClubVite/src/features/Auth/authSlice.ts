@@ -16,7 +16,8 @@ let initialState: ILoginResult = {
         first_name: "",
         roles: [Role.guest],
         email: "",
-        username:""
+        username:"",
+        image:""
 
     }
 }

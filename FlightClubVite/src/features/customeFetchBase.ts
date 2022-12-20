@@ -1,9 +1,9 @@
 import { BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { Mutex } from "async-mutex";
-import { URLS } from '../Enums/Routers';
+import { getServerAddress } from '../Enums/Routers';
 import { logOut } from '../features/Auth/authSlice';
 
-const baseUrl = URLS.BACKEND_URL;
+const baseUrl = getServerAddress();
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
   baseUrl,

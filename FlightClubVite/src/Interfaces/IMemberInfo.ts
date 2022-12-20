@@ -1,3 +1,4 @@
+import { Gender } from "./API/IMember";
 
 
 export default interface IMemberUpdate{
@@ -30,4 +31,6 @@ export default interface IMemberUpdate{
         email: string
     },
     date_of_birth?: Date;
+    image: string;
+    gender: Gender
 }

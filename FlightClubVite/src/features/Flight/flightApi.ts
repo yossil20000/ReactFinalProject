@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
-import { URLS } from "../../Enums/Routers";
+import { getServerAddress, URLS } from "../../Enums/Routers";
 import IFlight, { IFlightCreateApi, IFlightDeleteApi, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import customFetchBase from "../customeFetchBase";
@@ -8,7 +8,7 @@ import customFetchBase from "../customeFetchBase";
 export const flightApi = createApi({
   reducerPath: "flightApi",
   baseQuery:fetchBaseQuery({
-    baseUrl: URLS.BACKEND_URL,
+    baseUrl: getServerAddress(),
     prepareHeaders: (headers, { getState }) => {
         // By default, if we have a token in the store, let's use that for authenticated requests
         const token = (getState() as RootState).authSlice.access_token

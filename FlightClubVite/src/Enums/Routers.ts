@@ -1,5 +1,15 @@
+import {isHttps} from '../../vite.config';
+
+export function getServerAddress () {
+  if(true)
+    return `https://${URLS.BACKEND_ADDRESS}`
+  else
+  return `http://${URLS.BACKEND_ADDRESS}`
+} 
+
 export  enum URLS{
-    BACKEND_URL = "http://localhost:3002",
+    BACKEND_ADDRESS = "localhost:3002",
+    BACKEND_URL = "https://localhost:3002",
     LOGIN = "api/login",
     CHANGE_PASSWORD = "api/change_password",
     RESET = 'api/reset_password',
@@ -34,5 +44,9 @@ export  enum URLS{
     MEMBERSHIP_UPDATE = 'api/memberships/update',
     MEMBERSHIP_CREATE = 'api/memberships/create',
     MEMBERSHIP_COMBO = 'api/memberships/combo',
+    IMAGE = '/api/images',
+    IMAGE_UPDATE = "/api/images/update",
+    IMAGE_DELETE = '/api/images/delete',
+    IMAGE_CREATE = '/api/images/create'
     
 }

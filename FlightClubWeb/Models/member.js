@@ -63,7 +63,9 @@ var MemberSchema = new Schema({
     date_of_leave: {type: Date},
     flights: [{type: Schema.ObjectId,ref: 'Flight'}],
     flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}],
-    membership: {type: Schema.ObjectId,ref: 'Membership'}
+    membership: {type: Schema.ObjectId,ref: 'Membership'},
+    image: {type: String},
+    gender: {type: String, enum:["male","female","other"], default: "other"}
 },{timestamps: true});
 
 MemberSchema.pre('save', function(next) { 

@@ -1,6 +1,6 @@
 
 
-import { alpha, Box, Button, FormControlLabel, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
+import { alpha, Avatar, Box, Button, FormControlLabel, Grid, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from '@mui/material';
 import React, {  useEffect, useState } from 'react'
 
 
@@ -22,11 +22,11 @@ import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { IMemberStatus, Status } from '../../Interfaces/API/IMember';
 
 interface ItableData {
-  _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string,validOperation: CanDo,status: Status
+  _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string,validOperation: CanDo,status: Status,image: string
 }
 
-function createdata(_id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string, validOperation: CanDo,status:Status): ItableData {
-  return { _id, member_id, family_name, first_name, email, phone,validOperation,status } as ItableData
+function createdata(_id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string, validOperation: CanDo,status:Status,image: string): ItableData {
+  return { _id, member_id, family_name, first_name, email, phone,validOperation,status ,image} as ItableData
 }
 
 
@@ -222,7 +222,7 @@ function MembersTablePage() {
   useEffect(() => {
 
     let rows = members?.data.map((item) => {
-      return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`,GeneralCanDo(item._id, login.member._id, login.member.roles),item.status)
+      return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`,GeneralCanDo(item._id, login.member._id, login.member.roles),item.status,item.image)
     })
     console.log('UseEffect/rows/be', rows)
     if (rows === undefined) {
@@ -445,11 +445,19 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
 
                 <Accordion key={row._id} expanded={expanded === `panel${index}` } onChange={handleChange(`panel${index}`)}>
                   <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                    <Typography>{row.family_name}, {row.first_name}, {row.member_id}</Typography>
+                    <Typography>{row.first_name}, {row.member_id}</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                  <div>email: {row.email}</div>
-                  <div>Phone: {row.phone}</div>
+                    <Grid  container spacing={0.5} padding={1} columns={{ xs: 2 }} sx={{ width: "100%" }} justifyContent="center" >
+                      <Grid item xs={1}>
+                      <Typography>email: {row.email}</Typography>
+                      <Typography>Phone: {row.phone}</Typography>
+                      </Grid>
+                      <Grid item xs={1} sx={{display: "flex" , justifyContent: "flex-end"}} >
+                      {row?.image !== "" ? (<Avatar alt="Remy Sharp" src={row?.image} /> ) : null}
+                      </Grid>
+                    </Grid>
+                  
                   </AccordionDetails>
                 </Accordion>
 

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor";
-import { URLS } from "../../Enums/Routers";
+import { getServerAddress, URLS } from "../../Enums/Routers";
 import IMembership, { IMembershipCombo } from "../../Interfaces/API/IMembership";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 
@@ -8,7 +8,7 @@ import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase
 export const membershipApiSlice = createApi({
     reducerPath: "membershipApiSlice",
     baseQuery:fetchBaseQuery({
-        baseUrl: URLS.BACKEND_URL,
+        baseUrl: getServerAddress(),
         prepareHeaders: (headers, { getState }) => {
             // By default, if we have a token in the store, let's use that for authenticated requests
             const token = (getState() as RootState).authSlice.access_token

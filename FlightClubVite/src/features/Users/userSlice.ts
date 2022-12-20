@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import IResultBase, { IResultBaseSingle } from '../../Interfaces/API/IResultBase'
-import {URLS} from '../../Enums/Routers';
+import {getServerAddress, URLS} from '../../Enums/Routers';
 import IClubNotice from "../../Interfaces/API/IClubNotice";
 import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import IMemberUpdate from "../../Interfaces/IMemberInfo";
 import IMemberCreate from "../../Interfaces/IMemberCreate";
-import { IMemberAdmin, IMemberCombo, IMemberStatus, Status } from "../../Interfaces/API/IMember";
+import { Gender, IMemberAdmin, IMemberCombo, IMemberStatus, Status } from "../../Interfaces/API/IMember";
 
 
 interface Role {
@@ -53,6 +53,8 @@ export interface Member {
     "flights": [object];
     "flight_reservs": [object];
     "membership": object;
+    image: string;
+    gender: Gender;
 }
 export interface LogingProp {
     "password": string;
@@ -63,7 +65,7 @@ export interface LogingProp {
 export const apiSlice = createApi({
     reducerPath: 'apiSlice',
     baseQuery: fetchBaseQuery({
-        baseUrl: URLS.BACKEND_URL,
+        baseUrl: getServerAddress(),
         prepareHeaders: (headers, { getState }) => {
             // By default, if we have a token in the store, let's use that for authenticated requests
             const token : string = (getState() as RootState).authSlice.access_token

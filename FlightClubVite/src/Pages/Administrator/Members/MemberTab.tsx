@@ -10,7 +10,7 @@ import MembersCombo from '../../../Components/Members/MembersCombo';
 import { useFetchAllDevicesQuery } from '../../../features/Device/deviceApiSlice';
 import { useFetchAllMembershipQuery } from '../../../features/membership/membershipApiSlice';
 import { useCreateMemberMutation, useFetcAllMembersQuery, useUpdateMemberMutation, useUpdateStatusMutation } from '../../../features/Users/userSlice';
-import { IMemberAdmin, IMemberStatus, MemberType, Role, Status } from '../../../Interfaces/API/IMember';
+import { Gender, IMemberAdmin, IMemberStatus, MemberType, Role, Status } from '../../../Interfaces/API/IMember';
 import IMembership, { NewMembership } from '../../../Interfaces/API/IMembership';
 import IMemberCreate from '../../../Interfaces/IMemberCreate';
 import IMemberUpdate from '../../../Interfaces/IMemberInfo';
@@ -58,7 +58,7 @@ function MemberTab() {
     console.log("MemberTab/General/handleChange/item", item)
     const member = members?.find((member) => item._id == member._id)
     console.log("MemberTab/General/member", member)
-    setSelectedItem(member)
+    setSelectedItem(member === undefined ? null : member);
   };
 
   function newMember(): IMemberAdmin {
@@ -76,6 +76,8 @@ function MemberTab() {
       member_id: "",
       family_name: "",
       first_name: "",
+      gender: Gender.other,
+      image: "",
       contact: {
         billing_address: {
           line1: "",
@@ -130,24 +132,24 @@ function MemberTab() {
     let payLoad: any;
     try {
       setValidationAlert([]);
-    if (selectedItem !== undefined &&  selectedItem?._id !== "" ) {
+      if (selectedItem !== undefined && selectedItem?._id !== "") {
         payLoad = await updateMember(selectedItem as unknown as IMemberUpdate).unwrap();
         console.log("General/OnUpdate/payload", payLoad);
-        if(payLoad.error){
+        if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
-        
+
       }
-      else{
-        throw new Error("Selected Member Un Defined") ;
+      else {
+        throw new Error("Selected Member Un Defined");
       }
     }
     catch (error) {
       console.error("DeviceTab/OnSave/error", error);
       setValidationAlert(getValidationFromError(error, onValidationAlertClose));
-      
+
     }
-    finally{
+    finally {
       refetch();
     }
 

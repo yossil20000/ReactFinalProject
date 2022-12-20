@@ -2,7 +2,6 @@ import { Box, Checkbox, createTheme, FormControlLabel, Grid, TextField, ThemePro
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
-import { useContext, useEffect, useState } from "react";
 import IClubNotice, { NewNotice } from "../../../Interfaces/API/IClubNotice";
 import { useAppSelector,useAppDispatch } from "../../../app/hooks";
 import { setNotice, setNoticeValue } from "../../../features/clubNotice/noticeSlice";
@@ -59,6 +58,7 @@ function NoticeEdit() {
             label="Title"
             value={notice?.title}
             onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
           />
         </Grid>
         <Grid item xs={12}>
@@ -70,6 +70,7 @@ function NoticeEdit() {
             value={notice?.description}
             onChange={handleChange}
             multiline
+            InputLabelProps={{ shrink: true }}
           />
         </Grid>
         <Grid item xs={12} >

@@ -68,7 +68,7 @@ interface Member{
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:3002/api',
+        baseUrl: 'https://localhost:3002/api',
         prepareHeaders(headers){
             headers.set('x-api-key',DOGS_API_KEY);
            return headers; 

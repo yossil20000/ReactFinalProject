@@ -231,6 +231,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 label="Engien start"
                 value={flightCreate.engien_start}
                 onChange={handleFligtChange}
+                InputLabelProps={{ shrink: true }}
               />
             </Item>
           </Grid>
@@ -243,6 +244,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 label="Engien stop"
                 value={flightCreate.engien_stop}
                 onChange={handleFligtChange}
+                InputLabelProps={{ shrink: true }}
               />
             </Item>
           </Grid>
@@ -257,6 +259,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 key={"hobbs_start"}
                 value={flightCreate.hobbs_start}
                 onChange={handleFligtChange}
+                InputLabelProps={{ shrink: true }}
               />
             </Item>
           </Grid>
@@ -271,6 +274,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 key={"hobbs_stop"}
                 value={flightCreate.hobbs_stop}
                 onChange={handleFligtChange}
+                InputLabelProps={{ shrink: true }}
               />
             </Item>
           </Grid>
@@ -283,6 +287,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 label="Description"
                 onChange={handleFligtChange}
                 value={flightCreate.description}
+                InputLabelProps={{ shrink: true }}
               />
             </Item>
           </Grid>

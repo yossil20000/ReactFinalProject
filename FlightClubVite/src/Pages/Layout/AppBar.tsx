@@ -18,6 +18,7 @@ import RollIcon from '../../Components/Buttons/RollIcon';
 import UserIcon from '../../Components/Buttons/UserIcon';
 import { useEffect } from 'react';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
+import { Avatar } from '@mui/material';
 
 type page = {
   name: string,
@@ -28,9 +29,10 @@ const pages: page[] = [
   { name: 'Reservations', route: ROUTES.RESERVATION },
   { name: 'Flight', route: ROUTES.Flight },
   { name: 'Members', route: 'members' },
+  { name: 'Gallery', route: 'gallery'},
   { name: 'Admin', route: 'admin' },
   { name: "Login", route: "login" }];
-const settings = ['Profile', 'Account', 'Dashboard', 'change_password','Logout'];
+const settings = ['Profile', 'Account', 'Dashboard', 'change_password', 'Logout'];
 
 const ResponsiveAppBar = () => {
   const navigate = useNavigate();
@@ -80,12 +82,12 @@ const ResponsiveAppBar = () => {
   };
   useEffect(() => {
 
-  },[login])
+  }, [login])
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        
+
           <Typography
             variant="h6"
             noWrap
@@ -158,7 +160,7 @@ const ResponsiveAppBar = () => {
           >
             {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name}`}
           </Typography>
-          
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page, index) => (
               <Button
@@ -172,12 +174,12 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-          <RollIcon roles={login?.member?.roles} />
+            <RollIcon roles={login?.member?.roles} />
             <Tooltip title={`Open settings ${login?.member?.roles.join("/")}`}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                
-              <UserIcon roles={login?.member?.roles} />
-                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+                {login?.member?.image !== "" ? (<Avatar alt="Remy Sharp" src={login?.member?.image} /> ) : 
+                (<UserIcon roles={login?.member?.roles} />)
+                }
               </IconButton>
             </Tooltip>
             <Menu

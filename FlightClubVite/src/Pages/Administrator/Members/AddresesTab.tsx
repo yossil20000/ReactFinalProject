@@ -90,38 +90,37 @@ function AddresesTab() {
 
             <Grid item xs={2}>
               <TextField fullWidth={true} onChange={handleChange} id="billing_line1" name="contact.billing_address.line1"
-
                 label="Line 1" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact.billing_address.line1} required
-                helperText="" error={false} />
+                helperText="" error={false} InputLabelProps={{ shrink: true }}/>
             </Grid>
 
             <Grid item xs={2} md={2}>
               <TextField fullWidth={true} onChange={handleChange} id="billing_line2" name="contact.billing_address.line2"
                 label="Description" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact.billing_address.line2} required
-                helperText="" error={false} multiline />
+                helperText="" error={false} multiline InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
 
               <TextField fullWidth onChange={handleChange} id="billing_city" label="City"
                 name="contact.billing_address.city" placeholder="City" variant="standard"
-                value={selectedItem?.contact.billing_address.city} />
+                value={selectedItem?.contact.billing_address.city} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="billing_postcode" label="Postcode"
                 name="contact.billing_address.postcode" placeholder="Postcode" variant="standard"
-                value={selectedItem?.contact.billing_address.postcode} />
+                value={selectedItem?.contact.billing_address.postcode} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="billing_province" label="Province"
                 name="contact.billing_address.province" placeholder="Province" variant="standard"
-                value={selectedItem?.contact.billing_address.province} />
+                value={selectedItem?.contact.billing_address.province} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="billing_state" label="State"
                 name="contact.billing_address.state" placeholder="State" variant="standard"
-                value={selectedItem?.contact.billing_address.state} />
+                value={selectedItem?.contact.billing_address.state} InputLabelProps={{ shrink: true }}/>
             </Grid>
 
           </Grid>
@@ -142,38 +141,37 @@ function AddresesTab() {
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 4 }}>
             <Grid item xs={2}>
               <TextField fullWidth={true} onChange={handleChange} id="shipping_line1" name="contact.shipping_address.line1"
-
                 label="Line 1" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact.shipping_address.line1} required
-                helperText="" error={false} />
+                helperText="" error={false} InputLabelProps={{ shrink: true }}/>
             </Grid>
 
             <Grid item xs={2} md={2}>
               <TextField fullWidth={true} onChange={handleChange} id="shipping_line2" name="contact.shipping_address.line2"
                 label="Description" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact.shipping_address.line2} required
-                helperText="" error={false} multiline />
+                helperText="" error={false} multiline InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
 
               <TextField fullWidth onChange={handleChange} id="shipping_city" label="City"
                 name="contact.shipping_address.city" placeholder="City" variant="standard"
-                value={selectedItem?.contact.shipping_address.city} />
+                value={selectedItem?.contact.shipping_address.city} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="shipping_postcode" label="Postcode"
                 name="contact.shipping_address.postcode" placeholder="Postcode" variant="standard"
-                value={selectedItem?.contact.shipping_address.postcode} />
+                value={selectedItem?.contact.shipping_address.postcode} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="shipping_province" label="Province"
                 name="contact.shipping_address.province" placeholder="Province" variant="standard"
-                value={selectedItem?.contact.shipping_address.province} />
+                value={selectedItem?.contact.shipping_address.province} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="shipping_state" label="State"
                 name="contact.shipping_address.state" placeholder="State" variant="standard"
-                value={selectedItem?.contact.shipping_address.state} />
+                value={selectedItem?.contact.shipping_address.state} InputLabelProps={{ shrink: true }}/>
             </Grid>
 
           </Grid>
@@ -186,17 +184,17 @@ function AddresesTab() {
         <Grid item xs={1}>
           <TextField fullWidth onChange={handleChange} id="country" label="Country"
             name="contact.phone.country" placeholder="Country Code" variant="standard"
-            value={selectedItem?.contact.phone.country} />
+            value={selectedItem?.contact.phone.country} InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={1}>
         <TextField fullWidth onChange={handleChange} id="area" label="Area"
                 name="contact.phone.area" placeholder="Area code" variant="standard"
-                value={selectedItem?.contact.phone.area} />
+                value={selectedItem?.contact.phone.area} InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={2}>
         <TextField fullWidth onChange={handleChange} id="number" label="Number"
                 name="contact.phone.number" placeholder="Phone Number" variant="standard"
-                value={selectedItem?.contact.phone.number} />
+                value={selectedItem?.contact.phone.number} InputLabelProps={{ shrink: true }}/>
         </Grid>
       </Grid>
     </>

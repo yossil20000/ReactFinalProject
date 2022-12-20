@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { DevicesContext, DevicesContextType } from "../../../app/Context/DevicesContext";
 import { MembersContext, MembersContextType } from "../../../app/Context/MemberContext";
 import { InputComboItem } from "../../../Components/Buttons/ControledCombo"
+import GenderCombo from "../../../Components/Buttons/GenderCombo";
 import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
 import { IMemberAdmin,  Role } from "../../../Interfaces/API/IMember";
 import { setProperty } from "../../../Utils/setProperty";
@@ -77,10 +78,10 @@ function GeneralTab() {
     <>
       <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} alignContent={'start'}>
         <Grid item xs={12} sm={6}>
-          <TextField  onChange={handleChange} name="first_name" fullWidth value={selectedItem?.first_name} variant={"standard"}  label={"First Name"}/>
+          <TextField  onChange={handleChange} name="first_name" fullWidth value={selectedItem?.first_name} variant={"standard"}  label={"First Name"} InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="family_name" fullWidth value={selectedItem?.family_name} variant={"standard"}  label={"Famaily Name"}/>
+          <TextField onChange={handleChange} name="family_name" fullWidth value={selectedItem?.family_name} variant={"standard"}  label={"Famaily Name"} InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={12} sm={6}>
         <Grid item xs={12}>
@@ -95,13 +96,18 @@ function GeneralTab() {
             </Grid>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"}  label={"Member Id"}/>
+          <TextField onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"}  label={"Member Id"} InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact.email} variant={"standard"}  label={"email"}/>
+          <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact.email} variant={"standard"}  label={"email"} InputLabelProps={{ shrink: true }}/>
         </Grid>
-        
+        <Grid item xs={12} >
+          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={source} 
+          selectedItem={{lable: selectedItem?.gender === undefined ? "" : selectedItem?.gender.toString() ,_id: "",description: ""}}/>
+        </Grid>
+        <Grid item xs={12}>
 
+        </Grid>
 
       </Grid>
     </>

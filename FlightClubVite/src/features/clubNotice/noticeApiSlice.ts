@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
-import { URLS } from "../../Enums/Routers";
+import { getServerAddress, URLS } from "../../Enums/Routers";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import IClubNotice from '../../Interfaces/API/IClubNotice'
 
@@ -9,7 +9,7 @@ import IClubNotice from '../../Interfaces/API/IClubNotice'
 export const noticeApiSlice = createApi({
   reducerPath: "noticeApiSlice",
   baseQuery: fetchBaseQuery({
-    baseUrl: URLS.BACKEND_URL,
+    baseUrl: getServerAddress(),
     prepareHeaders: (headers, { getState }) => {
       // By default, if we have a token in the store, let's use that for authenticated requests
       const token : string = (getState() as RootState).authSlice.access_token

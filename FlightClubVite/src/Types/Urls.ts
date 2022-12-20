@@ -9,7 +9,6 @@ export enum ROUTES{
 }
 
 export enum URLS {
-    SERVER_BASE_ADDRESS = "http://localhost:3002",
     RESERVATIONS = "reservation",
     MEMBERS = "members",
     DEVICES = "devices",

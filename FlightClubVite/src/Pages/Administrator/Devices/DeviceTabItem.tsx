@@ -175,7 +175,7 @@ function DeviceTabItem() {
           id="general-header"
         ><Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
             <Grid item xs={2}>
-              <Typography sx={{ width: "100%", flexShrink: 0 }}>General Device {selectedItem?.device_id} {(selectedItem?.device_type as IDeviceType).name}</Typography>
+              <Typography sx={{ width: "100%", flexShrink: 0 }}>General Device {selectedItem?.device_id} {(selectedItem?.device_type as IDeviceType)?.name}</Typography>
             </Grid>
           </Grid>
         </AccordionSummary>
@@ -243,7 +243,7 @@ function DeviceTabItem() {
             <Grid item xs={1}>
               <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
                 placeholder="Next maintanance" variant="standard"
-                value={selectedItem?.maintanance.next_meter} error={false} helperText=""InputLabelProps={{ shrink: true }} />
+                value={selectedItem?.maintanance.next_meter} error={false} helperText="" InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.device_status.toString() ,_id: "",description: ""}}/>

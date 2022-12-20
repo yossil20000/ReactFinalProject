@@ -11,7 +11,7 @@ import { useGetMemberByIdQuery } from '../../features/Users/userSlice';
 import { authSlice, selectCurrentId } from '../../features/Auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import SubmitProfile from './SubmitProfile';
-import { Role } from '../../Interfaces/API/IMember';
+import { Gender, Role } from '../../Interfaces/API/IMember';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
 
@@ -52,7 +52,9 @@ function ProfilePage() {
       },
       email: ''
     },
-    date_of_birth: new Date()
+    date_of_birth: new Date(),
+    image: "",
+    gender: Gender.other
   }
   const login = useAppSelector((state) => state.authSlice);
   const { data: member, isError,isLoading,isSuccess,error } = useGetMemberByIdQuery(login.member._id);
@@ -78,7 +80,7 @@ function ProfilePage() {
   
 
   return (
-    <div className='main' style={{ width: "99%", margin: "1% auto" }}>
+    <div className='main' style={{ width: "99%", margin: "1% auto" ,overflow:"auto"}}>
       <Grid container spacing={2}>
         <Grid item xs={12} >
           <Box sx={{ width: '100%' }}>

@@ -10,7 +10,8 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import { Role } from "../../Interfaces/API/IMember";
 
 export interface IRollIcon {
-  roles: Role[] | null
+  roles: Role[],
+  image?: string
 }
 function UserIcon(props: IRollIcon) {
   console.log("RollIcon/props", props)
@@ -19,6 +20,10 @@ function UserIcon(props: IRollIcon) {
     const iconsArray : JSX.Element[] = [];
     props?.roles?.forEach(element => {
     console.log("RollIcon/element", element)
+    if(props.image !== "")
+    {
+      
+    }
     if (element == Role.user) iconsArray.push(<AccountCircleTwoToneIcon key="account"/>) ;
     if (element == Role.guest) iconsArray.push(<NoAccountsIcon key="no-account"/>);
     

@@ -5,7 +5,7 @@ import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import StatusCombo from '../../../Components/Buttons/StatusCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert'
 import MembershipCombo from '../../../Components/Membership/MembershipCombo';
-import { useCreateMembershipMutation, useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
+import {  useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
 import useLocalStorage from '../../../hooks/useLocalStorage';
 import IMembership, { NewMembership } from '../../../Interfaces/API/IMembership';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
@@ -115,16 +115,16 @@ function MembershipTab() {
         <Box marginTop={3} >
           <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} margin={0}>
             <Grid item xs={12} sm={12} >
-              <TextField type={"text"} fullWidth onChange={handleChange} name="name" label="Name" placeholder="Name" variant="standard" value={selectedItem?.name} />
+              <TextField type={"text"} fullWidth onChange={handleChange} name="name" label="Name" placeholder="Name" variant="standard" value={selectedItem?.name} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="entry_price" label="Entry Price" placeholder="Intitial Entry Price" variant="standard" value={selectedItem?.entry_price} />
+              <TextField type={"number"} fullWidth onChange={handleChange} name="entry_price" label="Entry Price" placeholder="Intitial Entry Price" variant="standard" value={selectedItem?.entry_price} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="montly_price" label="Montly Price" placeholder="Montly Price" variant="standard" value={selectedItem?.montly_price} />
+              <TextField type={"number"} fullWidth onChange={handleChange} name="montly_price" label="Montly Price" placeholder="Montly Price" variant="standard" value={selectedItem?.montly_price} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="hour_disc_percet" label="Discount" placeholder="Discount %" variant="standard" value={selectedItem?.hour_disc_percet} />
+              <TextField type={"number"} fullWidth onChange={handleChange} name="hour_disc_percet" label="Discount" placeholder="Discount %" variant="standard" value={selectedItem?.hour_disc_percet} InputLabelProps={{ shrink: true }}/>
             </Grid>
             <Grid item xs={12}>
             <StatusCombo onChanged={(item) => onComboChanged(item, "status")} selectedItem={getSelectedItem(selectedItem?.status.toString())} source={source}/>
