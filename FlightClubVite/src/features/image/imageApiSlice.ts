@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { getServerAddress, URLS } from "../../Enums/Routers";
 import { RootState } from "../../app/userStor";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
-import IImage from "../../Interfaces/API/IImage";
+import IImage, { IImageBase } from "../../Interfaces/API/IImage";
 
 export const imageApiSlice = createApi({
   reducerPath: "imageApiSlice",
@@ -41,10 +41,10 @@ export const imageApiSlice = createApi({
         }),
         invalidatesTags: ["Images"]
       }),
-      createImage: builder.mutation<IResultBaseSingle<IImage>,IImage>({
+      createImage: builder.mutation<IResultBaseSingle<IImage>,IImageBase>({
         query: (message) => ({
           url: `/${URLS.IMAGE_CREATE}`,
-          method: 'DELETE',
+          method: 'POST',
           body:message
         }),
         invalidatesTags: ["Images"]
@@ -52,7 +52,7 @@ export const imageApiSlice = createApi({
       updateImage: builder.mutation<IResultBaseSingle<IImage>,IImage>({
         query: (message) => ({
           url: `/${URLS.IMAGE_UPDATE}`,
-          method: 'UPDATE',
+          method: 'PUT',
           body:message
         }),
         invalidatesTags: ["Images"]

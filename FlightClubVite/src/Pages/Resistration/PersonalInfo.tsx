@@ -8,7 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
 import { Gender } from '../../Interfaces/API/IMember';
 import FemaleIcon from '@mui/icons-material/Female';
-import { convertFileTobase64 } from '../../Utils/files';
+import {  resizeFileTobase64 } from '../../Utils/files';
 import GenderCombo from '../../Components/Buttons/GenderCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 const Item = styled(Paper)(({ theme }) => ({
@@ -27,7 +27,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
     console.log("PersonalInfo/handleImageChange/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
-      await convertFileTobase64(file).then((result) => {
+      await resizeFileTobase64(file,300).then((result) => {
         console.log("PersonalInfo/handleImageChange/result", result);
         setFormData({ ...formData, image: result as string });
 

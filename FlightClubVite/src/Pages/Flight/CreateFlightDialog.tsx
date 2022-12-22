@@ -67,50 +67,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       const validation = getValidationFromError(error,handleOnValidatiobClose);
       setValidationAlert(validation);
       return;
-      if ((error as any).data.errors !== undefined) {
-        let validation: IValidationAlertProps[] = [];
-        if (Array.isArray((error as any).data.errors)) {
-
-          validation = (error as any).data?.errors.map((item: string) => {
-            const alert: IValidationAlertProps = {
-              location: '',
-              msg: item,
-              param: '',
-              value: "",
-              open: true,
-              onClose: handleOnValidatiobClose
-            };
-            return alert;
-          })
-          setValidationAlert(validation);
-        }
-        else {
-          console.log("CreateFlightDialog/useEffect/Error/single", (error as any).data.errors)
-          validation.push({
-            location: '',
-            msg: (error as any).data.errors,
-            param: '',
-            value: "",
-            open: true,
-            onClose: handleOnValidatiobClose
-          })
-          setValidationAlert(validation);
-        }
-      }
-
-      if ((error as any).data.validation !== undefined) {
-        let validation: IValidationAlertProps[];
-        console.log("CreateFlightDialog/useEffect/data", (error as any).data)
-        validation = (error as any).data.validation.errors.map((item: IValidation) => {
-          const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
-          alert.onClose = handleOnValidatiobClose;
-          alert.open = true
-          return alert;
-
-        })
-        setValidationAlert(validation);
-        console.log("CreateFlightDialog/useEffect/validation", validation)
-      }
+      
 
     }
   }, [isLoading])

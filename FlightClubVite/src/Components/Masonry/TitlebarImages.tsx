@@ -6,7 +6,7 @@ import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { Typography } from '@mui/material';
 
 export interface IImageList {
-  img: string;
+  image: string;
   title: string;
   author: string;
 
@@ -22,10 +22,10 @@ export default function TitlebarBelowMasonryImageList({ imageList }: ImageListPr
       <Box sx={{ width: "100%", height: "50vh", overflowY: 'scroll' }}>
         <ImageList cols={1} gap={3}>
           {imageList.map((item) => (
-            <ImageListItem key={item.img}>
+            <ImageListItem key={item.image}>
               <img
-                src={`${item.img}?w=248&fit=crop&auto=format`}
-                srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                src={`${item.image}?w=248&fit=crop&auto=format`}
+                srcSet={`${item.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                 alt={item.title}
                 loading="lazy"
               />

@@ -44,9 +44,9 @@ export  enum URLS{
     MEMBERSHIP_UPDATE = 'api/memberships/update',
     MEMBERSHIP_CREATE = 'api/memberships/create',
     MEMBERSHIP_COMBO = 'api/memberships/combo',
-    IMAGE = '/api/images',
-    IMAGE_UPDATE = "/api/images/update",
-    IMAGE_DELETE = '/api/images/delete',
-    IMAGE_CREATE = '/api/images/create'
+    IMAGE = 'api/images',
+    IMAGE_UPDATE = "api/images/update",
+    IMAGE_DELETE = 'api/images/delete',
+    IMAGE_CREATE = 'api/images/create'
     
 }

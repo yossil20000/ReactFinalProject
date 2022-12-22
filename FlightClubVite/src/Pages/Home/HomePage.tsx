@@ -13,17 +13,17 @@ import { Box } from '@mui/material';
 
 const itemData = [
   {
-    img: imege1,
+    image: imege1,
     title: 'Yosef And Alex',
     author: 'Yosef Levy',
   },
   {
-    img: imege3,
+    image: imege3,
     title: 'Near Haifa',
     author: 'Yosef Levy',
   },
   {
-    img: imege2,
+    image: imege2,
     title: 'Moskin',
     author: 'Yosef Levy',
   },
