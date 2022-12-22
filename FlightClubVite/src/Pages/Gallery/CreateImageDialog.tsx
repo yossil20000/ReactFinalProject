@@ -1,10 +1,12 @@
+import { Earbuds } from "@mui/icons-material";
 import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, Paper, styled } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
+import { EAction } from "../../Components/Buttons/ActionButtons";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import MembersCombo from "../../Components/Members/MembersCombo";
-import { useCreateImageMutation } from "../../features/image/imageApiSlice";
-import { IImageBase } from "../../Interfaces/API/IImage";
+import { useCreateImageMutation, useDeleteImageMutation, useUpdateImageMutation } from "../../features/image/imageApiSlice";
+import IImage, { IImageBase } from "../../Interfaces/API/IImage";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import { convertFileTobase64, resizeFileTobase64 } from "../../Utils/files";
 const source: string = "CreateImage"
@@ -14,6 +16,7 @@ export interface CreateImageDialogProps {
   onClose: () => void;
   onSave: (value: IImageBase) => void;
   open: boolean;
+  action: EAction
 }
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -30,12 +33,14 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-function CreateImageDialog({ value, onClose, onSave, open, ...other }: CreateImageDialogProps) {
+function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: CreateImageDialogProps) {
 
   console.log("CreateImageDialog/value", value)
 
   const [CreateImage, { isError, isLoading, error, isSuccess }] = useCreateImageMutation();
-  const [ImageCreate, setImageCreate] = useState<IImageBase>(value);
+  const [UpdateImage] = useUpdateImageMutation();
+  const [DeleteImage] = useDeleteImageMutation();
+  const [ImageCreate, setImageCreate] = useState<IImage>(value as IImage);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
 
@@ -49,10 +54,10 @@ function CreateImageDialog({ value, onClose, onSave, open, ...other }: CreateIma
     }
     if (isError) {
 
-      const validation = getValidationFromError(error,handleOnValidatiobClose);
+      const validation = getValidationFromError(error, handleOnValidatiobClose);
       setValidationAlert(validation);
       return;
-      
+
 
     }
   }, [isLoading])
@@ -62,8 +67,8 @@ function CreateImageDialog({ value, onClose, onSave, open, ...other }: CreateIma
     console.log("PersonalInfo/handleImageChange/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
-      await resizeFileTobase64(file,500,50).then((result) => {
-        console.log("PersonalInfo/handleImageChange/result.filelength", (result as string ).length);
+      await resizeFileTobase64(file, 500, 50).then((result) => {
+        console.log("PersonalInfo/handleImageChange/result.filelength", (result as string).length);
         setImageCreate({ ...ImageCreate, image: result as string });
 
       }
@@ -75,7 +80,7 @@ function CreateImageDialog({ value, onClose, onSave, open, ...other }: CreateIma
       )
       /* console.log("PersonalInfo/handleImageChange/base64", base64) */
     }
-    
+
   }
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("handleImageChange", event.target.name, event.target.value)
@@ -90,26 +95,93 @@ function CreateImageDialog({ value, onClose, onSave, open, ...other }: CreateIma
   }
   const handleOnValidatiobClose = useCallback(() => {
     setValidationAlert([])
-    
-  },[])
+
+  }, [])
   const handleOnSave = async () => {
     setValidationAlert([])
     console.log("CreateImageDialog/onSave", ImageCreate)
-    
+
     console.log("CreateImageDialog/onSave/author", ImageCreate.author)
+    if(action === EAction.ADD){
+      await CreateImage(ImageCreate as IImageBase).unwrap().then((data) => {
+        console.log("CreateImageDialoq/onSave/", data);
+        onSave(ImageCreate);
+      }).catch((err) => {
+        console.log("CreateImageDialoq/onSave/error", err.data.errors);
+      });
+    }
+    else if(action === EAction.SAVE){
+      await UpdateImage(ImageCreate as IImage).unwrap().then((data) => {
+        console.log("CreateImageDialoq/onUpdate/", data);
+        onSave(ImageCreate);
+      }).catch((err) => {
+        console.log("CreateImageDialoq/onUpdate/error", err.data.errors);
+      });
+    }
+    else if(action === EAction.DELETE){
+      await DeleteImage((ImageCreate as IImage)._id).unwrap().then((data) => {
+        console.log("CreateImageDialoq/onUpdate/", data);
+        onSave(ImageCreate);
+      }).catch((err) => {
+        console.log("CreateImageDialoq/onUpdate/error", err.data.errors);
+      });
+    }
+
+
+
+  }
+  const handleOnUpdate = async () => {
+    setValidationAlert([])
+    console.log("CreateImageDialog/handleOnUpdate", ImageCreate)
+
+    console.log("CreateImageDialog/handleOnUpdate/author", ImageCreate.author)
 
     await CreateImage(ImageCreate as IImageBase).unwrap().then((data) => {
-      console.log("CreateImageDialoq/onSave/", data);
+      console.log("CreateImageDialoq/handleOnUpdate/", data);
       onSave(ImageCreate);
     }).catch((err) => {
-      console.log("CreateImageDialoq/onSave/error", err.data.errors);
+      console.log("CreateImageDialoq/handleOnUpdate/error", err.data.errors);
     });
 
 
   }
-  
+  const handleOnDelete = async () => {
+    setValidationAlert([])
+    console.log("CreateImageDialog/handleOnDelete", ImageCreate)
+
+    console.log("CreateImageDialog/handleOnDelete/author", ImageCreate.author)
+
+    await CreateImage(ImageCreate as IImageBase).unwrap().then((data) => {
+      console.log("CreateImageDialoq/handleOnDelete/", data);
+      onSave(ImageCreate);
+    }).catch((err) => {
+      console.log("CreateImageDialoq/handleOnDelete/error", err.data.errors);
+    });
+
+
+  }
   const onMemberChanged = (item: InputComboItem) => {
     setImageCreate(prev => ({ ...prev, author: item.lable }))
+  }
+  const getDialogTitle = () => {
+    switch (action) {
+      case EAction.ADD:
+        return "New Image";
+      case EAction.SAVE:
+        return "Update Image";
+      default:
+        return "Delete Image"
+    }
+  }
+  const getDialogActionTitle = () => {
+    switch (action) {
+      case EAction.ADD:
+        return "Create";
+      case EAction.SAVE:
+        return "Update";
+      default:
+        return "Delete"
+    }
   }
   return (
     <Dialog
@@ -117,73 +189,81 @@ function CreateImageDialog({ value, onClose, onSave, open, ...other }: CreateIma
       maxWidth="sm"
 
       open={open} {...other}>
-      <DialogTitle>Image Create</DialogTitle>
+      <DialogTitle>{getDialogTitle()}</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
-          
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                type={"text"}
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="title"
-                label="Title"
-                value={ImageCreate.title}
-                onChange={handleImageChange}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-              disabled
-                type={"text"}
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="author"
-                label="Author"
-                value={ImageCreate.author}
-                onChange={handleImageChange}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item>
-              <MembersCombo onChanged={onMemberChanged} source={source}/>
-            </Item>
-          </Grid>
-          <Grid item xs={12}>
-          <img src={ImageCreate?.image} alt="My Image" />
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            component="label"
-          >
-            Upload File
-            <input
-              hidden
-              type="file"
-              name='image'
-              id='file-upload'
-              accept='.jpg, .png , .jpg'
-              onChange={(e) => handleImageUpload(e)}
-            />
-          </Button>
+          {action === EAction.DELETE ? null : (
+            <>
+              <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+                <Item>
+                  <TextField
+                    type={"text"}
+                    sx={{ marginLeft: "0px", width: "100%" }}
+                    name="title"
+                    label="Title"
+                    value={ImageCreate.title}
+                    onChange={handleImageChange}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Item>
+              </Grid>
+              <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+                <Item>
+                  <TextField
+                    disabled
+                    type={"text"}
+                    sx={{ marginLeft: "0px", width: "100%" }}
+                    name="author"
+                    label="Author"
+                    value={ImageCreate.author}
+                    onChange={handleImageChange}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Item>
+              </Grid>
+              <Grid item xs={12} md={6} xl={6}>
+                <Item>
+                  <MembersCombo onChanged={onMemberChanged} source={source} />
+                </Item>
+              </Grid>
+            </>
 
-        </Grid>
+          )}
+
+
+          <Grid item xs={12}>
+            <img src={ImageCreate?.image} alt="My Image" />
+          </Grid>
+          {action === EAction.DELETE ? null : (
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                component="label"
+              >
+                Upload File
+                <input
+                  hidden
+                  type="file"
+                  name='image'
+                  id='file-upload'
+                  accept='.jpg, .png , .jpg'
+                  onChange={(e) => handleImageUpload(e)}
+                />
+              </Button>
+
+            </Grid>
+          )}
+
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
-
               Cancle
             </Button></Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnSave}>
-              Save
+              {getDialogActionTitle()}
             </Button></Item>
           </Grid>
           {validationAlert.map((item) => (
