@@ -37,7 +37,7 @@ export default function ControledCombo(props: InputComboProps) {
   },[selectedItem])
   return (
 <Autocomplete
-      
+      fullWidth={true}
       value={value}
       onChange={(event: any, newValue: InputComboItem | null) => {
         setValue(newValue);
@@ -53,7 +53,7 @@ export default function ControledCombo(props: InputComboProps) {
         options={items}
         getOptionLabel={option => `${(option as InputComboItem).lable}`}
         
-        renderInput={(params) => <TextField {...params} label={title} variant="standard" />}
+        renderInput={(params) => <TextField {...params}  label={title} variant="standard" />}
       />
   );
 }

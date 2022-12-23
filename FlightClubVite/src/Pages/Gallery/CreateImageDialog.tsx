@@ -130,36 +130,6 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
 
   }
-  const handleOnUpdate = async () => {
-    setValidationAlert([])
-    console.log("CreateImageDialog/handleOnUpdate", ImageCreate)
-
-    console.log("CreateImageDialog/handleOnUpdate/author", ImageCreate.author)
-
-    await CreateImage(ImageCreate as IImageBase).unwrap().then((data) => {
-      console.log("CreateImageDialoq/handleOnUpdate/", data);
-      onSave(ImageCreate);
-    }).catch((err) => {
-      console.log("CreateImageDialoq/handleOnUpdate/error", err.data.errors);
-    });
-
-
-  }
-  const handleOnDelete = async () => {
-    setValidationAlert([])
-    console.log("CreateImageDialog/handleOnDelete", ImageCreate)
-
-    console.log("CreateImageDialog/handleOnDelete/author", ImageCreate.author)
-
-    await CreateImage(ImageCreate as IImageBase).unwrap().then((data) => {
-      console.log("CreateImageDialoq/handleOnDelete/", data);
-      onSave(ImageCreate);
-    }).catch((err) => {
-      console.log("CreateImageDialoq/handleOnDelete/error", err.data.errors);
-    });
-
-
-  }
   const onMemberChanged = (item: InputComboItem) => {
     setImageCreate(prev => ({ ...prev, author: item.lable }))
   }

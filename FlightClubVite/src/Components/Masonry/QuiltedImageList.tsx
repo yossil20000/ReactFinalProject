@@ -39,6 +39,7 @@ export default function QuiltedImageList({ images, onEdit,onDelete }: QuiltedIma
             loading="lazy"
             width={"100%"}
             height={"100%"}
+            
           />
           <ImageListItemBar
             title={item.title}
