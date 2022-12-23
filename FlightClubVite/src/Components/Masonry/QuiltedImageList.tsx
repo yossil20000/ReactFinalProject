@@ -28,7 +28,7 @@ export default function QuiltedImageList({ images, onEdit,onDelete }: QuiltedIma
       rowHeight={"auto"}
     >
       {images.map((item: IImageDisplay) => {
-        const cols: number = getRandom(1, 1);
+        const cols: number = getRandom(1, 2);
         const rows: number = getRandom(1, 4);
 
         return (<ImageListItem key={item._id} cols={cols || 2} rows={cols || 1} sx={{ display: "flex", flexDirection: "column" }}>

@@ -1,5 +1,4 @@
-import { Earbuds } from "@mui/icons-material";
-import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, Paper, styled } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, Paper, styled, FormControlLabel, Checkbox } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { EAction } from "../../Components/Buttons/ActionButtons";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
@@ -8,7 +7,7 @@ import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateImageMutation, useDeleteImageMutation, useUpdateImageMutation } from "../../features/image/imageApiSlice";
 import IImage, { IImageBase } from "../../Interfaces/API/IImage";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
-import { convertFileTobase64, resizeFileTobase64 } from "../../Utils/files";
+import { resizeFileTobase64 } from "../../Utils/files";
 const source: string = "CreateImage"
 
 export interface CreateImageDialogProps {
@@ -35,7 +34,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: CreateImageDialogProps) {
 
-  console.log("CreateImageDialog/value", value)
+ 
 
   const [CreateImage, { isError, isLoading, error, isSuccess }] = useCreateImageMutation();
   const [UpdateImage] = useUpdateImageMutation();
@@ -64,17 +63,17 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";
-    console.log("PersonalInfo/handleImageChange/file", file);
+    console.log("PersonalInfo/handleImageUpload/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
       await resizeFileTobase64(file, 500, 50).then((result) => {
-        console.log("PersonalInfo/handleImageChange/result.filelength", (result as string).length);
+        console.log("PersonalInfo/handleImageUpload/result.filelength", (result as string).length);
         setImageCreate({ ...ImageCreate, image: result as string });
 
       }
 
       ).catch((error) => {
-        console.log("PersonalInfo/handleImageChange/error", error);
+        console.log("PersonalInfo/handleImageUpload/error", error);
       }
 
       )
@@ -82,13 +81,23 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
     }
 
   }
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleImageChange", event.target.name, event.target.value)
-    setImageCreate(prev => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
+  const handleIInputChange = (event: React.ChangeEvent<HTMLInputElement>, isBool: boolean = false) => {
+    console.log("handleIInputChange",ImageCreate, event.target.name, event.target.checked, event.target.type,event.target.type == "checkbox" ?  event.target.checked : event.target.value )
+    let value : any;
+    if(event.target.type == "checkbox")
+    {
+      console.log("handlePublicChange/ischeckbox")
+      value = event.target.checked
+    }
+    else{
+      event.target.value
+    }
+    setImageCreate({
+      ...ImageCreate,
+      [event.target.name]: value ,
+    });
   };
+ 
   const handleOnCancel = () => {
     setValidationAlert([])
     onClose()
@@ -172,7 +181,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
                     name="title"
                     label="Title"
                     value={ImageCreate.title}
-                    onChange={handleImageChange}
+                    onChange={handleIInputChange}
                     InputLabelProps={{ shrink: true }}
                   />
                 </Item>
@@ -186,7 +195,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
                     name="author"
                     label="Author"
                     value={ImageCreate.author}
-                    onChange={handleImageChange}
+                    onChange={handleIInputChange}
                     InputLabelProps={{ shrink: true }}
                   />
                 </Item>
@@ -205,7 +214,8 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
             <img src={ImageCreate?.image} alt="My Image" />
           </Grid>
           {action === EAction.DELETE ? null : (
-            <Grid item xs={12}>
+            <>
+                        <Grid item xs={8}>
               <Button
                 variant="contained"
                 component="label"
@@ -220,8 +230,11 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
                   onChange={(e) => handleImageUpload(e)}
                 />
               </Button>
+              <Grid item xs={4}>
+              <FormControlLabel control={<Checkbox onChange={handleIInputChange} name={"public"} checked={ImageCreate.public} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label={`Public`} />
+              </Grid>
+            </Grid></>
 
-            </Grid>
           )}
 
           <Grid item xs={12} md={6} xl={6}>
