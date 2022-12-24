@@ -1,11 +1,11 @@
-import { Box, Container, CssBaseline, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
+import { Box, Button, FormControl, FormHelperText, Grid, IconButton, InputLabel, OutlinedInput, Paper, Typography } from '@mui/material';
 import { useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
-import checkPassword, { checkUsername, IValidation, IsUsernaaameValid } from '../../Utils/registerUtils';
+import checkPassword, { checkUsername, IValidation } from '../../Utils/registerUtils';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -52,7 +52,34 @@ function Register({ numPage, page, setPage, formData, setFormData }: IPageNaviga
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
-
+                <Grid item xs={12}>
+                    <Typography variant="h5" component="div" align='center'>
+                        Loging Info
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Item>
+                        <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+                            variant={'outlined'}
+                            onClick={() => {
+                                setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+                            }}>
+                            Previous
+                        </Button>
+                    </Item>
+                </Grid>
+                <Grid item xs={6}>
+                    <Item>
+                        <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+                            variant={'outlined'}
+                            disabled={!(isPasswordValid.valid && isusernameValid.valid)}
+                            onClick={() => {
+                                setPage(page + 1 == numPage ? 0 : page + 1);
+                            }}>
+                            Next
+                        </Button>
+                    </Item>
+                </Grid>
                 <Grid item xs={12} md={12}>
                     <Item>
                         <FormControl sx={{ m: 1, width: '90%', margin: "auto" }} variant="outlined">
@@ -136,23 +163,7 @@ function Register({ numPage, page, setPage, formData, setFormData }: IPageNaviga
                         </FormControl>
                     </Item>
                 </Grid>
-                <Grid item xs={6}>
-                    <Item><button
-                        onClick={() => {
-                            setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-                        }}>
-                        Previous
-                    </button></Item>
-                </Grid>
-                <Grid item xs={6}>
-                    <Item><button
-                        disabled={!(isPasswordValid.valid && isusernameValid.valid)}
-                        onClick={() => {
-                            setPage(page + 1 == numPage ? 0 : page + 1);
-                        }}>
-                        Next
-                    </button></Item>
-                </Grid>
+
 
             </Grid>
         </Box>

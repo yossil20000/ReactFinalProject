@@ -8,7 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
 import { Gender } from '../../Interfaces/API/IMember';
 import FemaleIcon from '@mui/icons-material/Female';
-import {  resizeFileTobase64 } from '../../Utils/files';
+import { resizeFileTobase64 } from '../../Utils/files';
 import GenderCombo from '../../Components/Buttons/GenderCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 const Item = styled(Paper)(({ theme }) => ({
@@ -27,7 +27,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
     console.log("PersonalInfo/handleImageChange/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
-      await resizeFileTobase64(file,300).then((result) => {
+      await resizeFileTobase64(file, 300).then((result) => {
         console.log("PersonalInfo/handleImageChange/result", result);
         setFormData({ ...formData, image: result as string });
 
@@ -40,10 +40,10 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
       )
       /* console.log("PersonalInfo/handleImageChange/base64", base64) */
     }
-    
+
   }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    
+
     setFormData({ ...formData, [prop]: item.lable });
     console.log("formData", formData)
   }
@@ -67,8 +67,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
   };
 
   return (
-    <Box sx={{ flexGrow: 1, width: "100%" ,overflow:"auto"}}>
-
+    <div className='main' style={{ width: "99%", margin: "1% auto", overflow: "auto" }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h5" component="div" align='center'>
@@ -76,20 +75,26 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Item><Button sx={{ width: "100%", margin: "auto" }}
-            onClick={() => {
-              setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-            }}>
-            Previous
-          </Button></Item>
+          <Item>
+            <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+              variant={'outlined'}
+              onClick={() => {
+                setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+              }}>
+              Previous
+            </Button>
+          </Item>
         </Grid>
         <Grid item xs={6}>
-          <Item><Button sx={{ width: "100%", margin: "auto" }}
-            onClick={() => {
-              setPage(page + 1 == numPage ? 0 : page + 1);
-            }}>
-            Next
-          </Button></Item>
+          <Item>
+            <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+              variant={'outlined'}
+              onClick={() => {
+                setPage(page + 1 == numPage ? 0 : page + 1);
+              }}>
+              Next
+            </Button>
+          </Item>
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>
@@ -150,7 +155,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
           </Item>
         </Grid>
         <Grid item xs={12}>
-          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={"gender"} selectedItem={{lable: formData?.gender === undefined ? "" : formData?.gender.toString() ,_id: "",description: ""}}/>
+          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={"gender"} selectedItem={{ lable: formData?.gender === undefined ? "" : formData?.gender.toString(), _id: "", description: "" }} />
         </Grid>
         <Grid item xs={12}>
           <img src={formData?.image} alt="My Image" />
@@ -173,7 +178,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
 
         </Grid>
       </Grid>
-    </Box>
+    </div>
 
   )
 }

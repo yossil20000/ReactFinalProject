@@ -30,20 +30,26 @@ function HomeAddress({ numPage, page, setPage, formData, setFormData }: IPageNav
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Item><Button sx={{ width: "100%", margin: "auto" }}
-            onClick={() => {
-              setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-            }}>
-            Previous
-          </Button></Item>
+          <Item>
+            <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+              variant={'outlined'}
+              onClick={() => {
+                setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+              }}>
+              Previous
+            </Button>
+          </Item>
         </Grid>
         <Grid item xs={6}>
-          <Item><Button sx={{ width: "100%", margin: "auto" }}
-            onClick={() => {
-              setPage(page + 1 == numPage ? 0 : page + 1);
-            }}>
-            Next
-          </Button></Item>
+          <Item>
+          <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+              variant={'outlined'}
+              onClick={() => {
+                setPage(page + 1 == numPage ? 0 : page + 1);
+              }}>
+              Next
+            </Button>
+          </Item>
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>

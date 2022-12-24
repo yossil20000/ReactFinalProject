@@ -9,6 +9,7 @@ import IMemberInfo from '../../Interfaces/IMemberInfo';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
+import { ROUTES } from '../../Types/Urls';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -80,7 +81,22 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageN
                         Next
                     </button></Item>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
+                    <Item>
+                        <Box sx={{ m: 1, position: 'relative' }}>
+                            <Button
+                                variant="contained"
+                                sx={buttonSx}
+                                disabled={isLoading}
+                                onClick={() => navigate(`/${ROUTES.HOME}`)}
+                            >
+                                Back to Home
+                            </Button>
+                            
+                        </Box>
+                    </Item>
+                </Grid>
+                <Grid item xs={6}>
                     <Item>
                         <Box sx={{ m: 1, position: 'relative' }}>
                             <Button

@@ -1,18 +1,12 @@
-import { Password } from '@mui/icons-material';
-import { Box, Grid, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react'
-import IMemberInfo from '../../Interfaces/IMemberInfo';
-import ContanctInfo from '../Resistration/ShippingAddress';
+import { Box, Grid, Step, StepLabel, Stepper } from '@mui/material';
+import { useEffect, useState } from 'react'
 import PersonalInfo from '../Resistration/PersonalInfo';
-import SubmitRegistration from '../Resistration/SubmitRegistration';
 import HomeAddress from '../Resistration/HomeAddress';
 import ShippingAddress from '../Resistration/ShippingAddress';
 import { useGetMemberByIdQuery } from '../../features/Users/userSlice';
-import { authSlice, selectCurrentId } from '../../features/Auth/authSlice';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppSelector } from '../../app/hooks';
 import SubmitProfile from './SubmitProfile';
-import { Gender, Role } from '../../Interfaces/API/IMember';
-import IMemberCreate from '../../Interfaces/IMemberCreate';
+import { Gender } from '../../Interfaces/API/IMember';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
 
 function ProfilePage() {

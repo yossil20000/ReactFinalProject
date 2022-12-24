@@ -11,6 +11,8 @@ import { green } from '@mui/material/colors';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import { IValidation } from '../../Interfaces/IValidation';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../Types/Urls';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -24,6 +26,7 @@ const Item = styled(Paper)(({ theme }) => ({
 function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberCreate>) {
     const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
     const [createMember, { isError, isLoading, isSuccess, error }] = useCreateMemberMutation();
+    const navigate = useNavigate();
     const onSaveRegisterHandler = async () => {
 
         console.log("onSaveRegisterHandler/formData", formData);
@@ -34,38 +37,13 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
         setValidationAlert([]);
     }
     useEffect(() => {
-        let validation: IValidationAlertProps[];
+        
         if (isError) {
             console.log("SubmitRegistration/error", error);
             let validation = getValidationFromError(error, onValidationAlertClose);
             setValidationAlert(validation);
             return;
-            if ((error as any).data?.errors !== undefined) {
-                validation = (error as any).data?.errors.map((item: string) => {
-                    const alert: IValidationAlertProps = {
-                        location: '',
-                        msg: item,
-                        param: '',
-                        value: "",
-                        open: true,
-                        onClose: onValidationAlertClose
-                    };
-                    return alert;
-                })
-                setValidationAlert(validation);
-            }
-
-            if ((error as any).data?.validation !== undefined) {
-
-                validation = (error as any).data.validation.errors.map((item: IValidation) => {
-                    const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
-                    alert.onClose = onValidationAlertClose;
-                    alert.open = true;
-                    return alert;
-                })
-                console.log("isError/validation", validation)
-                setValidationAlert(validation);
-            }
+            
         }
 
         if (isSuccess) {
@@ -89,22 +67,40 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: I
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Item><button
-                        onClick={() => {
-                            setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
-                        }}>
-                        Previous
-                    </button></Item>
+                    <Item>
+                        <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+                            variant={'outlined'}
+                            onClick={() => {
+                                setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
+                            }}>
+                            Previous
+                        </Button>
+                    </Item>
                 </Grid>
                 <Grid item xs={6}>
-                    <Item><button
-                        onClick={() => {
-                            setPage(page + 1 == numPage ? 0 : page + 1);
-                        }}>
-                        Next
-                    </button></Item>
+                    <Item>
+                        <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+                            variant={'outlined'}
+                            onClick={() => {
+                                setPage(page + 1 == numPage ? 0 : page + 1);
+                            }}>
+                            Next
+                        </Button>
+                    </Item>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
+                    <Item>
+                        <Button
+                            variant="contained"
+                            sx={buttonSx}
+                            disabled={isLoading}
+                            onClick={() => navigate(`/${ROUTES.HOME}`)}
+                        >
+                            Back to Home
+                        </Button>
+                    </Item>
+                </Grid>
+                <Grid item xs={6}>
                     <Item>
                         <Button
                             variant="contained"
