@@ -8,6 +8,7 @@ import { useCreateImageMutation, useDeleteImageMutation, useUpdateImageMutation 
 import IImage, { IImageBase } from "../../Interfaces/API/IImage";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import { resizeFileTobase64 } from "../../Utils/files";
+import MoodBadIcon from '@mui/icons-material/MoodBad';
 const source: string = "CreateImage"
 
 export interface CreateImageDialogProps {
@@ -34,7 +35,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: CreateImageDialogProps) {
 
- 
+
 
   const [CreateImage, { isError, isLoading, error, isSuccess }] = useCreateImageMutation();
   const [UpdateImage] = useUpdateImageMutation();
@@ -82,22 +83,21 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
   }
   const handleIInputChange = (event: React.ChangeEvent<HTMLInputElement>, isBool: boolean = false) => {
-    console.log("handleIInputChange",ImageCreate, event.target.name, event.target.checked, event.target.type,event.target.type == "checkbox" ?  event.target.checked : event.target.value )
-    let value : any;
-    if(event.target.type == "checkbox")
-    {
+    console.log("handleIInputChange", ImageCreate, event.target.name, event.target.checked, event.target.type, event.target.type == "checkbox" ? event.target.checked : event.target.value)
+    let value: any;
+    if (event.target.type == "checkbox") {
       console.log("handlePublicChange/ischeckbox")
       value = event.target.checked
     }
-    else{
+    else {
       event.target.value
     }
     setImageCreate({
       ...ImageCreate,
-      [event.target.name]: value ,
+      [event.target.name]: value,
     });
   };
- 
+
   const handleOnCancel = () => {
     setValidationAlert([])
     onClose()
@@ -111,7 +111,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
     console.log("CreateImageDialog/onSave", ImageCreate)
 
     console.log("CreateImageDialog/onSave/author", ImageCreate.author)
-    if(action === EAction.ADD){
+    if (action === EAction.ADD) {
       await CreateImage(ImageCreate as IImageBase).unwrap().then((data) => {
         console.log("CreateImageDialoq/onSave/", data);
         onSave(ImageCreate);
@@ -119,7 +119,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
         console.log("CreateImageDialoq/onSave/error", err.data.errors);
       });
     }
-    else if(action === EAction.SAVE){
+    else if (action === EAction.SAVE) {
       await UpdateImage(ImageCreate as IImage).unwrap().then((data) => {
         console.log("CreateImageDialoq/onUpdate/", data);
         onSave(ImageCreate);
@@ -127,7 +127,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
         console.log("CreateImageDialoq/onUpdate/error", err.data.errors);
       });
     }
-    else if(action === EAction.DELETE){
+    else if (action === EAction.DELETE) {
       await DeleteImage((ImageCreate as IImage)._id).unwrap().then((data) => {
         console.log("CreateImageDialoq/onUpdate/", data);
         onSave(ImageCreate);
@@ -170,10 +170,15 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
       open={open} {...other}>
       <DialogTitle>{getDialogTitle()}</DialogTitle>
       <DialogContent>
-        <Grid container sx={{ width: "100%" }} justifyContent="center">
+        <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
+          <Grid item xs={12}>
+            <Item>
+              <MembersCombo onChanged={onMemberChanged} source={source} filter={true} />
+            </Item>
+          </Grid>
           {action === EAction.DELETE ? null : (
             <>
-              <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+              <Grid item xs={12} sx={{ marginLeft: "0px" }}>
                 <Item>
                   <TextField
                     type={"text"}
@@ -186,7 +191,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
                   />
                 </Item>
               </Grid>
-              <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+              <Grid item xs={12}  sx={{ marginLeft: "0px" }}>
                 <Item>
                   <TextField
                     disabled
@@ -199,41 +204,46 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
                     InputLabelProps={{ shrink: true }}
                   />
                 </Item>
+                <Grid item xs={12}>
+                  <Item>
+                    <FormControlLabel control={<Checkbox onChange={handleIInputChange} name={"public"} checked={ImageCreate.public} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label={`View for Public`} />
+                  </Item>
+                </Grid>
+
               </Grid>
-              <Grid item xs={12} md={6} xl={6}>
-                <Item>
-                  <MembersCombo onChanged={onMemberChanged} source={source} />
-                </Item>
-              </Grid>
+
             </>
 
           )}
 
 
           <Grid item xs={12}>
-            <img src={ImageCreate?.image} alt="My Image" />
+            <Item>
+              {ImageCreate?.image === "" ? (<MoodBadIcon />) : (
+                <img src={ImageCreate?.image} alt="My Image" />
+              )}
+            </Item>
           </Grid>
           {action === EAction.DELETE ? null : (
             <>
-                        <Grid item xs={8}>
-              <Button
-                variant="contained"
-                component="label"
-              >
-                Upload File
-                <input
-                  hidden
-                  type="file"
-                  name='image'
-                  id='file-upload'
-                  accept='.jpg, .png , .jpg'
-                  onChange={(e) => handleImageUpload(e)}
-                />
-              </Button>
-              <Grid item xs={4}>
-              <FormControlLabel control={<Checkbox onChange={handleIInputChange} name={"public"} checked={ImageCreate.public} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label={`Public`} />
-              </Grid>
-            </Grid></>
+              <Grid item xs={12}>
+                <Item>
+                  <Button
+                    variant="contained"
+                    component="label"
+                  >
+                    Upload File
+                    <input
+                      hidden
+                      type="file"
+                      name='image'
+                      id='file-upload'
+                      accept='.jpg, .png , .jpg'
+                      onChange={(e) => handleImageUpload(e)}
+                    />
+                  </Button>
+                </Item>
+              </Grid></>
 
           )}
 
@@ -259,7 +269,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
           ))}
         </Grid>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   )
 }
 

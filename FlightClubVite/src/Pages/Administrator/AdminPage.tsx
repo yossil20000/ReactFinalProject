@@ -15,7 +15,7 @@ import IDeviceType from '../../Interfaces/API/IDeviceType';
 import MemberTab from './Members/MemberTab';
 import { useFetchMembersAdminQuery, useFetchMembersComboQuery } from '../../features/Users/userSlice';
 import { MembersContext } from '../../app/Context/MemberContext';
-import { IMemberAdmin } from '../../Interfaces/API/IMember';
+import { IMemberAdmin, IMemberComboFilter } from '../../Interfaces/API/IMember';
 import MembershipTab from './Membership/MembershipTab';
 import NoticeTab from './Notice/NoticeTab';
 const getDesignTokens = (mode: PaletteMode) => ({
@@ -66,7 +66,7 @@ function AdminPage() {
   const [mode, setMode] = useState<PaletteMode>('light');
   const { data: devices, isError, isLoading, isSuccess, error } = useFetchAllDevicesQuery();
   const { data: members} = useFetchMembersAdminQuery();
-  const { data: membersCombo  } = useFetchMembersComboQuery();
+  const { data: membersCombo  } = useFetchMembersComboQuery({} );
   const { data: deviceTypes } = useFetchAllDeviceTypesQuery();
   const [selectedDevice, setSelectedDevice] = useLocalStorage<IDevice | null | undefined>("_admin/selectedDevice", null);
   const [selectedDeviceTypes, setSelectedDeviceTypes] = useLocalStorage<IDeviceType | null | undefined>("_admin/selectedDeviceType", null);

@@ -13,7 +13,7 @@ import MediaQuery from "react-responsive";
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import MuiAccordionSummary, {AccordionSummaryProps,} from '@mui/material/AccordionSummary';
+import MuiAccordionSummary, { AccordionSummaryProps, } from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
 import { useFetchAllReservationsQuery, useDeleteReservationMutation } from '../../features/Reservations/reservationsApiSlice';
@@ -41,7 +41,7 @@ interface ItableData {
 
 function createdata(_id_reservaion: string, _id_member: string, member_id: string,
   name: string, device_name: string, date_from: Date, date_to: Date, validOperation: CanDo): ItableData {
-  return { _id_reservaion, _id_member, member_id,  name, device_name, date_from: new Date(date_from), date_to: new Date(date_to), validOperation } as ItableData
+  return { _id_reservaion, _id_member, member_id, name, device_name, date_from: new Date(date_from), date_to: new Date(date_to), validOperation } as ItableData
 }
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   /* console.log("descendingComparator", a, b, orderBy) */
@@ -87,15 +87,15 @@ interface IEnhancedTableHeadProps {
   handleReservationAdd: () => void;
 }
 function EnhancedTableHead(props: IEnhancedTableHeadProps) {
-  
-  const { order, orderBy, onRequestSort,handleReservationAdd} =
+
+  const { order, orderBy, onRequestSort, handleReservationAdd } =
     props;
   const createSortHandler = (property: keyof ItableData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
   return (
 
-    <TableHead style={{minWidth:"320px"}}>
+    <TableHead style={{ minWidth: "320px" }}>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
@@ -161,7 +161,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   return (
     <Toolbar
       sx={{
-        zIndex:"100",
+        zIndex: "100",
         pl: { sm: 1 },
         pr: { xs: 1, sm: 1 },
         ...(isFilterOwner && {
@@ -170,32 +170,34 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         }),
       }}
     >
-      <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
-      {isByDateRange ? (
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <ThemeProvider theme={defaultMaterialThem}>
-            <MobileDatePicker
-              label="From Date"
-              value={fromDateFilter}
-              onChange={handleFromDateFilterChange}
-              renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
-            />
-            <MobileDatePicker
+      <Box display={"flex"} justifyContent={"space-between"} sx={{ flexGrow: 1 }}>
+        <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
+        {isByDateRange ? (
+          <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <ThemeProvider theme={defaultMaterialThem}>
+              <MobileDatePicker
+                label="From Date"
+                value={fromDateFilter}
+                onChange={handleFromDateFilterChange}
+                renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
+              />
+              <MobileDatePicker
 
-              label="To Date"
-              value={toDateFilter}
-              onChange={handleToDateFilterChange}
-              renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
-            />
-          </ThemeProvider>
+                label="To Date"
+                value={toDateFilter}
+                onChange={handleToDateFilterChange}
+                renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
+              />
+            </ThemeProvider>
 
-        </LocalizationProvider>
-      ) :
-        (null)
+          </LocalizationProvider>
 
-      }
+        ) :
+          (null)
 
-
+        }
+        
+      </Box>
       <Box sx={{ flexGrow: 1 }} />
 
 
@@ -260,7 +262,7 @@ let reservationUpdateIntitial: IReservationUpdate = {
 
 }
 
-let reservationAddIntitial : IReservationCreateApi = {
+let reservationAddIntitial: IReservationCreateApi = {
   date_from: new Date(),
   date_to: new Date(),
   _id_member: "",
@@ -283,7 +285,7 @@ function ReservationsPage() {
 
   function SetReservationUpdate(id_reservation: string) {
     const reservation = rows.filter(item => item._id_reservaion === id_reservation)
-    if (reservation.length === 1 && reservation[0].name ) {
+    if (reservation.length === 1 && reservation[0].name) {
       console.log("RenderReservationUpdate/filter", reservation);
       reservationUpdateIntitial._id = reservation[0]._id_reservaion;
       reservationUpdateIntitial.date_from = reservation[0].date_from;
@@ -294,14 +296,14 @@ function ReservationsPage() {
     }
   }
   useEffect(() => {
-    let rows : ItableData[] =[]
-    if(reservations?.data){
-     rows = reservations?.data.map((item) => {
-      if(item.member)
-        return createdata(item._id, item.member._id, item.member.member_id, `${item.member.family_name} ${item.member.first_name}`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo(item.member._id, login.member._id, login.member.roles))
-      return createdata(item._id, "_id", "member_id", `family_name .first_name`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo("_id", login.member._id, login.member.roles))
-    })
-  }
+    let rows: ItableData[] = []
+    if (reservations?.data) {
+      rows = reservations?.data.map((item) => {
+        if (item.member)
+          return createdata(item._id, item.member._id, item.member.member_id, `${item.member.family_name} ${item.member.first_name}`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo(item.member._id, login.member._id, login.member.roles))
+        return createdata(item._id, "_id", "member_id", `family_name .first_name`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo("_id", login.member._id, login.member.roles))
+      })
+    }
     console.log('UseEffect/rows/be', rows)
     if (rows === undefined) {
       rows = [];
@@ -429,129 +431,129 @@ function ReservationsPage() {
     setOpenReservationAdd(false);
   }
   const handleAddClick = async () => {
-    
+
     setOpenReservationAdd(true);
   }
-  
+
   return (
     <>
 
-    <div className='header'><Typography variant="h6" align="center">Reservation Page</Typography></div>
-    <div className='main' style={{ overflow: 'auto' }}>
-      { isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
-      {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
-      <Box sx={{ width: '100%', height: '100%' }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <EnhancedTableToolbar  isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
-          <TablePagination
-            rowsPerPageOptions={[1, 5, 10, 25]}
-            component="div"
-            count={rows ? rows.length : 0}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-          <TableContainer>
-            <Table stickyHeader={true}
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
-            >
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                handleReservationAdd={handleAddClick}
-              />
-              <MediaQuery minWidth={768}>
-                <TableBody sx={{"& tr:nth-of-type(2n+1)": {backgroundColor: "gray",color:"white" ,"& .MuiTableCell-root" : {color: "white"}}, "color": "red"} }>
-                  {
-                    
-                  rows.filter((r) => {
-                    if (!isInDateRange(r)) return false;
-                    if (!isFilterOwner) return true
-                    if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
-                    return false;
-                  }).sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row: ItableData) => {
-                      return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row._id_reservaion}>
-                          <TableCell align="left">{row.device_name}</TableCell>
-                          <TableCell align="left">{new Date(row.date_from).toLocaleString()}</TableCell>
-                          <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
-                          <TableCell align="left">{row.name}</TableCell>
-                          <TableCell align="left">{row.member_id}</TableCell>
-                          <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}</TableCell>
-                          <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </MediaQuery>
+      <div className='header'><Typography variant="h6" align="center">Reservation Page</Typography></div>
+      <div className='main' style={{ overflow: 'auto' }}>
+        {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
+        {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
+        <Box sx={{ width: '100%', height: '100%' }}>
+          <Paper sx={{ width: '100%', mb: 2 }}>
+            <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
+            <TablePagination
+              rowsPerPageOptions={[1, 5, 10, 25]}
+              component="div"
+              count={rows ? rows.length : 0}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+            <TableContainer>
+              <Table stickyHeader={true}
+                sx={{ minWidth: 750 }}
+                aria-labelledby="tableTitle"
+                size={dense ? 'small' : 'medium'}
+              >
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                  handleReservationAdd={handleAddClick}
+                />
+                <MediaQuery minWidth={768}>
+                  <TableBody sx={{ "& tr:nth-of-type(2n+1)": { backgroundColor: "gray", color: "white", "& .MuiTableCell-root": { color: "white" } }, "color": "red" }}>
+                    {
 
-            </Table>
-          </TableContainer>
-          <MediaQuery maxWidth={767}>
-            {
-              rows.filter((r) => {
+                      rows.filter((r) => {
+                        if (!isInDateRange(r)) return false;
+                        if (!isFilterOwner) return true
+                        if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                        return false;
+                      }).sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row: ItableData) => {
+                          return (
+                            <TableRow hover role="checkbox" tabIndex={-1} key={row._id_reservaion}>
+                              <TableCell align="left">{row.device_name}</TableCell>
+                              <TableCell align="left">{new Date(row.date_from).toLocaleString()}</TableCell>
+                              <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
+                              <TableCell align="left">{row.name}</TableCell>
+                              <TableCell align="left">{row.member_id}</TableCell>
+                              <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}</TableCell>
+                              <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                  </TableBody>
+                </MediaQuery>
 
-                if (!isInDateRange(r)) return false;
-                if (!isFilterOwner) return true
-                if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
-                return false;
-              })
-                .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: ItableData, index: number) => {
-                  return (
-                    <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
-                      <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                        <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Grid container spacing={1}>
-                          <Grid item xs={3} >
-                            <Typography>
-                              {row.name}
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={3} >
-                            <Typography>
-                              Id:
-                            </Typography>
-                            <Typography>
-                              {row.member_id}
-                            </Typography>
-                          </Grid>
-                          <Grid item sm={3} >
-                            <Typography>
-                            {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
+              </Table>
+            </TableContainer>
+            <MediaQuery maxWidth={767}>
+              {
+                rows.filter((r) => {
 
-                            </Typography>
-                            <Typography>
-                            {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}
-                            </Typography>
-
-                          </Grid>
-                        </Grid>
-                      </AccordionDetails>
-                    </Accordion>
-                  );
+                  if (!isInDateRange(r)) return false;
+                  if (!isFilterOwner) return true
+                  if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                  return false;
                 })
-            }
-          </MediaQuery>
-        </Paper>
-{/*         <FormControlLabel
+                  .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row: ItableData, index: number) => {
+                    return (
+                      <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
+                        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                          <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Grid container spacing={1}>
+                            <Grid item xs={3} >
+                              <Typography>
+                                {row.name}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={3} >
+                              <Typography>
+                                Id:
+                              </Typography>
+                              <Typography>
+                                {row.member_id}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={3} >
+                              <Typography>
+                                {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
+
+                              </Typography>
+                              <Typography>
+                                {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}
+                              </Typography>
+
+                            </Grid>
+                          </Grid>
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })
+              }
+            </MediaQuery>
+          </Paper>
+          {/*         <FormControlLabel
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dense padding"
         /> */}
-      </Box>
+        </Box>
 
 
 
 
-    </div>
-    
+      </div>
+
     </>
   )
 }

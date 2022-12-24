@@ -19,9 +19,8 @@ const SetProperty = (obj: any, path: string, value: any): any => {
 }
 function GeneralTab() {
   
-  const { setSelectedItem, selectedItem,members } = useContext(MembersContext) as MembersContextType;
-  const { membersCombo} = useContext(DevicesContext) as DevicesContextType;
-  
+  const { setSelectedItem, selectedItem} = useContext(MembersContext) as MembersContextType;
+   
 
   const handleTimeChange = (newValue: Date | null | undefined, name: string) => {
     console.log(`handleTimeChange/newValue , key`, newValue, name);
@@ -99,7 +98,7 @@ function GeneralTab() {
           <TextField onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"}  label={"Member Id"} InputLabelProps={{ shrink: true }}/>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact.email} variant={"standard"}  label={"email"} InputLabelProps={{ shrink: true }}/>
+          <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact?.email} variant={"standard"}  label={"email"} InputLabelProps={{ shrink: true }}/> 
         </Grid>
         <Grid item xs={12} >
           <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={source} 

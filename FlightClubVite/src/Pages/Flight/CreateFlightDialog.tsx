@@ -250,13 +250,13 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
-              <DevicesCombo onChanged={onDeviceChanged} source={source}/>
+              <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true}/>
 
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-              <MembersCombo onChanged={onMemberChanged} source={source}/>
+              <MembersCombo onChanged={onMemberChanged} source={source} filter={true}/>
             </Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>

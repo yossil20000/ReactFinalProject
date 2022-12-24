@@ -1,9 +1,22 @@
 import { FuelUnits } from "../../Types/FuelUnits"
 import IDeviceType from "./IDeviceType"
+import { IFilter } from "./IFilter"
 import IFlight from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
 import IMember from "./IMember"
 import { Status } from "./IStatus"
+export interface IDeviceComboFilter extends IFilter{
+    filter?:{
+        status: Status
+    },
+    select?: string,
+    find_select?: {
+        _id: string;
+        device_id: number;
+        engien_meter: number;
+        maintanance: number;
+    }
+}
 export enum DEVICE_STATUS  {
     IN_SERVICE,
     OUT_OFSERVICE,

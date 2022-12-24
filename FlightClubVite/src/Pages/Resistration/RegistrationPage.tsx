@@ -1,15 +1,12 @@
-import { Home, Password } from '@mui/icons-material';
-import { Box, Grid, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import React, { useState } from 'react'
-import IMemberInfo from '../../Interfaces/IMemberInfo';
-import ContanctInfo from './ShippingAddress';
+import { Box, Grid, Step, StepLabel, Stepper } from '@mui/material';
+import { useState } from 'react'
 import PersonalInfo from './PersonalInfo';
 import Register from './Register';
 import SubmitRegistration from './SubmitRegistration';
 import HomeAddress from './HomeAddress';
 import ShippingAddress from './ShippingAddress';
 import { useAppSelector } from '../../app/hooks';
-import IMember, { Role } from '../../Interfaces/API/IMember';
+import { Gender, Role } from '../../Interfaces/API/IMember';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
 
 function RegistrationPage() {
@@ -48,7 +45,9 @@ function RegistrationPage() {
     username: "",
     role: {
       roles: [Role.user]
-  }
+    },
+    image: '',
+    gender: Gender.male
   }
   const steps = [
     '25%',

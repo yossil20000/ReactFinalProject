@@ -1,12 +1,17 @@
 import { useEffect, useState,useId } from 'react'
 import { useFetchDevicsComboQuery } from '../../features/Device/deviceApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { IDeviceCombo } from '../../Interfaces/API/IDevice'
+import { IDeviceCombo, IDeviceComboFilter } from '../../Interfaces/API/IDevice'
+import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
-
+const filterCombo : IDeviceComboFilter = {
+filter: {
+  status: Status.Active
+}
+}
 function DevicesCombo(props : ComboProps) {
-  const {onChanged,source} = props
-  const { data, isError, isLoading, error } = useFetchDevicsComboQuery();
+  const {onChanged,source,filter} = props
+  const { data, isError, isLoading, error } = useFetchDevicsComboQuery(filter !== undefined ? filterCombo : {});
   
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
   const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`_${source}/Device`,undefined);

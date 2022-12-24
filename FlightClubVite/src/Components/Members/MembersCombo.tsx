@@ -2,13 +2,19 @@
 import { useEffect, useState } from 'react'
 import { useFetchMembersComboQuery } from '../../features/Users/userSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { IMemberCombo } from '../../Interfaces/API/IMember';
+import { IMemberCombo, IMemberComboFilter } from '../../Interfaces/API/IMember';
+import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
-
+const filterCombo : IMemberComboFilter = {
+  filter: {
+    status: Status.Active
+  }
+  }
+  
 function MembersCombo(props : ComboProps) {
-  const {onChanged,source} = props;
-  const { data, isError, isLoading, error } = useFetchMembersComboQuery();
+  const {onChanged,source,filter} = props;
+  const { data, isError, isLoading, error } = useFetchMembersComboQuery(filter === undefined ? {} : filterCombo);
   
   const [items,setItems] = useState<InputComboItem[]>([]);
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */

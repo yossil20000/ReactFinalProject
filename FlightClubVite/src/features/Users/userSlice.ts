@@ -6,7 +6,7 @@ import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import IMemberUpdate from "../../Interfaces/IMemberInfo";
 import IMemberCreate from "../../Interfaces/IMemberCreate";
-import { Gender, IMemberAdmin, IMemberCombo, IMemberStatus, Status } from "../../Interfaces/API/IMember";
+import { Gender, IMemberAdmin, IMemberCombo, IMemberComboFilter, IMemberStatus, Status } from "../../Interfaces/API/IMember";
 
 
 interface Role {
@@ -118,10 +118,11 @@ export const apiSlice = createApi({
                 }),
                 invalidatesTags: ["Members"]
             }),
-            fetchMembersCombo : builder.query<IResultBase<IMemberCombo>,void>({
-                query: () => ({
+            fetchMembersCombo : builder.query<IResultBase<IMemberCombo>,IMemberComboFilter>({
+                query: (filter) => ({
                     url: `/${URLS.MEMBERS_COMBO}`,
-                    method: "GET"
+                    body: filter,
+                    method: "POST"
                 })
             }),
             fetchMembersAdmin : builder.query<IResultBase<IMemberAdmin>,void>({

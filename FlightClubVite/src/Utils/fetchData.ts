@@ -13,7 +13,7 @@ export const getMembersAndDevicesCombo = async () : Promise<IDevicesMembers> => 
     devicesCombo: []
   }
 try{
-  const aaaa =  (await storeUser.dispatch(apiSlice.endpoints.fetchMembersCombo.initiate())).data?.data;
+  const aaaa =  (await storeUser.dispatch(apiSlice.endpoints.fetchMembersCombo.initiate({}))).data?.data;
 
    result = {
     memberscombo: aaaa === undefined ? [] : aaaa as IMemberCombo[],

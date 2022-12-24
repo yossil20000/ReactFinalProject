@@ -1,6 +1,12 @@
+import { IFilter } from "./IFilter"
 import IFlight from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
 import IMembership from "./IMembership"
+export interface IMemberComboFilter extends IFilter{
+    filter?:{
+        status: Status
+    }
+}
 export enum Gender {
     "male" = "male",
     "female" = "female",

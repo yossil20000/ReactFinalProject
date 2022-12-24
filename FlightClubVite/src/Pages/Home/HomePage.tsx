@@ -1,35 +1,20 @@
 
-import { useContext, useEffect, useState } from 'react'
-import TitlebarBelowMasonryImageList from '../../Components/Masonry/TitlebarImages';
+import { useEffect, useState } from 'react'
 import NoticeStepper from '../../Components/NoticeStepper'
-import imege1 from '../../Asset/TileBar/IMG-20190715-WA0002.jpg';
-import imege2 from '../../Asset/TileBar/IMG-20200222-WA0010.jpg';
-import imege3 from '../../Asset/TileBar/IMG-20200221-WA0098.jpg';
 import { Role } from '../../Interfaces/API/IMember';
-import { NoticeContext, NoticeContextType } from '../../app/Context/NoticeContext';
 import IClubNotice from '../../Interfaces/API/IClubNotice';
 import { useFetchAllNoticesQuery } from '../../features/clubNotice/noticeApiSlice';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import QuiltedImageList from '../../Components/Masonry/QuiltedImageList';
+import { useFetchAllImagesQuery } from '../../features/image/imageApiSlice';
+import { IImageDisplay } from '../../Interfaces/API/IImage';
+import { useAppSelector } from '../../app/hooks';
+import { ILoginResult } from '../../Interfaces/API/ILogin';
 
-const itemData = [
-  {
-    image: imege1,
-    title: 'Yosef And Alex',
-    author: 'Yosef Levy',
-  },
-  {
-    image: imege3,
-    title: 'Near Haifa',
-    author: 'Yosef Levy',
-  },
-  {
-    image: imege2,
-    title: 'Moskin',
-    author: 'Yosef Levy',
-  },
-];
 
 function HomePage() {
+  const login: ILoginResult = useAppSelector((state) => state.authSlice);
+  const { data: images } = useFetchAllImagesQuery();
   const {isError,isLoading,isSuccess,isFetching,error,data} = useFetchAllNoticesQuery();
   const [notices,setNotices] = useState<IClubNotice[]>([])
    useEffect(() => {
@@ -43,14 +28,31 @@ function HomePage() {
       console.log("HomePage/setNotices", data.data)
     }
         },[data])
-
+  const getFilterImage = () => {
+    console.log("homePage/getFilterImage/login",login)
+    const found = login.member.roles.find(role => role === Role.guest)
+    console.log("homePage/getFilterImage/founsuser",found)
+    if(found != undefined)
+      return images?.data.filter((image) => image.public);
+    else
+     return images?.data
+    
+  }
+  getFilterImage();
  
   return (
     
     <div className='main'>
     <Box marginTop={2} display={'flex'} flexDirection={'column'}>
     <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>}/>
-    <TitlebarBelowMasonryImageList imageList={itemData}/>
+    <Box sx={{ width: "100%", height: "50vh"} }>
+      <Box><Typography sx={{ height: "4ex", textAlign: "center" }}>Galllery</Typography></Box>
+      <Box sx={{ width: "100%", height: "50vh", overflowY: 'scroll' }}>
+      <QuiltedImageList images={getFilterImage() as IImageDisplay[]} onEdit={() => {}} onDelete={() => {}} readOnly={true}/>
+      </Box>
+    </Box>
+    
+    
     </Box>
 
     </div>

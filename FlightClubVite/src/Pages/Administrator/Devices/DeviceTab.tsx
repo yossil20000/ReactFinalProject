@@ -144,7 +144,7 @@ function DeviceTab() {
           <Box marginTop={2}>
             <Grid container width={"100%"} height={"100%"} gap={2}>
               <Grid item xs={12}>
-                <DevicesCombo onChanged={onDeviceChange} source={source} />
+                <DevicesCombo onChanged={onDeviceChange} source={source}  />
               </Grid>
 
             </Grid>

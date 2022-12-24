@@ -1,5 +1,5 @@
-import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
-import React, { useState } from 'react'
+import { Box, Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
+import React, { useCallback, useState } from 'react'
 import { useFetchAllImagesQuery } from '../../features/image/imageApiSlice'
 import AddIcon from '@mui/icons-material/Add';
 import CreateImageDialog from './CreateImageDialog';
@@ -52,8 +52,8 @@ function GalleryPage() {
   const onMemberChanged = (item: InputComboItem) => {
       setSelectedMember(item)
   }
-  const filterImage = () : IImage[] => {
-    if(filter && selectedAction !== undefined)
+  const filterImage = useCallback(() : IImage[] => {
+    if(filter && selectedMember !== undefined)
     {
       const filtered =  data?.data.filter((image) => image.author == selectedMember?.lable )
       console.log("GalleryPage/filterImage/filtered",filtered)
@@ -61,15 +61,17 @@ function GalleryPage() {
     }
     return data?.data === undefined ? [] : data?.data
     
-  }
+  },[data?.data,filter,selectedMember])
   return (
     <>
       <div className='header'>
+      <Typography variant="h6" align="center">Gallery</Typography>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+          <Box display={'flex'} flexGrow={1}  >
             <MembersCombo onChanged={onMemberChanged} source={source} />
-            <FormControlLabel control={<Checkbox onChange={()=> setFilter(prev => !prev)} name={"isValid"} checked={filter} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label={`Filter(${data?.data ? data.data.length : 0})`} />
+            <FormControlLabel sx={{ '& .MuiFormControlLabel-label': { width: 'max-content' } }} control={<Checkbox onChange={()=> setFilter(prev => !prev)} name={"isValid"} checked={filter} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label={`Filter ${filterImage().length} / ${data?.data ? data.data.length : 0}`} />
           </Box>
+
           <Box display={'flex'} justifyContent={'flex-end'}>
             <Button onClick={handleAddImage}>
               <AddIcon />
@@ -81,7 +83,7 @@ function GalleryPage() {
       <div className='main' style={{ overflow: 'auto' }}>
         {openPhotoAdd && <CreateImageDialog onClose={handleAddOnClose} value={selectedImage} open={openPhotoAdd} onSave={handleAddOnSave} action={selectedAction} />}
         
-        <QuiltedImageList images={filterImage()} onEdit={onEdit} onDelete={onDelete} />
+        <QuiltedImageList images={filterImage()} onEdit={onEdit} onDelete={onDelete} readOnly={false}/>
       </div>
 
     </>

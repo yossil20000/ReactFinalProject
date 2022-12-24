@@ -11,7 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import { IReservationCreateApi } from '../../Interfaces/API/IReservation';
 import ControledCombo, { InputComboItem } from '../../Components/Buttons/ControledCombo';
-import { IMemberCombo } from '../../Interfaces/API/IMember';
+import { IMemberCombo, IMemberComboFilter, Status } from '../../Interfaces/API/IMember';
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -23,11 +24,16 @@ const Item = styled(Paper)(({ theme }) => ({
 const defaultMaterialThem = createTheme({
 
 })
+const filterCombo : IMemberComboFilter = {
+  filter: {
+    status: Status.Active
+  }
+  }
 function AddReservationPage() {
   let content: any;
   const [createReservation] = useCreateReservationMutation();
   const { refetch } = useFetchAllReservationsQuery();
-  const { data: members, isError, isLoading, error } = useFetchMembersComboQuery();
+  const { data: members, isError, isLoading, error } = useFetchMembersComboQuery(filterCombo);
   const { data: devices, isError: isDeviceError, isLoading: isDeviceLoading, error: deviceError } = useFetchAllDevicesQuery();
 
   const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);

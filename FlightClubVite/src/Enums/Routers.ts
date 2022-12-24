@@ -1,5 +1,3 @@
-import {isHttps} from '../../vite.config';
-
 export function getServerAddress () {
   if(true)
     return `https://${URLS.BACKEND_ADDRESS}`
