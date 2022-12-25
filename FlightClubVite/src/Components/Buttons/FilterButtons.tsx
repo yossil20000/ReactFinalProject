@@ -1,4 +1,4 @@
-import { alpha,Box, Button, createTheme, IconButton, TextField, ThemeProvider, Toolbar, Tooltip } from "@mui/material";
+import { alpha,Box, Button, createTheme, IconButton, TextField, ThemeProvider, Toolbar, Tooltip, useMediaQuery } from "@mui/material";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
@@ -22,6 +22,7 @@ const defaultMaterialThem = createTheme({
 })
 
 export default  function FilterButtons(props: EnhancedTableToolbarProps) {
+  const dateRangeBP = useMediaQuery('(min-width:500px)');
   const { handleAddFlight,isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
   console.log("FilterButtons/isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
@@ -49,7 +50,7 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
       }}
     >
       <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
-      {isByDateRange ? (
+      {isByDateRange || dateRangeBP ? (
         <LocalizationProvider dateAdapter={AdapterLuxon}>
           <ThemeProvider theme={defaultMaterialThem}>
             <MobileDatePicker

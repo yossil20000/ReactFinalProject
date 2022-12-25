@@ -2,10 +2,8 @@
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 import "../../Types/date.extensions.js"
 
-import { alpha, Box, Button, FormControlLabel, Grid, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from '@mui/material';
+import { alpha, Box, Button, FormControlLabel, Grid, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-
-
 import { visuallyHidden } from '@mui/utils';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
@@ -31,6 +29,7 @@ import { ILoginResult } from "../../Interfaces/API/ILogin.js";
 import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
+import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
 
 const todayDate = new Date();
 
@@ -145,6 +144,9 @@ const defaultMaterialThem = createTheme({
 })
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
+  
+  
+  const dateRangeBP = useMediaQuery('(min-width:410px)');
   console.log("EnhancedTableToolbar/isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
@@ -172,7 +174,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     >
       <Box display={"flex"} justifyContent={"space-between"} sx={{ flexGrow: 1 }}>
         <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
-        {isByDateRange ? (
+        {isByDateRange || dateRangeBP ? (
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <ThemeProvider theme={defaultMaterialThem}>
               <MobileDatePicker
@@ -268,13 +270,20 @@ let reservationAddIntitial: IReservationCreateApi = {
   _id_member: "",
   _id_device: ""
 }
+const reservationFilter : IReservationFilterDate = {
+  from: new Date(),
+  to: (new Date()).addDays(30),
+  currentOffset: (new Date()).getTimezoneOffset()
+}
+
 function ReservationsPage() {
+  const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
+  const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(30));
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery();
+  const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery({from: fromDateFilter,to:toDateFilter} as IReservationFilterDate);
   const [rows, setRows] = useState<ItableData[]>([])
-  const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
-  const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(1));
+
   const [isByDateRange, setIsByDateRange] = useState(false);
   const [DeleteReservation] = useDeleteReservationMutation();
 

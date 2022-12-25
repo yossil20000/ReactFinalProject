@@ -7,37 +7,54 @@ const async = require('async');
 const log = require('debug-level').log('flightReservationController');
 
 const { body, check, validationResult } = require('express-validator');
-const member = require('../Models/member');
-const { query } = require('express');
+
 exports.reservation = function (req, res, next) {
-	log.info(`reservation ${req.params._id}`);
-	FlightReservation.findById(req.params._id)
-		.populate('device')
-		.populate('member')
-		.exec((err, results) => {
-			if (err) {
-				return res.status(400).json({ success: false, errors: ["FlightReservation Not Exist", err], data: results });
-			}
-			else {
-				res.status(201).json({ success: true, errors: [], data: results });
-				return;
-			}
-		});
+	try {
+		log.info(`reservation ${req.params._id}`);
+		FlightReservation.findById(req.params._id)
+			.populate('device')
+			.populate('member')
+			.exec((err, results) => {
+				if (err) {
+					return res.status(400).json({ success: false, errors: ["FlightReservation Not Exist", err], data: results });
+				}
+				else {
+					res.status(201).json({ success: true, errors: [], data: results });
+					return;
+				}
+			});
+	}
+	catch (error) {
+		return next(new ApplicationError("reservation", "400", "CONTROLLER.RESERVATION.EXCEPTION", { name: "EXCEPTION", error }));
+	}
+
 };
 exports.reservation_list = function (req, res, next) {
-	log.info('reservation_list');
-	FlightReservation.find()
-		.populate('device')
-		.populate('member')
-		.sort({ date_from: -1, date_to: -1 })
-		.exec((err, results) => {
-			if (err) { log.critical('err'); return next(err); }
-			else {
-				console.log("reservation", results)
-				res.status(201).json({ success: true, errors: [], data: results });
-				return;
-			}
-		});
+	try {
+		log.info('reservation_list/params', req.query);
+		let from = new Date(req.query.from);
+		let to = new Date(req.query.to);
+		let filter = {date_from: {$gte : from, $lte: to}};
+		if(isNaN(from) || isNaN(to)){
+			filter = {}
+		}
+		FlightReservation.find(filter)
+			.populate('device')
+			.populate('member')
+			.sort({ date_from: -1, date_to: -1 })
+			.exec((err, results) => {
+				if (err) { log.critical('err'); return next(err); }
+				else {
+					console.log("reservation", results)
+					res.status(201).json({ success: true, errors: [], data: results });
+					return;
+				}
+			});
+	}
+	catch (error) {
+		return next(new ApplicationError("reservation_list", "400", "CONTROLLER.RESERVATION.LIST.EXCEPTION", { name: "EXCEPTION", error }));
+	}
+
 }
 exports.reservation_create_s = (req, res, next) => {
 	async.parallel({
@@ -78,7 +95,7 @@ exports.reservation_delete_m2m = async function (req, res, next) {
 		body("device_id").trim().isLength({ min: 1 }).withMessage("device_id must be specified");
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
-			return next(new ApplicationError("reservation_delete_m2m", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+			return next(new ApplicationError("reservation_delete_m2m", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 		};
 		console.log("reservation_delete/id", req.body);
 
@@ -102,7 +119,7 @@ exports.reservation_delete = function (req, res, next) {
 		body("device_id").trim().isLength({ min: 1 }).withMessage("device_id must be specified");
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
-			return next(new ApplicationError("reservation_delete", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+			return next(new ApplicationError("reservation_delete", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 		};
 		console.log("reservation_delete/id", req.body);
 		const flight2delete = FlightReservation.findById(req.body._id, (err, doc) => {
@@ -166,10 +183,10 @@ exports.reservation_create = [
 	, async function (req, res, next) {
 		try {
 			log.info("reservation_create/body", req.body)
-
+			log.info("newReservation/convertooffset", (new Date(req.body.date_from)).getTimezoneOffset());
 			const errors = validationResult(req);
 			if (!errors.isEmpty()) {
-				return next(new ApplicationError("reservation_create", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+				return next(new ApplicationError("reservation_create", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 			}
 			const member = await Member.findById(req.body._id_member).exec();
 			const device = await Device.findById(req.body._id_device).exec();
@@ -181,7 +198,8 @@ exports.reservation_create = [
 				date_from: req.body.date_from,
 				date_to: req.body.date_to,
 				member: req.body._id_member,
-				device: req.body._id_device
+				device: req.body._id_device,
+				timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())
 			});
 			log.info("newReservation", newReservation._doc);
 			const found = await FlightReservation.findOne({
@@ -224,81 +242,7 @@ exports.reservation_create = [
 		}
 		log.info("Create/end");
 	}];
-exports.reservation_create_old = [
 
-	body('device_id').trim().isLength({ min: 1 }).escape().withMessage('device_id must be valid'),
-	body('member_id').trim().isLength({ min: 1 }).escape().withMessage('member_id must be valid'),
-	body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
-	body('date_to', 'Invalid date_to').trim().isISO8601().toDate(),
-	body('date_to', 'date_to must be greater then date_from').trim().isISO8601().toDate()
-		.custom((value, { req }) => {
-			if ((value - req.body.date_from) > 0) return true;
-			return false;
-		}),
-
-	(req, res, next) => {
-
-
-		async.parallel({
-			member: function (callback) {
-				Member.findById(req.body.member_id).exec(callback)
-			},
-			device: function (callback) {
-				Device.findById(req.body.device_id).exec(callback)
-			}
-		},
-			function (err, results) {
-				if (err) { return next(err); }
-				if (results.member == null || results.device == null) {
-					log.info(results);
-					res.status(400).json({ success: false, errors: ["Member or Device Not Exist"], data: results });
-					return;
-				}
-
-
-				const errors = validationResult(req);
-				if (!errors.isEmpty()) {
-					return next(new ApplicationError("reservation_create_old", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
-				}
-				let newReservation = new FlightReservation({
-					date_from: req.body.date_from.toUTCString(),
-					date_to: req.body.date_to.toUTCString(),
-					member: req.body.member_id,
-					device: req.body.device_id
-				});
-				log.info("newReservation", newReservation._doc);
-				FlightReservation.find({ "data_from": { $lte: newReservation._doc.date_from }, "date_to": { $gte: newReservation._doc.date_from } }).exec(function (err, record) {
-					if (err) {
-						log.error("FindSameFlight/err", err);
-					}
-					log.info("FindSameFlight/record", record);
-					if (!record || record?.arr == []) {
-						log.info("FindSameFlight/record === []");
-						newReservation.save(err => {
-							if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
-						});
-						results.device.flight_reservs.push(newReservation);
-						results.member.flight_reservs.push(newReservation);
-						results.device.save(err => {
-							if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
-						});
-						results.member.save(err => {
-							if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
-						});
-						res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
-						log.info("FindSameFlight/end/created");
-						return;
-					}
-				})
-				log.info("Create/end");
-
-			}
-		)
-	}
-
-
-
-];
 
 exports.reservation_update = [
 	body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
@@ -313,10 +257,10 @@ exports.reservation_update = [
 			log.info("reservation_update/body", req.body);
 			const errors = validationResult(req);
 			if (!errors.isEmpty()) {
-				return next(new ApplicationError("reservation_update", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+				return next(new ApplicationError("reservation_update", "400", "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 			}
 			else {
-				FlightReservation.findOneAndUpdate(req.body._id, { date_from: req.body.date_from, date_to: req.body.date_to }, (err, results) => {
+				FlightReservation.findOneAndUpdate(req.body._id, { date_from: req.body.date_from, date_to: req.body.date_to ,timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())}, (err, results) => {
 					if (err) {
 						return res.status(400).json({ success: false, errors: [err], data: req.body });
 					}

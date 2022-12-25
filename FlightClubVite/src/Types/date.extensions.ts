@@ -12,6 +12,7 @@ declare global {
       getWeek() : number;
       isSameMonth(date : Date) : boolean;
       getDisplayDate() : string;
+      addMinutes(minutes: number): Date
    }
 }
 
@@ -22,7 +23,13 @@ Date.prototype.addDays = function (days: number): Date {
 
    return date;
 };
+Date.prototype.addMinutes = function (minutes: number): Date {
+   if (!minutes) return this;
+   let date = this;
+   date.setMinutes(date.getMinutes() + minutes);
 
+   return date;
+};
 Date.prototype.isToday = function (): boolean{
    let today = new Date();
    return this.isSameDate(today);

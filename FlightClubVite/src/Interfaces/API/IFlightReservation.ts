@@ -12,3 +12,8 @@ export default interface IFlightReservation{
     member: IMember
     device: IDevice
 }
+export interface IReservationFilterDate {
+    from: Date;
+    to: Date;
+    currentOffset: number;
+}

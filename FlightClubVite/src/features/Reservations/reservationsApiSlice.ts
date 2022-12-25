@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor";
 import { getServerAddress, URLS } from "../../Enums/Routers";
+import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
 import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 
@@ -24,11 +25,16 @@ export const reservationApiSlice = createApi({
     endpoints(builder) {
         return{
             
-            fetchAllReservations: builder.query<IResultBase<IReservation>, void>({
-                query: () => ({
-                    url: `/${URLS.RESERVATION}`
+            fetchAllReservations: builder.query<IResultBase<IReservation>, IReservationFilterDate>({
+                query: (filter) => ({
+                    url: `/${URLS.RESERVATION_SEARCH}?from=${filter.from}&to=${filter.to}`
                 }),
-                providesTags: ["Reservation"]
+                providesTags: ["Reservation"],
+                transformResponse: (response : IResultBase<IReservation>) => {
+                    console.log("fetchAllReservations/response", response);
+                    console.log("fetchAllReservations/clientOffset",new Date().getTimezoneOffset() );
+                    return response;
+                  }
             }),
             deleteReservation: builder.mutation<IResultBaseSingle<IReservation>,IReservationDelete>({
                 query: (reservationDelete) => ({

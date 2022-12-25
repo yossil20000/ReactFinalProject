@@ -124,6 +124,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     setValidationAlert([])
   }
   const handleOnSave = async () => {
+    setValidationAlert([])
     console.log("CreateReservationDialog/onSave", reservationCreate)
     console.log("CreateReservationDialog/onSave/date_from", reservationCreate.date_from?.toUTCString())
 

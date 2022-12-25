@@ -11,8 +11,16 @@ var FlightReservationSchema = new Schema({
     },
     member: {type: Schema.Types.ObjectId, ref: 'Member', required: true},
     device: {type: Schema.Types.ObjectId, ref: 'Device', required: true},
+    timeOffset: {type: Schema.Types.Decimal128,get: getDecimal}
     
-},{timestamps: true});
+},{timestamps: true,toJSON: {getters: true}});
+
+function getDecimal(value) {
+    if (typeof value !== 'undefined') {
+       return parseFloat(value.toString());
+    }
+    return value;
+};
 // virtual
 FlightReservationSchema
 .virtual('date_from_formatted')

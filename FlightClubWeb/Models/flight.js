@@ -14,7 +14,7 @@ var FlightSchema = new Schema({
     status: {type: String, enum:["CREATED","OPEN","CLOSE"]},
     device: {type: Schema.Types.ObjectId, ref: 'Device', required: true},
     member: {type: Schema.Types.ObjectId, ref: 'Member' , required: true},
-    
+    timeOffset: {type: Schema.Types.Decimal128,get: getDecimal}
 },{toJSON: {getters: true}});
 
 function getDecimal(value) {

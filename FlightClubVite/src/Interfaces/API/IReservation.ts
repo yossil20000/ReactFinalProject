@@ -12,6 +12,7 @@ export default interface IReservation{
     }
     member: IMember
     device: IDevice
+    timeOffset: number
 }
 export interface IReservationDelete{
 
