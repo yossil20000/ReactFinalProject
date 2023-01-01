@@ -28,7 +28,13 @@ exports.flight = function (req, res, next) {
 
 exports.flight_list = function (req, res, next) {
   log.info('flight_list');
-  Flight.find().populate('device').populate('member').
+  let from = new Date(req.query.from);
+		let to = new Date(req.query.to);
+		let filter = {date_from: {$gte : from, $lte: to}};
+		if(isNaN(from) || isNaN(to)){
+			filter = {}
+		}
+  Flight.find(filter).populate('device').populate('member').
     exec((err, results) => {
       if (err) {
         log.info('flight_list', err);

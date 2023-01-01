@@ -12,8 +12,26 @@ declare global {
       getWeek() : number;
       isSameMonth(date : Date) : boolean;
       getDisplayDate() : string;
-      addMinutes(minutes: number): Date
+      addMinutes(minutes: number): Date;
+      getFirstDateOfWeek(): Date;
+      getLastDateOfWeek(): Date;
+      getStartMonth(): Date;
+      getEndMonth(): Date;
+      getLastDateOfMonth(year: number,month:number) : Date;
+      getFirstDateOfMonth(year: number,month:number) : Date;
    }
+}
+Date.prototype.getFirstDateOfWeek = function () : Date {
+   return new Date(this.setDate(this.getDate() - this.getDay()))
+}
+Date.prototype.getLastDateOfWeek = function () : Date {
+   return new Date(this.setDate(this.getDate() - this.getDay() + 6))
+}
+Date.prototype.getLastDateOfMonth = function(year: number,month:number) : Date {
+   return new Date(year,month + 1,0);
+}
+Date.prototype.getFirstDateOfMonth = function(year: number,month:number) : Date {
+   return new Date(year,month ,1);
 }
 
 Date.prototype.addDays = function (days: number): Date {

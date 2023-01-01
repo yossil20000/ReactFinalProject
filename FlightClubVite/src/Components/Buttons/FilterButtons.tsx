@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import SplitedButton from "./SplitedButton";
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
-
 export interface EnhancedTableToolbarProps {
   fromDateFilter: Date | null;
   setFromDateFilter: React.Dispatch<React.SetStateAction<Date | null>>;
@@ -15,7 +14,7 @@ export interface EnhancedTableToolbarProps {
   OnFilterOwner: () => void;
   handleFilterClick(selectedIndex: number): number;
   isByDateRange: boolean;
-  handleAddFlight: React.MouseEventHandler<HTMLButtonElement> | undefined;
+  
 }
 const defaultMaterialThem = createTheme({
 
@@ -23,7 +22,7 @@ const defaultMaterialThem = createTheme({
 
 export default  function FilterButtons(props: EnhancedTableToolbarProps) {
   const dateRangeBP = useMediaQuery('(min-width:500px)');
-  const { handleAddFlight,isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
+  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
   console.log("FilterButtons/isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate();
@@ -76,18 +75,17 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
 
 
       <Box sx={{ flexGrow: 1 }} />
-
-      <Button onClick={handleAddFlight}>Add</Button>
+      
       {isFilterOwner == false ? (
         <Tooltip title="Show Mine">
-          <IconButton onClick={OnFilterOwner}>
+          <IconButton color={'success'} onClick={OnFilterOwner}>
             <PeopleIcon />
           </IconButton>
         </Tooltip>
       ) : (
         <Tooltip title="Show All">
 
-          <IconButton onClick={OnFilterOwner}>
+          <IconButton color={'primary'} onClick={OnFilterOwner}>
             <PersonIcon />
           </IconButton>
         </Tooltip>

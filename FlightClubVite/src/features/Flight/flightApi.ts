@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
 import { getServerAddress, URLS } from "../../Enums/Routers";
-import IFlight, { IFlightCreateApi, IFlightDeleteApi, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
+import IFlight, { IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import customFetchBase from "../customeFetchBase";
 
@@ -22,9 +22,9 @@ export const flightApi = createApi({
   tagTypes: ['Flights'],
   endpoints(builder) {
     return {
-      getAllFlights: builder.query<IResultBase<IFlight>,void>({
-        query: () => ({
-          url:`/${URLS.FLIGHT}/`,
+      getAllFlights: builder.query<IResultBase<IFlight>,IFlightFilterDate>({
+        query: (filter) => ({
+          url:`/${URLS.FLIGHT_SEARCH}?from=${filter.from}&to=${filter.to}`,
           method: "GET"
         }),
       }),

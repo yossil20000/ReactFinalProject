@@ -43,15 +43,17 @@ export default function SortButtons<T>(props: ISortButtonsProps<T>) {
   };
   let n =`repeat(${sortCells.length+1},1fr)`;
   return (
-    <Box display="flex" justifyContent={"space-around"}>
+    <Box display="flex" justifyContent={"space-around"} overflow={"auto"}>
         {sortCells.map((sortCell : ISortCell<T>, index: number) => (
           <Box gridColumn='span 1' key={index.toString()}>
           <TableCell
             key={sortCell.id.toString()}
             align={sortCell.numeric ? 'left' : 'left'}
             
+            style={{padding: "16px 0 16px 0"}}
             sortDirection={orderBy === sortCell.id ? order : false}>
             <TableSortLabel
+            
               active={orderBy === sortCell.id}
               direction={orderBy === sortCell.id ? order : 'asc'}
               onClick={createSortHandler(sortCell.id)}

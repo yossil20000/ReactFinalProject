@@ -1,11 +1,9 @@
 import "../../Types/date.extensions"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Container, Grid, Paper, styled, TablePagination, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, Paper, styled, TablePagination, Tooltip, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
-import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightUpdate, Status } from "../../Interfaces/API/IFlight";
-import Message from '../../Components/Message'
-import { grid } from "@mui/system";
+import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, Status } from "../../Interfaces/API/IFlight";
 
 
 import GeneralCanDo, { CanDo } from "../../Utils/owner";
@@ -16,6 +14,7 @@ import UpdateFlightDialog from "./UpdateFlightDialog";
 import SortButtons, { ISortCell, Order } from "../../Components/Buttons/SortButtons";
 import CreateFlightDialog from "./CreateFlightDialog";
 
+import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 const StyledAccordion = styled(Box)(({ theme }) => ({
   color: theme?.palette.primary.main,
   "& .MuiAccordionSummary-content:nth-of-type(2n+1)":
@@ -116,7 +115,7 @@ const FlightPage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery();
+  const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({from: fromDateFilter,to:toDateFilter} as IFlightFilterDate);
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login.member._id, login.member.roles)))
   }
@@ -128,7 +127,7 @@ const FlightPage = () => {
   }, [isLoading]);
   const getFilteredData = (): IFlightData[] => {
     console.log("getFilteredData/flightData", flightsData)
-    if(flightsData === undefined) return [];
+    if (flightsData === undefined) return [];
     const filterdData: IFlightData[] = flightsData?.filter((flight) => {
       console.log("flightdat/filter", flightsData);
       if (!isInDateRange(flight)) return false;
@@ -136,8 +135,8 @@ const FlightPage = () => {
       if (isFilterOwner && flight.validOperation & CanDo.Owner) return true;
       return true;
     })
-    .sort(getComparator(order, orderBy))
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+      .sort(getComparator(order, orderBy))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     return filterdData;
   }
@@ -150,7 +149,7 @@ const FlightPage = () => {
 
   }, [flights?.data])
 
-  
+
 
   if (isLoading) {
     return (
@@ -168,8 +167,8 @@ const FlightPage = () => {
 
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded ? panel : false);
-    };
+    setExpanded(newExpanded ? panel : false);
+  };
 
   const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     const flightDelete: IFlightDeleteApi = {
@@ -249,7 +248,7 @@ const FlightPage = () => {
     setOpenFlightUpdate(false);
     /* console.log("FlightPage/handleOnSave/value", value); */
   }
-  const handleEditClick =  async (event: React.MouseEvent<unknown>, _id: string) => {
+  const handleEditClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     fillFlightUpdate(_id);
     setOpenFlightUpdate(true);
   }
@@ -257,9 +256,9 @@ const FlightPage = () => {
     setOpenFlightUpdate(false);
   }
 
-  const handleAddClick = async () => { 
+  const handleAddClick = async () => {
     setOpenFlightAdd(true);
-}
+  }
   const handleAddOnSave = (value: IFlightCreate) => {
     refetch();
     setOpenFlightAdd(false);
@@ -270,88 +269,95 @@ const FlightPage = () => {
   const handleAddOnClose = () => {
     setOpenFlightAdd(false);
   }
-  const getFilteredDataMemo =  getFilteredData()
+  const getFilteredDataMemo = getFilteredData()
   return (
     <>
       <div className='header'><Typography variant="h6" align="center">Flight Page</Typography></div>
-      <div className='main' style={{overflow: "auto"}} >
+      <div className='main' style={{ overflow: "auto" }} >
         {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
         {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
         <Box sx={{ width: '100%', height: '100%' }}>
-          <Paper sx={{ width: '100%', mb: 2 }}>
-            <FilterButtons handleAddFlight={handleAddClick} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
+          <Paper sx={{ width: '100%', mb: 1 }}>
+            <FilterButtons isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
               handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
+            <Box display={'flex'} justifyContent={"space-between"}>
+              <Tooltip title="Add Flight">
+                <IconButton color={'info'} onClick={handleAddClick}><AddCircleOutlineSharpIcon /></IconButton>
+              </Tooltip>
+              <TablePagination
+                rowsPerPageOptions={[1, 5, 10, 25]}
+                component="div"
+                count={flightsData?.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Box>
+
             <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
             <StyledAccordion >
               {
 
-               getFilteredDataMemo.map((row: IFlightData, index: number) => {
-                    return (
-                      <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
-                      >
-                        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                          <Typography variant='caption'> {row.device_id} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Grid container spacing={1}>
-                            <Grid item sm={12}>
-                              <Typography variant='caption'>description: {row.description}</Typography>
-                            </Grid>
-                            <Grid item xs={3} >
-
-                              <Typography >
-                                {row.name}
-                              </Typography>
-                              <Typography>
-                                {row.member_id}
-                              </Typography>
-                            </Grid>
-                            <Grid item sm={4} >
-                              <Typography>
-                                {`Hobbs Start: ${row.hobbs_start}`}
-                              </Typography>
-                              <Typography>
-                                {`Hobbs Stop: ${row.hobbs_stop}`}
-                              </Typography>
-                            </Grid>
-                            <Grid item sm={4} >
-                              <Typography>
-                                {`Engien Start: ${row.engien_start}`}
-                              </Typography>
-                              <Typography>
-                                {`Engien Stop: ${row.engien_stop}`}
-                              </Typography>
-
-                            </Grid>
-                            <Grid item sm={1} >
-                              <Typography>
-                                {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
-                              </Typography>
-                              <Typography>
-                                {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
-                              </Typography>
-
-                            </Grid>
+                getFilteredDataMemo.map((row: IFlightData, index: number) => {
+                  return (
+                    <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
+                    >
+                      <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                        <Typography variant='caption'> {row.device_id} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Grid container spacing={1} columns={12}>
+                          <Grid item xs={6}>
+                            <Typography variant='caption'  >description: {row.description}</Typography>
                           </Grid>
-                        </AccordionDetails>
-                      </Accordion>
-                    )
-                  })
+                          <Grid item xs={6} >
+
+                            <Typography >
+                              {row.name}
+                            </Typography>
+                            <Typography>
+                              {row.member_id}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={6} >
+                            <Typography>
+                              {`Hobbs Start: ${row.hobbs_start}`}
+                            </Typography>
+                            <Typography>
+                              {`Hobbs Stop: ${row.hobbs_stop}`}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={6} >
+                            <Typography>
+                              {`Engien Start: ${row.engien_start}`}
+                            </Typography>
+                            <Typography>
+                              {`Engien Stop: ${row.engien_stop}`}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={6} >
+                            <Typography>
+                              {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={6} >
+                            <Typography>
+                              {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </AccordionDetails>
+                    </Accordion>
+                  )
+                })
               }
-              </StyledAccordion>
+            </StyledAccordion>
           </Paper>
         </Box>
       </div>
       <footer className='footer' style={{ overflowY: "hidden" }}>
-        <TablePagination
-          rowsPerPageOptions={[1, 5, 10, 25]}
-          component="div"
-          count={flightsData?.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+
       </footer>
     </>
 

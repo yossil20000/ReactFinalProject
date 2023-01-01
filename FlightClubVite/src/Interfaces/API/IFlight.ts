@@ -1,7 +1,11 @@
+import { IDateFilter } from "../IDateFilter";
 import IDevice from "./IDevice"
 import IFlightReservation from "./IFlightReservation"
 import IMember from "./IMember"
 
+export interface IFlightFilterDate extends IDateFilter{
+
+}
 export enum Status {
     CREATED,
     OPEN,

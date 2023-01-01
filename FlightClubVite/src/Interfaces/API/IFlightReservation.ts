@@ -1,3 +1,4 @@
+import { IDateFilter } from "../IDateFilter"
 import IDevice from "./IDevice"
 import IMember from "./IMember"
 
@@ -12,8 +13,6 @@ export default interface IFlightReservation{
     member: IMember
     device: IDevice
 }
-export interface IReservationFilterDate {
-    from: Date;
-    to: Date;
-    currentOffset: number;
+export interface IReservationFilterDate extends IDateFilter {
+
 }

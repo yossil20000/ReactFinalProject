@@ -238,7 +238,7 @@ function MembersTablePage() {
 const [orderBy, setOrderBy] = useState<keyof ItableData>('_id');
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
+  const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ItableData) => {
@@ -373,7 +373,7 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                             selected={isItemSelected}
                           >
                             <TableCell align="left">{row.member_id}</TableCell>
-                            <TableCell align="left">{row.first_name}</TableCell>
+                            <TableCell align="left"><Box display={'flex'} alignItems={'center'}>{row?.image !== "" ? (<Avatar alt="Remy Sharp" src={row?.image} /> ) : null}{row.first_name}</Box></TableCell>
                             <TableCell align="left">{row.email}</TableCell>
                             <TableCell align="left">{row.phone}</TableCell>
                             {/* <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}</TableCell>
@@ -393,12 +393,7 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                   </TableBody>
                 </Table>
               </TableContainer>
-
             </Paper>
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={handleChangeDense} />}
-              label="Dense padding"
-            />
           </Box>
 
         ) : (<div>Loading</div>)}
@@ -464,10 +459,7 @@ const [expanded, setExpanded] = React.useState<string | false>('panel0');
                 );
               })}
           </Paper>
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label="Dense padding"
-          />
+
         </Box>
       </MediaQuery>
 

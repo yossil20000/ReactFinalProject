@@ -30,6 +30,9 @@ import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUp
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
+import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
+import { IDateFilter } from "../../Interfaces/IDateFilter.js";
+import { getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering.js";
 
 const todayDate = new Date();
 
@@ -116,12 +119,8 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell>
 
-        </TableCell>
-        <TableCell>
-          <Button onClick={handleReservationAdd} >Add</Button>
-        </TableCell>
+
       </TableRow>
     </TableHead>
 
@@ -129,10 +128,8 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
 }
 
 interface EnhancedTableToolbarProps {
-  fromDateFilter: Date | null;
-  setFromDateFilter: React.Dispatch<React.SetStateAction<Date | null>>;
-  setToDateFilter: React.Dispatch<React.SetStateAction<Date | null>>;
-  toDateFilter: Date | null;
+  setFilterDate: React.Dispatch<React.SetStateAction<IReservationFilterDate>>;
+  filterDate: IReservationFilterDate;
   isFilterOwner: boolean;
   OnFilterOwner: () => void;
   handleFilterClick(selectedIndex: number): number;
@@ -143,22 +140,33 @@ const defaultMaterialThem = createTheme({
 
 })
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
-  
-  
+  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, filterDate, setFilterDate } = props;
+
+
   const dateRangeBP = useMediaQuery('(min-width:410px)');
   console.log("EnhancedTableToolbar/isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate();
-    if (newDate && toDateFilter && newDate <= toDateFilter)
-      setFromDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0));
+    if (newValue !== null) {
+      let newDate = newValue?.toJSDate();
+      if (newDate && filterDate.to && newDate <= filterDate.to){
+        setFilterDate((prev) => ({ ...prev, from: new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0) }));
+        /* setFromDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0)); */
+      }
+        
+    }
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate();
-    if (newDate && fromDateFilter && newDate >= fromDateFilter)
-      setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59));
+    if (newValue !== null) {
+      let newDate = newValue?.toJSDate();
+      if (newDate !== null && filterDate.from && newDate >= filterDate.from) {
+
+        setFilterDate((prev) => ({ ...prev, to: new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59) }));
+        /* setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59)); */
+      }
+    }
+
   };
-  const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange", "All"];
+  const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange"];
 
   return (
     <Toolbar
@@ -179,14 +187,14 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
             <ThemeProvider theme={defaultMaterialThem}>
               <MobileDatePicker
                 label="From Date"
-                value={fromDateFilter}
+                value={filterDate.from}
                 onChange={handleFromDateFilterChange}
                 renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
               />
               <MobileDatePicker
 
                 label="To Date"
-                value={toDateFilter}
+                value={filterDate.to}
                 onChange={handleToDateFilterChange}
                 renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
               />
@@ -198,7 +206,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           (null)
 
         }
-        
+
       </Box>
       <Box sx={{ flexGrow: 1 }} />
 
@@ -270,7 +278,7 @@ let reservationAddIntitial: IReservationCreateApi = {
   _id_member: "",
   _id_device: ""
 }
-const reservationFilter : IReservationFilterDate = {
+const reservationFilter: IReservationFilterDate = {
   from: new Date(),
   to: (new Date()).addDays(30),
   currentOffset: (new Date()).getTimezoneOffset()
@@ -279,9 +287,10 @@ const reservationFilter : IReservationFilterDate = {
 function ReservationsPage() {
   const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
   const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(30));
+  const [filterDate, setFilterDate] = useState<IReservationFilterDate>({} as IReservationFilterDate);
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery({from: fromDateFilter,to:toDateFilter} as IReservationFilterDate);
+  const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery(filterDate);
   const [rows, setRows] = useState<ItableData[]>([])
 
   const [isByDateRange, setIsByDateRange] = useState(false);
@@ -335,10 +344,29 @@ function ReservationsPage() {
 
   const handleFilterClick = (selectedIndex: number): number => {
     console.log("handleFilterClick", selectedIndex);
+    let filterDate: IDateFilter | null = null;
+    switch (selectedIndex) {
+      case 0:
+        filterDate = getTodayFilter();
+        break;
+      case 1:
+        filterDate = getWeekFilter(todayDate);
+        break;
+      case 2:
+        filterDate = getMonthFilter(todayDate);
+        break;
+
+    }
     if (selectedIndex == 3)
       setIsByDateRange(true);
     else
       setIsByDateRange(false);
+    if (filterDate) {
+      /* setFromDateFilter(filterDate.from);
+      setToDateFilter(filterDate.to); */
+      setFilterDate(filterDate as IReservationFilterDate)
+    }
+
     setFilterByDate(selectedIndex);
     console.log("handleFilterClick", selectedIndex, isByDateRange);
     return selectedIndex;
@@ -385,6 +413,7 @@ function ReservationsPage() {
   const isInDateRange = (row: ItableData): boolean => {
 
     switch (filterBydate) {
+      
       case 0:
         return row.date_from.isSameDate(todayDate);
       case 1:
@@ -452,17 +481,22 @@ function ReservationsPage() {
         {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
         {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
         <Box sx={{ width: '100%', height: '100%' }}>
-          <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
-            <TablePagination
-              rowsPerPageOptions={[1, 5, 10, 25]}
-              component="div"
-              count={rows ? rows.length : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+          <Paper sx={{ width: '100%', mb: 1 }}>
+            <EnhancedTableToolbar filterDate={filterDate} setFilterDate={setFilterDate} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick}  />
+            <Box display={'flex'} justifyContent={"space-between"}>
+              <Tooltip title="Add Flight">
+                <IconButton color={'info'} onClick={handleAddClick}><AddCircleOutlineSharpIcon /></IconButton>
+              </Tooltip>
+              <TablePagination
+                rowsPerPageOptions={[1, 5, 10, 25]}
+                component="div"
+                count={rows ? rows.length : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Box>
             <TableContainer>
               <Table stickyHeader={true}
                 sx={{ minWidth: 750 }}
@@ -480,7 +514,7 @@ function ReservationsPage() {
                     {
 
                       rows.filter((r) => {
-                        if (!isInDateRange(r)) return false;
+                        /* if (!isInDateRange(r)) return false; */
                         if (!isFilterOwner) return true
                         if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
                         return false;
@@ -507,7 +541,7 @@ function ReservationsPage() {
               {
                 rows.filter((r) => {
 
-                  if (!isInDateRange(r)) return false;
+                  /* if (!isInDateRange(r)) return false; */
                   if (!isFilterOwner) return true
                   if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
                   return false;
