@@ -15,6 +15,9 @@ import SortButtons, { ISortCell, Order } from "../../Components/Buttons/SortButt
 import CreateFlightDialog from "./CreateFlightDialog";
 
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
+import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
+import { IDateFilter } from "../../Interfaces/IDateFilter";
+import { getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering";
 const StyledAccordion = styled(Box)(({ theme }) => ({
   color: theme?.palette.primary.main,
   "& .MuiAccordionSummary-content:nth-of-type(2n+1)":
@@ -110,12 +113,11 @@ const FlightPage = () => {
   const [isByDateRange, setIsByDateRange] = useState(false);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
   const [filterBydate, setFilterByDate] = useState(0);
-  const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
-  const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(1));
+  const [filterDate, setFilterDate] = useState<IReservationFilterDate>({} as IReservationFilterDate);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({from: fromDateFilter,to:toDateFilter} as IFlightFilterDate);
+  const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({from: filterDate.from,to: filterDate.to} as IFlightFilterDate);
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login.member._id, login.member.roles)))
   }
@@ -130,7 +132,7 @@ const FlightPage = () => {
     if (flightsData === undefined) return [];
     const filterdData: IFlightData[] = flightsData?.filter((flight) => {
       console.log("flightdat/filter", flightsData);
-      if (!isInDateRange(flight)) return false;
+      
       if (!isFilterOwner) return true;
       if (isFilterOwner && flight.validOperation & CanDo.Owner) return true;
       return true;
@@ -191,14 +193,34 @@ const FlightPage = () => {
   const handleFilterOwner = () => {
     setIsFilterOwner(!isFilterOwner);
   }
+
   const handleFilterClick = (selectedIndex: number): number => {
-    /* console.log("handleFilterClick", selectedIndex); */
+    console.log("handleFilterClick", selectedIndex);
+    let filterDate: IDateFilter | null = null;
+    switch (selectedIndex) {
+      case 0:
+        filterDate = getTodayFilter();
+        break;
+      case 1:
+        filterDate = getWeekFilter(todayDate);
+        break;
+      case 2:
+        filterDate = getMonthFilter(todayDate);
+        break;
+
+    }
     if (selectedIndex == 3)
       setIsByDateRange(true);
     else
       setIsByDateRange(false);
+    if (filterDate) {
+      /* setFromDateFilter(filterDate.from);
+      setToDateFilter(filterDate.to); */
+      setFilterDate(filterDate as IReservationFilterDate)
+    }
+
     setFilterByDate(selectedIndex);
-    /* console.log("handleFilterClick", selectedIndex, isByDateRange); */
+    console.log("handleFilterClick", selectedIndex, isByDateRange);
     return selectedIndex;
   }
   const isInDateRange = (row: IFlightData): boolean => {
@@ -211,8 +233,8 @@ const FlightPage = () => {
       case 2:
         return row.date_from.isSameMonth(todayDate);
       case 3:
-        if (fromDateFilter && toDateFilter)
-          return row.date_from >= fromDateFilter && row.date_from <= toDateFilter
+        if (filterDate.from &&  filterDate.to)
+          return row.date_from >= filterDate.from && row.date_from <= filterDate.to
         break;
     }
     return true;
@@ -278,8 +300,8 @@ const FlightPage = () => {
         {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
         <Box sx={{ width: '100%', height: '100%' }}>
           <Paper sx={{ width: '100%', mb: 1 }}>
-            <FilterButtons isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
-              handleFilterClick={handleFilterClick} setFromDateFilter={setFromDateFilter} fromDateFilter={fromDateFilter} setToDateFilter={setToDateFilter} toDateFilter={toDateFilter} />
+            <FilterButtons filterDate={filterDate} setFilterDate={setFilterDate} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
+              handleFilterClick={handleFilterClick}  />
             <Box display={'flex'} justifyContent={"space-between"}>
               <Tooltip title="Add Flight">
                 <IconButton color={'info'} onClick={handleAddClick}><AddCircleOutlineSharpIcon /></IconButton>

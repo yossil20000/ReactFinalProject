@@ -5,11 +5,10 @@ import { DateTime } from "luxon";
 import SplitedButton from "./SplitedButton";
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
+import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
 export interface EnhancedTableToolbarProps {
-  fromDateFilter: Date | null;
-  setFromDateFilter: React.Dispatch<React.SetStateAction<Date | null>>;
-  setToDateFilter: React.Dispatch<React.SetStateAction<Date | null>>;
-  toDateFilter: Date | null;
+  setFilterDate: React.Dispatch<React.SetStateAction<IReservationFilterDate>>;
+  filterDate: IReservationFilterDate;
   isFilterOwner: boolean;
   OnFilterOwner: () => void;
   handleFilterClick(selectedIndex: number): number;
@@ -21,25 +20,33 @@ const defaultMaterialThem = createTheme({
 })
 
 export default  function FilterButtons(props: EnhancedTableToolbarProps) {
-  const dateRangeBP = useMediaQuery('(min-width:500px)');
-  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, setFromDateFilter, setToDateFilter, fromDateFilter, toDateFilter } = props;
-  console.log("FilterButtons/isbydateRange", isByDateRange);
+  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, filterDate, setFilterDate } = props;
+  const dateRangeBP = useMediaQuery('(min-width:410px)');
+  console.log("EnhancedTableToolbar/isbydateRange", isByDateRange);
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate();
-    if (newDate && toDateFilter && newDate <= toDateFilter)
-      setFromDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0));
+    if (newValue !== null) {
+      let newDate = newValue?.toJSDate();
+      if (newDate && filterDate.to && newDate <= filterDate.to){
+        setFilterDate((prev) => ({ ...prev, from: new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0) }));
+      }
+        
+    }
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate();
-    if (newDate && fromDateFilter && newDate >= fromDateFilter)
-      setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59));
+    if (newValue !== null) {
+      let newDate = newValue?.toJSDate();
+      if (newDate !== null && filterDate.from && newDate >= filterDate.from) {
+        setFilterDate((prev) => ({ ...prev, to: new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59) }));
+      }
+    }
+
   };
-  const selectedDateFilterOptions = ["Today", 'Week', "Month", "Dates", "All"];
+  const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange"];
 
   return (
     <Toolbar
       sx={{
-        
+        zIndex: "100",
         pl: { sm: 1 },
         pr: { xs: 1, sm: 1 },
         ...(isFilterOwner && {
@@ -48,44 +55,47 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
         }),
       }}
     >
-      <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
-      {isByDateRange || dateRangeBP ? (
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <ThemeProvider theme={defaultMaterialThem}>
-            <MobileDatePicker
-              label="From Date"
-              value={fromDateFilter}
-              onChange={handleFromDateFilterChange}
-              renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
-            />
-            <MobileDatePicker
+      <Box display={"flex"} justifyContent={"space-between"} sx={{ flexGrow: 1 }}>
+        <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
+        {isByDateRange || dateRangeBP ? (
+          <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <ThemeProvider theme={defaultMaterialThem}>
+              <MobileDatePicker
+                label="From Date"
+                value={filterDate.from}
+                onChange={handleFromDateFilterChange}
+                renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
+              />
+              <MobileDatePicker
 
-              label="To Date"
-              value={toDateFilter}
-              onChange={handleToDateFilterChange}
-              renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
-            />
-          </ThemeProvider>
+                label="To Date"
+                value={filterDate.to}
+                onChange={handleToDateFilterChange}
+                renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
+              />
+            </ThemeProvider>
 
-        </LocalizationProvider>
-      ) :
-        (null)
+          </LocalizationProvider>
 
-      }
+        ) :
+          (null)
 
+        }
 
+      </Box>
       <Box sx={{ flexGrow: 1 }} />
-      
+
+
       {isFilterOwner == false ? (
         <Tooltip title="Show Mine">
-          <IconButton color={'success'} onClick={OnFilterOwner}>
+          <IconButton onClick={OnFilterOwner}>
             <PeopleIcon />
           </IconButton>
         </Tooltip>
       ) : (
         <Tooltip title="Show All">
 
-          <IconButton color={'primary'} onClick={OnFilterOwner}>
+          <IconButton onClick={OnFilterOwner}>
             <PersonIcon />
           </IconButton>
         </Tooltip>

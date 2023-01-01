@@ -2,11 +2,9 @@
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 import "../../Types/date.extensions.js"
 
-import { alpha, Box, Button, FormControlLabel, Grid, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { visuallyHidden } from '@mui/utils';
-import PeopleIcon from '@mui/icons-material/People';
-import PersonIcon from '@mui/icons-material/Person';
 import MediaQuery from "react-responsive";
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
@@ -17,22 +15,17 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { useFetchAllReservationsQuery, useDeleteReservationMutation } from '../../features/Reservations/reservationsApiSlice';
 import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { useAppSelector } from '../../app/hooks';
-import SplitedButton from '../../Components/Buttons/SplitedButton';
 
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { DateTime } from 'luxon';
 import { ILoginResult } from "../../Interfaces/API/ILogin.js";
-import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
+import { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import { IDateFilter } from "../../Interfaces/IDateFilter.js";
 import { getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering.js";
+import FilterButtons from "../../Components/Buttons/FilterButtons.js";
 
 const todayDate = new Date();
 
@@ -82,7 +75,6 @@ const headCells: readonly HeadCell[] = [
 
 ]
 interface IEnhancedTableHeadProps {
-
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ItableData) => void;
   order: Order;
   orderBy: string;
@@ -127,107 +119,6 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
   )
 }
 
-interface EnhancedTableToolbarProps {
-  setFilterDate: React.Dispatch<React.SetStateAction<IReservationFilterDate>>;
-  filterDate: IReservationFilterDate;
-  isFilterOwner: boolean;
-  OnFilterOwner: () => void;
-  handleFilterClick(selectedIndex: number): number;
-  isByDateRange: boolean;
-
-}
-const defaultMaterialThem = createTheme({
-
-})
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, filterDate, setFilterDate } = props;
-
-
-  const dateRangeBP = useMediaQuery('(min-width:410px)');
-  console.log("EnhancedTableToolbar/isbydateRange", isByDateRange);
-  const handleFromDateFilterChange = (newValue: DateTime | null) => {
-    if (newValue !== null) {
-      let newDate = newValue?.toJSDate();
-      if (newDate && filterDate.to && newDate <= filterDate.to){
-        setFilterDate((prev) => ({ ...prev, from: new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0) }));
-        /* setFromDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0)); */
-      }
-        
-    }
-  };
-  const handleToDateFilterChange = (newValue: DateTime | null) => {
-    if (newValue !== null) {
-      let newDate = newValue?.toJSDate();
-      if (newDate !== null && filterDate.from && newDate >= filterDate.from) {
-
-        setFilterDate((prev) => ({ ...prev, to: new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59) }));
-        /* setToDateFilter(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 23, 59, 59)); */
-      }
-    }
-
-  };
-  const selectedDateFilterOptions = ["Today", 'Week', "Month", "ByRange"];
-
-  return (
-    <Toolbar
-      sx={{
-        zIndex: "100",
-        pl: { sm: 1 },
-        pr: { xs: 1, sm: 1 },
-        ...(isFilterOwner && {
-          bgcolor: (them) =>
-            alpha(them.palette.primary.main, them.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      <Box display={"flex"} justifyContent={"space-between"} sx={{ flexGrow: 1 }}>
-        <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
-        {isByDateRange || dateRangeBP ? (
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <ThemeProvider theme={defaultMaterialThem}>
-              <MobileDatePicker
-                label="From Date"
-                value={filterDate.from}
-                onChange={handleFromDateFilterChange}
-                renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
-              />
-              <MobileDatePicker
-
-                label="To Date"
-                value={filterDate.to}
-                onChange={handleToDateFilterChange}
-                renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
-              />
-            </ThemeProvider>
-
-          </LocalizationProvider>
-
-        ) :
-          (null)
-
-        }
-
-      </Box>
-      <Box sx={{ flexGrow: 1 }} />
-
-
-      {isFilterOwner == false ? (
-        <Tooltip title="Show Mine">
-          <IconButton onClick={OnFilterOwner}>
-            <PeopleIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Show All">
-
-          <IconButton onClick={OnFilterOwner}>
-            <PersonIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  )
-}
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -285,8 +176,6 @@ const reservationFilter: IReservationFilterDate = {
 }
 
 function ReservationsPage() {
-  const [fromDateFilter, setFromDateFilter] = useState<Date | null>(new Date());
-  const [toDateFilter, setToDateFilter] = useState<Date | null>(todayDate.clone().addDays(30));
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>({} as IReservationFilterDate);
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
@@ -410,25 +299,6 @@ function ReservationsPage() {
       setExpanded(newExpanded ? panel : false);
     };
 
-  const isInDateRange = (row: ItableData): boolean => {
-
-    switch (filterBydate) {
-      
-      case 0:
-        return row.date_from.isSameDate(todayDate);
-      case 1:
-        return row.date_from.getWeek() == todayDate.getWeek();
-      case 2:
-        return row.date_from.isSameMonth(todayDate);
-      case 3:
-        if (fromDateFilter && toDateFilter)
-          return row.date_from >= fromDateFilter && row.date_from <= toDateFilter
-        break;
-    }
-    return true;
-  }
-
-
   const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     const reservationDelete: IReservationDelete = {
       _id: _id
@@ -482,7 +352,8 @@ function ReservationsPage() {
         {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
         <Box sx={{ width: '100%', height: '100%' }}>
           <Paper sx={{ width: '100%', mb: 1 }}>
-            <EnhancedTableToolbar filterDate={filterDate} setFilterDate={setFilterDate} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner} handleFilterClick={handleFilterClick}  />
+            <FilterButtons filterDate={filterDate} setFilterDate={setFilterDate} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
+              handleFilterClick={handleFilterClick} />
             <Box display={'flex'} justifyContent={"space-between"}>
               <Tooltip title="Add Flight">
                 <IconButton color={'info'} onClick={handleAddClick}><AddCircleOutlineSharpIcon /></IconButton>
