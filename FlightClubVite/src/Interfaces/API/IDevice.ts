@@ -3,7 +3,7 @@ import IDeviceType from "./IDeviceType"
 import { IFilter } from "./IFilter"
 import IFlight from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
-import IMember from "./IMember"
+import IMember, { IMemberCombo } from "./IMember"
 import { Status } from "./IStatus"
 export interface IDeviceComboFilter extends IFilter{
     filter?:{
@@ -99,5 +99,9 @@ export interface IDeviceCombo {
     maintanance: {
         type : DEVICE_MT
         next_meter: number
-    } 
+    };
+    can_reservs: IMemberCombo[]
+  }
+  export interface IDeviceCanReserve {
+    can_reservs: IMemberCombo[]
   }

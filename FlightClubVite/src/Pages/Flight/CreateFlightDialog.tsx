@@ -46,15 +46,6 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
 
-  const [devicesItems, setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<InputComboItem | undefined>();
-  const [membersItems, setMembersItem] = useState<InputComboItem[]>([]);
-  const [selectedMember, setSelectedMember] = useState<InputComboItem | undefined>();
-
-  const onCloseDateError = () => {
-    setAlert((prev) => ({ ...prev, open: false }))
-  }
-
   useEffect(() => {
     console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {

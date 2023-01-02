@@ -3,7 +3,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import React, { useRef, useState } from "react";
 export interface ISplitButtonProps {
   options: string[];
-  handleClick(selectedIndex: number): number;
+  handleClick(selectedIndex: number) : void;
 }
 
 export default function SplitedButton(props: ISplitButtonProps) {

@@ -73,7 +73,7 @@ export interface IReservationCreate{
 
 export interface IReservationCreateApi{
     date_from: Date | undefined;
-    date_to:Date;
+    date_to: Date;
     _id_member: string;
     _id_device:string;
 }

@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
+import DeviceMemberCombo from "../../Components/Devices/DeviceMemberCombo";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
@@ -47,6 +48,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [deviceDescription, setDeviceDescription] = useState("");
+  const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
   useEffect(() => {
     console.log("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -58,51 +60,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       const validation = getValidationFromError(error,handleCloseValidarion);
       setValidationAlert(validation);
       return;
-      if ((error as any).data.errors !== undefined) {
-        let validation: IValidationAlertProps[] = [];
-        if (Array.isArray((error as any).data.errors)) {
-          
-          validation = (error as any).data?.errors.map((item: string) => {
-            const alert: IValidationAlertProps = {
-              location: '',
-              msg: item,
-              param: '',
-              value: "",
-              open: true,
-              onClose: handleOnCancel
-            };
-            return alert;
-          })
-          setValidationAlert(validation);
-        }
-        else {
-          console.log("CreateReservationDialog/useEffect/Error/single", (error as any).data.errors)
-          validation.push({
-            location: '',
-              msg: (error as any).data.errors,
-              param: '',
-              value: "",
-              open: true,
-              onClose: handleOnCancel
-          })
-          setValidationAlert(validation);
-        }
-      }
       
-      if ((error as any).data.validation !== undefined) {
-        let validation: IValidationAlertProps[];
-        console.log("CreateReservationDialog/useEffect/data", (error as any).data)
-        validation = (error as any).data.validation.errors.map((item: IValidation) => {
-          const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
-          alert.onClose = handleOnCancel;
-          alert.open = true
-          return alert;
-
-        })
-        setValidationAlert(validation);
-        console.log("CreateReservationDialog/useEffect/validation", validation)
-      }
-
     }
   }, [isLoading])
 
@@ -111,8 +69,11 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     setReservationCreate(prev => ({ ...prev, date_from: newDate }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
+    console.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    console.log("CreateFlightDialoq/handleToDateFilterChange/", newDate);
     setReservationCreate(prev => ({ ...prev, date_to: newDate }))
+    console.log("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
   };
 
   
@@ -128,7 +89,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     console.log("CreateReservationDialog/onSave", reservationCreate)
     console.log("CreateReservationDialog/onSave/date_from", reservationCreate.date_from?.toUTCString())
 
-    await CreateReservation(reservationCreate as IFlightCreateApi).unwrap().then((data) => {
+    await CreateReservation(reservationCreate as IReservationCreateApi).unwrap().then((data) => {
       console.log("CreateFlightDialoq/onSave/", data);
       onSave(reservationCreate);
     }).catch((err) => {
@@ -141,6 +102,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const onDeviceChanged = (item: InputComboItem) => {
     setReservationCreate(prev => ({ ...prev, _id_device: item._id }))
     setDeviceDescription(item.description);
+    setSelectedDevice(item)
   }
   const onMemberChanged = (item: InputComboItem) => {
     setReservationCreate(prev => ({ ...prev, _id_member: item._id }))
@@ -207,7 +169,8 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-              <MembersCombo onChanged={onMemberChanged} source={source} filter={true}/>
+              
+              <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice}/>
             </Item>
           </Grid>
           <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>

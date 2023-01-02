@@ -231,7 +231,7 @@ function ReservationsPage() {
   const [filterBydate, setFilterByDate] = useState(0);
 
 
-  const handleFilterClick = (selectedIndex: number): number => {
+  const handleFilterClick = (selectedIndex: number) => {
     console.log("handleFilterClick", selectedIndex);
     let filterDate: IDateFilter | null = null;
     switch (selectedIndex) {
@@ -255,10 +255,8 @@ function ReservationsPage() {
       setToDateFilter(filterDate.to); */
       setFilterDate(filterDate as IReservationFilterDate)
     }
-
-    setFilterByDate(selectedIndex);
     console.log("handleFilterClick", selectedIndex, isByDateRange);
-    return selectedIndex;
+    
   }
   const handleFilterOwner = () => {
     setIsFilterOwner(!isFilterOwner);

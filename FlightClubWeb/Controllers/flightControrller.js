@@ -73,11 +73,11 @@ exports.flight_update = [
     if (Number(value) < Number(req.body.engien_stop)) return true;
     return false;
   }),
-  body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
-  body('date_to', 'Invalid date_to').trim().isISO8601().toDate(),
-  body('date_to', 'date_to must be greater then date_from').trim().isISO8601().toDate()
+  body('date_from', 'Invalid date_from').isISO8601(),
+  body('date_to', 'Invalid date_to').isISO8601(),
+  body('date_to', 'date_to must be greater then date_from').isISO8601()
     .custom((value, { req }) => {
-      if ((value - req.body.date_from) > 0) return true;
+      if ((new Date(value) - new Date(req.body.date_from)) > 0) return true;
       return false;
     }),
   async (req, res, next) => {
@@ -185,11 +185,11 @@ exports.flight_create = [
     if (Number(value) < Number(req.body.engien_stop)) return true;
     return false;
   }),
-  body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
-  body('date_to', 'Invalid date_to').trim().isISO8601().toDate(),
-  body('date_to', 'date_to must be greater then date_from').trim().isISO8601().toDate()
+  body('date_from', 'Invalid date_from').isISO8601(),
+  body('date_to', 'Invalid date_to').isISO8601(),
+  body('date_to', 'date_to must be greater then date_from').isISO8601()
     .custom((value, { req }) => {
-      if ((value - req.body.date_from) > 0) return true;
+      if ((new Date(value) - new Date(req.body.date_from)) > 0) return true;
       return false;
     }),
   async (req, res, next) => {

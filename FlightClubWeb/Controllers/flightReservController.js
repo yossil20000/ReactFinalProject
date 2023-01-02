@@ -173,11 +173,11 @@ exports.reservation_delete = function (req, res, next) {
 exports.reservation_create = [
 	body('_id_device').trim().isLength(24).escape().withMessage('device_id must be valid'),
 	body('_id_member').trim().isLength(24).escape().withMessage('member_id must be valid'),
-	body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
-	body('date_to', 'Invalid date_to').trim().isISO8601().toDate(),
-	body('date_to', 'date_to must be greater then date_from').trim().isISO8601().toDate()
+	body('date_from', 'Invalid date_from').isISO8601(),
+	body('date_to', 'Invalid date_to').isISO8601(),
+	body('date_to', 'date_to must be greater then date_from').isISO8601()
 		.custom((value, { req }) => {
-			if ((value - req.body.date_from) > 0) return true;
+			if ((new Date(value) - new Date(req.body.date_from)) > 0) return true;
 			return false;
 		})
 	, async function (req, res, next) {
@@ -245,11 +245,11 @@ exports.reservation_create = [
 
 
 exports.reservation_update = [
-	body('date_from', 'Invalid date_from').trim().isISO8601().toDate(),
-	body('date_to', 'Invalid date_to').trim().isISO8601().toDate(),
-	body('date_to', 'date_to must be greater then date_from').trim().isISO8601().toDate()
+	body('date_from', 'Invalid date_from').isISO8601(),
+	body('date_to', 'Invalid date_to').isISO8601(),
+	body('date_to', 'date_to must be greater then date_from').isISO8601()
 		.custom((value, { req }) => {
-			if ((value - req.body.date_from) > 0) return true;
+			if ((new Date(value) - new Date(req.body.date_from)) > 0) return true;
 			return false;
 		}),
 	(req, res, next) => {

@@ -11,7 +11,7 @@ export interface EnhancedTableToolbarProps {
   filterDate: IReservationFilterDate;
   isFilterOwner: boolean;
   OnFilterOwner: () => void;
-  handleFilterClick(selectedIndex: number): number;
+  handleFilterClick(selectedIndex: number) : void;
   isByDateRange: boolean;
   
 }

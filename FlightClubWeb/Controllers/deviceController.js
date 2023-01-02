@@ -25,7 +25,8 @@ exports.device_list = function (req, res, next) {
         return next(new ApplicationError("device_list","400","CONTROLLER.DEVICE.DEVICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
-exports.combo = function (req, res, next) {
+
+exports.device_combo = function (req, res, next) {
     try{
     log.info("combo", req.body);
     Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
@@ -40,6 +41,28 @@ exports.combo = function (req, res, next) {
         return next(new ApplicationError("combo","400","CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
+exports.can_reserv = [
+    param('_id').trim().isLength(24).escape().withMessage('_id'),
+ function (req, res, next) {
+    try{
+    log.info("combo", req.params);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(new ApplicationError("status","400","CONTROLLER.DEVICE.STATUS.VALIDATION",{name: "ExpressValidator", errors}))
+    }
+    Device.find({_id: req.params._id})
+        .populate("can_reservs")
+        .select('can_reservs')
+        .exec(function (err, list_combo) {
+            if (err) { return next(err); }
+            res.status(201).json({ success: true, errors: [], data: list_combo });
+        })
+    }
+    catch(error){
+        return next(new ApplicationError("combo","400","CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION",{name: "EXCEPTION", error}));
+    }
+}]
+
 exports.device = function (req, res, next) {
     try{
         Device.findById(req.params._id)

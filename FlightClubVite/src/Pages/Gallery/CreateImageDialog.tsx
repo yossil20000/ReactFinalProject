@@ -64,17 +64,17 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";
-    console.log("PersonalInfo/handleImageUpload/file", file);
+    console.log("CreateImageDialog/handleImageUpload/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
       await resizeFileTobase64(file, 500, 50).then((result) => {
-        console.log("PersonalInfo/handleImageUpload/result.filelength", (result as string).length);
+        console.log("CreateImageDialog/handleImageUpload/result.filelength", (result as string).length);
         setImageCreate({ ...ImageCreate, image: result as string });
 
       }
 
       ).catch((error) => {
-        console.log("PersonalInfo/handleImageUpload/error", error);
+        console.log("CreateImageDialog/handleImageUpload/error", error);
       }
 
       )
@@ -83,14 +83,14 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
   }
   const handleIInputChange = (event: React.ChangeEvent<HTMLInputElement>, isBool: boolean = false) => {
-    console.log("handleIInputChange", ImageCreate, event.target.name, event.target.checked, event.target.type, event.target.type == "checkbox" ? event.target.checked : event.target.value)
+    console.log("CreateImageDialog/handleIInputChange", ImageCreate, event.target.name, event.target.checked, event.target.type, event.target.type == "checkbox" ? event.target.checked : event.target.value)
     let value: any;
     if (event.target.type == "checkbox") {
-      console.log("handlePublicChange/ischeckbox")
+      console.log("CreateImageDialog/handlePublicChange/ischeckbox")
       value = event.target.checked
     }
     else {
-      event.target.value
+      value = event.target.value
     }
     setImageCreate({
       ...ImageCreate,

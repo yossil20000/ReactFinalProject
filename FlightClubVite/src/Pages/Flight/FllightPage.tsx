@@ -194,7 +194,7 @@ const FlightPage = () => {
     setIsFilterOwner(!isFilterOwner);
   }
 
-  const handleFilterClick = (selectedIndex: number): number => {
+  const handleFilterClick = (selectedIndex: number) => {
     console.log("handleFilterClick", selectedIndex);
     let filterDate: IDateFilter | null = null;
     switch (selectedIndex) {
@@ -218,10 +218,8 @@ const FlightPage = () => {
       setToDateFilter(filterDate.to); */
       setFilterDate(filterDate as IReservationFilterDate)
     }
-
-    setFilterByDate(selectedIndex);
     console.log("handleFilterClick", selectedIndex, isByDateRange);
-    return selectedIndex;
+    
   }
   const isInDateRange = (row: IFlightData): boolean => {
     console.log("isInDateRange/filterBydate", filterBydate)

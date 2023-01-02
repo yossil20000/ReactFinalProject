@@ -29,13 +29,17 @@ function DevicesCombo(props : ComboProps) {
      return "";
   }
   const devicesToItemCombo = (input: IDeviceCombo): InputComboItem => {
+    
     return {  lable: input.device_id, _id: input._id,description: getDeviceDetailed(input._id) }
   }
   console.log("DevicesCombo/selectedDevice" , selectedDevice)
   useEffect(() => {
     console.log("DevicesCombo/ Devices.data", data?.data)
     
-    let items  =   data?.data.map((item) => devicesToItemCombo(item));
+    let items  =   data?.data.map((item) => {
+      console.log("DevicesCombo/ DeviceItemMap", item)
+      return devicesToItemCombo(item)
+    });
     console.log("DevicesCombo/ DeviceItem", items)
     if (items !== undefined)
       setDevicesItem(items);
