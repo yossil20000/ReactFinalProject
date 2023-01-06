@@ -20,7 +20,7 @@ export interface IValidationAlertProps extends IValidation, IAlertAction {
 
 export default function TransitionAlert(props: ITransitionAlrertProps) {
   const {severity,alertTitle,alertMessage,open,onClose} = props;
- 
+  console.log("ValidationAlert/alertMessage,open",alertMessage,open)
   return(
     <Collapse in={open}>
       <Alert severity={severity} action={
@@ -39,6 +39,7 @@ export function ValidationAlert(props : IValidationAlertProps) {
   const {open,onClose,msg,param,value} = props;
   let alertTitle = "";
   let alertMessage = "";
+  console.log("ValidationAlert/msg",msg)
   if(param != "" || value != "")
   {
     alertTitle = `${param} not valid`;

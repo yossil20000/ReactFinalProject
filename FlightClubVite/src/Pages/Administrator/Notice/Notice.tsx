@@ -15,15 +15,15 @@ const defaultMaterialThem = createTheme({
     }
   }
 })
-export interface INoticeEditProps {
+export interface INoticeProps {
   selectedNotice: IClubNotice;
   seSelectedNotice: React.Dispatch<React.SetStateAction<IClubNotice>>;
 }
-function NoticeEdit() {
+function Notice() {
   const notice : IClubNotice = useAppSelector((state) => state.selectedNotice);
   const noticeDispatch = useAppDispatch();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("NoticeEdit/handleChange", event.target.name, event.target.value)
+    console.log("Notice/handleChange", event.target.name, event.target.value)
     const newObj: IClubNotice = SetProperty(notice, event.target.name, event.target.value) as IClubNotice;
     noticeDispatch(setNotice(newObj));
   };
@@ -37,12 +37,12 @@ function NoticeEdit() {
 
   const handleDateChange = (newValue: DateTime | null, property: string) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    console.log("NoticeEdit/handleDateChange", new Date(newDate))
+    console.log("Notice/handleDateChange", new Date(newDate))
    
     noticeDispatch(setNoticeValue({key: property,value: new Date(newDate)}));
   };
   const handleBoolainChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("NoticeEdit/handleBoolainChange", event.target.name, event.target.checked)
+    console.log("Notice/handleBoolainChange", event.target.name, event.target.checked)
     noticeDispatch(setNoticeValue({key: event.target.name,value: event.target.checked}));
  
   };
@@ -122,4 +122,4 @@ function NoticeEdit() {
   )
 }
 
-export default NoticeEdit
+export default Notice

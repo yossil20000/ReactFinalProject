@@ -21,10 +21,12 @@ export const NewNotice : IClubNotice = {
 export interface INoticeFilter {
     public: boolean,
     expired: boolean,
-    isValid: boolean
+    isValid: boolean,
+    all: boolean
 }
 export const NewNoticeFilter : INoticeFilter = {
     public: false,
     expired: false,
-    isValid: false
+    isValid: false,
+    all: true
 }

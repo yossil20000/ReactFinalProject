@@ -25,9 +25,9 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
         return alert;
       })
     }
-  
+    /* 2 */
     if ((error as any).data?.errorType !== undefined && (error as any).data?.errorType === "VALIDATION" ) {
-  
+      console.log("getValidationFromError/2", (error as any).data?.errorType)
       validation = (error as any).data?.errors.map((item: IValidation) => {
         const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
         alert.onClose = onclose;
@@ -99,6 +99,7 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
     validation.push(alert);
   }
   finally{
+    console.log("getValidationFromError/2/validation", validation)
     return validation;
   }
 
