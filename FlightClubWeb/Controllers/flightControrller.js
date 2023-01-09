@@ -48,7 +48,7 @@ exports.flight_list = function (req, res, next) {
 }
 
 exports.flight_update = [
-  body('_id').trim().isLength(24).escape().withMessage('_id must be valid 24 characters'),
+  body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
   body('hobbs_stop', "Value must be greater then zero").custom((value) => {
     if (Number(value) < 0) return false;
     return true;
@@ -159,8 +159,8 @@ exports.flight_update = [
 ]
 
 exports.flight_create = [
-  body('_id_device').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
-  body('_id_member').trim().isLength(24).escape().withMessage('_id_member must be valid 24 characters'),
+  body('_id_device').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
+  body('_id_member').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_member must be valid 24 characters'),
   body('hobbs_stop', "Value must be greater then zero").custom((value) => {
     if (Number(value) < 0) return false;
     return true;
@@ -279,7 +279,7 @@ exports.flight_create = [
 
 
 exports.flight_delete = [
-  body("_id").trim().isLength(24).withMessage("_id must be specified length 24"),
+  body("_id").trim().isLength({ min: 24, max:24 }).withMessage("_id must be specified length 24"),
   async (req, res, next) => {
     const errors = validationResult(req);
     const session = await mongoose.startSession();

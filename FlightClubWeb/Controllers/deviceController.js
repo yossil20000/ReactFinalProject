@@ -42,7 +42,7 @@ exports.device_combo = function (req, res, next) {
     }
 }
 exports.can_reserv = [
-    param('_id').trim().isLength(24).escape().withMessage('_id'),
+    param('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id'),
  function (req, res, next) {
     try{
     log.info("combo", req.params);
@@ -130,7 +130,7 @@ exports.device_flights = function (req, res, next) {
 }
 
 exports.create = [
-    body('device_type').trim().isLength(24).escape().withMessage('_id_device_type must be valid'),
+    body('device_type').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device_type must be valid'),
     body('device_id',"lenght > 3 and only [0-9] [A-Z]").custom((value,{req}) =>{
         return /^[A-Z0-9]{4,}$/.test(value)
     } ),
@@ -181,8 +181,8 @@ exports.create = [
 ]
 
 exports.update = [
-    body('_id').trim().isLength(24).escape().withMessage('_id'),
-    body('device_type').trim().isLength(24).escape().withMessage('_id_device_type must be valid'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id'),
+    body('device_type').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device_type must be valid'),
     body('device_id',"lenght > 3 and only [0-9] [A-Z]").custom((value,{req}) =>{
         return /^[A-Z0-9]{4,}$/.test(value)
     } ),
@@ -224,7 +224,7 @@ exports.update = [
 ]
 
 exports.delete = [
-    param('_id').trim().isLength(24).escape().withMessage('_id'),
+    param('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id'),
     body('passcode').equals('force_delete').withMessage("Invalid passcode"),
     async function(req,res,next){
         try{
@@ -253,7 +253,7 @@ exports.delete = [
 ]
 
 exports.status = [
-    body('_id').trim().isLength(24).escape().withMessage('_id must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
     body('status').trim().isLength({ min: 4 }).escape().withMessage('memberId must be valid 24 characters'),
     function (req, res, next) {
     log.info(`device_status`, req.body);

@@ -11,7 +11,7 @@ var FlightSchema = new Schema({
     hobbs_stop: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     engien_start: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     engien_stop: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
-    status: {type: String, enum:["CREATED","OPEN","CLOSE"]},
+    status: {type: String, enum:["CREATED","CLOSE","PAYED"],default: "CREATED"},
     device: {type: Schema.Types.ObjectId, ref: 'Device', required: true},
     member: {type: Schema.Types.ObjectId, ref: 'Member' , required: true},
     timeOffset: {type: Schema.Types.Decimal128,get: getDecimal}

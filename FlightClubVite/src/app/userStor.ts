@@ -10,6 +10,7 @@ import { deviceTypesApiSlice } from "../features/DeviceTypes/deviceTypesApiSlice
 import { membershipApiSlice } from "../features/membership/membershipApiSlice";
 import noticeSliceReducer from "../features/clubNotice/noticeSlice";
 import { imageApiSlice } from "../features/image/imageApiSlice";
+import { accountApiSlice } from "../features/Account/accountApiSlice";
 
 export const storeUser = configureStore({
     reducer:{
@@ -22,6 +23,7 @@ export const storeUser = configureStore({
         [deviceTypesApiSlice.reducerPath] : deviceTypesApiSlice.reducer,
         [membershipApiSlice.reducerPath] : membershipApiSlice.reducer,
         [imageApiSlice.reducerPath] : imageApiSlice.reducer,
+        [accountApiSlice.reducerPath] : accountApiSlice.reducer,
         authSlice: authSliceReducer ,
         selectedNotice: noticeSliceReducer
     },
@@ -38,6 +40,7 @@ export const storeUser = configureStore({
         .concat(deviceTypesApiSlice.middleware)
         .concat(membershipApiSlice.middleware)
         .concat(imageApiSlice.middleware)
+        .concat(accountApiSlice.middleware)
     }
 });
 

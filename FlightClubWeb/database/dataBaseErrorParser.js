@@ -71,6 +71,10 @@ const parseApplicationError = (error) => {
     case "ExpressValidator":
       return { errorType: "VALIDATION",  ...error.errors };
     case "EXCEPTION":
+      if(typeof error == 'object'){
+        if(error.error.hasOwnProperty("message"))
+          return { errorType: name, errors: [error.error.message] };
+      }
       return { errorType: name, errors: [errors.error] };
     case "MongoServerError":
       return { errorType: name.toUpperCase(), errors: [errors.message] };

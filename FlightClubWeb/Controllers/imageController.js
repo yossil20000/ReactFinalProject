@@ -23,7 +23,7 @@ exports.image_list = function (req, res, next) {
     }
 }
 exports.image = [
-    param('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    param('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     async (req, res, next) => {
         try {
             log.info("image/req", req.params);
@@ -76,7 +76,7 @@ exports.image_create = [
 ]
 
 exports.image_update = [
-    body("_id").isLength(24).withMessage("_id must be 24 characters"),
+    body("_id").isLength({ min: 24, max:24 }).withMessage("_id must be 24 characters"),
     body('title').trim().isLength({ min: 1 }).withMessage("title must be with length > 0"),
     body('author').trim().isLength({ min: 1 }).withMessage("author must be with length > 0"),
     async (req, res, next) => {
@@ -100,7 +100,7 @@ exports.image_update = [
 
 exports.image_delete = [
     
-    body('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     async (req, res, next) => {
         try {
             log.info("image_delete/req", req.body);

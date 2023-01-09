@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ClubSchema = new Schema({
-  clubAccoutn:{type: Schema.Types.ObjectId, ref: "Account"},
-  accounts: [{type: Schema.Types.ObjectId, ref: "Account"}],
+  account:{type: Schema.Types.ObjectId, ref: "Account"},
+  club_accounts: [{type: Schema.Types.ObjectId, ref: "Account"}],
   
   
 },{toJSON: {getters: true}})

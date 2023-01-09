@@ -52,8 +52,8 @@ exports.member_detail = function (req, res, next) {
     }
 }
 exports.member_delete = [
-    body('_id').trim().isLength(24).escape().withMessage('_id must be valid 24 characters'),
-    body('memberId').trim().isLength(24).escape().withMessage('memberId must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
+    body('memberId').trim().isLength({ min: 24, max:24 }).escape().withMessage('memberId must be valid 24 characters'),
     body('passcode').equals('force_delete').withMessage("Invalid passcode"),
     function (req, res, next) {
         log.info(`member_delete`, req.body);
@@ -64,20 +64,20 @@ exports.member_delete = [
         try {
             async.parallel({
                 member: function (callback) {
-                    Member.findById(req.body.memberId).exec(callback);
+                    Member.findById(req.body._id).exec(callback);
                 },
                 reservations_member: function (callback) {
-                    FlightReservation.find({ 'member': req.body.memberId }).exec(callback);
+                    FlightReservation.find({ 'member': req.body._id }).exec(callback);
                 }
             }, function (err, results) {
                 if (err) { return next(err); }
                 log.info(results.reservations_member);
-                if (results.reservations_member == req.body.memberId) {
+                if (results.reservations_member == req.body._id) {
                     res.status(400).json({ success: false, errors: ["member has link reservation"], data: results.reservations_member })
                     return;
                 }
                 else {
-                    Member.findByIdAndRemove(req.body.memberId, function (err, doc) {
+                    Member.findByIdAndRemove(req.body._id, function (err, doc) {
                         if (err) { return next(err); }
                         return res.status(201).json({ success: true, errors: [], data: doc });
                     });
@@ -90,8 +90,8 @@ exports.member_delete = [
 
     }]
 exports.member_status = [
-    body('_id').trim().isLength(24).escape().withMessage('_id must be valid 24 characters'),
-    body('status').trim().isLength({ min: 4 }).escape().withMessage('memberId must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
+    body('status').trim().isLength({ min: 4 }).escape().withMessage('memberId must be valid '),
     function (req, res, next) {
         log.info(`member_stats`, req.body);
         const errors = validationResult(req);
@@ -123,7 +123,7 @@ exports.member_status = [
         }
     }]
 exports.member_update = [
-    body('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     body('member_id').trim().isLength({ min: 1 }).escape().withMessage('member_id must be specified'),
     body('contact.email').isEmail().escape().withMessage('email must be specified'),
     body('contact.billing_address.line1').trim().isLength({ min: 1 }).escape(),

@@ -20,6 +20,7 @@ const membershipRouter = require('./routes/membership');
 const clubNoticeRouter = require('./routes/clubNotice');
 const flightRouter = require('./routes/flight');
 const imageRouter = require('./routes/image');
+const accountRouter = require('./routes/account');
 var app = express();
 
 //Import the mongoose module
@@ -62,6 +63,7 @@ app.use('/api/memberships', membershipRouter);
 app.use('/api/club_notice', clubNoticeRouter);
 app.use("/api/flight", flightRouter);
 app.use("/api/images",imageRouter);
+app.use('/api/accounts',accountRouter);
 app.use((err, req, res, next) => {
   console.error('\x1b[31m',err);
   next(err);

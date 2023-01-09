@@ -24,7 +24,7 @@ exports.notice_list = function (req, res, next) {
     }
 }
 exports.notice = [
-    param('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    param('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     async (req, res, next) => {
         try {
             log.info("club_notice/req", req.params);
@@ -48,8 +48,8 @@ exports.notice = [
 exports.notice_create = [
     body('title').trim().isLength({ min: 1 }).withMessage("title must be with length > 0"),
     body('description').trim().isLength({ min: 1 }).withMessage("title must be with length > 0"),
-    body('issue_date', 'Invalid issue_date').trim().isISO8601().toDate(),
-    body('due_date', 'Invalid issue_date').trim().isISO8601().toDate(),
+    body('issue_date', 'Invalid issue_date').isISO8601(),
+    body('due_date', 'Invalid issue_date').isISO8601(),
     async (req, res, next) => {
         try {
             log.info("notice_create", req.body);
@@ -80,11 +80,11 @@ exports.notice_create = [
 ]
 
 exports.notice_update = [
-    body("_id").isLength(24).withMessage("_id must be 24 characters"),
+    body("_id").isLength({ min: 24, max:24 }).withMessage("_id must be 24 characters"),
     body('title').trim().isLength({ min: 1 }).withMessage("title must be with length > 0"),
     body('description').trim().isLength({ min: 1 }).withMessage("title must be with length > 0"),
-    body('issue_date', 'Invalid issue_date').trim().isISO8601().toDate(),
-    body('due_date', 'Invalid issue_date').trim().isISO8601().toDate(),
+    body('issue_date', 'Invalid issue_date').isISO8601(),
+    body('due_date', 'Invalid issue_date').isISO8601(),
     async (req, res, next) => {
         try {
             log.info("notice_update", req.body);
@@ -106,7 +106,7 @@ exports.notice_update = [
 
 exports.notice_delete = [
     
-    body('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     async (req, res, next) => {
         try {
             log.info("notice_delete/req", req.body);

@@ -31,7 +31,9 @@ const pages: page[] = [
   { name: 'Members', route: 'members' },
   { name: 'Gallery', route: 'gallery'},
   { name: 'Admin', route: 'admin' },
-  { name: "Login", route: "login" }];
+  { name: "Account", route: "account" },
+  { name: "Login", route: "login" }
+  ];
 const settings = ['Profile', 'Account', 'Dashboard', 'change_password', 'Logout'];
 
 const ResponsiveAppBar = () => {

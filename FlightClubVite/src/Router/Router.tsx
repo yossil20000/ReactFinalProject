@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from '../Components/Layout'
 import RequireAuth from '../Components/RequireAuth'
 import { Role } from '../Interfaces/API/IMember'
+import AccountPage from '../Pages/Account/AccountPage'
 import AdminPage from '../Pages/Administrator/AdminPage'
 import FlightPage from '../Pages/Flight/FllightPage'
 import GalleryPage from '../Pages/Gallery/GalleryPage'
@@ -50,6 +51,7 @@ export function PagesRouter() {
         </Route>
         <Route element={<RequireAuth roles={[Role.admin]} />}>
           <Route path="/admin" element={<AdminPage></AdminPage>} />
+          <Route path="/account" element={<AccountPage></AccountPage>}/>
         </Route>
         <Route element={<RequireAuth roles={[Role.user, Role.desk, Role.admin, Role.account]} />}>
 

@@ -8,8 +8,8 @@ export interface IFlightFilterDate extends IDateFilter{
 }
 export enum Status {
     CREATED,
-    OPEN,
-    CLOSE
+    CLOSE,
+    PAYED
 }
 interface IFlightBase {
 

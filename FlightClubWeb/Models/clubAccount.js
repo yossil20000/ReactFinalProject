@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 const constants = require('../Models/constants');
 var Schema = mongoose.Schema;
 
-var AccountSchema = new Schema({
+var ClubAccountSchema = new Schema({
   account_id: {type: String, required: true},
-  member: {type: Schema.Types.ObjectId, ref: "Member", required: true},
+  accounts: {type: Schema.Types.ObjectId, ref: "Account", required: true},
   transactions: [{type: Schema.Types.ObjectId, ref: "Transaction"}],
   balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   desctiption: {type: String},
@@ -18,4 +18,4 @@ function getDecimal(value) {
   return value;
 };
 
-module.exports = mongoose.model("Account", AccountSchema);
+module.exports = mongoose.model("ClubAccount", ClubAccountSchema);

@@ -1,5 +1,5 @@
 export function getServerAddress () {
-  if(true)
+  if(false)
     return `https://${URLS.BACKEND_ADDRESS}`
   else
   return `http://${URLS.BACKEND_ADDRESS}`
@@ -12,6 +12,7 @@ export  enum URLS{
     CHANGE_PASSWORD = "api/change_password",
     RESET = 'api/reset_password',
     RESERVATION = 'api/reservation',
+    RESERVATION_SEARCH = 'api/reservation/search/date',
     RESERVATION_DELETE = 'api/reservation/delete',
     RESERVATION_CREATE = 'api/reservation/create',
     RESERVATION_UPDATE = 'api/reservation/update',
@@ -21,7 +22,9 @@ export  enum URLS{
     MEMBERS_STATUS = 'api/members/status',
     DEVICES = 'api/devices',
     DEVICES_COMBO = 'api/devices/combo',
+    DEVICES_CAN_RESERV = 'api/devices/can_reserv',
     FLIGHT = 'api/flight',
+    FLIGHT_SEARCH = 'api/flight/search/date',
     CLUB_NOTICE = 'api/club_notice',
     CLUB_NOTICE_UPDATE ='api/club_notice/update',
     CLUB_NOTICE_DELETE ='api/club_notice/delete',
@@ -45,6 +48,12 @@ export  enum URLS{
     IMAGE = 'api/images',
     IMAGE_UPDATE = "api/images/update",
     IMAGE_DELETE = 'api/images/delete',
-    IMAGE_CREATE = 'api/images/create'
+    IMAGE_CREATE = 'api/images/create',
+    ACCOUNTS = 'api/accounts',
+    ACCOUNT_DELETE = 'api/accounts/delete',
+    ACCOUNT_UPDATE = 'api/accounts/update',
+    ACCOUNT_CREATE = 'api/accounts/create',
+    ACCOUNT_STATUS = 'api/accounts/status',
+    ACCOUNTS_COMBO = 'api/accounts/combo'
     
 }

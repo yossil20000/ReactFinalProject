@@ -10,7 +10,6 @@ import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
-import { IValidation } from "../../Interfaces/IValidation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 const source: string = "CreateFlight"
 

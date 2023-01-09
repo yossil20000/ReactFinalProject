@@ -27,7 +27,7 @@ exports.deviceType_detail = function (req, res, next) {
 }
 
 exports.deviceType_delete = [
-    body('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     body('passcode').equals('force_delete').withMessage("Invalid passcode"),
     function (req, res, next) {
         try {
@@ -56,7 +56,7 @@ exports.deviceType_delete = [
     }];
 
 exports.deviceType_status = [
-    body('_id').trim().isLength(24).escape().withMessage('_id must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
     body('status').trim().isLength({ min: 4 }).escape().withMessage('status must be valid 24 characters'),
     function (req, res, next) {
         log.info(`deviceType_status`, req.body);
@@ -90,7 +90,7 @@ exports.deviceType_status = [
 
     }]
 exports.deviceType_update = [
-    body('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     body('name').trim().isLength({ min: 1 }).escape().withMessage('name must be specified'),
     body('category').trim().isIn(["Airplane", "Rotorcraft", "FDT"]).withMessage('Must one of: ["Airplane","Rotorcraft","FDT"]'),
     body('class.engien').trim().isIn(["SingleEngien", "Multiengien"]).withMessage('Must be one of: ["SingleEngien","Multiengien"] '),

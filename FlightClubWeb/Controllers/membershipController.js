@@ -41,7 +41,7 @@ exports.membership_combo = function (req, res, next) {
     }
 }
 exports.membership_update = [
-    body('_id').trim().isLength(24).escape().withMessage('_id_device must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
     body('name').trim().isLength({ min: 1 }).escape().withMessage('name must be specified'),
     body('entry_price',"Value must be >= 0").custom((value) => value >= 0),
     body('hour_disc_percet',"Value must between  [0 - 100]").custom((value) => value >= 0 && value <= 100),
