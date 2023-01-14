@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
 import { getServerAddress, URLS } from "../../Enums/Routers";
-import IFlight, { IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
+import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
+import { getUrlWithParams } from "../../Utils/url";
 import customFetchBase from "../customeFetchBase";
 
 export const flightApi = createApi({
@@ -24,7 +25,13 @@ export const flightApi = createApi({
     return {
       getAllFlights: builder.query<IResultBase<IFlight>,IFlightFilterDate>({
         query: (filter) => ({
-          url:`/${URLS.FLIGHT_SEARCH}?from=${filter.from}&to=${filter.to}`,
+          url:`/${URLS.FLIGHT_SEARCH}/date?from=${filter.from}&to=${filter.to}`,
+          method: "GET"
+        }),
+      }),
+      getAllFlightsSearch: builder.query<IResultBase<IFlight>,{[key: string]: string}>({
+        query: (filter) => ({
+          url:getUrlWithParams(`/${URLS.FLIGHT_SEARCH}/filter`,filter) ,
           method: "GET"
         }),
       }),
@@ -73,5 +80,6 @@ export const {
 useCreateFlightMutation,
 useGetAllFlightsQuery,
 useDeleteFlightMutation,
-useUpdateFlightMutation
+useUpdateFlightMutation,
+useGetAllFlightsSearchQuery
 } = flightApi;

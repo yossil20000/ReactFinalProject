@@ -178,7 +178,7 @@ const reservationFilter: IReservationFilterDate = {
 function ReservationsPage() {
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>({} as IReservationFilterDate);
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
-  const login: ILoginResult = useAppSelector((state) => state.authSlice);
+  const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery(filterDate);
   const [rows, setRows] = useState<ItableData[]>([])
 

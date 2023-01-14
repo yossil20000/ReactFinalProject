@@ -5,6 +5,7 @@ const { body, validationResult } = require('express-validator');
 const Flight = require('../Models/flight');
 const Member = require('../Models/member');
 const Device = require('../Models/device');
+const { findFlights } = require('../Services/flightService');
 
 const transactionOptions = {
   readPreference: 'primary',
@@ -46,7 +47,19 @@ exports.flight_list = function (req, res, next) {
       }
     })
 }
+exports.flight_search = [async function (req, res, next) {
+  try {
+    log.info('flight_search/params', req.query);
 
+    const { flights } = await findFlights(req.query);
+    res.status(201).json({ success: true, errors: [], data: flights });
+    return;
+  }
+  catch (error) {
+    return next(new ApplicationError("flight_search", "400", "CONTROLLER.FLIGHT.FLIGHT_SEARCH.EXCEPTION", { name: "EXCEPTION", error }));
+  }
+}
+]
 exports.flight_update = [
   body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
   body('hobbs_stop', "Value must be greater then zero").custom((value) => {

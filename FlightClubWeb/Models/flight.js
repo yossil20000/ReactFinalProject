@@ -14,6 +14,7 @@ var FlightSchema = new Schema({
     status: {type: String, enum:["CREATED","CLOSE","PAYED"],default: "CREATED"},
     device: {type: Schema.Types.ObjectId, ref: 'Device', required: true},
     member: {type: Schema.Types.ObjectId, ref: 'Member' , required: true},
+    reuired_hobbs: {type: Schema.Types.Boolean, default: false},
     timeOffset: {type: Schema.Types.Decimal128,get: getDecimal}
 },{toJSON: {getters: true}});
 

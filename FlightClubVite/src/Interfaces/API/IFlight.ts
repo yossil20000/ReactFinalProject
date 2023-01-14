@@ -6,21 +6,22 @@ import IMember from "./IMember"
 export interface IFlightFilterDate extends IDateFilter{
 
 }
-export enum Status {
-    CREATED,
-    CLOSE,
-    PAYED
+export enum FlightStatus {
+    CREATED = "CREATED",
+    CLOSE = "CLOSE",
+    PAYED = "PAYED"
 }
 interface IFlightBase {
-
+    description: string;
+    date_from: Date;
+    date_to: Date;
     hobbs_start: number
     hobbs_stop: number
     engien_start: number
     engien_stop: number
-    status: Status
-    date_from: Date;
-    date_to: Date;
-    description: string
+    status: FlightStatus
+    reuired_hobbs: boolean
+    timeOffset: number
 }
 export default interface IFlight extends IFlightBase {
     _id: string;
@@ -38,14 +39,17 @@ export interface IFlightCreate extends IFlightCreateApi {
     member_name: string
     device_name: string
 }
-export class CFlightBase {
+export class CFlightBase implements IFlightBase {
+    description: string;
     date_from: Date;
     date_to: Date;
     hobbs_start: number;
     hobbs_stop: number;
     engien_start: number;
     engien_stop: number;
-    description: string;
+    status: FlightStatus;
+    reuired_hobbs: boolean;
+    timeOffset: number;
     constructor() {
         this.date_from = new Date();
         this.date_to = new Date();
@@ -54,6 +58,9 @@ export class CFlightBase {
         this.engien_stop = 0;
         this.hobbs_start = 0;
         this.hobbs_stop = 0;
+        this.status = FlightStatus.CREATED;
+        this.reuired_hobbs = false;
+        this.timeOffset = 0;
 
     }
 
@@ -88,7 +95,9 @@ export class CFlightBase {
         this.engien_stop = obj.engien_stop;
         this.hobbs_start = obj.hobbs_start;
         this.hobbs_stop = obj.hobbs_stop;
-
+        this.status = obj.status;
+        this.reuired_hobbs = obj.reuired_hobbs;
+        this.timeOffset = obj.timeOffset;
     }
 
 }
@@ -97,25 +106,17 @@ export class CFlightCreate extends CFlightBase implements IFlightCreate {
     device_name: string = ""
     _id_device: string = ""
     _id_member: string = ""
-    status: Status = 0
     copy(obj: IFlightCreate): void {
         super.copy(obj as IFlightBase);
         this.member_name = obj.member_name;
         this.device_name = obj.device_name;
         this._id_device = obj._id_device;
         this._id_member = obj._id_member;
-        this.status = obj.status;
+        
     }
 }
-export interface IFlightUpdateApi {
+export interface IFlightUpdateApi extends IFlightBase{
     _id: string;
-    hobbs_start: number
-    hobbs_stop: number
-    engien_start: number
-    engien_stop: number
-    date_from: Date
-    date_to: Date
-    description: string
 }
 export interface IFlightUpdate extends IFlightBase {
     _id: string;
@@ -128,7 +129,6 @@ export class CFlightUpdate extends CFlightBase implements IFlightUpdate {
     _id: string = "";
     member_name: string = ""
     device_name: string = ""
-    status: Status = Status.CREATED
     constructor() {
         super()
     }

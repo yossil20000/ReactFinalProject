@@ -37,14 +37,14 @@ function AccountsCombo(props : ComboProps) {
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
     onChanged(item);
-   
+    console.log("AccountsCombo/onSelectedItem", item)
   }
   useEffect(()=> {
     if(selectedItem)
       onChanged(selectedItem)
   },[])
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title="Members" />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title="Account" />
   )
 }
 

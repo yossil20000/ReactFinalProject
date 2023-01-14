@@ -8,6 +8,7 @@ const accountController = require('../Controllers/accountController');
 
 router.get('/',accountController.account_list);
 router.get('/:_id',accountController.account);
+router.get('/search/filter',accountController.account_search);
 router.post('/combo',[authJWT.authenticate],  accountController.combo);
 router.post('/create' , accountController.account_create);
 router.delete('/delete', accountController.account_delete);

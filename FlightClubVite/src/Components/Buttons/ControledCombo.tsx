@@ -41,9 +41,11 @@ export default function ControledCombo(props: InputComboProps) {
       fullWidth={true}
       value={value}
       onChange={(event: any, newValue: InputComboItem | null) => {
+        console.log("ControledCombo/onChange", newValue)
+
         setValue(newValue);
-        if(newValue)
-          onSelectedItem(newValue)
+        
+          onSelectedItem(newValue ?? {_id: "",lable:""} as InputComboItem)
       }}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => {

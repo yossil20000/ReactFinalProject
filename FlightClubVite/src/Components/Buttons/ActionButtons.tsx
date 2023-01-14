@@ -8,9 +8,10 @@ export enum EAction {
 export interface IActionButtonsProps {
 show: EAction[],
 OnAction: (action: EAction ,event?: React.MouseEvent<HTMLButtonElement, MouseEvent>    ) =>void ;  
+item:string;
 }
 
-function ActionButtons({OnAction,show}: IActionButtonsProps) {
+function ActionButtons({OnAction,show,item = ""}: IActionButtonsProps) {
 
 
   return (

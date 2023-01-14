@@ -48,7 +48,12 @@ export interface ITransaction extends ITransactionBase {
 
 export interface IAccountBase {
   account_id: string,
-  member: string,
+  member: {
+    _id: string,
+    member_id: string,
+    first_name: string,
+    family_name: string
+  },
   transactions: ITransaction[],
   balance: number,
   desctiption: string,
@@ -61,7 +66,12 @@ export interface IAccount extends IAccountBase {
 export const newAccount = ()  : IAccountBase => {
   let account : IAccountBase = {
     account_id: "",
-    member: "",
+    member: {
+      _id: "",
+    member_id: "",
+    first_name: "",
+    family_name: ""
+    },
     transactions: [],
     balance: 0,
     desctiption: "",

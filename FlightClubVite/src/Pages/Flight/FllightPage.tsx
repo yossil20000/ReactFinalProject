@@ -3,7 +3,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconB
 import { useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
-import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, Status } from "../../Interfaces/API/IFlight";
+import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, FlightStatus } from "../../Interfaces/API/IFlight";
 
 
 import GeneralCanDo, { CanDo } from "../../Utils/owner";
@@ -28,7 +28,7 @@ const StyledAccordion = styled(Box)(({ theme }) => ({
 interface IFlightData {
   _id: string; _id_member: string; name: string; description: string;
   device_id: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
-  hobbs_start: number; hobbs_stop: number; engien_start: number; engien_stop: number;
+  hobbs_start: number; hobbs_stop: number; engien_start: number; engien_stop: number; status: FlightStatus;
 }
 
 function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
@@ -36,7 +36,7 @@ function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
     _id: flight._id, _id_member: flight.member._id, description: flight.description,
     name: flight.member.family_name, device_id: flight.device.device_id,
     date_from: new Date(flight.date_from), date_to: new Date(flight.date_to), member_id: flight.member.member_id,
-    hobbs_start: flight.hobbs_start, hobbs_stop: flight.hobbs_stop, engien_start: flight.engien_start, engien_stop: flight.engien_stop,
+    hobbs_start: flight.hobbs_start, hobbs_stop: flight.hobbs_stop, engien_start: flight.engien_start, engien_stop: flight.engien_stop, status: flight.status,
     validOperation: validOperation
   }
 }
@@ -84,7 +84,9 @@ let flightUpdateIntitial: IFlightUpdate = {
   engien_start: 0,
   engien_stop: 0,
   description: "",
-  status: Status.CREATED
+  status: FlightStatus.CREATED,
+  reuired_hobbs: false,
+  timeOffset: 0
 }
 let flightAddIntitial: IFlightCreate = {
   date_from: new Date(),
@@ -97,9 +99,11 @@ let flightAddIntitial: IFlightCreate = {
   engien_start: 0,
   engien_stop: 0,
   description: "",
-  status: Status.CREATED,
+  status: FlightStatus.CREATED,
   _id_device: "",
-  _id_member: ""
+  _id_member: "",
+  reuired_hobbs: false,
+  timeOffset: 0
 }
 const FlightPage = () => {
   const [openFlightAdd, setOpenFlightAdd] = useState(false);
@@ -116,8 +120,8 @@ const FlightPage = () => {
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>({} as IReservationFilterDate);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const login: ILoginResult = useAppSelector((state) => state.authSlice);
-  const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({from: filterDate.from,to: filterDate.to} as IFlightFilterDate);
+  const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
+  const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({ from: filterDate.from, to: filterDate.to } as IFlightFilterDate);
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login.member._id, login.member.roles)))
   }
@@ -132,7 +136,7 @@ const FlightPage = () => {
     if (flightsData === undefined) return [];
     const filterdData: IFlightData[] = flightsData?.filter((flight) => {
       console.log("flightdat/filter", flightsData);
-      
+
       if (!isFilterOwner) return true;
       if (isFilterOwner && flight.validOperation & CanDo.Owner) return true;
       return true;
@@ -146,7 +150,9 @@ const FlightPage = () => {
   useEffect(() => {
     console.log("FlightPage/useEffect/flight.data", flights === undefined ? "Undefined" : flights)
     if (flights?.data !== undefined) {
-      setFilghtData(getFlightData(flights?.data));
+      const flightData = getFlightData(flights?.data)
+      console.log('FlightPage/useEffect/flightData', flightData)
+      setFilghtData(flightData);
     }
 
   }, [flights?.data])
@@ -219,7 +225,7 @@ const FlightPage = () => {
       setFilterDate(filterDate as IReservationFilterDate)
     }
     console.log("handleFilterClick", selectedIndex, isByDateRange);
-    
+
   }
   const isInDateRange = (row: IFlightData): boolean => {
     console.log("isInDateRange/filterBydate", filterBydate)
@@ -231,7 +237,7 @@ const FlightPage = () => {
       case 2:
         return row.date_from.isSameMonth(todayDate);
       case 3:
-        if (filterDate.from &&  filterDate.to)
+        if (filterDate.from && filterDate.to)
           return row.date_from >= filterDate.from && row.date_from <= filterDate.to
         break;
     }
@@ -259,6 +265,7 @@ const FlightPage = () => {
       flightUpdateIntitial.engien_start = flight[0].engien_start;
       flightUpdateIntitial.engien_stop = flight[0].engien_stop;
       flightUpdateIntitial.description = flight[0].description;
+      flightUpdateIntitial.status = flight[0].status;
       /* setFlightUpdate(flightUpdateIntitial); */
     }
   }
@@ -299,7 +306,7 @@ const FlightPage = () => {
         <Box sx={{ width: '100%', height: '100%' }}>
           <Paper sx={{ width: '100%', mb: 1 }}>
             <FilterButtons filterDate={filterDate} setFilterDate={setFilterDate} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
-              handleFilterClick={handleFilterClick}  />
+              handleFilterClick={handleFilterClick} />
             <Box display={'flex'} justifyContent={"space-between"}>
               <Tooltip title="Add Flight">
                 <IconButton color={'info'} onClick={handleAddClick}><AddCircleOutlineSharpIcon /></IconButton>
@@ -356,16 +363,24 @@ const FlightPage = () => {
                               {`Engien Stop: ${row.engien_stop}`}
                             </Typography>
                           </Grid>
-                          <Grid item xs={6} >
-                            <Typography>
-                              {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6} >
-                            <Typography>
-                              {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
-                            </Typography>
-                          </Grid>
+                          {
+                            row.status !== FlightStatus.CREATED ? (null) :
+                              (
+                                <>
+                                  <Grid item xs={6} >
+                                    <Typography>
+                                      {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid item xs={6} >
+                                    <Typography>
+                                      {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
+                                    </Typography>
+                                  </Grid>
+                                </>
+                              )
+                          }
+
                         </Grid>
                       </AccordionDetails>
                     </Accordion>
