@@ -9,6 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import ActionButtons, { IActionButtonsProps } from './Buttons/ActionButtons';
 import { Box } from '@mui/material';
+import { height } from '@mui/system';
 
 export interface GroupHeader {
   id: string,
@@ -45,10 +46,11 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
   };
 
   return (
-    <Paper sx={{ width: '100%' }}>
-      <TableContainer sx={{ Height: "100%" }}>
+    <Paper sx={{ width: '100%'  }}>
+      <TableContainer sx={{ maxHeight: "99%" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
+
             <TableRow>
               {props.columns.map((column) => {
                 if(column.isCell) return(
@@ -78,11 +80,13 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                         </TableCell>
                       );
                     })}
+                    { props.action.show.length> 0 ? (
                     <TableCell>
                       <Box display={'flex'} justifyContent={'space-around'}>
                         <ActionButtons OnAction={props.action.OnAction} show={props.action.show} item={row["_id" as keyof   T] as string}/>
                       </Box>
-                    </TableCell>
+                    </TableCell>) : (null)
+              }
                   </TableRow>
                 );
               })}

@@ -58,29 +58,6 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
       const validation = getValidationFromError(error,handleOnCancel);
       setValidationAlert(validation);
       return;
-      if ((error as any).data.errors !== undefined) {
-        if (Array.isArray((error as any).data.errors)) {
-          (error as any).data.errors.forEach((element: any) => {
-            console.log("UpdateFlightDialog/useEffect/Error", element);
-          });
-        }
-        else {
-          console.log("UpdateFlightDialog/useEffect/Error/single", (error as any).data.errors)
-        }
-      }
-      if ((error as any).data.validation !== undefined) {
-        let validation: IValidationAlertProps[];
-        console.log("UpdateFlightDialog/useEffect/data", (error as any).data)
-        validation = (error as any).data.validation.errors.map((item: IValidation) => {
-          const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
-          alert.onClose = handleOnCancel;
-          alert.open = true
-          return alert;
-
-        })
-        setValidationAlert(validation);
-        console.log("UpdateFlightDialog/useEffect/validation", validation)
-      }
 
     }
   }, [isLoading])
@@ -223,6 +200,8 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 key={"hobbs_start"}
                 value={flightUpdate.hobbs_start}
                 onChange={handleFligtChange}
+                helperText={flightUpdate.reuired_hobbs ? "" : "Hobbs is optional"}
+                error={!flightUpdate.reuired_hobbs}
               />
             </Item>
           </Grid>
@@ -237,6 +216,8 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 key={"hobbs_stop"}
                 value={flightUpdate.hobbs_stop}
                 onChange={handleFligtChange}
+                helperText={flightUpdate.reuired_hobbs ? "" : "Hobbs is optional"}
+                error={!flightUpdate.reuired_hobbs}
               />
             </Item>
           </Grid>

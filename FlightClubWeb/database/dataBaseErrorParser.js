@@ -29,7 +29,7 @@ const parseValidationError = (error) => {
     //}); */
     return errors;
   }
-  catch (err) {
+  catch (error) {
     return ['Unknown: Parsing Error']
   }
 }
@@ -39,7 +39,7 @@ const parseCastError = (error) => {
     return [`${error.path}: ${error.value} Not Found `]
     
   }
-  catch (err) {
+  catch (error) {
     return ['Unknown: Parsing Error']
   }
 }
@@ -56,7 +56,7 @@ const parseExpressValidator = (error) => {
     });
     return errors;
   }
-  catch (err) {
+  catch (error) {
     return ['Unknown: Parsing Error']
   }
 }

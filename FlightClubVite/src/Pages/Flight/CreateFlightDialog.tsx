@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
+import DevicesFlightCombo from "../../Components/Devices/DeviceFlightCombo";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
@@ -44,7 +45,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-
+  
   useEffect(() => {
     console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -108,8 +109,9 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
 
   }
-  const onDeviceChanged = (item: InputComboItem) => {
-    setFlightCreate(prev => ({ ...prev, _id_device: item._id }))
+  const onDeviceChanged = (item: InputComboItem,has_hobbs:boolean) => {
+    
+    setFlightCreate(prev => ({ ...prev, _id_device: item._id ,reuired_hobbs: has_hobbs}))
   }
   const onMemberChanged = (item: InputComboItem) => {
     setFlightCreate(prev => ({ ...prev, _id_member: item._id }))
@@ -207,6 +209,8 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 value={flightCreate.hobbs_start}
                 onChange={handleFligtChange}
                 InputLabelProps={{ shrink: true }}
+                helperText={flightCreate.reuired_hobbs ? "" : "Hobbs is optional"}
+                error={!flightCreate.reuired_hobbs}
               />
             </Item>
           </Grid>
@@ -222,6 +226,8 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 value={flightCreate.hobbs_stop}
                 onChange={handleFligtChange}
                 InputLabelProps={{ shrink: true }}
+                helperText={flightCreate.reuired_hobbs ? "" : "Hobbs is optional"}
+                error={!flightCreate.reuired_hobbs}
               />
             </Item>
           </Grid>
@@ -240,7 +246,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
-              <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true}/>
+              <DevicesFlightCombo onChanged={onDeviceChanged} source={source} filter={true}/>
 
             </Item>
           </Grid>

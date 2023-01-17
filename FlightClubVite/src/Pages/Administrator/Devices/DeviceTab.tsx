@@ -45,7 +45,8 @@ function newDevice(): IDevice {
     can_reservs: [],
     flights: [],
     flight_reservs: [],
-    status: Status.Suspended
+    status: Status.Suspended,
+    has_hobbs: false
   }
   return newDevice;
 }
@@ -160,7 +161,7 @@ function DeviceTab() {
         <div className='footer' >
 
           <Box className='yl__action_button' >
-            <ActionButtons OnAction={onAction} show={[ EAction.SAVE, EAction.ADD]} />
+            <ActionButtons OnAction={onAction} show={[ EAction.SAVE, EAction.ADD]} item={""}/>
 
           </Box>
           <Grid container>

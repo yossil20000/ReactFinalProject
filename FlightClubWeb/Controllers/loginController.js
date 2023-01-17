@@ -252,7 +252,7 @@ exports.register = function (req, res, next) {
 
         }
     }
-    catch (err) {
+    catch (error) {
 
     }
 

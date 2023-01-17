@@ -166,7 +166,7 @@ exports.reservation_delete = function (req, res, next) {
 
 
 	}
-	catch (err) {
+	catch (error) {
 		return next(new ApplicationError("reservation_delete", "400", "CONTROLLER.FLIGHT_RESERV.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
 	}
 }
@@ -218,15 +218,15 @@ exports.reservation_create = [
 
 			log.info("FlightReservation.find/doc", found?._doc);
 			if (found?._doc === undefined) {
-				newReservation.save(err => {
+				await newReservation.save(err => {
 					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
 				});
 				device.flight_reservs.push(newReservation);
 				member.flight_reservs.push(newReservation);
-				device.save(err => {
+				await device.save(err => {
 					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
 				});
-				member.save(err => {
+				await member.save(err => {
 					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
 				});
 				res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
@@ -234,10 +234,12 @@ exports.reservation_create = [
 				return;
 			}
 			else {
+				log.info("Create/else");
 				res.status(400).json({ success: false, errors: ["Reservation Already Exist"], data: newReservation });
 			}
 		}
-		catch (err) {
+		catch (error) {
+			log.info("Create/catch (err)",error);
 			return next(new ApplicationError("reservation_create", "400", "CONTROLLER.FLIGHT_RESERV.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
 		}
 		log.info("Create/end");

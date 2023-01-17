@@ -19,7 +19,12 @@ declare global {
       getEndMonth(): Date;
       getLastDateOfMonth(year: number,month:number) : Date;
       getFirstDateOfMonth(year: number,month:number) : Date;
+      getLocalTimeWithOffset(offset: number) : Date;
    }
+}
+Date.prototype.getLocalTimeWithOffset = function(offset: number) : Date {
+   const correctionOffset = offset - this.getTimezoneOffset()
+   return new Date(this.addMinutes(correctionOffset))
 }
 Date.prototype.getFirstDateOfWeek = function () : Date {
    return new Date(this.setDate(this.getDate() - this.getDay()))

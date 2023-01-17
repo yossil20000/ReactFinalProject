@@ -86,6 +86,7 @@ let flightUpdateIntitial: IFlightUpdate = {
   description: "",
   status: FlightStatus.CREATED,
   reuired_hobbs: false,
+  duration: 0,
   timeOffset: 0
 }
 let flightAddIntitial: IFlightCreate = {
@@ -103,6 +104,7 @@ let flightAddIntitial: IFlightCreate = {
   _id_device: "",
   _id_member: "",
   reuired_hobbs: false,
+  duration: 0,
   timeOffset: 0
 }
 const FlightPage = () => {

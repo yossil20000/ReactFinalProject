@@ -37,7 +37,8 @@ var DeviceSchema = new Schema({
     location_zone:{type: String, default: "Asia/Jerusalem"},
     can_reservs:[{type: Schema.ObjectId, ref: 'Member'}],
     flights: [{type: Schema.ObjectId,ref: 'Flight'}],
-    flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}]
+    flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}],
+    has_hobbs: {type: Boolean, default: false}
 },{toJSON: {getters: true}});
 
 function getDecimal(value) {

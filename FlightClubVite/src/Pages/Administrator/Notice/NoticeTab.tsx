@@ -224,7 +224,7 @@ function NoticeTab() {
       </div>
       <div className='footer'>
         <Box className='yl__action_button'>
-          <ActionButtons OnAction={onAction} show={[EAction.SAVE, EAction.ADD, EAction.DELETE]} />
+          <ActionButtons OnAction={onAction} show={[EAction.SAVE, EAction.ADD, EAction.DELETE]} item={""}/>
         </Box>
 
       </div>

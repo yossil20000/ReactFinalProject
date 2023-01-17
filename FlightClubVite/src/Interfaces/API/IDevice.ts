@@ -69,6 +69,7 @@ interface IDeviceBase{
     }
     location_zone: string
     status: Status
+    has_hobbs: boolean
 }
 
 export  interface IDeviceCreate extends IDeviceBase {
@@ -101,6 +102,7 @@ export interface IDeviceCombo {
         next_meter: number
     };
     can_reservs: IMemberCombo[]
+    has_hobbs: boolean
   }
   export interface IDeviceCanReserve {
     can_reservs: IMemberCombo[]

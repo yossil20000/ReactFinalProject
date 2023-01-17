@@ -251,6 +251,9 @@ function DeviceTabItem() {
             <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
               <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
             </Grid>
+            <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
+              <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"has_hobbs"} checked={selectedItem?.has_hobbs} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Has Hobbs" />
+            </Grid>
             <Grid item xs={1}>
               <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={{lable: selectedItem?.status === undefined ? "" : selectedItem?.status.toString() ,_id: "",description: ""}}/>
             </Grid>

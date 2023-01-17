@@ -12,9 +12,9 @@ exports.club = async function (req, res, next) {
     return res.status(400).json({ success: false, errors: ["club not exist"], data: [] });
 
   }
-  catch (err) {
+  catch (error) {
     log.info(err);
-    return res.status(501).json({ success: false, errors: [err], data: [] });
+    return res.status(501).json({ success: false, errors: [error], data: [] });
   }
 }
 

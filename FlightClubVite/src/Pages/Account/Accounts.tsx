@@ -130,11 +130,11 @@ function Accounts() {
           </Box>
         </ContainerPageHeader>
         <ContainerPageMain>
-          <><ColumnGroupingTable rows={getData.filter(filterAccont)} columns={columns} header={[]} action={{show: [],OnAction:onAction}}/></>
+          <><ColumnGroupingTable rows={getData.filter(filterAccont)} columns={columns} header={[]} action={{show: [],OnAction:onAction ,item:""}}/></>
         </ContainerPageMain>
         <ContainerPageFooter>
           <><Box className='yl__action_button' >
-            <ActionButtons OnAction={onAction} show={[EAction.SAVE, EAction.ADD]} />
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE, EAction.ADD]} item={""}/>
           </Box>
             <Grid container>
               {validationAlert.map((item) => (

@@ -30,7 +30,7 @@ exports.device_combo = function (req, res, next) {
     try{
     log.info("combo", req.body);
     Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
-        .select('_id device_id engien_meter maintanance')
+        .select('_id device_id engien_meter maintanance has_hobbs')
         .sort([['device_id', 'ascending']])
         .exec(function (err, list_combo) {
             if (err) { return next(err); }
@@ -48,7 +48,7 @@ exports.can_reserv = [
     log.info("combo", req.params);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return next(new ApplicationError("status","400","CONTROLLER.DEVICE.STATUS.VALIDATION",{name: "ExpressValidator", errors}))
+        return next(new ApplicationError("status",400,"CONTROLLER.DEVICE.STATUS.VALIDATION",{name: "ExpressValidator", errors}))
     }
     Device.find({_id: req.params._id})
         .populate("can_reservs")
@@ -75,7 +75,7 @@ exports.device = function (req, res, next) {
             }
         });
     }
-    catch(err){
+    catch(error){
         return next(new ApplicationError("device","400","CONTROLLER.DEVICE.DEVICE.EXCEPTION",{name: "EXCEPTION", error}));
     }
 
@@ -103,7 +103,7 @@ exports.device_reservation = function (req, res, next) {
                 return;
             })
     }
-    catch (err) {
+    catch (error) {
         return next(new ApplicationError("device_reservation","400","CONTROLLER.DEVICE.DEVICE_RESERV.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
@@ -124,7 +124,7 @@ exports.device_flights = function (req, res, next) {
                return;
             })
     }
-    catch (err) {
+    catch (error) {
         return next(new ApplicationError("device_flights","400","CONTROLLER.DEVICE.DEVICE_FLIGHT.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }

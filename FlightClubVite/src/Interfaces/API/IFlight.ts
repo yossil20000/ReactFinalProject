@@ -21,6 +21,7 @@ interface IFlightBase {
     engien_stop: number
     status: FlightStatus
     reuired_hobbs: boolean
+    duration:number
     timeOffset: number
 }
 export default interface IFlight extends IFlightBase {
@@ -49,6 +50,7 @@ export class CFlightBase implements IFlightBase {
     engien_stop: number;
     status: FlightStatus;
     reuired_hobbs: boolean;
+    duration: number;
     timeOffset: number;
     constructor() {
         this.date_from = new Date();
@@ -60,6 +62,7 @@ export class CFlightBase implements IFlightBase {
         this.hobbs_stop = 0;
         this.status = FlightStatus.CREATED;
         this.reuired_hobbs = false;
+        this.duration =0;
         this.timeOffset = 0;
 
     }
@@ -97,6 +100,7 @@ export class CFlightBase implements IFlightBase {
         this.hobbs_stop = obj.hobbs_stop;
         this.status = obj.status;
         this.reuired_hobbs = obj.reuired_hobbs;
+        this.duration = obj.duration;
         this.timeOffset = obj.timeOffset;
     }
 
