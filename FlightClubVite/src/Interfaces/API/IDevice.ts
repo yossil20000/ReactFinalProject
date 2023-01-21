@@ -102,7 +102,7 @@ export interface IDeviceCombo {
         next_meter: number
     };
     can_reservs: IMemberCombo[]
-    has_hobbs: boolean
+    has_hobbs: boolean;
   }
   export interface IDeviceCanReserve {
     can_reservs: IMemberCombo[]

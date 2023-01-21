@@ -1,21 +1,18 @@
-import { Box, Grid, Paper } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { MembersContext, MembersContextType } from '../../../app/Context/MemberContext';
-import { MembershipContext, MembershipContextType } from '../../../app/Context/MembershipContext';
+import { MembershipContext } from '../../../app/Context/MembershipContext';
 import ActionButtons, { EAction } from '../../../Components/Buttons/ActionButtons';
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import ScrollableTabs, { ScrollableTabsItem } from '../../../Components/Buttons/ScrollableTabs'
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert';
 import MembersCombo from '../../../Components/Members/MembersCombo';
-import { useFetchAllDevicesQuery } from '../../../features/Device/deviceApiSlice';
 import { useFetchAllMembershipQuery } from '../../../features/membership/membershipApiSlice';
-import { useCreateMemberMutation, useFetcAllMembersQuery, useUpdateMemberMutation, useUpdateStatusMutation } from '../../../features/Users/userSlice';
+import { useFetcAllMembersQuery, useUpdateMemberMutation, useUpdateStatusMutation } from '../../../features/Users/userSlice';
 import { Gender, IMemberAdmin, IMemberStatus, MemberType, Role, Status } from '../../../Interfaces/API/IMember';
 import IMembership, { NewMembership } from '../../../Interfaces/API/IMembership';
-import IMemberCreate from '../../../Interfaces/IMemberCreate';
 import IMemberUpdate from '../../../Interfaces/IMemberInfo';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
-import { setProperty } from '../../../Utils/setProperty';
 import AddresesTab from './AddresesTab';
 import GeneralTab from './GeneralTab';
 import PermissionsTab from './PermissionsTab';
@@ -198,7 +195,7 @@ function MemberTab() {
         <div className='footer'>
 
           <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} />
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""}/>
           </Box>
           <Grid container>
             {validationAlert.map((item) => (

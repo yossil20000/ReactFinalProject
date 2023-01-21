@@ -5,8 +5,7 @@ var Schema = mongoose.Schema;
 
 var FlightSchema = new Schema({
     description: {type: String},
-    date_from: {type: Date, required: true, default: Date.now},
-    date_to: {type: Date, required: true, default: Date.now},
+    date: {type: Date, required: true, default: Date.now},
     hobbs_start: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     hobbs_stop: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     engien_start: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},

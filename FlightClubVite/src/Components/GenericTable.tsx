@@ -56,7 +56,7 @@ export default function GenericTable<T extends MinTableItem>(props: TableProps<T
 
           return (
             
-            <td>{item[itemProperty] as ReactNode}</td>
+            <td>{item[itemProperty] as unknown as ReactNode}</td>
           );
         })}
       </tr>

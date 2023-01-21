@@ -22,7 +22,7 @@ function DevicesCombo(props : ComboProps) {
      const device : IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
      if(device)
      {
-      console.log("getDeviceDetailed/dvice",device)
+      console.log("getDeviceDetailed/device",device)
       return `engien_meter: ${device.engien_meter} next_meter: ${device.maintanance.next_meter}`
      }
       

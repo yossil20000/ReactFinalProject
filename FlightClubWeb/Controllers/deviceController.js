@@ -30,7 +30,8 @@ exports.device_combo = function (req, res, next) {
     try{
     log.info("combo", req.body);
     Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
-        .select('_id device_id engien_meter maintanance has_hobbs')
+    .populate("device_type")    
+    .select('_id device_id engien_meter maintanance has_hobbs')
         .sort([['device_id', 'ascending']])
         .exec(function (err, list_combo) {
             if (err) { return next(err); }

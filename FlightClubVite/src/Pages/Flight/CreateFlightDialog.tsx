@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
+import DeviceDetailes from "../../Components/Devices/DeviceDetailes";
 import DevicesFlightCombo from "../../Components/Devices/DeviceFlightCombo";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
@@ -92,13 +93,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     let flight = new CFlightCreate();
     flight.copy(flightCreate);
     console.log("CreateFlightDialog/onSave/flight", flight)
-    /*     if(!flight.IsDateValid())
-        {
-          setdateErrorAlert((prev) => ({...prev,alertTitle:"Date Input Error",alertMessage:"Date_to must be greater then date_from",open:true,onClose:onCloseDateError}))
-          return;
-        } */
-
-    console.log("CreateFlightDialog/onSave/date_from", flightCreate.date_from?.toUTCString())
+    console.log("CreateFlightDialog/onSave/date_from", flightCreate.date?.toUTCString())
 
     await CreateFlight(flightCreate as IFlightCreateApi).unwrap().then((data) => {
       console.log("CreateFlightDialoq/onSave/", data);
@@ -126,15 +121,15 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
 
-          <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
+          <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
             <Item sx={{ marginLeft: "0px" }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <DateTimePicker
                     disableMaskedInput
-                    label="From Date"
+                    label="Date"
                     mask=''
-                    value={flightCreate.date_from}
+                    value={flightCreate.date}
                     onChange={handleFromDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
@@ -145,25 +140,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
             </Item>
 
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item >
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
-                <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    mask=''
-                    disableMaskedInput
-                    label="To Date"
-                    value={flightCreate.date_to}
-                    onChange={handleToDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
-                  />
-
-                </ThemeProvider>
-
-              </LocalizationProvider>
-            </Item>
-
-          </Grid>
+          
           {/*     <Grid item xs={12}>
       <Item>
       {isLoading && <CircularProgress size='1rem' color='primary' />}

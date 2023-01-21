@@ -13,8 +13,7 @@ export enum FlightStatus {
 }
 interface IFlightBase {
     description: string;
-    date_from: Date;
-    date_to: Date;
+    date: Date;
     hobbs_start: number
     hobbs_stop: number
     engien_start: number
@@ -42,8 +41,7 @@ export interface IFlightCreate extends IFlightCreateApi {
 }
 export class CFlightBase implements IFlightBase {
     description: string;
-    date_from: Date;
-    date_to: Date;
+    date: Date;
     hobbs_start: number;
     hobbs_stop: number;
     engien_start: number;
@@ -53,8 +51,7 @@ export class CFlightBase implements IFlightBase {
     duration: number;
     timeOffset: number;
     constructor() {
-        this.date_from = new Date();
-        this.date_to = new Date();
+        this.date = new Date();
         this.description = "";
         this.engien_start = 0;
         this.engien_stop = 0;
@@ -67,15 +64,7 @@ export class CFlightBase implements IFlightBase {
 
     }
 
-    isDateValid(): boolean {
-
-        if (this.date_to > this.date_from) {
-            console.log("IsValid", true)
-            return true;
-        }
-        console.log("IsValid", false)
-        return false;
-    }
+   
     ishobbsValid(): boolean {
         if (this.hobbs_start > 0 && this.hobbs_stop > 0 && this.hobbs_stop > this.hobbs_start) {
             console.log("Hobbs Valid")
@@ -91,8 +80,7 @@ export class CFlightBase implements IFlightBase {
         return false;
     }
     copy(obj: IFlightBase): void {
-        this.date_from = obj.date_from;
-        this.date_to = obj.date_to;
+        this.date = obj.date;
         this.description = obj.description;
         this.engien_start = obj.engien_start;
         this.engien_stop = obj.engien_stop;

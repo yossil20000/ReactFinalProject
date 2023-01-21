@@ -27,7 +27,7 @@ function useLocalStorage<T>(key: string, initialValue: T): ReturnType<T> {
   })
  console.log(`useLocalStorage/state/${key} ` , state)
   useEffect(()=> {
-    if(state >= 0)
+    if((state as unknown as number) >= 0)
     {
       try{
         sessionStorage.setItem(key,JSON.stringify(state))

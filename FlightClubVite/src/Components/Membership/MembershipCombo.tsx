@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useFetchAllMembershipQuery } from '../../features/membership/membershipApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import IMembership from '../../Interfaces/API/IMembership';
@@ -7,21 +7,21 @@ import IMembership from '../../Interfaces/API/IMembership';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
 function MembershipCombo(props : ComboProps) {
-  const {onChanged,source,filter} = props;
+  const {onChanged,source,filter,selectedItem:initeialMemberShip} = props;
   const { data, isError, isLoading, error } = useFetchAllMembershipQuery();
   
   const [items,setItems] = useState<InputComboItem[]>([]);
-  /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
- 
-  const devicesToItemCombo = (input: IMembership): InputComboItem => {
-    return {  lable: `${input.name} (${input.rank})`, _id: input._id ,description: ""}
+  const [selectedItem, setSelectedItem] = useState<InputComboItem>(initeialMemberShip === undefined ? {_id: "",lable:"",description:""} : initeialMemberShip); 
+ /*  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
+  */
+  const MemberShipToItemCombo = (input: IMembership): InputComboItem => {
+    return {  lable: `${input.name}`, _id: input._id ,description: ""}
   }
   
   useEffect(() => {
     console.log("MembershipCombo/ data", data?.data)
     
-    let items  =   data?.data.map((item) => devicesToItemCombo(item));
+    let items  =   data?.data.map((item) => MemberShipToItemCombo(item));
     console.log("MembershipCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
@@ -34,10 +34,21 @@ function MembershipCombo(props : ComboProps) {
   }
   useEffect(()=> {
     if(selectedItem)
+    {
+
       onChanged(selectedItem)
+    }
   },[])
+  const getSelected : InputComboItem = useMemo(() => {
+    let itemFound = items?.find((i) => i._id == initeialMemberShip?._id)
+    console.log("MembershipCombo/getSelected", initeialMemberShip,  itemFound)
+    
+    itemFound =  itemFound === undefined ? {_id:"",lable:"",description:""} : itemFound
+    setSelectedItem(itemFound)
+    return itemFound;
+  },[initeialMemberShip])
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title="Rank" />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem} items={items} title="Rank" />
   )
 }
 

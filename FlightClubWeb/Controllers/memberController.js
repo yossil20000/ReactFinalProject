@@ -12,6 +12,7 @@ exports.member_list = function (req, res, next) {
     try {
         log.info("member_list");
         Member.find()
+            .populate("membership")
             .select('-username -password')
             .sort([['family_name', 'ascending']])
             .exec(function (err, list_members) {

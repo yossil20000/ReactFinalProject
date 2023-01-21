@@ -2,7 +2,6 @@ import { Box, Grid, TextField } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import ActionButtons, { EAction } from '../../../Components/Buttons/ActionButtons'
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
-import StatusCombo from '../../../Components/Buttons/StatusCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert'
 import MembershipCombo from '../../../Components/Membership/MembershipCombo';
 import {  useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
@@ -126,9 +125,6 @@ function MembershipTab() {
             <Grid item xs={12}>
               <TextField type={"number"} fullWidth onChange={handleChange} name="hour_disc_percet" label="Discount" placeholder="Discount %" variant="standard" value={selectedItem?.hour_disc_percet} InputLabelProps={{ shrink: true }}/>
             </Grid>
-            <Grid item xs={12}>
-            <StatusCombo onChanged={(item) => onComboChanged(item, "status")} selectedItem={getSelectedItem(selectedItem?.status.toString())} source={source}/>
-            </Grid>
           </Grid>
 
         </Box>
@@ -136,7 +132,7 @@ function MembershipTab() {
       <div className='footer'>
 
         <Box className='yl__action_button'>
-          <ActionButtons OnAction={onAction} show={[EAction.SAVE]} />
+          <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} />
         </Box>
         <Grid container>
           {validationAlert.map((item) => (

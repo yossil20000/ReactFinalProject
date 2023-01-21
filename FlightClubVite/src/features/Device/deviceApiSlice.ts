@@ -25,7 +25,7 @@ export const deviceApiSlice = createApi({
         query: () => `/${URLS.DEVICES}`,
         providesTags: ["Devices"]
       }),
-      fetchDevice: builder.query<IResultBase<IDevice>, string>({
+      fetchDevice: builder.query<IResultBaseSingle<IDevice>, string>({
         query: (_id) => ({
           url: `/${URLS.DEVICES}/${_id}`,
           method: "GET"

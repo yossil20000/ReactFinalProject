@@ -31,7 +31,7 @@ exports.flight_list = function (req, res, next) {
   log.info('flight_list');
   let from = new Date(req.query.from);
   let to = new Date(req.query.to);
-  let filter = { date_from: { $gte: from, $lte: to } };
+  let filter = { date: { $gte: from, $lte: to } };
   if (isNaN(from) || isNaN(to)) {
     filter = {}
   }
@@ -89,17 +89,9 @@ exports.flight_update = [
     if (Number(value) < Number(req.body.engien_stop)) return true;
     return false;
   }),
-  body('date_from', 'Invalid date_from').isISO8601(),
-  body('date_to', 'Invalid date_to').isISO8601(),
-  body('date_to', 'date_to must be greater then date_from').isISO8601()
-    .custom((value, { req }) => {
-      if ((new Date(value) - new Date(req.body.date_from)) > 0) return true;
-      return false;
-    }),
+  body('date', 'Invalid date').isISO8601(),
   async (req, res, next) => {
     try {
-
-
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("flight_update", "400", "CONTROLLER.FLIGHT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
@@ -112,8 +104,7 @@ exports.flight_update = [
 
 
       let updateFlight = {
-        date_from: req.body.date_from,
-        date_to: req.body.date_to,
+        date: req.body.date,
         hobbs_start: req.body.hobbs_start,
         hobbs_stop: req.body.hobbs_stop,
         engien_start: req.body.engien_start,
@@ -210,13 +201,7 @@ exports.flight_create = [
     if (Number(value) < Number(req.body.engien_stop)) return true;
     return false;
   }),
-  body('date_from', 'Invalid date_from').isISO8601(),
-  body('date_to', 'Invalid date_to').isISO8601(),
-  body('date_to', 'date_to must be greater then date_from').isISO8601()
-    .custom((value, { req }) => {
-      if ((new Date(value) - new Date(req.body.date_from)) > 0) return true;
-      return false;
-    }),
+  body('date', 'Invalid date').isISO8601(),
   async (req, res, next) => {
     try {
 
@@ -237,8 +222,7 @@ exports.flight_create = [
 
       const maxValues = await deviceMaxValues(req.body._id_device);
       let newFlight = new Flight({
-        date_from: req.body.date_from,
-        date_to: req.body.date_to,
+        date: req.body.date,
         member: member,
         device: device,
         hobbs_start: req.body.hobbs_start,

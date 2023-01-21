@@ -27,7 +27,7 @@ const StyledAccordion = styled(Box)(({ theme }) => ({
 
 interface IFlightData {
   _id: string; _id_member: string; name: string; description: string;
-  device_id: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
+  device_id: string; date: Date; member_id: string; validOperation: CanDo;
   hobbs_start: number; hobbs_stop: number; engien_start: number; engien_stop: number; status: FlightStatus;
 }
 
@@ -35,7 +35,7 @@ function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
   return {
     _id: flight._id, _id_member: flight.member._id, description: flight.description,
     name: flight.member.family_name, device_id: flight.device.device_id,
-    date_from: new Date(flight.date_from), date_to: new Date(flight.date_to), member_id: flight.member.member_id,
+    date: new Date(flight.date), member_id: flight.member.member_id,
     hobbs_start: flight.hobbs_start, hobbs_stop: flight.hobbs_stop, engien_start: flight.engien_start, engien_stop: flight.engien_stop, status: flight.status,
     validOperation: validOperation
   }
@@ -44,7 +44,7 @@ function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
 
 const sortCells: ISortCell<IFlightData>[] = [
   { id: "_id", label: "Device", numeric: false },
-  { id: "date_from", label: "From", numeric: false },
+  { id: "date", label: "From", numeric: false },
   { id: "hobbs_start", label: "Hobbs.S", numeric: false },
   { id: "engien_start", label: "Engine.S", numeric: false },
   { id: "name", label: "IdNumber", numeric: false },
@@ -74,8 +74,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 const todayDate = new Date();
 let flightUpdateIntitial: IFlightUpdate = {
-  date_from: new Date(),
-  date_to: new Date(),
+  date: new Date(),
   _id: "",
   device_name: "",
   member_name: "",
@@ -90,9 +89,7 @@ let flightUpdateIntitial: IFlightUpdate = {
   timeOffset: 0
 }
 let flightAddIntitial: IFlightCreate = {
-  date_from: new Date(),
-  date_to: new Date(),
-
+  date: new Date(),
   device_name: "",
   member_name: "",
   hobbs_start: 0,
@@ -233,14 +230,14 @@ const FlightPage = () => {
     console.log("isInDateRange/filterBydate", filterBydate)
     switch (filterBydate) {
       case 0:
-        return row.date_from.isSameDate(todayDate);
+        return row.date.isSameDate(todayDate);
       case 1:
-        return row.date_from.getWeek() == todayDate.getWeek();
+        return row.date.getWeek() == todayDate.getWeek();
       case 2:
-        return row.date_from.isSameMonth(todayDate);
+        return row.date.isSameMonth(todayDate);
       case 3:
         if (filterDate.from && filterDate.to)
-          return row.date_from >= filterDate.from && row.date_from <= filterDate.to
+          return row.date >= filterDate.from && row.date <= filterDate.to
         break;
     }
     return true;
@@ -258,8 +255,7 @@ const FlightPage = () => {
     if (flight.length === 1) {
       console.log("RenderFlightUpdate/filter", flight);
       flightUpdateIntitial._id = flight[0]._id;
-      flightUpdateIntitial.date_from = flight[0].date_from;
-      flightUpdateIntitial.date_to = flight[0].date_to;
+      flightUpdateIntitial.date = flight[0].date;
       flightUpdateIntitial.device_name = flight[0].device_id;
       flightUpdateIntitial.member_name = `${flight[0].name} ${flight[0].member_id}`
       flightUpdateIntitial.hobbs_start = flight[0].hobbs_start;
@@ -333,7 +329,7 @@ const FlightPage = () => {
                     <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
                     >
                       <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                        <Typography variant='caption'> {row.device_id} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                        <Typography variant='caption'> {row.device_id} , {new Date(row.date).toLocaleString()}</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
                         <Grid container spacing={1} columns={12}>

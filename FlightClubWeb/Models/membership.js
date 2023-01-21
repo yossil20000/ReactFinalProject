@@ -12,8 +12,7 @@ const MembershipSchema = new Schema({
     entry_price: {type: m.Decimal128 , default: 18950,get: getDecimal},
     montly_price: {type: m.Decimal128, default: 430,get: getDecimal},
     hour_disc_percet: {type: Number, default: 100},
-    rank: {type: String, enum:['Bronze','Silver','Gold'], default: "Bronze"},
-    status: {type: String, enum:['Created','Active','Susspende'] , default: 'Created'}
+    rank: {type: String, enum:['Bronze','Silver','Gold'], default: "Bronze"}
 },{toJSON: {getters: true}});
 
 function getDecimal(value) {

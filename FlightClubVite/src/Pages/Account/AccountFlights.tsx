@@ -11,8 +11,7 @@ import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 interface IData {
   _id:string;
-  date_from: Date;
-  date_to: Date;
+  date: Date;
   hobbs_start: number
   hobbs_stop: number
   engien_start: number
@@ -21,8 +20,7 @@ interface IData {
 }
 function createData(
   _id:string,
-  date_from: Date,
-    date_to: Date,
+    date: Date,
     hobbs_start: number,
     hobbs_stop: number,
     engien_start: number,
@@ -30,13 +28,12 @@ function createData(
     order_by: string
 ): IData {
   
-  return { _id,date_from,date_to,hobbs_start,hobbs_stop,engien_start,engien_stop,order_by };
+  return { _id,date,hobbs_start,hobbs_stop,engien_start,engien_stop,order_by };
 }
 
 
 const columns: Column[] = [
-  { id: 'date_from', label: 'From', minWidth: 170 ,isCell:true},
-  { id: 'date_to', label: 'To', minWidth: 100 ,isCell:true},
+  { id: 'date', label: 'From', minWidth: 170 ,isCell:true},
   {
     id: 'engien_start',
     label: 'EngienStart',
@@ -107,7 +104,7 @@ function AccountFlights() {
    setaccountFlightFilter(filter)
   }
   const getData = useMemo(() => {
-    const rows = data?.data.map((row) => createData(row._id,row.date_from,row.date_to,row.hobbs_start,row.hobbs_stop,row.engien_start,row.engien_stop,`${row.member?.member_id}/${row.member?.member_id}`))
+    const rows = data?.data.map((row) => createData(row._id,row.date,row.hobbs_start,row.hobbs_stop,row.engien_start,row.engien_stop,`${row.member?.member_id}/${row.member?.member_id}`))
     console.log("AccountFlight/Flight/getData",rows)
     return rows === undefined ? [] : rows;
 },[data])

@@ -4,11 +4,6 @@ enum Rank{
     Gold
 }
 
-enum Status {
-    Created,
-    Active,
-    Susspende
-}
 export interface IMembershipCombo {
     _id: string;
     name: string;
@@ -20,7 +15,6 @@ export  interface IMembershipBase{
     montly_price: number
     hour_disc_percet: number
     rank: Rank
-    status: Status
     name:string
 }
 export default interface IMembership extends IMembershipBase{
@@ -33,6 +27,5 @@ export const  NewMembership : IMembership = {
     montly_price: 0,
     hour_disc_percet: 0,
     rank: Rank.Bronze,
-    status: Status.Created,
     name: "Not Set"
 }

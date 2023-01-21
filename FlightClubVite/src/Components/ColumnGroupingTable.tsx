@@ -47,7 +47,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
 
   return (
     <Paper sx={{ width: '100%'  }}>
-      <TableContainer sx={{ maxHeight: "99%" }}>
+      <TableContainer sx={{ maxHeight: "100%" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
 
@@ -63,6 +63,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                 </TableCell>
               )})}
             </TableRow>
+            
           </TableHead>
           <TableBody>
             {props.rows
@@ -71,7 +72,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={`${keyId}-${index}`}>
                     {props.columns.map((column) => {
-                      const value = row[column.id as keyof   T] as string;
+                      const value = row[column.id as keyof   T] as unknown as string;
                       if(!column.isCell || column.id === "action")
                         return;
                       return (
@@ -83,7 +84,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                     { props.action.show.length> 0 ? (
                     <TableCell>
                       <Box display={'flex'} justifyContent={'space-around'}>
-                        <ActionButtons OnAction={props.action.OnAction} show={props.action.show} item={row["_id" as keyof   T] as string}/>
+                        <ActionButtons OnAction={props.action.OnAction} show={props.action.show} item={row["_id" as keyof   T] as unknown as string}/>
                       </Box>
                     </TableCell>) : (null)
               }

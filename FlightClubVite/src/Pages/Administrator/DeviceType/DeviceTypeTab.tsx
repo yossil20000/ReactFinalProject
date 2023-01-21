@@ -146,7 +146,7 @@ function DeviceTypeTab() {
         <div className='footer' >
 
           <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction} show={[EAction.SAVE,EAction.ADD]}/>
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE,EAction.ADD]} item={""}/>
           </Box>
           <Grid container>
             {validationAlert.map((item) => (

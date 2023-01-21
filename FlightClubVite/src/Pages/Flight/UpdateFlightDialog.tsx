@@ -66,10 +66,6 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     setFlightUpdate(prev => ({ ...prev, date_from: newDate }))
   };
-  const handleToDateFilterChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightUpdate(prev => ({ ...prev, date_to: newDate }))
-  };
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("handleFligtChange", event.target.name, event.target.value)
@@ -93,7 +89,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
           return;
         } */
 
-    console.log("UpdateFlightDialog/onSave/date_from", flightUpdate.date_from?.toUTCString())
+    console.log("UpdateFlightDialog/onSave/date", flightUpdate.date?.toUTCString())
 
     await updateFlight(flightUpdate as IFlightUpdateApi).unwrap().then((data) => {
       console.log("updateFlightDialoq/onSave/", data);
@@ -114,15 +110,15 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
 
-          <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
+          <Grid item sx={{ marginLeft: "0px" }} xs={12} md={12} xl={12} >
             <Item sx={{ marginLeft: "0px" }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <DateTimePicker
                     disableMaskedInput
-                    label="From Date"
+                    label="Date"
                     mask=''
-                    value={flightUpdate.date_from}
+                    value={flightUpdate.date}
                     onChange={handleFromDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
@@ -133,25 +129,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
             </Item>
 
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item >
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
-                <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    mask=''
-                    disableMaskedInput
-                    label="To Date"
-                    value={flightUpdate.date_to}
-                    onChange={handleToDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
-                  />
 
-                </ThemeProvider>
-
-              </LocalizationProvider>
-            </Item>
-
-          </Grid>
           {/*     <Grid item xs={12}>
       <Item>
       {isLoading && <CircularProgress size='1rem' color='primary' />}
