@@ -19,7 +19,7 @@ exports.image_list = function (req, res, next) {
             });
     }
     catch (error) {
-        return next(new ApplicationError("image_list","400","CONTROLLER.INAGE.IMAGE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("image_list",400,"CONTROLLER.INAGE.IMAGE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 exports.image = [
@@ -29,7 +29,7 @@ exports.image = [
             log.info("image/req", req.params);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("image","400","CONTROLLER.IMAGE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("image",400,"CONTROLLER.IMAGE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const image = await Image.findById(req.params._id).exec();
             if (image === null || image === undefined) {
@@ -38,7 +38,7 @@ exports.image = [
             return res.status(201).json({ success: true, errors: [], data: image })
         }
         catch (error) {
-            return next(new ApplicationError("image","400","CONTROLLER.INAGE.IMAGE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("image",400,"CONTROLLER.INAGE.IMAGE.EXCEPTION",{name: "EXCEPTION", error}));
         }
 
     }
@@ -52,7 +52,7 @@ exports.image_create = [
             log.info("image_create", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("image_create","400","CONTROLLER.IMAGE.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("image_create",400,"CONTROLLER.IMAGE.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const image = new Image({
                 title: req.body.title,
@@ -70,7 +70,7 @@ exports.image_create = [
             })
         }
         catch (error) {
-            return next(new ApplicationError("image_create","400","CONTROLLER.IMAGE.IMAGE_CREATE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("image_create",400,"CONTROLLER.IMAGE.IMAGE_CREATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 ]
@@ -84,7 +84,7 @@ exports.image_update = [
             log.info("image_update", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("Status update","400","CONTROLLER.IMAGE.UPDATE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("Status update",400,"CONTROLLER.IMAGE.UPDATE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const image = await Image.findByIdAndUpdate(req.body._id, req.body).exec();
             if (image) {
@@ -93,7 +93,7 @@ exports.image_update = [
             return res.status(400).json({ success: false, errors: ["image update failed"], data: [] })
         }
         catch (error) {
-            return next(new ApplicationError("image_update","400","CONTROLLER.IMAGE.IMAGE_UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("image_update",400,"CONTROLLER.IMAGE.IMAGE_UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 ]
@@ -106,7 +106,7 @@ exports.image_delete = [
             log.info("image_delete/req", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("Status update","400","CONTROLLER.IMAGE.DELETE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("Status update",400,"CONTROLLER.IMAGE.DELETE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const image = await Image.findByIdAndDelete(req.body._id).exec();
             if (image === null || image === undefined) {
@@ -115,7 +115,7 @@ exports.image_delete = [
             return res.status(201).json({ success: true, errors: [], data: image })
         }
         catch (error) {
-            return next(new ApplicationError("image_delete","400","CONTROLLER.IMAGE.IMAGE_DELETE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("image_delete",400,"CONTROLLER.IMAGE.IMAGE_DELETE.EXCEPTION",{name: "EXCEPTION", error}));
         }
 
     }

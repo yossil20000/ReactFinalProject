@@ -21,6 +21,7 @@ const clubNoticeRouter = require('./routes/clubNotice');
 const flightRouter = require('./routes/flight');
 const imageRouter = require('./routes/image');
 const accountRouter = require('./routes/account');
+const orderRouter = require('./routes/order');
 var app = express();
 
 //Import the mongoose module
@@ -64,6 +65,7 @@ app.use('/api/club_notice', clubNoticeRouter);
 app.use("/api/flight", flightRouter);
 app.use("/api/images",imageRouter);
 app.use('/api/accounts',accountRouter);
+app.use('/api/orders',orderRouter);
 app.use((err, req, res, next) => {
   console.error('\x1b[31m',err);
   next(err);

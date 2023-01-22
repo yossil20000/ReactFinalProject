@@ -56,7 +56,7 @@ exports.flight_search = [async function (req, res, next) {
     return;
   }
   catch (error) {
-    return next(new ApplicationError("flight_search", "400", "CONTROLLER.FLIGHT.FLIGHT_SEARCH.EXCEPTION", { name: "EXCEPTION", error }));
+    return next(new ApplicationError("flight_search", 400, "CONTROLLER.FLIGHT.FLIGHT_SEARCH.EXCEPTION", { name: "EXCEPTION", error }));
   }
 }
 ]
@@ -94,7 +94,7 @@ exports.flight_update = [
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("flight_update", "400", "CONTROLLER.FLIGHT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("flight_update", 400, "CONTROLLER.FLIGHT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
       }
 
       const flightToUpdate = await Flight.findById(req.body._id).exec();
@@ -166,7 +166,7 @@ exports.flight_update = [
 
     }
     catch (error) {
-      return next(new ApplicationError("flight_update", "400", "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("flight_update", 400, "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -208,7 +208,7 @@ exports.flight_create = [
       log.info("flight_create", req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("flight_create", "400", "CONTROLLER.FLIGHT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("flight_create", 400, "CONTROLLER.FLIGHT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
       }
       const member = await Member.findById(req.body._id_member).exec();
       //log.info("flight/find/member",member,req.body._id_member)
@@ -286,7 +286,7 @@ exports.flight_create = [
 
     }
     catch (error) {
-      return next(new ApplicationError("flight_create", "400", "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("flight_create", 400, "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -299,7 +299,7 @@ exports.flight_delete = [
     const session = await mongoose.startSession();
     try {
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("flight_delete", "400", "CONTROLLER.FLIGHT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("flight_delete", 400, "CONTROLLER.FLIGHT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
       }
       const flight = await Flight.findById(req.body._id).exec();
       if (flight == null) {
@@ -338,7 +338,7 @@ exports.flight_delete = [
 
     }
     catch (error) {
-      return next(new ApplicationError("flight_delete", "400", "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("flight_delete", 400, "CONTROLLER.FLIGHT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
     finally {
       await session.endSession();

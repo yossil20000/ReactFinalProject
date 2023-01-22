@@ -34,7 +34,7 @@ exports.deviceType_delete = [
             log.info('deviceType_delete', req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("deviceType_delete", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+                return next(new ApplicationError("deviceType_delete", 400, "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
             }
             Device.find({ device_type: req.body._id }).exec((err, results) => {
                 if (err) { return next(err); }
@@ -51,7 +51,7 @@ exports.deviceType_delete = [
             });
         }
         catch(error){
-            return next(new ApplicationError("deviceType_delete", "400", "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+            return next(new ApplicationError("deviceType_delete", 400, "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
         }
     }];
 
@@ -62,7 +62,7 @@ exports.deviceType_status = [
         log.info(`deviceType_status`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("deviceType_status", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("deviceType_status", 400, "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         try {
             async.parallel({
@@ -71,7 +71,7 @@ exports.deviceType_status = [
                 }
 
             }, function (errors, results) {
-                if (errors) { return next(new ApplicationError("deviceType_status", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "", errors })); }
+                if (errors) { return next(new ApplicationError("deviceType_status", 400, "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "", errors })); }
                 if (results.deviceType.acknowledged) {
 
                     if (results.deviceType.acknowledged == false) {
@@ -85,7 +85,7 @@ exports.deviceType_status = [
             });
         }
         catch (error) {
-            return next(new ApplicationError("deviceType_status", "400", "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+            return next(new ApplicationError("deviceType_status", 400, "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
         }
 
     }]
@@ -100,7 +100,7 @@ exports.deviceType_update = [
         log.info(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("deviceType_update", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("deviceType_update", 400, "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         else {
             DeviceType.findById(req.body._id, (err, results) => {
@@ -127,7 +127,7 @@ exports.deviceType_update = [
         return;
     }
     catch(error){
-        return next(new ApplicationError("deviceType_update", "400", "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("deviceType_update", 400, "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
     }
 ];
@@ -142,7 +142,7 @@ exports.deviceType_create = [
         log.info(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("deviceType_create", "400", "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("deviceType_create", 400, "CONTROLLER.DEVICE_TYPE.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         else {
             let newDeviceType = new DeviceType({
@@ -162,7 +162,7 @@ exports.deviceType_create = [
         }
     }
     catch(error){
-        return next(new ApplicationError("deviceType_create", "400", "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("deviceType_create", 400, "CONTROLLER.DEVICE_TYPE.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
 ];

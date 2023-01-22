@@ -20,7 +20,7 @@ exports.notice_list = function (req, res, next) {
             });
     }
     catch (error) {
-        return next(new ApplicationError("notice_list","400","CONTROLLER.NOTICE.NOTICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("notice_list",400,"CONTROLLER.NOTICE.NOTICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 exports.notice = [
@@ -30,7 +30,7 @@ exports.notice = [
             log.info("club_notice/req", req.params);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("notice","400","CONTROLLER.CLUB_NOTICE.NOTICE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("notice",400,"CONTROLLER.CLUB_NOTICE.NOTICE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const notice = await ClubNotice.findById(req.params._id).exec();
             if (notice === null || notice === undefined) {
@@ -39,7 +39,7 @@ exports.notice = [
             return res.status(201).json({ success: true, errors: [], data: notice })
         }
         catch (error) {
-            return next(new ApplicationError("notice","400","CONTROLLER.NOTICE.NOTICE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("notice",400,"CONTROLLER.NOTICE.NOTICE.EXCEPTION",{name: "EXCEPTION", error}));
         }
 
     }
@@ -55,7 +55,7 @@ exports.notice_create = [
             log.info("notice_create", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("notice_create","400","CONTROLLER.CLUB_NOTICE.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("notice_create",400,"CONTROLLER.CLUB_NOTICE.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const notice = new ClubNotice({
                 title: req.body.title,
@@ -74,7 +74,7 @@ exports.notice_create = [
             })
         }
         catch (error) {
-            return next(new ApplicationError("notice_create","400","CONTROLLER.NOTICE.NOTICE_CREATE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("notice_create",400,"CONTROLLER.NOTICE.NOTICE_CREATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 ]
@@ -90,7 +90,7 @@ exports.notice_update = [
             log.info("notice_update", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("Status update","400","CONTROLLER.CLUB_NOTICE.UPDATE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("Status update",400,"CONTROLLER.CLUB_NOTICE.UPDATE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const notice = await ClubNotice.findByIdAndUpdate(req.body._id, req.body).exec();
             if (notice) {
@@ -99,7 +99,7 @@ exports.notice_update = [
             return res.status(400).json({ success: false, errors: ["Notice update failed"], data: [] })
         }
         catch (error) {
-            return next(new ApplicationError("notice_update","400","CONTROLLER.NOTICE.NOTICE_UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("notice_update",400,"CONTROLLER.NOTICE.NOTICE_UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 ]
@@ -112,7 +112,7 @@ exports.notice_delete = [
             log.info("notice_delete/req", req.body);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("Status update","400","CONTROLLER.CLUB_NOTICE.DELETE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("Status update",400,"CONTROLLER.CLUB_NOTICE.DELETE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const notice = await ClubNotice.findByIdAndDelete(req.body._id).exec();
             if (notice === null || notice === undefined) {
@@ -121,7 +121,7 @@ exports.notice_delete = [
             return res.status(201).json({ success: true, errors: [], data: notice })
         }
         catch (error) {
-            return next(new ApplicationError("notice_delete","400","CONTROLLER.NOTICE.NOTICE_DELETE.EXCEPTION",{name: "EXCEPTION", error}));
+            return next(new ApplicationError("notice_delete",400,"CONTROLLER.NOTICE.NOTICE_DELETE.EXCEPTION",{name: "EXCEPTION", error}));
         }
 
     }

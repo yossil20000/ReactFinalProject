@@ -13,7 +13,7 @@ exports.account_list = [async function (req, res, next) {
     return;
   }
   catch (error) {
-    return next(new ApplicationError("account_list", "400", "CONTROLLER.ACCOUNT.ACCOUT_LIST.EXCEPTION", { name: "EXCEPTION", error }));
+    return next(new ApplicationError("account_list", 400, "CONTROLLER.ACCOUNT.ACCOUT_LIST.EXCEPTION", { name: "EXCEPTION", error }));
   }
 }
 ]
@@ -26,7 +26,7 @@ exports.account_search = [async function (req, res, next) {
     return;
   }
   catch (error) {
-    return next(new ApplicationError("account_search", "400", "CONTROLLER.ACCOUNT.ACCOUT_SEARCH.EXCEPTION", { name: "EXCEPTION", error }));
+    return next(new ApplicationError("account_search", 400, "CONTROLLER.ACCOUNT.ACCOUT_SEARCH.EXCEPTION", { name: "EXCEPTION", error }));
   }
 }
 ]
@@ -37,7 +37,7 @@ exports.account = [
       log.info('account/params', req.params);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("account", "400", "CONTROLLER.ACCOUNT.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("account", 400, "CONTROLLER.ACCOUNT.VALIDATION", { name: "ExpressValidator", errors }));
       }
       const account = await Account.findById(req.params._id).exec()
 
@@ -49,7 +49,7 @@ exports.account = [
 
       log.info('account/error_type', typeof error);
 
-      return next(new ApplicationError("account", "400", "CONTROLLER.ACCOUNT.ACCOUT.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("account", 400, "CONTROLLER.ACCOUNT.ACCOUT.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -62,7 +62,7 @@ exports.account_create = [
       log.info('account_create/req', req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("account_create", "400", "CONTROLLER.ACCOUNT.CREATE.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("account_create", 400, "CONTROLLER.ACCOUNT.CREATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
       Member.findById({ '_id': req.body.member_id }).exec((err, member) => {
         if (err) {
@@ -99,7 +99,7 @@ exports.account_create = [
 
     }
     catch (error) {
-      return next(new ApplicationError("account_create", "400", "CONTROLLER.ACCOUNT.ACCOUNT_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("account_create", 400, "CONTROLLER.ACCOUNT.ACCOUNT_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -117,7 +117,7 @@ exports.combo = function (req, res, next) {
       })
   }
   catch (error) {
-    return next(new ApplicationError("combo", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+    return next(new ApplicationError("combo", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
   }
 }
 exports.account_update = [
@@ -126,12 +126,12 @@ exports.account_update = [
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("account_update", "400", "CONTROLLER.ACCOUNT.UPDATE.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("account_update", 400, "CONTROLLER.ACCOUNT.UPDATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
 
     }
     catch (error) {
-      return next(new ApplicationError("account_update", "400", "CONTROLLER.ACCOUNT.ACCOUNT_UPDATE.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("account_update", 400, "CONTROLLER.ACCOUNT.ACCOUNT_UPDATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -143,12 +143,12 @@ exports.account_delete = [
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("account_delete", "400", "CONTROLLER.ACCOUNT.DELETE.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("account_delete", 400, "CONTROLLER.ACCOUNT.DELETE.VALIDATION", { name: "ExpressValidator", errors }));
       }
 
     }
     catch (error) {
-      return next(new ApplicationError("account_delete", "400", "CONTROLLER.ACCOUNT.ACCOUNT_DELETE.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("account_delete", 400, "CONTROLLER.ACCOUNT.ACCOUNT_DELETE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
@@ -159,7 +159,7 @@ exports.account_status = [
     log.info(`account_status`, req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new ApplicationError("account_status", "400", "CONTROLLER.ACCOUNT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
+      return next(new ApplicationError("account_status", 400, "CONTROLLER.ACCOUNT.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
     }
     try {
       async.parallel({
@@ -182,7 +182,7 @@ exports.account_status = [
       });
     }
     catch (error) {
-      return next(new ApplicationError("account_status", "400", "CONTROLLER.ACCOUNT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("account_status", 400, "CONTROLLER.ACCOUNT.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }]
 exports.account_spare = [
@@ -192,7 +192,7 @@ exports.account_spare = [
 
     }
     catch (error) {
-      return next(new ApplicationError("account_create", "400", "CONTROLLER.ACCOUNT.ACCOUNT_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("account_create", 400, "CONTROLLER.ACCOUNT.ACCOUNT_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]

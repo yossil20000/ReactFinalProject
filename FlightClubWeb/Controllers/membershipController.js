@@ -37,7 +37,7 @@ exports.membership_combo = function (req, res, next) {
             })
     }
     catch (error) {
-        return next(new ApplicationError("combo", "400", "CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("combo", 400, "CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
 exports.membership_update = [
@@ -51,7 +51,7 @@ exports.membership_update = [
         log.info(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("membership_update", "400", "CONTROLLER.MEMBERSHIP.UPDATE.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("membership_update", 400, "CONTROLLER.MEMBERSHIP.UPDATE.VALIDATION", { name: "ExpressValidator",errors }));
         }
         else {
             
@@ -69,7 +69,7 @@ exports.membership_update = [
         return;
     }
     catch(error){
-        return next(new ApplicationError("membership_update", "400", "CONTROLLER.MEMBERSHIP.UPDATE.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("membership_update", 400, "CONTROLLER.MEMBERSHIP.UPDATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
     }
 ];

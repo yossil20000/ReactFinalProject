@@ -98,7 +98,7 @@ exports.logout = function(req,res,next) {
         res.status(200).json({success: true, errors: [], message: "logout" })
     }
     catch (error) {
-        return next(new ApplicationError("notice_list","400","CONTROLLER.NOTICE.NOTICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("notice_list",400,"CONTROLLER.NOTICE.NOTICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 exports.reset = function (req, res, next) {

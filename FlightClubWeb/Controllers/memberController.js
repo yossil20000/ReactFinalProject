@@ -21,7 +21,7 @@ exports.member_list = function (req, res, next) {
             })
     }
     catch (error) {
-        return next(new ApplicationError("member_list", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("member_list", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
 exports.combo = function (req, res, next) {
@@ -36,7 +36,7 @@ exports.combo = function (req, res, next) {
             })
     }
     catch (error) {
-        return next(new ApplicationError("combo", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("combo", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
 exports.member_detail = function (req, res, next) {
@@ -49,7 +49,7 @@ exports.member_detail = function (req, res, next) {
             });
     }
     catch (error) {
-        return next(new ApplicationError("member_detail", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("member_detail", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
 exports.member_delete = [
@@ -60,7 +60,7 @@ exports.member_delete = [
         log.info(`member_delete`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("member_delete", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("member_delete", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         try {
             async.parallel({
@@ -86,7 +86,7 @@ exports.member_delete = [
             });
         }
         catch (error) {
-            return next(new ApplicationError("member_delete", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+            return next(new ApplicationError("member_delete", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
         }
 
     }]
@@ -97,7 +97,7 @@ exports.member_status = [
         log.info(`member_stats`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("member_status", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("member_status", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
         }
         try {
             async.parallel({
@@ -120,7 +120,7 @@ exports.member_status = [
             });
         }
         catch (error) {
-            return next(new ApplicationError("member_status", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+            return next(new ApplicationError("member_status", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
         }
     }]
 exports.member_update = [
@@ -141,7 +141,7 @@ exports.member_update = [
             const errors = validationResult(req);
             log.info("member_update", req.body);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("member_update", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+                return next(new ApplicationError("member_update", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
             }
             else if (req.body.username || req.body.password) {
                 return res.status(400).json({ success: false, errors: ["username / password not allowed"], data: req.body });
@@ -167,7 +167,7 @@ exports.member_update = [
             }
         }
         catch (error) {
-            return next(new ApplicationError("member_update", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+            return next(new ApplicationError("member_update", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
         }
     }
 ];
@@ -191,7 +191,7 @@ exports.member_create = [
             const errors = validationResult(req);
             log.info(req.body);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("member_create", "400", "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+                return next(new ApplicationError("member_create", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
             }
             else {
                 const user = req.body;
@@ -238,7 +238,7 @@ exports.member_create = [
             }
         }
         catch (error) {
-            return next(new ApplicationError("member_create", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+            return next(new ApplicationError("member_create", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
         }
     }
 
@@ -267,7 +267,7 @@ exports.members_flights_reserv = function (req, res, next) {
             })
     }
     catch (error) {
-        return next(new ApplicationError("member_flight_reserv", "400", "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+        return next(new ApplicationError("member_flight_reserv", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
 
 }

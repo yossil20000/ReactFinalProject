@@ -22,7 +22,7 @@ exports.device_list = function (req, res, next) {
         });
     }
     catch(error){
-        return next(new ApplicationError("device_list","400","CONTROLLER.DEVICE.DEVICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("device_list",400,"CONTROLLER.DEVICE.DEVICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 
@@ -39,7 +39,7 @@ exports.device_combo = function (req, res, next) {
         })
     }
     catch(error){
-        return next(new ApplicationError("combo","400","CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("combo",400,"CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 exports.can_reserv = [
@@ -60,7 +60,7 @@ exports.can_reserv = [
         })
     }
     catch(error){
-        return next(new ApplicationError("combo","400","CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("combo",400,"CONTROLLER.DEVICE.DEVICE_COMBO.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }]
 
@@ -77,7 +77,7 @@ exports.device = function (req, res, next) {
         });
     }
     catch(error){
-        return next(new ApplicationError("device","400","CONTROLLER.DEVICE.DEVICE.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("device",400,"CONTROLLER.DEVICE.DEVICE.EXCEPTION",{name: "EXCEPTION", error}));
     }
 
 };
@@ -105,7 +105,7 @@ exports.device_reservation = function (req, res, next) {
             })
     }
     catch (error) {
-        return next(new ApplicationError("device_reservation","400","CONTROLLER.DEVICE.DEVICE_RESERV.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("device_reservation",400,"CONTROLLER.DEVICE.DEVICE_RESERV.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 exports.device_flights = function (req, res, next) {
@@ -126,7 +126,7 @@ exports.device_flights = function (req, res, next) {
             })
     }
     catch (error) {
-        return next(new ApplicationError("device_flights","400","CONTROLLER.DEVICE.DEVICE_FLIGHT.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("device_flights",400,"CONTROLLER.DEVICE.DEVICE_FLIGHT.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 
@@ -145,7 +145,7 @@ exports.create = [
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return next(new ApplicationError("create","400","CONTROLLER.DEVICE.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("create",400,"CONTROLLER.DEVICE.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             const device_type = await DeviceType.findById(req.body.device_type).exec();
             if(device_type == null){
@@ -162,7 +162,7 @@ exports.create = [
             log.info("device/create/newDevice",newDevice);
             newDevice.save((error,result) => {
                 if(error){
-                    let appError = new ApplicationError("DeviceCreate","400","CONTROLLER.DEVICE.CREATE.DB",error);
+                    let appError = new ApplicationError("DeviceCreate",400,"CONTROLLER.DEVICE.CREATE.DB",error);
                 
                     return next(appError);
             
@@ -174,8 +174,8 @@ exports.create = [
             })
             
         }
-        catch(err){
-            return next(new ApplicationError("create","400","CONTROLLER.DEVICE.CREATE.EXCEPTION",{name: "EXCEPTION", error}));
+        catch(error){
+            return next(new ApplicationError("create",400,"CONTROLLER.DEVICE.CREATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 
@@ -193,7 +193,7 @@ exports.update = [
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return next(new ApplicationError("update","400","CONTROLLER.DEVICE.UPDATE.VALIDATION",{name: "ExpressValidator", errors}))
+                return next(new ApplicationError("update",400,"CONTROLLER.DEVICE.UPDATE.VALIDATION",{name: "ExpressValidator", errors}))
             }
             const device_type = await DeviceType.findById(req.body.device_type).exec();
             if(device_type == null){
@@ -217,8 +217,8 @@ exports.update = [
             })
             
         }
-        catch(err){
-            return next(new ApplicationError("update","400","CONTROLLER.DEVICE.UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
+        catch(error){
+            return next(new ApplicationError("update",400,"CONTROLLER.DEVICE.UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 
@@ -233,11 +233,11 @@ exports.delete = [
             const errors = validationResult(req);
             if(!errors.isEmpty())
             {
-                return next(new ApplicationError("delete","400","CONTROLLER.DEVICE.DELETE.VALIDATION",{name: "ExpressValidator", errors}));
+                return next(new ApplicationError("delete",400,"CONTROLLER.DEVICE.DELETE.VALIDATION",{name: "ExpressValidator", errors}));
             }
             Device.deleteOne({_id: req.params._id},(err,result) => {
                 if(err){
-                    return res.status(400).json({ success: false, errors: [err.message], message: "Failed To Save", data: newDevice })
+                    return res.status(400).json({ success: false, errors: [err.message], message: "Failed To Delete", data: [] })
                 }
                 if(result){
                     log.info("device/delete/Result", result);
@@ -246,8 +246,8 @@ exports.delete = [
             })
             
         }
-        catch(err){
-            return next(new ApplicationError("delete","400","CONTROLLER.DEVICE.DELETE.EXCEPTION",{name: "EXCEPTION", error}));
+        catch(error){
+            return next(new ApplicationError("delete",400,"CONTROLLER.DEVICE.DELETE.EXCEPTION",{name: "EXCEPTION", error}));
         }
     }
 
@@ -260,7 +260,7 @@ exports.status = [
     log.info(`device_status`, req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return next(new ApplicationError("status","400","CONTROLLER.DEVICE.STATUS.VALIDATION",{name: "ExpressValidator", errors}))
+        return next(new ApplicationError("status",400,"CONTROLLER.DEVICE.STATUS.VALIDATION",{name: "ExpressValidator", errors}))
     }
     try {
         
@@ -272,7 +272,7 @@ exports.status = [
         }, function (error, results) {
             if (error) { 
 
-                let appError = new ApplicationError("Status update","400","CONTROLLER.DEVICE.STATUS.DB",error);
+                let appError = new ApplicationError("Status update",400,"CONTROLLER.DEVICE.STATUS.DB",error);
                 
                 return next(appError);
                 //return  res.status(400).json({ success: false, dbEerror: error, data: [] }) 
@@ -280,7 +280,7 @@ exports.status = [
             if (results.device) {
 
                 if (results.device.acknowledged == false) {
-                    return next(new ApplicationError("Status update","400","CONTROLLER.DEVICE.STATUS.DB",{name: "Acknowledged",message: `matchedCount: ${results.device.matchedCount}`}));
+                    return next(new ApplicationError("Status update",400,"CONTROLLER.DEVICE.STATUS.DB",{name: "Acknowledged",message: `matchedCount: ${results.device.matchedCount}`}));
                 }
                 else {
                     return res.status(201).json({ success: true, data: [results] });
@@ -290,7 +290,7 @@ exports.status = [
         });
     }
     catch (error) {
-        return next(new ApplicationError("Status update","400","CONTROLLER.DEVICE.STATUS.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("Status update",400,"CONTROLLER.DEVICE.STATUS.EXCEPTION",{name: "EXCEPTION", error}));
     }
 
 }]

@@ -26,7 +26,7 @@ exports.club_create = [
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-          return next(new ApplicationError("club_create","400","CONTROLLER.CLUB.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
+          return next(new ApplicationError("club_create",400,"CONTROLLER.CLUB.CREATE.VALIDATION",{name: "ExpressValidator", errors}));
       }
       account = new account({
         account_id: "CA000001",
@@ -39,7 +39,7 @@ exports.club_create = [
       })
     }
     catch (error) {
-      return next(new ApplicationError("club_create", "400", "CONTROLLER.CLUB.CLUB_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("club_create", 400, "CONTROLLER.CLUB.CLUB_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
