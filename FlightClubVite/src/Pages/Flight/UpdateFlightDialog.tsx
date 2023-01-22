@@ -64,7 +64,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightUpdate(prev => ({ ...prev, date_from: newDate }))
+    setFlightUpdate(prev => ({ ...prev, date: newDate }))
   };
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {

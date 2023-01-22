@@ -67,7 +67,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setReservationCreate(prev => ({ ...prev, date_from: newDate }))
+    setReservationCreate(prev => ({ ...prev, date: newDate }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     console.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);

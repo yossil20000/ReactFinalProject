@@ -66,11 +66,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightCreate(prev => ({ ...prev, date_from: newDate }))
-  };
-  const handleToDateFilterChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    setFlightCreate(prev => ({ ...prev, date_to: newDate }))
+    setFlightCreate(prev => ({ ...prev, date: newDate }))
   };
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +89,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     let flight = new CFlightCreate();
     flight.copy(flightCreate);
     console.log("CreateFlightDialog/onSave/flight", flight)
-    console.log("CreateFlightDialog/onSave/date_from", flightCreate.date?.toUTCString())
+    console.log("CreateFlightDialog/onSave/date", flightCreate.date?.toUTCString())
 
     await CreateFlight(flightCreate as IFlightCreateApi).unwrap().then((data) => {
       console.log("CreateFlightDialoq/onSave/", data);
@@ -120,7 +116,16 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       <DialogTitle>Flight Create</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
-
+        <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+            <Item>
+              <DevicesFlightCombo onChanged={onDeviceChanged} source={source} filter={true}/>
+            </Item>
+          </Grid>
+          <Grid item xs={12} md={6} xl={6}>
+            <Item>
+              <MembersCombo onChanged={onMemberChanged} source={source} filter={true}/>
+            </Item>
+          </Grid>
           <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
             <Item sx={{ marginLeft: "0px" }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -221,17 +226,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               />
             </Item>
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <DevicesFlightCombo onChanged={onDeviceChanged} source={source} filter={true}/>
 
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item>
-              <MembersCombo onChanged={onMemberChanged} source={source} filter={true}/>
-            </Item>
-          </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>

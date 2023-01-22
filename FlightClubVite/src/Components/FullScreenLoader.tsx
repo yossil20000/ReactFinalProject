@@ -1,5 +1,7 @@
-import { Box, CircularProgress, Container } from '@mui/material';
-
+import { Box, CircularProgress, CircularProgressProps, Container } from '@mui/material';
+let x : CircularProgressProps = {
+  
+}
 const FullScreenLoader = () => {
   return (
     <Container sx={{ height: '95vh' }}>
@@ -9,7 +11,7 @@ const FullScreenLoader = () => {
         justifyContent='center'
         sx={{ height: '100%' }}
       >
-        <CircularProgress />
+        <CircularProgress  />
       </Box>
     </Container>
   );

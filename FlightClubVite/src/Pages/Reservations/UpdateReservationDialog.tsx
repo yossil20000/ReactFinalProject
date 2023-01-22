@@ -150,7 +150,7 @@ function UpdateReservationDialog({value,onClose,onSave,open,...other}: UpdateRes
       disabled
       id="outlined-disabled"
       label="Device"
-      
+      fullWidth
       value={reservationUpdate.device_name}
     />
       </Item>
@@ -161,6 +161,7 @@ function UpdateReservationDialog({value,onClose,onSave,open,...other}: UpdateRes
       disabled
       id="outlined-disabled"
       label="Member"
+      fullWidth
       defaultValue={reservationUpdate.member_name}
     />
 
