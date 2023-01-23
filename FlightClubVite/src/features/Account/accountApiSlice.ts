@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { getServerAddress, URLS } from "../../Enums/Routers"
-import { IAccount, IAccountBase, IAccountsCombo, IAccountsComboFilter } from "../../Interfaces/API/IAccount"
+import { IAccount, IAccountBase, IAccountsCombo, IAccountsComboFilter, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
 
@@ -18,7 +18,7 @@ export const accountApiSlice = createApi({
       return headers
     },
   }),
-  tagTypes: ["Accounts"],
+  tagTypes: ["Accounts","Orders"],
   endpoints(builder) {
     return {
       fetchAllAccounts: builder.query<IResultBase<IAccount>, void>({
@@ -62,7 +62,41 @@ export const accountApiSlice = createApi({
           method: "POST"
         })
       }),
-      
+      fetchAllOrders: builder.query<IResultBase<IOrder>, void>({
+        query: () => `/${URLS.ORDERS}`,
+        providesTags: ["Orders"]
+      }),
+      fetchOrder: builder.query<IResultBase<IOrder>, string>({
+        query: (_id) => ({
+          url: `/${URLS.ORDERS}/${_id}`,
+          method: "GET"
+        })
+
+      }),
+      deleteOrder: builder.mutation<IResultBaseSingle<IOrder>, string>({
+        query: (_id) => ({
+          url: `/${URLS.ORDERS_DELETE}`,
+          body: {_id: _id},
+          method: "DELETE"
+        }),
+        invalidatesTags: [{ type: "Orders" }]
+      }),
+      updateOrder: builder.mutation<IResultBaseSingle<IOrder>, IOrder>({
+        query: (order) => ({
+          url: `/${URLS.ORDERS_UPDATE}`,
+          method: 'PUT',
+          body: order
+        }),
+        invalidatesTags: ["Accounts","Orders"]
+      }),
+      createOrder: builder.mutation<IResultBaseSingle<IOrder>, IOrderBase>({
+        query: (order) => ({
+          url: `/${URLS.ORDERS_CREATE}`,
+          method: 'POST',
+          body: order
+        }),
+        invalidatesTags: [{ type: "Orders" }]
+      })
     }
   }
 
@@ -73,5 +107,10 @@ export const {
   useDeleteAccountMutation,
   useFetchAccountQuery,
   useFetchAccountsComboQuery,
-  useFetchAllAccountsQuery
+  useFetchAllAccountsQuery,
+  useFetchAllOrdersQuery,
+  useFetchOrderQuery,
+  useDeleteOrderMutation,
+  useUpdateOrderMutation,
+  useCreateOrderMutation
 } = accountApiSlice;

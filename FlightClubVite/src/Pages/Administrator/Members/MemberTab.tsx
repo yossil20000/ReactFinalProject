@@ -193,11 +193,7 @@ function MemberTab() {
 
         </div>
         <div className='footer'>
-
-          <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""}/>
-          </Box>
-          <Grid container>
+        <Grid container>
             {validationAlert.map((item) => (
               <Grid item xs={12}>
 
@@ -206,6 +202,10 @@ function MemberTab() {
               </Grid>
             ))}
           </Grid>
+          <Box className='yl__action_button'>
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""}/>
+          </Box>
+
         </div>
       </div>
     </MembershipContext.Provider>

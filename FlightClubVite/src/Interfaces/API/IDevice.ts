@@ -29,8 +29,8 @@ export enum DEVICE_MT{
     "Annual"
 }
 export enum DEVICE_MET  {
-    HOBBS,
-    ENGIEN
+    HOBBS = "HOBBS",
+    ENGIEN = "ENGIEN"
 }
 export enum DEVICE_INS  {
     VFR='#7057ff',

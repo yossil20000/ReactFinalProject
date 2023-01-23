@@ -25,7 +25,7 @@ const STATUS = {
     "Removed":"Removed" 
 }
 
-const OrderSattus = {
+const OrderStatus = {
     "CREATED": "Created",
     "CLOSE" : "Close"
 }
@@ -41,4 +41,4 @@ module.exports.DEVICE_MT = DEVICE_MT;
 module.exports.DEVICE_MET = DEVICE_MET;
 module.exports.DEVICE_INS = DEVICE_INS;
 module.exports.STATUS = STATUS;
-module.exports.OrderSattus = OrderSattus;
+module.exports.OrderStatus = OrderStatus;

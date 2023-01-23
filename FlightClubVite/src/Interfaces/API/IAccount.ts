@@ -1,6 +1,6 @@
 
 import { IFilter } from "./IFilter"
-import {  Status } from "./IStatus"
+import { Status } from "./IStatus"
 
 export enum OT_OPERATION {
   CREDIT =  "Credit",
@@ -12,9 +12,16 @@ export enum OT_REF {
   MONTLY = "Montly",
   OTHER = "Other"
 }
+export enum OrdefStatus {
+  "CREATED"= "Created",
+  "CLOSE" = "Close"
+}
 export interface IOrderType {
   operation: OT_OPERATION, 
   referance: OT_REF
+}
+export interface IOrderStatus {
+
 }
 export interface IProductBase {
 
@@ -24,12 +31,43 @@ export interface IProduct extends IProductBase {
 }
 export interface IOrderBase { 
   order_date: Date,
-  products:  IProduct[],
+  product:  string,
   units: number,
   pricePeUnit: number,
   amount: number,
   orderType: IOrderType,
   desctiption: string,
+  status: OrdefStatus
+}
+export class COrderCreate  implements IOrderBase {
+  order_date: Date;
+  product: string;
+  units: number
+  pricePeUnit: number
+  amount: number
+  orderType: IOrderType
+  desctiption: string
+  status: OrdefStatus
+  constructor(){
+    this.order_date= new Date();
+    this.product= "";;
+  this.units =  0;
+  this.pricePeUnit = 0;
+  this.amount= 0;
+  this.orderType= {operation: OT_OPERATION.CREDIT,referance: OT_REF.FLIGHT};
+  this.desctiption = "";
+  this.status= OrdefStatus.CREATED;
+  }
+  copy(obj: IOrderBase): void {
+    order_date: obj.order_date
+    product: obj.product
+    units: obj.units
+    pricePeUnit: obj.pricePeUnit
+    amount: obj.amount
+    orderType: obj.orderType
+    desctiption: obj.desctiption
+    status: obj.status
+  }
 }
 
 export interface IOrder extends IOrderBase {

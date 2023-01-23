@@ -15,7 +15,7 @@ var OrderSchema = new Schema({
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   orderType: OrderTypeSchema,
   desctiption: {type: String},
-  status: {type:String, enum: Object.values(constants.OrderSattus), default: constants.OrderSattus.CREATED},
+  status: {type:String, enum: Object.values(constants.OrderStatus), default: constants.OrderStatus.CREATED},
 },{toJSON: {getters: true}})
 
 function getDecimal(value) {

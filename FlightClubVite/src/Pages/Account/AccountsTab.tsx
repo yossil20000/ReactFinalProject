@@ -54,7 +54,7 @@ interface IAccountFilter {
   account_id: string;
   active_only: boolean;
 }
-function Accounts() {
+function AccountsTab() {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const { data } = useFetchAllAccountsQuery();
   const [filterData, setFilterData] = useState({ account_id: "", active_only: false } as IAccountFilter)
@@ -157,4 +157,4 @@ function Accounts() {
   )
 }
 
-export default Accounts
+export default AccountsTab

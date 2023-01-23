@@ -2,6 +2,7 @@ const log = require('debug-level').log('OrderController');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
 const Order = require('../Models/order');
+const Flight = require('../Models/flight')
 
 exports.order_list = function (req, res, next) {
   try {
@@ -55,11 +56,22 @@ exports.order_create = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("order_create", 400, "CONTROLLER.ORDER.ORDER_CREATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const order = await Order.findById(req.body._id);
+      const order = await Order.create(req.body);
       if (order === null) {
         return res.status(400).json({ success: false, errors: ["Order Not Exist"], data: [] });
       }
-      return res.status(201).json({ success: true, errors: [], data: order });
+      if(req.body.orderType.referance === "Flight"){
+        Flight.updateOne({_id: req.body.product},{status: "CLOSE"}).exec((err,result) => {
+          if(err){
+            return res.status(400).json({ success: false, errors: err, data: [] });
+          }
+          else{
+            return res.status(201).json({ success: true, errors: [], data: order });
+          }
+        })
+        
+      }
+      
     }
     catch (error) {
       return next(new ApplicationError("order_create", 400, "CONTROLLER.ORDER.ORDER_CREATE.EXCEPTION", { name: "EXCEPTION", error }));

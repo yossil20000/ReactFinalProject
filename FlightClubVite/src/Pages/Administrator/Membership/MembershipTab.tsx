@@ -130,17 +130,17 @@ function MembershipTab() {
         </Box>
       </div>
       <div className='footer'>
-
-        <Box className='yl__action_button'>
-          <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} />
-        </Box>
-        <Grid container>
+      <Grid container>
           {validationAlert.map((item) => (
             <Grid item xs={12}>
               <ValidationAlert {...item} />
             </Grid>
           ))}
         </Grid>
+        <Box className='yl__action_button'>
+          <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} />
+        </Box>
+
       </div>
     </div>
   )

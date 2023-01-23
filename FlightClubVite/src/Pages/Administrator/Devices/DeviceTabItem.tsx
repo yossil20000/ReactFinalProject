@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
 import React, { useCallback, useContext, useEffect } from 'react';
-import IDevice, { DEVICE_INS } from '../../../Interfaces/API/IDevice';
+import IDevice, { DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getSelectedItem, setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
@@ -75,11 +75,33 @@ function DeviceTabItem() {
     setSelectedItem(newObj)
   };
 
-
+  const handleHasHobbsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("DeviceTabItem/handleHasHobbsChange", event.target.name, event.target.checked)
+    let newObj: IDevice = SetProperty(selectedItem, event.target.name, event.target.checked) as IDevice;
+    if(!event.target.checked){
+      /* newObj.price.meter = DEVICE_MET.ENGIEN */
+      newObj = SetProperty(newObj,"price.meter",  DEVICE_MET.ENGIEN) as IDevice;
+    }
+    setSelectedItem(newObj)
+  };
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     console.log("onComboChanged/item", item, prop);
     const newObj: IDevice = SetProperty(selectedItem, prop, item.lable) as IDevice;
     setSelectedItem(newObj)
+  }
+  const onComboPriceMethodChanged = (item: InputComboItem, prop: string): void => {
+    console.log("onComboPriceMethodChanged/item", item, prop);
+    
+    if(!selectedItem?.has_hobbs && item.lable === DEVICE_MET.HOBBS) 
+   {
+    const newObj: IDevice = SetProperty(selectedItem, prop, DEVICE_MET.HOBBS) as IDevice;
+    setSelectedItem(newObj)
+   }
+   else{
+    const newObj: IDevice = SetProperty(selectedItem, prop, item.lable) as IDevice;
+    setSelectedItem(newObj)
+   }
+    
   }
   const handleTimeChange = (newValue: Date | null | undefined, name: string) => {
     console.log(`handleTimeChange/newValue , key`, newValue, name);
@@ -124,9 +146,9 @@ function DeviceTabItem() {
   }
   const getSelectedCanreserve = (): LabelType[] => {
     let canReserve : LabelType[] = [];
-    if (selectedItem !== undefined && selectedItem) {
+    if (selectedItem !== undefined && selectedItem && selectedItem.can_reservs !== undefined) {
       console.log("canreserv/memberCanReserve()",memberCanReserve(),selectedItem.can_reservs)
-      const initial = selectedItem.can_reservs.map((item) => {
+      const initial = selectedItem?.can_reservs.map((item) => {
         if(typeof item === 'string'){
           const found = memberCanReserve().find((i : LabelType) => i._id === item);
           if(found !== undefined){
@@ -249,10 +271,10 @@ function DeviceTabItem() {
               <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.device_status.toString() ,_id: "",description: ""}}/>
             </Grid>
             <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
-              <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
+              <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available === undefined ? false : selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
             </Grid>
             <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
-              <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"has_hobbs"} checked={selectedItem?.has_hobbs} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Has Hobbs" />
+              <FormControlLabel control={<Checkbox onChange={handleHasHobbsChange} name={"has_hobbs"} checked={selectedItem?.has_hobbs === undefined ? false : selectedItem?.has_hobbs} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Has Hobbs" />
             </Grid>
             <Grid item xs={1}>
               <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={{lable: selectedItem?.status === undefined ? "" : selectedItem?.status.toString() ,_id: "",description: ""}}/>
@@ -273,7 +295,7 @@ function DeviceTabItem() {
         <AccordionDetails>
           <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
             <Grid item xs={1}>
-              <PriceMeterCombo onChanged={(item) => onComboChanged(item, "price.meter")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.price.meter.toString() ,_id: "",description: ""}}/>
+              <PriceMeterCombo onChanged={(item) => onComboPriceMethodChanged(item, "price.meter")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.price.meter.toString() ,_id: "",description: ""}}/>
             </Grid>
             <Grid item xs={1}>
                 <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source} selectedItem={{lable: selectedItem?.device_status=== undefined ? "" : selectedItem?.details.fuel.units.toString() ,_id: "",description: ""}}/>
