@@ -190,6 +190,12 @@ function DeviceTabItem() {
   } */
     return (
     <>
+    {(selectedItem === undefined || selectedItem === null) ? 
+    (<>
+    <Typography sx={{ width: "100%", flexShrink: 0 }}>Please Select Device</Typography>
+    </>
+    ) : (
+      <>
       <Accordion  >
         <AccordionSummary style={{ height: "48px" }}
           expandIcon={<ExpandMoreIcon />}
@@ -326,7 +332,8 @@ function DeviceTabItem() {
           </Grid>
         </AccordionDetails>
       </Accordion>
-
+      </>
+    )}
 
     </>
   )

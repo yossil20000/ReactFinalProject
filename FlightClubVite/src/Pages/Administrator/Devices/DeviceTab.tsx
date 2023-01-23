@@ -71,6 +71,9 @@ function DeviceTab() {
       console.log("onDeviceChange/foundItem", foundItem)
 
     }
+    else{
+      setSelectedDevice(null);
+    }
 
   }
   async function onDelete(): Promise<void> {

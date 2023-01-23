@@ -31,9 +31,9 @@ useEffect(() => {
     if (items !== undefined){
       
       setDevicesItem(items);
-      if(items.length > 0){
+/*       if(items.length > 0){
         setSelectedDevice(items?.at(0))
-      }
+      } */
     }
     
 
