@@ -77,7 +77,9 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                         return;
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {value}
+                          {column.format  
+                            ? column.format(value)
+                            : value}
                         </TableCell>
                       );
                     })}

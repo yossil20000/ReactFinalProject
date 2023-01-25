@@ -1,5 +1,6 @@
 
 import { IFilter } from "./IFilter"
+import IMember from "./IMember"
 import { Status } from "./IStatus"
 
 export enum OT_OPERATION {
@@ -37,36 +38,44 @@ export interface IOrderBase {
   amount: number,
   orderType: IOrderType,
   desctiption: string,
-  status: OrdefStatus
+  status: OrdefStatus,
+  _idMember: string,
+  orderBy: string
 }
 export class COrderCreate  implements IOrderBase {
   order_date: Date;
   product: string;
-  units: number
+  units: number;
   pricePeUnit: number
   amount: number
   orderType: IOrderType
   desctiption: string
   status: OrdefStatus
+  _idMember:  string
+  orderBy: string
   constructor(){
     this.order_date= new Date();
-    this.product= "";;
+   this.product= "";
   this.units =  0;
   this.pricePeUnit = 0;
   this.amount= 0;
   this.orderType= {operation: OT_OPERATION.CREDIT,referance: OT_REF.FLIGHT};
   this.desctiption = "";
   this.status= OrdefStatus.CREATED;
+  this._idMember = "";
+  this.orderBy = ""
   }
   copy(obj: IOrderBase): void {
-    order_date: obj.order_date
-    product: obj.product
-    units: obj.units
-    pricePeUnit: obj.pricePeUnit
-    amount: obj.amount
-    orderType: obj.orderType
-    desctiption: obj.desctiption
-    status: obj.status
+    this.order_date = obj.order_date
+    this.units = obj.units
+    this.product = obj.product
+    this.pricePeUnit = obj.pricePeUnit
+    this.amount = obj.amount
+    this.orderType = obj.orderType
+    this.desctiption = obj.desctiption
+    this.status = obj.status
+    this._idMember = obj._idMember
+    this.orderBy = obj.orderBy
   }
 }
 

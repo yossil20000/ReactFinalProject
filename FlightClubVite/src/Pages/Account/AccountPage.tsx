@@ -3,6 +3,7 @@ import { MembersContext } from "../../app/Context/MemberContext";
 import ScrollableTabs, { ScrollableTabsItem } from "../../Components/Buttons/ScrollableTabs"
 import useLocalStorage from "../../hooks/useLocalStorage";
 import AccountFlights from "./AccountFlights";
+import AccountOrders from "./AccountOrders";
 import AccountsTab from "./AccountsTab";
 import AccountTest from "./AccountTest";
 import OrdersTab from "./OrdersTab";
@@ -34,7 +35,7 @@ function AccountPage() {
               {value === 0 && (<AccountsTab/>)}
               {value === 1 && (<AccountFlights/>)}
               {value === 2 && (<OrdersTab/>)}
-              {value === 3 && (<>3</>)}
+              {value === 3 && (<AccountOrders/>)}
               {value === 4 && (<AccountTest/>)}
             </Paper>
             </Box>

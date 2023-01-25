@@ -36,7 +36,9 @@ function createData(
 
 
 const columns: Column[] = [
-  { id: 'date', label: 'From', minWidth: 170, isCell: true },
+  { id: 'date', label: 'Date', minWidth: 170, isCell: true ,format: (date: Date) : string => {
+    return (new Date(date)).toLocaleDateString()
+  }},
   {
     id: 'engien_start',
     label: 'EngienStart',
@@ -109,6 +111,9 @@ function AccountFlights() {
     console.log("AccountFlight/onDeviceChange/filter", filter)
     setaccountFlightFilter(filter)
   }
+  const sort = (a:IData , b:IData) : number => {
+    return a.engien_start >= b.engien_start ? 1 : -1;
+  }
   const getData = useMemo(() => {
     const rows = data?.data.map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.engien_start, row.engien_stop, `${row.member?.member_id}/${row.member?.member_id}`))
     console.log("AccountFlight/Flight/getData", rows)
@@ -140,8 +145,10 @@ function AccountFlights() {
         pricePeUnit: pricePeUnit,
         amount: amount,
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
-        desctiption: `Flight on ${new Date(flightFound.date).toDateString()} `,
-        status: OrdefStatus.CREATED
+        desctiption: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
+        status: OrdefStatus.CREATED,
+        _idMember: flightFound.member._id,
+        orderBy: `${flightFound.member.family_name} / ${flightFound.member.member_id}`
       }
       return order;
     }
@@ -201,7 +208,7 @@ function AccountFlights() {
           </Box>
         </ContainerPageHeader>
         <ContainerPageMain>
-          <><ColumnGroupingTable rows={getData} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "" }} /></>
+          <><ColumnGroupingTable rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "" }} /></>
         </ContainerPageMain>
         <ContainerPageFooter>
           <>
