@@ -9,18 +9,6 @@ import { IOrder } from '../Interfaces/API/IAccount';
 
 
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
-
 export default function DataTablePro() {
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
@@ -39,36 +27,36 @@ export default function DataTablePro() {
       ,
     }))
     if (rows !== undefined) {
+      console.log("DataTablePro/orders",rows,orders);
       return rows
     }
     return []
 
 
   }, [orders])
-  useEffect(() => {
-    console.log("DataTablePro/orders", orders);
 
-  }, [orders])
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id', hide: true },
-    { field: 'status', hide: true },
-    { field: 'date', headerName: 'Date', width: 100, sortable: false,
-    filterable: false},
-    { field: 'orderBy', headerName: 'Order By', width: 100 },
-    { field: 'product', headerName: 'Product', width: 70 },
-    { field: 'units', headerName: 'Units', type: 'number', width: 60 },
+    { field: '_idMember', hide: true },
+    { field: 'date',hide: false, headerName: 'Date', minWidth: 100, sortable: true,
+    filterable: false,flex:1},
+    { field: 'orderBy', headerName: 'Order By', minWidth: 100,flex:2 },
+    { field: 'product', headerName: 'Product', minWidth: 100,flex:1 },
+    { field: 'units', headerName: 'Units', type: 'number', minWidth: 80 , flex: 1 },
 
     {
       field: 'unitPrice',
       headerName: 'Unit Price',
       type: 'number',
-      width: 80,
+      minWidth: 80,flex:1
     },
-    { field: 'amount', headerName: 'Total', type: 'number', width: 60 },
+    { field: 'amount', headerName: 'Total', type: 'number', minWidth: 80,flex:1 },
+    { field: 'status', headerName: 'Status' ,flex:1},
     {
       field: 'actions',
+      flex:1,
       headerName: 'Actions',
-      width: 160,
+      minWidth: 80,
       type: 'actions',
       renderCell: (params: GridRenderCellParams) => (
         <Box display={'flex'} flexDirection={'column'} gap={1} height={"5ch"} >

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const OrderType = require('./orderType');
+const Member = require('./member');
 const constants = require('../Models/constants');
 var Schema = mongoose.Schema;
 var OrderTypeSchema = new Schema({
@@ -16,6 +17,7 @@ var OrderSchema = new Schema({
   orderType: OrderTypeSchema,
   desctiption: {type: String},
   status: {type:String, enum: Object.values(constants.OrderStatus), default: constants.OrderStatus.CREATED},
+  member: {type: Schema.Types.ObjectId,ref: Member, required:true}
 },{toJSON: {getters: true}})
 
 function getDecimal(value) {

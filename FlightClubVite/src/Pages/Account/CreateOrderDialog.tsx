@@ -169,6 +169,12 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
               <Grid item xs={12}>
               <Divider light />
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                {value.orderBy}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+              <Divider light />
+                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                 Description:
                 </Typography>
               </Grid>

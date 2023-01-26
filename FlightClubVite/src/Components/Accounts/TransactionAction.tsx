@@ -1,8 +1,9 @@
 import { Check, Save } from '@mui/icons-material';
-import { Box, CircularProgress, Fab } from '@mui/material';
+import { Box, CircularProgress, Fab, Tooltip } from '@mui/material';
 import { green } from '@mui/material/colors';
 import { GridRenderCellParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
+import { OrdefStatus } from '../../Interfaces/API/IAccount';
 export interface ITransactionActionProps {
   params: any;
   rowId: string | null;
@@ -14,20 +15,20 @@ export default function TransactionAction(props: ITransactionActionProps) {
 
   const { rowId, setRowId, params } = props;
   const { id, _idMember } = params.row;
-/*  console.log("TransactionAction/params",id,_idMember,rowId) */
-  const handleTransaction =  () => {
-    console.log("TransactionAction/handleTransaction",id,params)
+  /*  console.log("TransactionAction/params",id,_idMember,rowId) */
+  const handleTransaction = () => {
+    console.log("TransactionAction/handleTransaction", id, params)
     setIsLoading(true);
     const result: boolean = true;
-    setInterval( ()=> {
+    setInterval(() => {
       if (result) {
         setIsSuccess(true);
         setRowId(null);
-  
+
       }
       setIsLoading(false)
-    },2000)
-    
+    }, 2000)
+
     /* setIsLoading(false) */
   }
 
@@ -38,23 +39,28 @@ export default function TransactionAction(props: ITransactionActionProps) {
   return (
     <Box  >
       {
-        isSuccess == true && isloading == false &&
-          (
-            <Fab color='primary' sx={{width: 40,height: 40,backgroundColor: green[500], '&:hover': {bgcolor: green[700]},}}>
-              <Check />
-            </Fab>
-          ) 
-}
-{ isSuccess == false && isloading == false &&
-          (
-            <Fab color='primary' sx={{width: 40,height: 40}}  disabled={/* params.id !== rowId */ isSuccess|| isloading} onClick={handleTransaction} >
-              <Save />
-            </Fab>
-          )
-      }
-      { isloading == true && 
+        params.row.status === OrdefStatus.CLOSE || ( isSuccess == true && isloading == false) &&
         (
-          <CircularProgress size={40} sx={{color: green[500],zIndex: 1}}/>
+          <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+            <Tooltip title={"Transaction Done"}>
+              <Check />
+            </Tooltip>
+          </Fab>
+        )
+      }
+      {isSuccess == false && isloading == false &&
+        (
+          <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleTransaction} >
+            <Tooltip title={"Place Transaction"}>
+              <Save />
+            </Tooltip>
+
+          </Fab>
+        )
+      }
+      {isloading == true &&
+        (
+          <CircularProgress size={40} sx={{ color: green[500], zIndex: 1 }} />
         )
       }
     </Box>
