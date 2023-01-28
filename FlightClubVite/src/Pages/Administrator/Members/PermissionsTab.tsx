@@ -9,6 +9,7 @@ import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
 import StatusCombo from "../../../Components/Buttons/StatusCombo";
 import MembershipCombo from "../../../Components/Membership/MembershipCombo";
 import { IMemberAdmin, Role, Status } from "../../../Interfaces/API/IMember";
+import IMembership from "../../../Interfaces/API/IMembership";
 import { getSelectedItem, setProperty } from "../../../Utils/setProperty";
 const source = "admin/member/general"
 
@@ -25,7 +26,7 @@ function PermissionsTab() {
     console.log("PermissionsTab/getSelectedMemberMemberShip",selectedMember)  
     let initialMembership : InputComboItem = {
         _id: selectedMember?.membership ?  selectedMember?.membership._id : "",
-        lable: "",
+        lable: selectedMember?.membership ?  selectedMember?.membership.rank.toString() : "",
         description: ""
       }
       console.log("PermissionsTab/getSelectedMemberMemberShip/initial",initialMembership) 
@@ -76,10 +77,11 @@ function PermissionsTab() {
     return [];
   },[labelsFromRole,selectedMember?.role])
  
-  const onMemberShipChanged = useCallback((item: InputComboItem) => {
-    const newObj: IMemberAdmin = SetProperty(selectedMember, "membership.rank", item.lable) as IMemberAdmin;
+  const onMemberShipChanged = useCallback((item: IMembership) => {
+    console.log("onMemberShipChanged/selectedMember",selectedMember)
+    const newObj: IMemberAdmin = SetProperty(selectedMember, "membership", item) as IMemberAdmin;
     setSelectedMember(newObj)
-    console.log("onMemberShipChanged",newObj)
+    console.log("onMemberShipChanged/newObj",newObj)
   },[selectedMember])
   return (
     <>

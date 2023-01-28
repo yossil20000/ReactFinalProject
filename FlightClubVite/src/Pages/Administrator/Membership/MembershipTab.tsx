@@ -71,15 +71,10 @@ function MembershipTab() {
     }
   }
 
-  const onMemberTypeChanged = (item: InputComboItem) => {
+  const onMemberTypeChanged = (item: IMembership) => {
     console.log("onMemberTypeChanged/Item", item)
-    const foundItem = data?.data.find((i) => item._id === i._id);
-    if (foundItem && foundItem !== null) {
-      setSelectedItem(foundItem);
-     /* console.log("onMemberTypeChanged/foundItem", foundItem) */
 
-    } 
-
+    setSelectedItem(item);
   }
 
   const SetProperty = (obj: any, path: string, value: any): any => {

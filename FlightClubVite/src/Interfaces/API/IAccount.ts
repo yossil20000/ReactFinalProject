@@ -1,4 +1,5 @@
 
+import { ThirtyFpsRounded } from "@mui/icons-material"
 import { IFilter } from "./IFilter"
 import IMember from "./IMember"
 import { Status } from "./IStatus"
@@ -35,34 +36,37 @@ export interface IOrderBase {
   product:  string,
   units: number,
   pricePeUnit: number,
+  discount: number,
   amount: number,
   orderType: IOrderType,
   desctiption: string,
   status: OrdefStatus,
-  _idMember: string,
+  member: IMember | undefined,
   orderBy: string
 }
 export class COrderCreate  implements IOrderBase {
   order_date: Date;
   product: string;
   units: number;
-  pricePeUnit: number
+  pricePeUnit: number;
+  discount: number;
   amount: number
   orderType: IOrderType
   desctiption: string
   status: OrdefStatus
-  _idMember:  string
+  member:  IMember | undefined
   orderBy: string
   constructor(){
     this.order_date= new Date();
    this.product= "";
   this.units =  0;
   this.pricePeUnit = 0;
+  this.discount = 0;
   this.amount= 0;
   this.orderType= {operation: OT_OPERATION.CREDIT,referance: OT_REF.FLIGHT};
   this.desctiption = "";
   this.status= OrdefStatus.CREATED;
-  this._idMember = "";
+  this.member = undefined;
   this.orderBy = ""
   }
   copy(obj: IOrderBase): void {
@@ -70,11 +74,12 @@ export class COrderCreate  implements IOrderBase {
     this.units = obj.units
     this.product = obj.product
     this.pricePeUnit = obj.pricePeUnit
+    this.discount = obj.discount
     this.amount = obj.amount
     this.orderType = obj.orderType
     this.desctiption = obj.desctiption
     this.status = obj.status
-    this._idMember = obj._idMember
+    this.member = obj.member
     this.orderBy = obj.orderBy
   }
 }

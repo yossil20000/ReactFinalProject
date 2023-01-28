@@ -8,6 +8,7 @@ exports.order_list = function (req, res, next) {
   try {
     log.info('order_list/body', req.body);
     Order.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
+      .populate('member')
       .select(req.body.select === undefined ? "" : req.body.select)
       .sort([['order_date', 'ascending']])
       .exec((err, results) => {

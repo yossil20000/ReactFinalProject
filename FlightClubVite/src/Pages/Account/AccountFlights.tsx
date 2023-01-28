@@ -115,13 +115,13 @@ function AccountFlights() {
     return a.engien_start >= b.engien_start ? 1 : -1;
   }
   const getData = useMemo(() => {
-    const rows = data?.data.map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.engien_start, row.engien_stop, `${row.member?.member_id}/${row.member?.member_id}`))
+    const rows = data?.data.map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
     console.log("AccountFlight/Flight/getData", rows)
     return rows === undefined ? [] : rows;
   }, [data])
-  const getPrice = (flight: IFlight): [units: number, pricePeUnit: number, amount: number] => {
-    let units: number=0, pricePeUnit: number =0;
-    console.info("AccountFlight/DeviceMeter",flight.device.price.meter ,flight.engien_stop , flight.engien_start)
+  const getPrice = (flight: IFlight): [units: number, pricePeUnit: number, amount: number,discount: number] => {
+    let units: number=0, pricePeUnit: number =0 ,discount: number =0, amount: number = 0;
+    console.info("AccountFlight/DeviceMeter",flight.device.price.meter ,flight.engien_stop , flight.engien_start,flight)
     if(flight.device.price.meter == DEVICE_MET.ENGIEN){
       units = flight.engien_stop - flight.engien_start;
       console.info("AccountFlight/units",units)
@@ -130,24 +130,27 @@ function AccountFlights() {
     else{
       units = flight.hobbs_stop - flight.hobbs_start;
     }
-
-    return [units, flight.device.price.base, units * flight.device.price.base ]
+    discount = isNaN( flight.member?.membership?.hour_disc_percet) ?  0 : flight.member?.membership?.hour_disc_percet;
+    discount = flight.device.price.base * (  discount / 100) ;
+   amount = units * flight.device.price.base - discount;
+    return [units, flight.device.price.base, amount,discount ]
   }
   function CreateOrder(flightId: string): IOrderBase | undefined {
     const flightFound = data?.data.find((item) => item._id === flightId)
 
     if (flightFound !== undefined) {
-      const [units, pricePeUnit, amount] = getPrice(flightFound);
+      const [units, pricePeUnit, amount,discount] = getPrice(flightFound);
       let order: IOrderBase = {
         order_date: flightFound.date,
         product: flightFound._id,
         units: units,
         pricePeUnit: pricePeUnit,
+        discount: discount,
         amount: amount,
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
         desctiption: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
         status: OrdefStatus.CREATED,
-        _idMember: flightFound.member._id,
+        member: flightFound.member,
         orderBy: `${flightFound.member.family_name} / ${flightFound.member.member_id}`
       }
       return order;

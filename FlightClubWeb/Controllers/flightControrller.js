@@ -16,8 +16,8 @@ exports.flight = function (req, res, next) {
   log.info(`flight ${req.params._id}`)
 
   Flight.findOne({ _id: req.params._id }).
-    populate('device').populate('member').
-    exec((err, results) => {
+    populate('device').populate('member').populate('member.membership')
+    .exec((err, results) => {
       if (err) {
         return res.status(400).json({ success: false, errors: [err], data: [] })
       }

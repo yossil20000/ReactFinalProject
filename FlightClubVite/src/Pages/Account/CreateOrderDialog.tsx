@@ -124,20 +124,24 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
                 </Typography>
                 <Divider light />
               </Grid>
-
               <Grid item xs={3}>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                   Product
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                   Units
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                   Price Per Unit
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                 Discount
                 </Typography>
               </Grid>
               <Grid item xs={3}>
@@ -150,14 +154,19 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
                   {value.orderType.referance}
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                 {value.units}
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                 {value.pricePeUnit}
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                {value.discount}
                 </Typography>
               </Grid>
               <Grid item xs={3}>

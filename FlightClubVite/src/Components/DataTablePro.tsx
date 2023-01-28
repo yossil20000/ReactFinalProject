@@ -21,8 +21,8 @@ export default function DataTablePro() {
       product: row.orderType.referance,
       units: row.units,
       unitPrice: row.pricePeUnit,
-      orderBy: row.orderBy,
-      _idMember: row._idMember,
+      orderBy: row.member?.family_name,
+      member: row.member === undefined ? undefined : row.member,
       status: row.status
       ,
     }))
@@ -37,7 +37,7 @@ export default function DataTablePro() {
 
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id', hide: true },
-    { field: '_idMember', hide: true },
+    { field: 'member', hide: true },
     { field: 'date',hide: false, headerName: 'Date', minWidth: 100, sortable: true,
     filterable: false,flex:1},
     { field: 'orderBy', headerName: 'Order By', minWidth: 100,flex:2 },
