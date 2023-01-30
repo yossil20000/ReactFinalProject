@@ -95,7 +95,7 @@ const columns: Column[] = [
 
   },
 ];
-function AccountFlights() {
+function AccountFlightsTab() {
   const [openOrderAdd, setOpenOrderAdd] = useState(false);
   const [order,setOrder] = useState<IOrderBase>(new COrderCreate());
   const [accountFlightFilter, setaccountFlightFilter] = useState({ status: FlightStatus.CREATED })
@@ -145,7 +145,7 @@ function AccountFlights() {
         product: flightFound._id,
         units: units,
         pricePeUnit: pricePeUnit,
-        discount: discount,
+        discount: Number(discount.toFixed(2)),
         amount: amount,
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
         desctiption: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
@@ -224,4 +224,4 @@ function AccountFlights() {
   )
 }
 
-export default AccountFlights
+export default AccountFlightsTab

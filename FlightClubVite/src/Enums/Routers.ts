@@ -56,6 +56,7 @@ export  enum URLS{
     ACCOUNT_STATUS = 'api/accounts/status',
     ACCOUNTS_COMBO = 'api/accounts/combo',
     ORDERS = 'api/orders',
+    ORDERS_SEARCH = 'api/orders/search',
     ORDERS_DELETE = 'api/orders/delete',
     ORDERS_UPDATE = 'api/orders/update',
     ORDERS_CREATE = 'api/orders/create'

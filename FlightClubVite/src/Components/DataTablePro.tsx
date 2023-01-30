@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams, GridRowProps, GridValueGetterParams } from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from 'react';
-import { useFetchAllOrdersQuery } from '../features/Account/accountApiSlice';
+import { useFetchAllOrdersQuery, useFetchOrderQuery, useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import ActionButtons, { EAction } from './Buttons/ActionButtons';
 import { Box, Button } from '@mui/material';
 import TransactionAction from './Accounts/TransactionAction';
 import { IOrder } from '../Interfaces/API/IAccount';
+import IMember from '../Interfaces/API/IMember';
+import { IFilter } from '../Interfaces/API/IFilter';
 
-
-
-export default function DataTablePro() {
+interface IDataTableProps {
+  hideAction?: boolean;
+  filter?: any;
+}
+export default function DataTablePro({hideAction=false,filter={}}: IDataTableProps) {
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
-  const { data: orders } = useFetchAllOrdersQuery();
-
+  const { data: orders } = useGetOrderSearchQuery(filter);
   const orderRows = useMemo(() => {
     const rows = orders?.data.map((row : IOrder) => ({
       id: row._id, date: new Date(row.order_date).toLocaleDateString(),
@@ -58,9 +61,10 @@ export default function DataTablePro() {
       headerName: 'Actions',
       minWidth: 80,
       type: 'actions',
+      hide: hideAction,
       renderCell: (params: GridRenderCellParams) => (
         <Box display={'flex'} flexDirection={'column'} gap={1} height={"5ch"} >
-
+ 
          <TransactionAction {...{params,rowId,setRowId}}/>
 
         </Box>
@@ -68,7 +72,7 @@ export default function DataTablePro() {
 
     },
 
-  ], [rowId]);
+  ], [rowId,hideAction]);
 
   return (
     <div style={{ height: "100%", width: '100%' }}>

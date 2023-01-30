@@ -1,7 +1,7 @@
 
 import DataTablePro from '../../Components/DataTablePro';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
-function AccountOrders() {
+function AccountOrdersTab() {
   return (
     <ContainerPage>
       <>
@@ -22,4 +22,4 @@ function AccountOrders() {
   )
 }
 
-export default AccountOrders
+export default AccountOrdersTab

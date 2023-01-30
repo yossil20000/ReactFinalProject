@@ -1,9 +1,12 @@
+import { Filter } from "@mui/icons-material"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { getServerAddress, URLS } from "../../Enums/Routers"
 import { IAccount, IAccountBase, IAccountsCombo, IAccountsComboFilter, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
+import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
+import { getUrlWithParams } from "../../Utils/url"
 
 export const accountApiSlice = createApi({
   reducerPath: "accountApiSlice",
@@ -21,8 +24,11 @@ export const accountApiSlice = createApi({
   tagTypes: ["Accounts","Orders"],
   endpoints(builder) {
     return {
-      fetchAllAccounts: builder.query<IResultBase<IAccount>, void>({
-        query: () => `/${URLS.ACCOUNTS}`,
+      fetchAllAccounts: builder.query<IResultBase<IAccount>, IFilter>({
+        query: (filter) =>({
+          url: `/${URLS.ACCOUNTS}`,
+          method: "GET"
+        }), 
         providesTags: ["Accounts"]
       }),
       fetchAccount: builder.query<IResultBase<IAccount>, string>({
@@ -48,11 +54,11 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: [{ type: "Accounts" }]
       }),
-      createAccount: builder.mutation<IResultBaseSingle<IAccount>, IAccountBase>({
-        query: (account) => ({
+      createAccount: builder.mutation<IResultBaseSingle<IAccount>, string>({
+        query: (member_id) => ({
           url: `/${URLS.ACCOUNT_CREATE}`,
           method: 'POST',
-          body: account
+          body: {member_id: member_id}
         }),
         invalidatesTags: [{ type: "Accounts" }]
       }),
@@ -62,15 +68,27 @@ export const accountApiSlice = createApi({
           method: "POST"
         })
       }),
-      fetchAllOrders: builder.query<IResultBase<IOrder>, void>({
-        query: () => `/${URLS.ORDERS}`,
+      fetchAllOrders: builder.query<IResultBase<IOrder>, IFilter>({
+        query: (filter) => ({
+          url: `/${URLS.ORDERS}`,
+          method: "GET",
+          params: filter
+        }),
+        providesTags: ["Orders"]
+      }),
+      getOrderSearch: builder.query<IResultBase<IOrder>,{[key: string]: string}>({
+        query: (filter) => ({
+          url:getUrlWithParams(`/${URLS.ORDERS_SEARCH}/filter`,filter) ,
+          method: "GET"
+        }),
         providesTags: ["Orders"]
       }),
       fetchOrder: builder.query<IResultBase<IOrder>, string>({
         query: (_id) => ({
           url: `/${URLS.ORDERS}/${_id}`,
           method: "GET"
-        })
+        }),
+        providesTags: ["Orders"]
 
       }),
       deleteOrder: builder.mutation<IResultBaseSingle<IOrder>, string>({
@@ -105,6 +123,7 @@ export const accountApiSlice = createApi({
 export const {
   useCreateAccountMutation,
   useDeleteAccountMutation,
+  useUpdateAccountMutation,
   useFetchAccountQuery,
   useFetchAccountsComboQuery,
   useFetchAllAccountsQuery,
@@ -112,5 +131,6 @@ export const {
   useFetchOrderQuery,
   useDeleteOrderMutation,
   useUpdateOrderMutation,
-  useCreateOrderMutation
+  useCreateOrderMutation,
+  useGetOrderSearchQuery
 } = accountApiSlice;

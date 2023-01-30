@@ -1,5 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import IDevice, { DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getSelectedItem, setProperty } from '../../../Utils/setProperty'
@@ -17,6 +17,7 @@ import MultiOptionCombo from '../../../Components/Buttons/MultiOptionCombo';
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import IDeviceType from '../../../Interfaces/API/IDeviceType';
 import StatusCombo from '../../../Components/Buttons/StatusCombo';
+import { blue } from '@mui/material/colors';
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
   const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
@@ -47,15 +48,16 @@ function DeviceTabItem() {
   const { setSelectedItem, selectedItem ,membersCombo} = useContext(DevicesContext) as DevicesContextType;
   const { selectedItem: selectdDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
  
-  const memberCanReserve = useCallback(() : (LabelType[] ) => {
-      const labels : (LabelType[] | undefined) = membersCombo?.map((item) => ({_id: item._id,name: `${item.family_name} ${item.member_id}`, description: "", color: '#008672'} ));
+  const memberCanReserve = useMemo(() : (LabelType[] ) => {
+      const labels : (LabelType[] | undefined) = membersCombo?.map((item,index) => ({_id: item._id,name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700]} ));
       console.log("memberCanReserve/labels",labels)
       if(labels === undefined || labels === null)
         return []
       return labels;
   },[membersCombo])
-  const permissionLabelItems = memberCanReserve();
-  console.log("DeviceTabItem/deviceItem.current", selectedItem?.description);
+ 
+
+  console.log("DeviceTabItem/deviceItem.CanReserve", selectedItem?.can_reservs);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
     const newObj: IDevice = SetProperty(selectedItem, event.target.name, event.target.value) as IDevice;
@@ -123,13 +125,14 @@ function DeviceTabItem() {
     setSelectedItem(newObj)
   }
   const onSelecteCanReserv = (items: LabelType[],property:string) => {
-    console.log("onSelecteCanReserv/items", items);
+    console.log("onSelecteCanReserv/CanReserve/property", property);
+    console.log("onSelecteCanReserv/CanReserve/items", items);
     const newValues = items.map((item) => (
       item._id
     )) as string[];
-    console.log("onSelecteCanReserv/newValues", newValues);
+    console.log("onSelecteCanReserv/CanReserve/newValues", newValues);
     const newObj: IDevice = SetProperty(selectedItem, property, newValues) as IDevice;
-
+    console.log("onSelecteCanReserv/CanReserve/newObj", newObj);
     setSelectedItem(newObj)
   }
   const getSelectedInstrument = (): LabelType[] => {
@@ -145,26 +148,23 @@ function DeviceTabItem() {
     return [];
   }
   const getSelectedCanreserve = (): LabelType[] => {
-    let canReserve : LabelType[] = [];
+    let canReserve : string[] = [];
+    console.log("getSelectedCanreserve/CanReserve(); selected.canreserv",memberCanReserve,selectedItem?.can_reservs)
     if (selectedItem !== undefined && selectedItem && selectedItem.can_reservs !== undefined) {
-      console.log("canreserv/memberCanReserve()",memberCanReserve(),selectedItem.can_reservs)
+      
+      
       const initial = selectedItem?.can_reservs.map((item) => {
-        if(typeof item === 'string'){
-          const found = memberCanReserve().find((i : LabelType) => i._id === item);
-          if(found !== undefined){
-            
-          
-            canReserve.push(found)
-            console.log("canreserv/getSelectedCanreserve/found",found)
-          }
-        }
-        
+        if( typeof item === 'string')
+         return item;
+         return ''
       });
-      console.log("canreserv/getSelectedCanreserve",canReserve)
-      return canReserve;
+      console.log("getSelectedCanreserve/CanReserve/initial",initial)
+      const result = memberCanReserve.filter((item) => (initial.includes(item._id)))
+      console.log("getSelectedCanreserve/CanReserve/result",result)
+      return result;
 
     }
-    return canReserve;
+    return [];
   }
  
  
@@ -238,10 +238,7 @@ function DeviceTabItem() {
                 name="engien_meter" placeholder="Engien meter" variant="standard"
                 value={selectedItem?.engien_meter} InputLabelProps={{ shrink: true }}/>
             </Grid>
-            <Grid item xs={2} justifySelf={"center"}>
-              {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
-              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={getSelectedCanreserve()} items={permissionLabelItems === undefined ? [] : memberCanReserve() } onSelected={onSelecteCanReserv} />
-            </Grid>
+
           </Grid>
         </AccordionDetails>
       </Accordion>
@@ -327,6 +324,10 @@ function DeviceTabItem() {
             <Grid item xs={2} justifySelf={"center"}>
               {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
               <MultiOptionCombo property={"details.instruments"} label={"Adtional Systems "} selectedItems={getSelectedInstrument()} items={navLableItems} onSelected={onSelecteAditionaSystem} />
+            </Grid>
+            <Grid item xs={2} justifySelf={"center"}>
+              {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
+              <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={getSelectedCanreserve()} items={memberCanReserve } onSelected={onSelecteCanReserv} />
             </Grid>
             </Grid>
           </Grid>

@@ -23,6 +23,7 @@ export interface Column {
   align?: 'right' | "left" | 'center';
   format?: (value: number | any) => string;
   isCell:boolean;
+  render?: React.ReactNode
 }
 
 export interface IColumnGroupingTableProps<T> {
@@ -34,7 +35,7 @@ export interface IColumnGroupingTableProps<T> {
 export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps<T>) {
   const keyId = React.useId();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -44,7 +45,21 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
+ function RenderCell<T>(row: T, column: Column) {
+  const value = row[column.id as keyof   T] as unknown as string;
+  let render = row[column.render as keyof   T] as unknown as React.ReactNode;
+  if(value !== ""){
+    render = (<>{column.format  
+      ? column.format(value)
+      : value}</>)
+  }
+  return (
+    <>
+     {render }
+    </>
+   
+  )
+ }
   return (
     <Paper sx={{ width: '100%'  }}>
       <TableContainer sx={{ maxHeight: "100%" }}>
@@ -59,7 +74,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
                 >
-                  {column.label}
+                  {column.label === "" ? column.render : column.label}
                 </TableCell>
               )})}
             </TableRow>
@@ -77,9 +92,10 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                         return;
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format  
+                          {/* {column.format  
                             ? column.format(value)
-                            : value}
+                            : value} */}
+                            <>{RenderCell(row,column) }</>
                         </TableCell>
                       );
                     })}
@@ -98,7 +114,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[5,10, 25, 100]}
         component="div"
         count={props.rows.length}
         rowsPerPage={rowsPerPage}

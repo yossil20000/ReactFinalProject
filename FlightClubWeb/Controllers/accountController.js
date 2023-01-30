@@ -5,6 +5,7 @@ const { findAccount } = require('../Services/accountService')
 const Account = require('../Models/account');
 const Member = require('../Models/member');
 const async = require('async');
+const { ResultWithContext } = require('express-validator/src/chain');
 exports.account_list = [async function (req, res, next) {
   try {
     log.info('account_list/req', req.body);
@@ -55,8 +56,7 @@ exports.account = [
 ]
 
 exports.account_create = [
-  body('member_id').isLength({ min: 24, max: 24 }).withMessage("_id must be 24 characters"),
-  body('account_id').isLength({ min: 8, max: 8 }).escape().withMessage('account_id length must be 8'),
+  body('member_id').isLength({ min: 24, max: 24 }).withMessage("member_id must be 24 characters"),
   async (req, res, next) => {
     try {
       log.info('account_create/req', req.body);
@@ -64,14 +64,15 @@ exports.account_create = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("account_create", 400, "CONTROLLER.ACCOUNT.CREATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      Member.findById({ '_id': req.body.member_id }).exec((err, member) => {
+      Member.findById(req.body.member_id ).exec((err, member) => {
         if (err) {
           log.info('account_create/err', err);
         }
         if (member === null) {
           return res.status(400).json({ success: false, errors: ["member not exist"], message: "member not exist", data: req.body.member_id });
         }
-        Account.findOne({ $or: [{ 'member': req.body.member_id }, { 'account_id': req.body.account_id }] }).exec((err, account) => {
+        const account_id = `BZ${member.member_id}`;
+        Account.findOne({ $or: [{ 'member': req.body.member_id }, { 'account_id': account_id }] }).exec((err, account) => {
           if (err) {
             log.info('account_create/err', err);
           }
@@ -80,7 +81,7 @@ exports.account_create = [
           }
           account = new Account({
             member: req.body.member_id,
-            account_id: req.body.account_id
+            account_id: account_id
           })
           log.info('account_create/account', account);
           account.save((err, result) => {
@@ -128,6 +129,11 @@ exports.account_update = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("account_update", 400, "CONTROLLER.ACCOUNT.UPDATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
+      const account = await Account.findByIdAndUpdate(req.body._id, {status: req.body.status,desctiption: req.body.desctiption}).exec();
+      if (account) {
+        return res.status(201).json({ success: true, errors: [], data: account })
+      }
+      return res.status(400).json({ success: false, errors: ["account update failed"], data: [] })
 
     }
     catch (error) {
@@ -145,7 +151,7 @@ exports.account_delete = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("account_delete", 400, "CONTROLLER.ACCOUNT.DELETE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-
+      
     }
     catch (error) {
       return next(new ApplicationError("account_delete", 400, "CONTROLLER.ACCOUNT.ACCOUNT_DELETE.EXCEPTION", { name: "EXCEPTION", error }));

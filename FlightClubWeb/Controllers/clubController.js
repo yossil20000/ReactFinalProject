@@ -5,7 +5,7 @@ const log = require('debug-level').log('ClubController');
 exports.club = async function (req, res, next) {
   log.info("club");
   try {
-    const club = await Club.find().populate('clubAccoutn').exec();
+    const club = await Club.find().populate('club_accounts').exec();
     if (club) {
       return res.status(201).json({ success: true, errors: [err], data: club });
     }

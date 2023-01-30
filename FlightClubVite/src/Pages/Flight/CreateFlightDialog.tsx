@@ -8,6 +8,7 @@ import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import DeviceDetailes from "../../Components/Devices/DeviceDetailes";
 import DevicesFlightCombo from "../../Components/Devices/DeviceFlightCombo";
+import DeviceMemberCombo from "../../Components/Devices/DeviceMemberCombo";
 import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
@@ -46,7 +47,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  
+  const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
   useEffect(() => {
     console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -103,6 +104,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const onDeviceChanged = (item: InputComboItem,has_hobbs:boolean) => {
     
     setFlightCreate(prev => ({ ...prev, _id_device: item._id ,reuired_hobbs: has_hobbs}))
+    setSelectedDevice(item)
   }
   const onMemberChanged = (item: InputComboItem) => {
     setFlightCreate(prev => ({ ...prev, _id_member: item._id }))
@@ -123,7 +125,8 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-              <MembersCombo onChanged={onMemberChanged} source={source} filter={true}/>
+            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice}/>
+              
             </Item>
           </Grid>
           <Grid item sx={{ marginLeft: "0px" }} xs={12}  >

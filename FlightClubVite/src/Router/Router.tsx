@@ -15,6 +15,7 @@ import MembersTablePage from '../Pages/Members/MembersTablePage'
 import ProfilePage from '../Pages/Profile/ProfilePage'
 import ReservationsPage from '../Pages/Reservations/ReservationsPage'
 import RegistrationPage from '../Pages/Resistration/RegistrationPage'
+import MyAccount from '../Pages/UserAccount/UserAccount'
 
 
 
@@ -51,6 +52,10 @@ export function PagesRouter() {
         </Route>
         <Route element={<RequireAuth roles={[Role.admin]} />}>
           <Route path="/admin" element={<AdminPage></AdminPage>} />
+          
+        </Route>
+        <Route element={<RequireAuth roles={[Role.account]} />}>
+          
           <Route path="/account" element={<AccountPage></AccountPage>}/>
         </Route>
         <Route element={<RequireAuth roles={[Role.user, Role.desk, Role.admin, Role.account]} />}>
@@ -64,6 +69,7 @@ export function PagesRouter() {
           <Route path="/profile" element={<ProfilePage></ProfilePage>} />
           <Route path='/members' element={<MembersTablePage></MembersTablePage>} />
           <Route path='/flights' element={<FlightPage></FlightPage>} />
+          <Route path='/myaccount' element={<MyAccount></MyAccount>} />
           
 
           

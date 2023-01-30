@@ -115,8 +115,8 @@ export interface IAccountBase {
 export interface IAccount extends IAccountBase {
   _id: string
 }
-export const newAccount = ()  : IAccountBase => {
-  let account : IAccountBase = {
+export const newAccount = ()  : IAccount => {
+  let account : IAccount = {
     account_id: "",
     member: {
       _id: "",
@@ -127,7 +127,8 @@ export const newAccount = ()  : IAccountBase => {
     transactions: [],
     balance: 0,
     desctiption: "",
-    status: Status.Active
+    status: Status.Active,
+    _id: ""
   }
   return account;
 }

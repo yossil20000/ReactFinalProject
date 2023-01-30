@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var TransactionSchema = new Schema({
-  source: {type: Schema.Types.ObjectId, ref: "Account", required: true},
-  destination: {type: Schema.Types.ObjectId, ref: "Account", required: true},
+  source: {type: String, required: true},
+  destination: {type: String, required: true},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   order:  {type: Schema.Types.ObjectId, ref: "Order", required: true},
   desctiption: {type: String}

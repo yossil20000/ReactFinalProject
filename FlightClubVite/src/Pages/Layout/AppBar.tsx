@@ -32,9 +32,10 @@ const pages: page[] = [
   { name: 'Gallery', route: 'gallery'},
   { name: 'Admin', route: 'admin' },
   { name: "Account", route: "account" },
-  { name: "Login", route: "login" }
+  { name: "Login", route: "login" },
+  
   ];
-const settings = ['Profile', 'Account', 'Dashboard', 'change_password', 'Logout'];
+const settings = ['Profile', 'MyAccount', 'Dashboard', 'change_password', 'Logout'];
 
 const ResponsiveAppBar = () => {
   const navigate = useNavigate();

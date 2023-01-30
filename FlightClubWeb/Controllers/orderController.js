@@ -2,11 +2,12 @@ const log = require('debug-level').log('OrderController');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
 const Order = require('../Models/order');
-const Flight = require('../Models/flight')
+const Flight = require('../Models/flight');
+const { findOrders } = require('../Services/OrderService');
 
 exports.order_list = function (req, res, next) {
   try {
-    log.info('order_list/body', req.body);
+    log.info('order_list/body', req.body,req.params,req.query);
     Order.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
       .populate('member')
       .select(req.body.select === undefined ? "" : req.body.select)
@@ -25,16 +26,28 @@ exports.order_list = function (req, res, next) {
     return next(new ApplicationError("order_list", 400, "CONTROLLER.ORDER.ORDER_LIST.EXCEPTION", { name: "EXCEPTION", error }));
   }
 }
+exports.order_search = [async function (req, res, next) {
+  try {
+    log.info('order_search/params', req.query);
 
+    const { orders } = await findOrders(req.query);
+    res.status(201).json({ success: true, errors: [], data: orders });
+    return;
+  }
+  catch (error) {
+    return next(new ApplicationError("order_search", 400, "CONTROLLER.ORDER.ORDER_SEARCH.EXCEPTION", { name: "EXCEPTION", error }));
+  }
+}
+]
 exports.order = [
-  body('_id').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id'),
+  param('_id').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id'),
   async function (req, res, next) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("order", 400, "CONTROLLER.ORDER.ORDER.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const order = await Order.findById(req.body._id);
+      const order = await Order.findById(req.params._id);
       if (order === null) {
         return res.status(400).json({ success: false, errors: ["Order Not Exist"], data: [] });
       }
