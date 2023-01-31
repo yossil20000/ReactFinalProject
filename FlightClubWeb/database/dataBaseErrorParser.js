@@ -4,27 +4,26 @@ const parseValidationError = (error) => {
   let errors = []
   try {
     let errortoParse = error;
-    if(error.errors !== undefined)
-    {
+    if (error.errors !== undefined) {
       errortoParse = error.errors
     }
 
     const obj = JSON.parse(JSON.stringify(errortoParse))
-    const [keys] = Object.entries(obj) 
-    console.log("parseValidationError/key", keys,keys[1].name)
+    const [keys] = Object.entries(obj)
+    console.log("parseValidationError/key", keys, keys[1].name)
     for (const [key, value] of Object.entries(obj)) {
-      console.log(`${key}: `,value.name);
-      errors.push({value: value.value,msg: value.message,param: value.path,location: "Body"})
-    
+      console.log(`${key}: `, value.name);
+      errors.push({ value: value.value, msg: value.message, param: value.path, location: "Body" })
+
     }
-    
+
     console.log("parseValidationError/obj", errors)
-/*     const allError = error.message.substring(error.message.indexOf(':') + 1).trim()
-    const errorArray = allError.split(",").map((e) => e.trim());
-    errorArray.forEach(error => {
-      /* const [key,value] = error.split(":").map((e) => e.trim()); */
-      /* err[key] = value */
-      //errors.push(error);
+    /*     const allError = error.message.substring(error.message.indexOf(':') + 1).trim()
+        const errorArray = allError.split(",").map((e) => e.trim());
+        errorArray.forEach(error => {
+          /* const [key,value] = error.split(":").map((e) => e.trim()); */
+    /* err[key] = value */
+    //errors.push(error);
 
     //}); */
     return errors;
@@ -34,24 +33,24 @@ const parseValidationError = (error) => {
   }
 }
 const parseCastError = (error) => {
-  
+
   try {
     return [`${error.path}: ${error.value} Not Found `]
-    
+
   }
   catch (error) {
     return ['Unknown: Parsing Error']
   }
 }
 const parseExpressValidator = (error) => {
-  
+
   let err = {}
   let errors = []
   try {
-    
+
     error.forEach(error => {
-      
-      errors.push(`${error.param}: ${error.value }`);
+
+      errors.push(`${error.param}: ${error.value}`);
 
     });
     return errors;
@@ -61,18 +60,21 @@ const parseExpressValidator = (error) => {
   }
 }
 const parseApplicationError = (error) => {
-  let {name, errors} = error;
+  let { name, errors } = error;
   name = name == "" ? errors.name : name;
+  console.log("parseApplicationError/error", error)
   switch (name) {
     case "ValidationError":
       return { errorType: "VALIDATION", errors: parseValidationError(errors) };
     case "CastError":
       return { errorType: name.toUpperCase(), errors: parseCastError(errors) };
     case "ExpressValidator":
-      return { errorType: "VALIDATION",  ...error.errors };
+      return { errorType: "VALIDATION", ...error.errors };
+    case "Validator":
+      return { errorType: "ERROR", errors: errors };
     case "EXCEPTION":
-      if(typeof error == 'object'){
-        if(error.error.hasOwnProperty("message"))
+      if (typeof error == 'object') {
+        if (error.error.hasOwnProperty("message"))
           return { errorType: name, errors: [error.error.message] };
       }
       return { errorType: name, errors: [errors.error] };

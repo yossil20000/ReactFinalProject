@@ -4,8 +4,8 @@ var Schema = mongoose.Schema;
 
 var ClubAccountSchema = new Schema({
   account_id: {type: String, required: true,unique:true},
-  accounts: [{type: Schema.Types.ObjectId, ref: "Account"}],
-  transactions: [{type: Schema.Types.ObjectId, ref: "Transaction"}],
+  accounts: [{type: Schema.Types.ObjectId, ref: "Account" ,unique: true}],
+  transactions: [{type: Schema.Types.ObjectId, ref: "Transaction" ,unique: true}],
   balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   desctiption: {type: String},
   status:{type:String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active},

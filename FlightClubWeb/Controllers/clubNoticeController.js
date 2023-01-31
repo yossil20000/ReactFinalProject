@@ -10,7 +10,8 @@ exports.notice_list = function (req, res, next) {
             .sort([['issue_date', 'ascending']])
             .exec(function (err, list_notices) {
                 if (err) {
-                    return next(err); log.debug(err);
+                    log.debug(err);
+                    return next(err); 
                 }
                 else {
                     log.info('notice_list/results',list_notices.length );
