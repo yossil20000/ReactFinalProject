@@ -7,5 +7,5 @@ const clubAccountController = require('../Controllers/clubAccountController');
 
 router.get("/",clubAccountController.club); 
 router.put("/add_account",clubAccountController.add_account); 
-
+router.post('/combo',[authJWT.authenticate],  clubAccountController.combo);
 module.exports = router;

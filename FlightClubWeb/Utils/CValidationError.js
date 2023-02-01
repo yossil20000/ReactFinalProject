@@ -1,4 +1,4 @@
-class ValidationError {
+class CValidationError {
   value;
   msg;
   param;
@@ -25,5 +25,5 @@ class ValidationError {
 
 }
 module.exports = {
- ValidationError
+ CValidationError
 }

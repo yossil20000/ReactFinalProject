@@ -34,9 +34,15 @@ let collections = ["devicetypes",'members','devices',"Memberships"];
 function clubCreate(account_id,cb){
    
   let detail = {
-    account_id: account_id,
+    club:{
+        account_id: account_id,
+    },
+    
+    accounts: []
+    
   }
   let clubAccount = new ClubAccount(detail);
+  console.log("clubAccount",clubAccount)
   clubAccount.save((err) => {
       if(err){
           return cb(err,null);

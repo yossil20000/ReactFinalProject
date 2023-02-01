@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { getServerAddress, URLS } from "../../Enums/Routers"
 import { IAccount, IAccountBase, IAccountsCombo, IAccountsComboFilter, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
+import { IClubAccount, IClubAccountsCombo, IClubAddAccount } from "../../Interfaces/API/IClub"
 import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
@@ -21,7 +22,7 @@ export const accountApiSlice = createApi({
       return headers
     },
   }),
-  tagTypes: ["Accounts","Orders"],
+  tagTypes: ["Accounts","Orders","ClubAccount"],
   endpoints(builder) {
     return {
       fetchAllAccounts: builder.query<IResultBase<IAccount>, IFilter>({
@@ -114,7 +115,29 @@ export const accountApiSlice = createApi({
           body: order
         }),
         invalidatesTags: [{ type: "Orders" }]
-      })
+      }),
+      clubAccount: builder.query<IResultBase<IClubAccount>, void>({
+        query: () => ({
+          url: `/${URLS.CLUB}`,
+          method: 'GET'
+        }),
+        providesTags: [{type: "ClubAccount"}]
+      }),
+      clubAccountCombo: builder.query<IResultBase<IClubAccountsCombo>, void>({
+        query: () => ({
+          url: `/${URLS.CLUB_COMBO}`,
+          method: 'GET'
+        })
+      }),
+      clubAddAccount: builder.mutation<IResultBaseSingle<IClubAccount>,IClubAddAccount >({
+        query: (addAccount) => ({
+          url: `/${URLS.CLUB_ADD_ACCOUNT}`,
+          method: 'PUT',
+          body: addAccount
+        }),
+        invalidatesTags: [{ type: "ClubAccount" }]
+      }),
+
     }
   }
 
@@ -132,5 +155,8 @@ export const {
   useDeleteOrderMutation,
   useUpdateOrderMutation,
   useCreateOrderMutation,
-  useGetOrderSearchQuery
+  useGetOrderSearchQuery,
+  useClubAccountQuery,
+  useClubAddAccountMutation,
+  useClubAccountComboQuery
 } = accountApiSlice;

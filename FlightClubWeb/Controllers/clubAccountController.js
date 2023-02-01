@@ -2,7 +2,7 @@ const log = require('debug-level').log('ClubAccountController');
 const { body, param, validationResult } = require('express-validator');
 const ClubAccount = require('../Models/clubAccount');
 const { ApplicationError } = require('../middleware/baseErrors');
-const { ValidationError } = require('../Utils/CValidationError');
+const { CValidationError } = require('../Utils/CValidationError');
 
 const Account = require('../Models/account');
 
@@ -34,18 +34,18 @@ exports.add_account = [
       }
       const clubAccount = await ClubAccount.findById(req.body._id).exec();
       if (!clubAccount) {
-        return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new ValidationError(req.body._id, `Club Account ${req.body._id} not found`, '_id', "DB.ClubAccount")).validationResult.errors }));
+        return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body._id, `Club Account ${req.body._id} not found`, '_id', "DB.ClubAccount")).validationResult.errors }));
       }
 
       const account = await Account.findById(req.body.account_id).exec();
       if (!account) {
-        return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new ValidationError(req.body.account_id, `Account ${req.body.account_id} not found`, 'account_id', "DB.Account")).validationResult.errors }));
+        return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body.account_id, `Account ${req.body.account_id} not found`, 'account_id', "DB.Account")).validationResult.errors }));
       }
 
       if (clubAccount && account) {
         const foundAccount = clubAccount.accounts.find((account) => account == req.body.account_id)
         if (foundAccount) {
-          return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new ValidationError(req.body.account_id, "Account already Exist", 'account_id', "DB")).validationResult.errors }));
+          return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body.account_id, "Account already Exist", 'account_id', "DB")).validationResult.errors }));
         }
 
         clubAccount.accounts.push(account)
@@ -57,7 +57,7 @@ exports.add_account = [
           }
           else {
             log.info("clubAccount.Save", results)
-            return res.status(201).json({ success: true, data: [results] });
+            return res.status(201).json({ success: true, data: results });
           }
         })
       }
@@ -96,3 +96,26 @@ exports.club_create_account = [
     }
   }
 ]
+
+exports.combo = function (req, res, next) {
+  try {
+    log.info("combo/filter", req.body);
+    ClubAccount.findById(req?.body?.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
+    .select("accounts _id  club")  
+    .populate({path: "accounts",model: "Account",select:{ "_id": 1, "account_id" : 1}
+      ,populate:[{
+        path: 'member',
+        model: "Member",
+        select: {"_id" : 1, "family_name": 1,"member_id":1}
+      }] })
+      
+
+      .exec(function (err, list_members) {
+        if (err) { return next(err); }
+        res.status(201).json({ success: true, errors: [], data: list_members });
+      })
+  }
+  catch (error) {
+    return next(new ApplicationError("combo", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+  }
+}

@@ -59,6 +59,9 @@ export  enum URLS{
     ORDERS_SEARCH = 'api/orders/search',
     ORDERS_DELETE = 'api/orders/delete',
     ORDERS_UPDATE = 'api/orders/update',
-    ORDERS_CREATE = 'api/orders/create'
+    ORDERS_CREATE = 'api/orders/create',
+    CLUB = 'api/club_account',
+    CLUB_COMBO = 'api/club_account/combo',
+    CLUB_ADD_ACCOUNT = 'api/club_account/add_account'
     
 }

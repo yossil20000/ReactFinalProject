@@ -71,7 +71,7 @@ const parseApplicationError = (error) => {
     case "ExpressValidator":
       return { errorType: "VALIDATION", ...error.errors };
     case "Validator":
-      return { errorType: "ERROR", errors: errors };
+      return { errorType: "VALIDATION", errors: errors };
     case "EXCEPTION":
       if (typeof error == 'object') {
         if (error.error.hasOwnProperty("message"))
