@@ -2,10 +2,10 @@ const log = require('debug-level').log('AccountController');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
 const { findAccount } = require('../Services/accountService')
-const Account = require('../Models/account');
+const {Account} = require('../Models/account');
 const Member = require('../Models/member');
 const async = require('async');
-const { ResultWithContext } = require('express-validator/src/chain');
+
 exports.account_list = [async function (req, res, next) {
   try {
     log.info('account_list/req', req.body);

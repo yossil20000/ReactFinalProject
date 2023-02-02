@@ -15,5 +15,8 @@ function getDecimal(value) {
   }
   return value;
 };
-
-module.exports = mongoose.model("Transaction", TransactionSchema);
+const Transaction = mongoose.model("Transaction", TransactionSchema);
+module.exports = {
+  Transaction: Transaction,
+  TransactionSchema: TransactionSchema
+}

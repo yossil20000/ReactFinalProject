@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 const constants = require('../Models/constants');
+const {Transaction,TransactionSchema} = require('../Models/transaction')
+
 var Schema = mongoose.Schema;
 var ClubSchema = new Schema({
   account_id: { type: String, required: true, unique: true },
@@ -8,7 +10,7 @@ var ClubSchema = new Schema({
 })
 var ClubAccountSchema = new Schema({
   accounts: [{ type: Schema.Types.ObjectId, ref: "Account", unique: true }],
-  transactions: [{ type: Schema.Types.ObjectId, ref: "Transaction", unique: true }],
+  transactions: [TransactionSchema],
   balance: { type: mongoose.Decimal128, default: 0, get: getDecimal },
   desctiption: { type: String },
   status: { type: String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active },
