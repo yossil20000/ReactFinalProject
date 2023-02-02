@@ -1,5 +1,5 @@
 
-import DataTablePro from '../../Components/DataTablePro';
+import OrderTable from '../../Components/OrderTable';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 function AccountOrdersTab() {
   return (
@@ -9,7 +9,7 @@ function AccountOrdersTab() {
           <>header</>
         </ContainerPageHeader>
         <ContainerPageMain>
-          <DataTablePro />
+          <OrderTable />
         </ContainerPageMain>
         <ContainerPageFooter>
           <>

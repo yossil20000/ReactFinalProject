@@ -1,8 +1,7 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react'
 import { useAppSelector } from '../../app/hooks';
-import DataTablePro from '../../Components/DataTablePro';
+import OrderTable from '../../Components/OrderTable';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container'
 
 function UserOrder() {
@@ -16,7 +15,7 @@ function UserOrder() {
         </Box>
         
       </ContainerPageHeader>
-      <ContainerPageMain><DataTablePro hideAction={true} filter={{member: login.member._id}}/></ContainerPageMain>
+      <ContainerPageMain><OrderTable hideAction={true} filter={{member: login.member._id}}/></ContainerPageMain>
       <ContainerPageFooter><></></ContainerPageFooter>
     </>
 

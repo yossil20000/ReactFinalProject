@@ -4,6 +4,8 @@ import { green } from '@mui/material/colors';
 import { GridRenderCellParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { OrdefStatus } from '../../Interfaces/API/IAccount';
+import PaymentIcon from '@mui/icons-material/Payment';
+import PaidIcon from '@mui/icons-material/Paid';
 export interface ITransactionActionProps {
   params: any;
   rowId: string | null;
@@ -39,7 +41,16 @@ export default function TransactionAction(props: ITransactionActionProps) {
   return (
     <Box  >
       {
-        params.row.status === OrdefStatus.CLOSE || ( isSuccess == true && isloading == false) &&
+        params.row.status.toString() === OrdefStatus.CLOSE  &&
+        (
+          <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+            <Tooltip title={"Transaction Done"}>
+              <PaidIcon />
+            </Tooltip>
+          </Fab>
+        )
+      }
+       { ( isSuccess == true && isloading == false) &&
         (
           <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
             <Tooltip title={"Transaction Done"}>
@@ -48,11 +59,11 @@ export default function TransactionAction(props: ITransactionActionProps) {
           </Fab>
         )
       }
-      {isSuccess == false && isloading == false &&
+      {params.row.status !== OrdefStatus.CLOSE && isSuccess == false && isloading == false &&
         (
           <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleTransaction} >
             <Tooltip title={"Place Transaction"}>
-              <Save />
+              <PaymentIcon />
             </Tooltip>
 
           </Fab>
