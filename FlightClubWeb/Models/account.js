@@ -8,7 +8,7 @@ const AccountSchema = new Schema({
   member: {type: Schema.Types.ObjectId, ref: "Member", required: true},
   transactions: [TransactionSchema],
   balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
-  desctiption: {type: String},
+  description: {type: String},
   status:{type:String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active},
 },{toJSON: {getters: true}})
 

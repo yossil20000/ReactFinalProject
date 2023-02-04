@@ -92,7 +92,7 @@ exports.club_create_account = [
         account_id: "CA000001",
         member: req.body.member_id,
         balance: 0,
-        desctiption: req.body.desctiption === undefined ? "" : req.body.desctiption
+        description: req.body.description === undefined ? "" : req.body.description
       })
       club = new Club({
         account: account
@@ -137,19 +137,42 @@ const getTranctionName = (source, sourceTransaction) => {
   }
 }
 exports.add_transaction = [
-  body('source._id').isLength({ min: 24, max: 24 }).withMessage("source must be 24 characters"),
+  body('source._id').isLength({ min: 0, max: 24 }).withMessage("source must be 24 characters"),
   body('source.accountType').isLength({ min: 6, max: 6 }).withMessage("must be valid"),
-  body('destination._id').isLength({ min: 24, max: 24 }).withMessage("destination must be 24 characters"),
+   body('destination._id').isLength({ min: 24, max: 24 }).withMessage("destination must be 24 characters"),
   body('destination.accountType').isLength({ min: 6, max: 6 }).withMessage("must be valid"),
   body('amount', "Must be number").isNumeric(),
   body('order').isLength({ min: 24, max: 24 }).withMessage("order must be 24 characters"),
   async (req, res, next) => {
     try {
-      const { source, destination, amount, order, desctiption } = req.body;
+      let { source, destination, amount, order, description } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
       }
+      const orderDoc = await Order.findById(order).select("member").lean().exec();
+      const account =  await Account.findOne({"member": orderDoc.member}).lean().exec();
+      log.info("Find member",orderDoc);
+    
+    
+      log.info("Find member",orderDoc.member);
+      
+      const {member} = orderDoc;
+      
+      
+      log.info("Find member/memberId.member",member);
+    
+     
+
+      
+      if(source._id === "")
+      {
+        if(!account || account === undefined){
+          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source._id, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
+        }
+        source._id = account["_id"].toString();
+      }
+      
       /* Transaction */
       const session = await mongoose.startSession();
       try {
@@ -208,21 +231,21 @@ exports.add_transaction = [
             destination: tDestination,
             amount: -amount,
             order: order,
-            desctiption: desctiption
+            description: description
           });  
           let transactionD = new Transaction({
             source: tSource,
             destination: tDestination,
             amount: amount,
             order: order,
-            desctiption: desctiption
+            description: description
           });   */
       sourceTransaction.transactions.push({source: tSource,
         destination: tDestination,
         amount: -amount,
         order: order,
-        desctiption: desctiption})
-     sourceTransaction.balance -= Number(Number(amount).toFixed(2));
+        description: description})
+     sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) -  Number(Number(amount).toFixed(2));
      
       if(isNaN(sourceTransaction.balance))
       {
@@ -236,8 +259,8 @@ exports.add_transaction = [
         destination: tDestination,
         amount: amount,
         order: order,
-        desctiption: desctiption})
-      destinationTransaction.balance += Number(Number(amount).toFixed(2));
+        description: description})
+      destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(amount.toFixed(2));
       if(isNaN(destinationTransaction.balance))
       {
         throw new Error('Destination: The new balance is not a number!');
@@ -282,7 +305,7 @@ exports.add_transaction_ = [
   body('order').isLength({ min: 24, max: 24 }).withMessage("order must be 24 characters"),
   async (req, res, next) => {
     try {
-      const { source, destination, amount, order, desctiption } = req.body;
+      const { source, destination, amount, order, description } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));

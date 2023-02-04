@@ -5,6 +5,7 @@ import { useCallback, useContext, useMemo } from "react";
 import { MembersContext, MembersContextType } from "../../../app/Context/MemberContext";
 import CheckSelect from "../../../Components/Buttons/CheckSelect";
 import { InputComboItem } from "../../../Components/Buttons/ControledCombo"
+import MemberTypeCombo from "../../../Components/Buttons/MemberTypeCombo";
 import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
 import StatusCombo from "../../../Components/Buttons/StatusCombo";
 import MembershipCombo from "../../../Components/Membership/MembershipCombo";
@@ -108,6 +109,9 @@ function PermissionsTab() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={getSelectedItem(selectedMember?.status === undefined ? "" : selectedMember?.status.toString())} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <MemberTypeCombo onChanged={(item) => onComboChanged(item, "member_type")} source={source} selectedItem={getSelectedItem(selectedMember?.member_type === undefined ? "" : selectedMember?.member_type.toString())} />
         </Grid>
         <Grid item xs={12} sm={12}>
 

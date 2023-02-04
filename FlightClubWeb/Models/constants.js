@@ -1,9 +1,10 @@
 const ROLES = {
-    0: 'guest',
-    1: 'user',
-    2: 'desk',
-    3: 'account',
-    4: 'admin'
+    0: 'supplier',
+    1: 'guest',
+    2: 'user',
+    3: 'desk',
+    4: 'account',
+    5: 'admin'
 }
 const DEVICE_STATUS = {
     0:"IN_SERVICE",

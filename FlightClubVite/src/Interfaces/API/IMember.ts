@@ -13,13 +13,14 @@ export enum Gender {
     "other" = "other"
 }
 export enum MemberType{
-    Normal,
-    Member    
+    Supplier ="Supplier",
+    Member  = "Member"  
 }
 export enum Status {
     "Active" = "Active","Suspended" = "Suspended","Removed"="Removed"
 }
 export enum Role{
+    "supplier"= 'supplier',
     "guest"= 'guest',
     "user" = 'user',
     "desk" = "desk",
@@ -69,6 +70,7 @@ export interface IMemberAdmin  extends IMemberBase{
     date_of_join: Date
     date_of_leave: Date | null
     membership: IMembership
+    username: string;
 }
 export default interface IMember  extends IMemberBase{
     _id:string

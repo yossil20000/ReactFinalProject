@@ -26,7 +26,7 @@ exports.member_list = function (req, res, next) {
 }
 exports.combo = function (req, res, next) {
     try {
-        log.info("combo/filter",req.body);
+        log.info("combo/filter", req.body);
         Member.find(req?.body?.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
             .select('family_name _id member_id first_name')
             .sort([['family_name', 'ascending']])
@@ -53,14 +53,14 @@ exports.member_detail = function (req, res, next) {
     }
 }
 exports.member_delete = [
-    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
-    body('memberId').trim().isLength({ min: 24, max:24 }).escape().withMessage('memberId must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id must be valid 24 characters'),
+    body('memberId').trim().isLength({ min: 24, max: 24 }).escape().withMessage('memberId must be valid 24 characters'),
     body('passcode').equals('force_delete').withMessage("Invalid passcode"),
     function (req, res, next) {
         log.info(`member_delete`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("member_delete", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("member_delete", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
         }
         try {
             async.parallel({
@@ -91,13 +91,13 @@ exports.member_delete = [
 
     }]
 exports.member_status = [
-    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id must be valid 24 characters'),
     body('status').trim().isLength({ min: 4 }).escape().withMessage('memberId must be valid '),
     function (req, res, next) {
         log.info(`member_stats`, req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new ApplicationError("member_status", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+            return next(new ApplicationError("member_status", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
         }
         try {
             async.parallel({
@@ -124,7 +124,7 @@ exports.member_status = [
         }
     }]
 exports.member_update = [
-    body('_id').trim().isLength({ min: 24, max:24 }).escape().withMessage('_id_device must be valid 24 characters'),
+    body('_id').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id_device must be valid 24 characters'),
     body('member_id').trim().isLength({ min: 1 }).escape().withMessage('member_id must be specified'),
     body('contact.email').isEmail().escape().withMessage('email must be specified'),
     body('contact.billing_address.line1').trim().isLength({ min: 1 }).escape(),
@@ -141,7 +141,7 @@ exports.member_update = [
             const errors = validationResult(req);
             log.info("member_update", req.body);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("member_update", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+                return next(new ApplicationError("member_update", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
             }
             else if (req.body.username || req.body.password) {
                 return res.status(400).json({ success: false, errors: ["username / password not allowed"], data: req.body });
@@ -153,7 +153,8 @@ exports.member_update = [
                             Member.findByIdAndUpdate(req.body._id, req.body, {}).exec(callback);
                         }
                     }, function (err, results) {
-                        if (err) { return next(err); }
+                        if (err) { 
+                            return next(err); }
                         else {
                             res.status(201).json({ success: true, errors: [], data: results.member_update });
                             return;
@@ -177,8 +178,8 @@ exports.member_create = [
     body('first_name').trim().isLength({ min: 1 }).escape().withMessage('first_name must be specified '),
     body('family_name').trim().isLength({ min: 1 }).escape().withMessage('family_name must be specified'),
     body('contact.email').trim().isEmail().withMessage('email is invalid'),
-    body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601().toDate(),
-    body('date_of_join', 'Invalid date_of_join').optional({ checkFalsy: true }).isISO8601().toDate(),
+    body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601(),
+    body('date_of_join', 'Invalid date_of_join').optional({ checkFalsy: true }).isISO8601(),
     body('username', `8-12 characters,  at list one digit lower & upper case. not include ( <>?$&*%()+- )`).custom((value) => {
         return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,12}$/.test(value);
     }),
@@ -191,7 +192,7 @@ exports.member_create = [
             const errors = validationResult(req);
             log.info(req.body);
             if (!errors.isEmpty()) {
-                return next(new ApplicationError("member_create", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator",errors }));
+                return next(new ApplicationError("member_create", 400, "CONTROLLER.MEMBER.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
             }
             else {
                 const user = req.body;
@@ -206,7 +207,7 @@ exports.member_create = [
                                 first_name: user.first_name,
                                 family_name: user.family_name,
                                 member_id: req.body.member_id,
-                                date_of_birth: user.date_of_birth,
+                                date_of_birth: user.date_of_birth === undefined ? new Date() : user.date_of_birth,
                                 date_of_join: user.date_of_join === undefined ? new Date() : user.date_of_join,
                                 password: user.password,
                                 contact: user.contact,

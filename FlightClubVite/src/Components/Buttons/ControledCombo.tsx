@@ -19,7 +19,11 @@ export interface InputComboItem{
   lable: string;
   description: string;
 }
-
+export const newInputComboItem : InputComboItem = {
+  _id: '',
+  lable: '',
+  description: ''
+}
 export interface InputComboProps{
   items: InputComboItem[];
   title: string;

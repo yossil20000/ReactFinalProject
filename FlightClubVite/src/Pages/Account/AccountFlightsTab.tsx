@@ -148,7 +148,7 @@ function AccountFlightsTab() {
         discount: Number(discount.toFixed(2)),
         amount: amount,
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
-        desctiption: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
+        description: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
         status: OrdefStatus.CREATED,
         member: flightFound.member,
         orderBy: `${flightFound.member.family_name} / ${flightFound.member.member_id}`

@@ -125,13 +125,13 @@ function UpdateAccountDialog({ value, onClose, onSave, open, ...other }: UpdateA
                   
                   type={"text"}
                   sx={{ marginLeft: "0px", width: "100%", fontSize: 25 }}
-                  name="desctiption"
-                  id="desctiption"
+                  name="description"
+                  id="description"
                   variant="standard"
-                  key={"desctiption"}
-                  value={selectedAccount.desctiption}
+                  key={"description"}
+                  value={selectedAccount.description}
                   InputLabelProps={{ shrink: true }}
-                  label="Desctiption"
+                  label="description"
                   onChange={handleChange}
                 />
               </Grid>

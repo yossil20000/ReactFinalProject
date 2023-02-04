@@ -12,7 +12,7 @@ var ClubAccountSchema = new Schema({
   accounts: [{ type: Schema.Types.ObjectId, ref: "Account", unique: true }],
   transactions: [TransactionSchema],
   balance: { type: mongoose.Decimal128, default: 0, get: getDecimal },
-  desctiption: { type: String },
+  description: { type: String },
   status: { type: String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active },
   club: ClubSchema,
   contact: {

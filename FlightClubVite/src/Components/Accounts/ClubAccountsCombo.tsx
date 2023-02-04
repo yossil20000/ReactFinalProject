@@ -16,12 +16,10 @@ const filterCombo: IMemberComboFilter = {
 
 function ClubAccountsCombo(props: ComboProps) {
   const { onChanged, source, filter } = props;
-  const { data, isError, isLoading, error } = useFetchAccountsComboQuery();
   const { data: clubAccounts } = useClubAccountQuery();
-  const [accounts, setAccounts] = useState<string[]>();
-  const [bankaccounts, setbankAccounts] = useState<string[]>()
+  const [bankaccounts, setbankAccounts] = useState<InputComboItem[]>([])
 
-  const getDiff = () => {
+/*   const getDiff = () => {
    if(accounts !== undefined && bankaccounts !== undefined){
     let diff = accounts.diff(bankaccounts)
     console.log("ClubAccountsCombo/getDiff/diff",diff)
@@ -30,34 +28,25 @@ function ClubAccountsCombo(props: ComboProps) {
     diff = accounts.intersec(bankaccounts);
     console.log("ClubAccountsCombo/getDiff/intersect",diff)
    }
-  }
-  getDiff()
-  const [items, setItems] = useState<InputComboItem[]>([]);
+  } */
+  /* getDiff() */
+ 
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Member`, undefined);
+  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`${source}`, undefined);
 
-  const accountsToItemCombo = (input: IAccountsCombo): InputComboItem => {
-    return { lable: `${input.account_id} ${input.member?.family_name} ${input.member?.member_id}`, _id: input._id, description: "" }
+  const clubsAccountToItemCombo = (input: IClubAccount): InputComboItem => {
+    return { lable: `${input.club.brand}/${input.club.branch}/${input.club.account_id}`, _id: input._id, description: "" }
   }
 
-  useEffect(() => {
-    console.log("ClubAccountsCombo/ data", data?.data)
 
-    let items = data?.data.map((item: IAccountsCombo) => accountsToItemCombo(item));
-    console.log("ClubAccountsCombo/ Item", items)
-    if (items !== undefined)
-      setItems(items);
-    const itemsAccount = items?.map((item) => item._id);
-    if (itemsAccount !== undefined) { setAccounts(itemsAccount); console.log("ClubAccountsCombo/itemsAccount", itemsAccount) }
-  }, [data?.data])
 
   useEffect(() => {
 
     console.log("ClubAccountsCombo/clubAccounts/data", clubAccounts?.data)
 
-    let items = clubAccounts?.data.map((item: IClubAccount) => (item.accounts));
+    let items = clubAccounts?.data.map((item: IClubAccount) => (item));
     if (items !== undefined && items?.length > 0) {
-      const itemsClubAccount = items[0].map((item) => item._id);
+      const itemsClubAccount : InputComboItem[] = items.map((item) => clubsAccountToItemCombo(item));
       if (itemsClubAccount !== undefined) {
         setbankAccounts(itemsClubAccount)
         console.log("ClubAccountsCombo/clubAccounts/itemsClubAccount", itemsClubAccount)
@@ -77,7 +66,7 @@ function ClubAccountsCombo(props: ComboProps) {
       onChanged(selectedItem)
   }, [])
   return (
-    <ControledCombo onSelectedItem={onSelectedItem} selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title="Account" />
+    <ControledCombo onSelectedItem={onSelectedItem} selectedItem={selectedItem === undefined ? null : selectedItem} items={bankaccounts} title="Account" />
   )
 }
 

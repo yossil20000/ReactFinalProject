@@ -6,24 +6,50 @@ import { useEffect, useState } from 'react';
 import { OrdefStatus } from '../../Interfaces/API/IAccount';
 import PaymentIcon from '@mui/icons-material/Payment';
 import PaidIcon from '@mui/icons-material/Paid';
+import { EAccountType, IAddTransaction, IClubAccountCombo } from '../../Interfaces/API/IClub';
+import { useClubAddTransactionMutation } from '../../features/Account/accountApiSlice';
+import { getValidationFromError } from '../../Utils/apiValidation.Parser';
+import { IValidationAlertProps } from '../Buttons/TransitionAlert';
+import ErrorDialog from '../ErrorDialog';
 export interface ITransactionActionProps {
   params: any;
   rowId: string | null;
   setRowId: React.Dispatch<React.SetStateAction<string | null>>
+  transaction: IAddTransaction
 }
 export default function TransactionAction(props: ITransactionActionProps) {
+  const { rowId, setRowId, params,transaction } = props;
+  const { id, _idMember ,amount} = params.row;
   const [isloading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-
-  const { rowId, setRowId, params } = props;
-  const { id, _idMember } = params.row;
+  const [openError, setOpenError] = useState(false);
+  const [validationAlert,setValidationAlert] = useState<IValidationAlertProps[]>([])
+  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionMutation();
+  
   /*  console.log("TransactionAction/params",id,_idMember,rowId) */
-  const handleTransaction = () => {
-    console.log("TransactionAction/handleTransaction", id, params)
+
+  const handleTransaction = async () => {
+    console.log("TransactionAction/handleTransaction", id, params,transaction)
     setIsLoading(true);
     const result: boolean = true;
+    await AddTransaction(transaction).unwrap().then((data) => {
+      console.log("TransactionAction/handleTransaction/data", data)
+      if (data.success === false) {
+        const validation = getValidationFromError(data.errors, () : void =>{});
+        setValidationAlert(validation);
+        setOpenError(true);
+        return;
+      }
+    }).catch((err) => {
+      const validation = getValidationFromError(err, () : void =>{});
+      setValidationAlert(validation);
+      setOpenError(true);
+      return;
+    });
+    
     setInterval(() => {
       if (result) {
+        
         setIsSuccess(true);
         setRowId(null);
 
@@ -40,6 +66,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
 
   return (
     <Box  >
+      {openError === true ? (<ErrorDialog setOpen={setOpenError} open={openError} validationAlert={validationAlert}/>) : null}
       {
         params.row.status.toString() === OrdefStatus.CLOSE  &&
         (

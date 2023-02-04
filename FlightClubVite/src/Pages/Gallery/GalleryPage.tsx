@@ -8,6 +8,8 @@ import QuiltedImageList from '../../Components/Masonry/QuiltedImageList';
 import { EAction } from '../../Components/Buttons/ActionButtons';
 import MembersCombo from '../../Components/Members/MembersCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
+import { MemberType } from '../../Interfaces/API/IMember';
+import { Status } from '../../Interfaces/API/IStatus';
 const source = "GalleryPage/filter"
 function GalleryPage() {
 
@@ -68,7 +70,9 @@ function GalleryPage() {
       <Typography variant="h6" align="center">Gallery</Typography>
         <Box display={'flex'} justifyContent={'space-between'}>
           <Box display={'flex'} flexGrow={1}  >
-            <MembersCombo onChanged={onMemberChanged} source={source} />
+            <MembersCombo onChanged={onMemberChanged} source={source} filter={{filter: {
+    status: Status.Active,member_type: MemberType.Member
+  }}}/>
             <FormControlLabel sx={{ '& .MuiFormControlLabel-label': { width: 'max-content' } }} control={<Checkbox onChange={()=> setFilter(prev => !prev)} name={"isValid"} checked={filter} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label={`Filter ${filterImage().length} / ${data?.data ? data.data.length : 0}`} />
           </Box>
 

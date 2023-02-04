@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { getServerAddress, URLS } from "../../Enums/Routers"
 import { IAccount, IAccountBase, IAccountsCombo, IAccountsComboFilter, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
-import { IClubAccount, IClubAccountsCombo, IClubAddAccount } from "../../Interfaces/API/IClub"
+import { IAddTransaction, IClubAccount, IClubAccountsCombo, IClubAddAccount } from "../../Interfaces/API/IClub"
 import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
@@ -137,6 +137,14 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: [{ type: "ClubAccount" }]
       }),
+      clubAddTransaction: builder.mutation<IResultBaseSingle<IClubAccount>,IAddTransaction >({
+        query: (addTransaction) => ({
+          url: `/${URLS.CLUB_ADD_TRANSACTION}`,
+          method: 'PUT',
+          body: addTransaction
+        }),
+        invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" }]
+      }),
 
     }
   }
@@ -158,5 +166,6 @@ export const {
   useGetOrderSearchQuery,
   useClubAccountQuery,
   useClubAddAccountMutation,
-  useClubAccountComboQuery
+  useClubAccountComboQuery,
+  useClubAddTransactionMutation
 } = accountApiSlice;

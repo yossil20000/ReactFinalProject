@@ -55,7 +55,7 @@ var MemberSchema = new Schema({
          index: {unique:[true , "username already exist in database"]},
         },
     password: {type: String, required: true},
-    member_type:{type:String, enum:['Normal','Member'] , default: 'Normal'},
+    member_type:{type:String, enum:['Supplier','Member'] , default: 'Supplier'},
     status:{type:String, enum:["Active","Suspended","Removed"], default: "Active"},
     role: {type: Role, _id:false} ,
     date_of_birth: {type: Date, required: true},

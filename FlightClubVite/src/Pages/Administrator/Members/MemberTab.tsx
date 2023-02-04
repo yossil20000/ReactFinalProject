@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, TextField } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { MembersContext, MembersContextType } from '../../../app/Context/MemberContext';
 import { MembershipContext } from '../../../app/Context/MembershipContext';
@@ -62,7 +62,7 @@ function MemberTab() {
     const newMember: IMemberAdmin = {
       _id: "",
       status: Status.Suspended,
-      member_type: MemberType.Normal,
+      member_type: MemberType.Member,
       role: {
         roles: [Role.guest]
       },
@@ -74,6 +74,7 @@ function MemberTab() {
       family_name: "",
       first_name: "",
       gender: Gender.other,
+      username: "",
       image: "",
       contact: {
         billing_address: {
@@ -170,27 +171,37 @@ function MemberTab() {
         <div className='header'>
           <Box marginTop={1}>
             <Grid container columns={12}>
-              <Grid item xs={12}>
-                <MembersCombo onChanged={handleMemberChange} source={"source"} />
+              <Grid item xs={12} md={6}>
+                <MembersCombo onChanged={handleMemberChange} source={"source"} filter={{}}/>
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+              <TextField
+                  disabled
+                  type={"text"}
+                  sx={{ marginLeft: "0px", width: "100%", fontSize: 25 }}
+                  name=""
+                  id="member_info"
+                  variant="standard"
+                  key={"member_info"}
+                  value={`${selectedItem?.family_name} ${selectedItem?.first_name} / ${selectedItem?.member_id} ${selectedItem?.member_type} ` }
+                  InputLabelProps={{ shrink: true }}
+                  label="Member Info"
+                  
+                />
               </Grid>
               <Grid item xs={12}>
                 <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
               </Grid>
             </Grid>
-
-
-
-
           </Box>
         </div>
         <div className='main' style={{ overflow: "auto", height: "100%" }}>
           <Box marginTop={1} height={"100%"} >
-
             {value === 0 && <GeneralTab />}
             {value === 1 && (<AddresesTab />)}
             {value === 2 && (<PermissionsTab />)}
           </Box>
-
         </div>
         <div className='footer'>
         <Grid container>

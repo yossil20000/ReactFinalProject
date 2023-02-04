@@ -13,8 +13,8 @@ const filterCombo : IMemberComboFilter = {
   }
   
 function MembersCombo(props : ComboProps) {
-  const {onChanged,source,filter} = props;
-  const { data, isError, isLoading, error } = useFetchMembersComboQuery(filter === undefined ? {} : filterCombo);
+  const {onChanged,source,filter,selectedItem: initialSelected} = props;
+  const { data, isError, isLoading, error } = useFetchMembersComboQuery(filter === undefined ? {} : filter);
   
   const [items,setItems] = useState<InputComboItem[]>([]);
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
@@ -42,6 +42,9 @@ function MembersCombo(props : ComboProps) {
     if(selectedItem)
       onChanged(selectedItem)
   },[])
+  useEffect(() => {
+    setSelectedItem(initialSelected)
+  },[initialSelected])
   return (
     <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title="Members" />
   )

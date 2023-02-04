@@ -121,7 +121,7 @@ const address = {
     state: "ISRAEL"
 }
 /* const roles = new Role({
-    roles: [CE.ROLES[1], CE.ROLES[3]]
+    roles: [CE.ROLES[2], CE.ROLES[4]]
 }); */
 function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,password,membership,roles,username ,cb) {
     let memberShip = new Membership();
@@ -167,19 +167,19 @@ function createMembers(cb) {
     async.series([
         function (callback) {
             const roles = new Role({
-                roles: [CE.ROLES[1], CE.ROLES[4]]
+                roles: [CE.ROLES[2], CE.ROLES[5]]
             })
             memberCreate("Yosef", "Levy", "1965-08-21", "2011-11-01", "159828392","yos.1965@gmail.com", "Pass1000@",memberships[0],roles,"User1000@", callback);
         },
         function (callback) {
             const roles = new Role({
-                roles: [CE.ROLES[1], CE.ROLES[3]]
+                roles: [CE.ROLES[2], CE.ROLES[4]]
             })
             memberCreate("Sting", "TV", "1966-09-22", "2012-12-02", "259828392", 'stingTV2010300@gmail.com',"Pass2000@",memberships[0], roles,"User2000@",callback);
         },
         function (callback) {
             const roles = new Role({
-                roles: [CE.ROLES[0]]
+                roles: [CE.ROLES[1]]
             })
             memberCreate("Pilot", "Pilot", "1966-09-22", "2012-12-02", "359828392", 'tyy130500@gmail.com',"Pass3000@", memberships[0], roles,"User3000@",callback);
         }

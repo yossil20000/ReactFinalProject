@@ -6,7 +6,7 @@ export interface IClubAccountBase {
   accounts: [IAccount],
   transactions: [ITransaction],
   balance: number,
-  desctiption: string,
+  description: string,
   status: Status,
   club: {
     account_id: string,
@@ -35,18 +35,42 @@ export interface IClubAccountBase {
 export interface IClubAccount extends IClubAccountBase {
   _id: string
 }
+export enum EAccountType {
+  EAT_BANK= "100100",
+  EAT_ACCOUNT= '200200',
+  EAT_SUPPLIERS = '100300'
+}
+
+export interface IAddTransaction {
+  source: {
+    _id: string,
+    accountType: string
+  },
+  destination: {
+    _id: string,
+    accountType: string
+  },
+  amount: number,
+  order: string,
+  description: string
+}
+
 export interface ITransactionBase {
   source: string,
   destination: string,
   amount: number,
   order: IOrder,
-  desctiption: string
+  description: string
 }
 
 export interface ITransaction extends ITransactionBase {
   _id: string
 }
 
+
+export interface IClubAddAccount {
+  
+}
 export interface IClubAddAccount {
   _id: string,
   account_id: string

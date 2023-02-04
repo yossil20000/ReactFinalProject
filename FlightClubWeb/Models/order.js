@@ -15,7 +15,7 @@ var OrderSchema = new Schema({
   pricePeUnit: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   orderType: OrderTypeSchema,
-  desctiption: {type: String},
+  description: {type: String},
   status: {type:String, enum: Object.values(constants.OrderStatus), default: constants.OrderStatus.CREATED},
   member: {type: Schema.Types.ObjectId,ref: Member, required:true}
 },{toJSON: {getters: true}})

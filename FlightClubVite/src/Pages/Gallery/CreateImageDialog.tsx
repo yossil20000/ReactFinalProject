@@ -9,6 +9,8 @@ import IImage, { IImageBase } from "../../Interfaces/API/IImage";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import { resizeFileTobase64 } from "../../Utils/files";
 import MoodBadIcon from '@mui/icons-material/MoodBad';
+import { Status } from "../../Interfaces/API/IStatus";
+import { MemberType } from "../../Interfaces/API/IMember";
 const source: string = "CreateImage"
 
 export interface CreateImageDialogProps {
@@ -173,7 +175,9 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
         <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
           <Grid item xs={12}>
             <Item>
-              <MembersCombo onChanged={onMemberChanged} source={source} filter={true} />
+              <MembersCombo onChanged={onMemberChanged} source={source} filter={{filter: {
+    status: Status.Active,member_type: MemberType.Member
+  }}} />
             </Item>
           </Grid>
           {action === EAction.DELETE ? null : (

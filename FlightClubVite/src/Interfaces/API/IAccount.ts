@@ -39,7 +39,7 @@ export interface IOrderBase {
   discount: number,
   amount: number,
   orderType: IOrderType,
-  desctiption: string,
+  description: string,
   status: OrdefStatus,
   member: IMember | undefined,
   orderBy: string
@@ -52,7 +52,7 @@ export class COrderCreate  implements IOrderBase {
   discount: number;
   amount: number
   orderType: IOrderType
-  desctiption: string
+  description: string
   status: OrdefStatus
   member:  IMember | undefined
   orderBy: string
@@ -64,7 +64,7 @@ export class COrderCreate  implements IOrderBase {
   this.discount = 0;
   this.amount= 0;
   this.orderType= {operation: OT_OPERATION.CREDIT,referance: OT_REF.FLIGHT};
-  this.desctiption = "";
+  this.description = "";
   this.status= OrdefStatus.CREATED;
   this.member = undefined;
   this.orderBy = ""
@@ -77,7 +77,7 @@ export class COrderCreate  implements IOrderBase {
     this.discount = obj.discount
     this.amount = obj.amount
     this.orderType = obj.orderType
-    this.desctiption = obj.desctiption
+    this.description = obj.description
     this.status = obj.status
     this.member = obj.member
     this.orderBy = obj.orderBy
@@ -92,7 +92,7 @@ export interface ITransactionBase {
   destination: IAccount,
   amount: number,
   order:  IOrder,
-  desctiption: string
+  description: string
 }
 export interface ITransaction extends ITransactionBase {
   _id: string
@@ -108,7 +108,7 @@ export interface IAccountBase {
   },
   transactions: ITransaction[],
   balance: number,
-  desctiption: string,
+  description: string,
   status: Status
 }
 
@@ -126,7 +126,7 @@ export const newAccount = ()  : IAccount => {
     },
     transactions: [],
     balance: 0,
-    desctiption: "",
+    description: "",
     status: Status.Active,
     _id: ""
   }

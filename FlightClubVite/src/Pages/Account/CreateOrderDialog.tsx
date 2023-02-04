@@ -214,7 +214,7 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
               </Grid>
               <Grid item xs={12}>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                {value.desctiption}
+                {value.description}
                 </Typography>
               </Grid>
             </Grid>

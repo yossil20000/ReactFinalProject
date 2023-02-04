@@ -23,7 +23,7 @@ interface Data {
   name: string;
   balance: number;
   status: Status;
-  desctiption: string,
+  description: string,
   render?: React.ReactNode
 }
 
@@ -34,11 +34,11 @@ function createData(
   name: string,
   balance: number,
   status: Status,
-  desctiption: string,
+  description: string,
   render?: React.ReactNode
 ): Data {
 
-  return { bank, _id, account_id, name, balance, status, desctiption, render };
+  return { bank, _id, account_id, name, balance, status, description, render };
 }
 ;
 
@@ -76,7 +76,7 @@ function AccountsTab() {
       isCell: true
     },
     {
-      id: 'desctiption',
+      id: 'description',
       label: 'Description',
       minWidth: 170,
       align: 'left',
@@ -95,7 +95,7 @@ function AccountsTab() {
   const [openAddToBank, setOpenAddToBank] = useState(false);
   const [openAccountEdit, setOpenAccountEdit] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<IAccount | undefined>(undefined);
-  const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
+   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const { data, refetch } = useFetchAllAccountsQuery({});
   const { data: bankAccounts } = useClubAccountQuery();
@@ -108,7 +108,7 @@ function AccountsTab() {
     }
     const rows = data?.data.map((row) => {
       let bankRow: React.ReactNode = <><ActionButtons OnAction={onBankAction} show={[EAction.ADD]} item={row.account_id} /></>;
-      console.log("getData/bank", bankAccounts);
+      console.log("getData/bankAccounts,bank", bankAccounts,bank);
       
       let foundAccount : IAccount | undefined = undefined
       
@@ -119,11 +119,11 @@ function AccountsTab() {
         if(foundAccount)
         bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
-      return createData(bankRow, row._id, row.account_id, row.member?.family_name, row.balance, row.status, row.desctiption, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
+      return createData(bankRow, row._id, row.account_id, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
     })
     console.log("Account/getData", rows)
     return rows === undefined ? [] : rows;
-  }, [data, bankAccounts])
+  }, [data, bankAccounts,bank])
 
   const filterAccont = (item: Data): boolean => {
     let filter: boolean = true;
@@ -143,6 +143,15 @@ function AccountsTab() {
     const found = data?.data.find((account) => account.account_id === item);
 
     setSelectedAccount(found);
+  }
+  const OnSelectedClubAccount = (item: InputComboItem): void => {
+    let bankFound : IClubAccount | undefined = undefined;
+    if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
+      bankFound = bankAccounts?.data.find((bank) => (bank._id === item._id))
+      console.log("Account/OnSelectedClubAccount/item,bank",item,bankFound)
+      setBank(bankFound)
+    }
+    
   }
   function onBankAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
@@ -182,6 +191,13 @@ function AccountsTab() {
     setFilterData((prev) => ({ ...prev, account_id: item._id }));
 
   }
+  const onBankAccountChange = (item: InputComboItem) => {
+    const filter: IAccountFilter = filterData;
+    filter.account_id = item._id;
+    console.log("Account/onAccountChange/filter", filter)
+    setFilterData((prev) => ({ ...prev, account_id: item._id }));
+
+  }
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("Account/handleBoolainChange", event.target.name, event.target.checked)
 
@@ -203,17 +219,30 @@ function AccountsTab() {
     console.log("Account/handleAddOnSave/value", value);
 
   }
+const  RenderClubAccount = useMemo(() => {
 
+  return(
+    <Box>
+      {bank !== undefined ? (<>{bank.club.brand}/{bank.club.branch}/{bank.club.account_id} {bank.balance}</>) : (<>Undefined</>)}
+    </Box>
+  )
+},[bank])
 
   return (
     <ContainerPage>
       <>
         <ContainerPageHeader>
+          
           <Box marginTop={2}>
             <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
-
+              <Grid item xs={12}>
+              {RenderClubAccount}
+              </Grid>
+            <Grid item xs={4}  >
+                <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accounts"} />
+                
+              </Grid >
               <Grid item xs={4}  >
-                <ClubAccountsCombo onChanged={onAccountChange} source={"_accounts"} />
                 <AccountsCombo onChanged={onAccountChange} source={"_accounts"} />
 
               </Grid >

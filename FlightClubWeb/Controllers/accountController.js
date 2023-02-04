@@ -70,8 +70,11 @@ exports.account_create = [
         }
         if (member === null) {
           return res.status(400).json({ success: false, errors: ["member not exist"], message: "member not exist", data: req.body.member_id });
+        
         }
-        const account_id = `BZ${member.member_id}`;
+        let account_id = `BZ${member.member_id}`;
+        if(member.member_type === "Supplier")
+          account_id = `BS${member.member_id}`;
         Account.findOne({ $or: [{ 'member': req.body.member_id }, { 'account_id': account_id }] }).exec((err, account) => {
           if (err) {
             log.info('account_create/err', err);
@@ -129,7 +132,7 @@ exports.account_update = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("account_update", 400, "CONTROLLER.ACCOUNT.UPDATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const account = await Account.findByIdAndUpdate(req.body._id, {status: req.body.status,desctiption: req.body.desctiption}).exec();
+      const account = await Account.findByIdAndUpdate(req.body._id, {status: req.body.status,description: req.body.description}).exec();
       if (account) {
         return res.status(201).json({ success: true, errors: [], data: account })
       }

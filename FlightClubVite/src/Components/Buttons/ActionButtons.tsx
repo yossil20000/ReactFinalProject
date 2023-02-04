@@ -5,8 +5,9 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import CloseIcon from '@mui/icons-material/Close';
 export enum EAction {
-"ADD","DELETE","SAVE","EDIT","PAY","ORDER"
+"ADD","DELETE","SAVE","EDIT","PAY","ORDER","CLOSE"
 }
 export interface IActionButtonsProps {
 show: EAction[],
@@ -24,6 +25,7 @@ function ActionButtons({OnAction,show,item = ""}: IActionButtonsProps) {
       { show.includes(EAction.DELETE) == true && <Button key={"Delete"} variant='outlined' onClick={(event) => OnAction(EAction.DELETE,undefined,item)} color='secondary' startIcon={<DeleteIcon />}>Delete</Button>}
       {show.includes(EAction.ORDER) == true && <Button key={"Order"} variant='outlined' onClick={(event) => OnAction(EAction.ORDER,undefined,item)} startIcon={<AddShoppingCartIcon />}>Order</Button>}
       {show.includes(EAction.PAY) == true && <Button key={"Pay"} variant='outlined' onClick={(event) => OnAction(EAction.PAY,undefined,item)} startIcon={<PaymentIcon />}>Pay</Button>}
+      {show.includes(EAction.CLOSE) == true && <Button key={"Close"} variant='outlined' onClick={(event) => OnAction(EAction.CLOSE,undefined,item)} startIcon={<CloseIcon />}>Close</Button>}
       {show.includes(EAction.SAVE) == true && <Button key={"Save"} variant='outlined' onClick={(event) => OnAction(EAction.SAVE,undefined,item)} startIcon={<Save />}>Save</Button>}
     </>
   )

@@ -2,17 +2,39 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
 import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
-import TransactionAction from './Accounts/TransactionAction';
+import TransactionAction, { ITransactionActionProps } from './Accounts/TransactionAction';
 import { IOrder } from '../Interfaces/API/IAccount';
+import { EAccountType, IAddTransaction } from '../Interfaces/API/IClub';
+import { InputComboItem } from './Buttons/ControledCombo';
 
 interface IOrderTableProps {
   hideAction?: boolean;
   filter?: any;
+  selectedClubAccount: InputComboItem | null;
 }
-export default function OrderTable({hideAction=false,filter={}}: IOrderTableProps) {
+export default function OrderTable({hideAction=false,filter={},selectedClubAccount}: IOrderTableProps) {
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
   const { data: orders } = useGetOrderSearchQuery(filter);
+  console.log("transaction/selectedClubAccount/",selectedClubAccount)
+  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , id: string ,amount: number,description: string) : IAddTransaction => {
+    console.log("transaction/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
+    let addTransaction : IAddTransaction = {
+      source: {
+        _id: sourseId,
+        accountType: EAccountType.EAT_ACCOUNT
+      },
+      destination: {
+        _id: destinationId,
+        accountType: EAccountType.EAT_BANK
+      },
+      amount: amount,
+      order: id,
+      description: description
+    }
+    console.log("transaction/getTransaction/addTransaction",addTransaction,orders)
+    return addTransaction;
+  },[selectedClubAccount] )
   const orderRows = useMemo(() => {
     const rows = orders?.data.map((row : IOrder) => ({
       id: row._id, date: new Date(row.order_date).toLocaleDateString(),
@@ -20,7 +42,7 @@ export default function OrderTable({hideAction=false,filter={}}: IOrderTableProp
       product: row.orderType.referance,
       units: row.units,
       unitPrice: row.pricePeUnit,
-      orderBy: row.member?.family_name,
+      orderBy: `${row.member?.family_name}/${row.member?.member_id}`,
       member: row.member === undefined ? undefined : row.member,
       status: row.status
       ,
@@ -37,6 +59,7 @@ export default function OrderTable({hideAction=false,filter={}}: IOrderTableProp
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id', hide: true },
     { field: 'member', hide: true },
+    { field: 'description', hide: true },
     { field: 'date',hide: false, headerName: 'Date', minWidth: 100, sortable: true,
     filterable: false,flex:1},
     { field: 'orderBy', headerName: 'Order By', minWidth: 100,flex:2 },
@@ -61,7 +84,7 @@ export default function OrderTable({hideAction=false,filter={}}: IOrderTableProp
       renderCell: (params: GridRenderCellParams) => (
         <Box display={'flex'} flexDirection={'column'} gap={1} height={"5ch"} >
  
-         <TransactionAction {...{params,rowId,setRowId}}/>
+         <TransactionAction {...{params,rowId,setRowId,transaction: getTransaction("",selectedClubAccount ? selectedClubAccount._id : "",params.row.id, params.row.amount,params.row.description)}}/>
 
         </Box>
       )

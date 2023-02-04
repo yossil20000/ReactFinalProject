@@ -13,5 +13,5 @@ router.post('/combo',[authJWT.authenticate],  accountController.combo);
 router.post('/create' , accountController.account_create);
 router.delete('/delete', accountController.account_delete);
 router.put("/update",accountController.account_update); 
-router.put('/status',[authJWT.authenticate, authorize.authorize([ROLES[4]])] ,accountController.account_status);
+router.put('/status',[authJWT.authenticate, authorize.authorize([ROLES[5]])] ,accountController.account_status);
 module.exports = router; 
