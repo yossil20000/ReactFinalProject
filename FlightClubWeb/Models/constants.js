@@ -35,6 +35,11 @@ const ERROR_TYPE = {
     DB_RESULT: "DB_RESULT",
     EXCEPTION: "EXCEPTION",
 }
+const  EAccountType = {
+    EAT_BANK: "100100",
+    EAT_ACCOUNT: '200200',
+    EAT_SUPPLIERS: '100300'
+  }
 module.exports.ERROR_TYPE = ERROR_TYPE;
 module.exports.ROLES = ROLES;
 module.exports.DEVICE_STATUS = DEVICE_STATUS;
@@ -43,3 +48,4 @@ module.exports.DEVICE_MET = DEVICE_MET;
 module.exports.DEVICE_INS = DEVICE_INS;
 module.exports.STATUS = STATUS;
 module.exports.OrderStatus = OrderStatus;
+module.exports.EAccountType = EAccountType

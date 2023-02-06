@@ -67,6 +67,7 @@ function CreateAccountDialog({ onClose, onSave, open, ...other }: CreateAccountD
     setValidationAlert([])
 
   }, [])
+  
   const handleOnSave = async () => {
     console.log("CreateAccountDialog/onSave", accountCreate)
     setValidationAlert([]);
@@ -100,9 +101,7 @@ function CreateAccountDialog({ onClose, onSave, open, ...other }: CreateAccountD
   return (
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
-      maxWidth="lg"
-
-      open={open} {...other}>
+      maxWidth="lg"  open={open} {...other}>
       <DialogTitle>Account Create</DialogTitle>
       <DialogContent>
         <Card variant="outlined">

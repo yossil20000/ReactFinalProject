@@ -1,7 +1,8 @@
 
 import { ThirtyFpsRounded } from "@mui/icons-material"
+import { ITransaction } from "./IClub"
 import { IFilter } from "./IFilter"
-import IMember from "./IMember"
+import IMember, { MemberType } from "./IMember"
 import { Status } from "./IStatus"
 
 export enum OT_OPERATION {
@@ -87,16 +88,7 @@ export class COrderCreate  implements IOrderBase {
 export interface IOrder extends IOrderBase {
   _id: string
 }
-export interface ITransactionBase {
-  source: IAccount,
-  destination: IAccount,
-  amount: number,
-  order:  IOrder,
-  description: string
-}
-export interface ITransaction extends ITransactionBase {
-  _id: string
-}
+
 
 export interface IAccountBase {
   account_id: string,
@@ -104,7 +96,8 @@ export interface IAccountBase {
     _id: string,
     member_id: string,
     first_name: string,
-    family_name: string
+    family_name: string,
+    member_type: MemberType
   },
   transactions: ITransaction[],
   balance: number,
@@ -122,7 +115,8 @@ export const newAccount = ()  : IAccount => {
       _id: "",
     member_id: "",
     first_name: "",
-    family_name: ""
+    family_name: "",
+    member_type: MemberType.Member
     },
     transactions: [],
     balance: 0,

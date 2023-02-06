@@ -2,7 +2,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
 import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
-import TransactionAction, { ITransactionActionProps } from './Accounts/TransactionAction';
+import TransactionAction from './Accounts/TransactionAction';
 import { IOrder } from '../Interfaces/API/IAccount';
 import { EAccountType, IAddTransaction } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
@@ -30,7 +30,8 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
       },
       amount: amount,
       order: id,
-      description: description
+      description: description,
+      date: new Date()
     }
     console.log("transaction/getTransaction/addTransaction",addTransaction,orders)
     return addTransaction;

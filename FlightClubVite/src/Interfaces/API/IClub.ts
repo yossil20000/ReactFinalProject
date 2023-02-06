@@ -52,7 +52,8 @@ export interface IAddTransaction {
   },
   amount: number,
   order: string,
-  description: string
+  description: string,
+  date: Date
 }
 
 export interface ITransactionBase {
@@ -60,7 +61,8 @@ export interface ITransactionBase {
   destination: string,
   amount: number,
   order: IOrder,
-  description: string
+  description: string,
+  date: Date
 }
 
 export interface ITransaction extends ITransactionBase {

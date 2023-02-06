@@ -7,6 +7,7 @@ export interface ComboProps {
   source: string;
   selectedItem?: InputComboItem;
   filter?: any;
+  title?: string;
 }
 export interface StateComboProps {
   onChanged: (item: InputComboItem) => void;

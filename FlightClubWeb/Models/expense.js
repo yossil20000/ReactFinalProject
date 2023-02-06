@@ -2,19 +2,23 @@ var mongoose = require('mongoose');
 const {OrderTypeSchema} = require('./orderType');
 const Member = require('./member');
 const constants = require('../Models/constants');
-var Schema = mongoose.Schema;
+var ExpenseSchema = new Schema({
 
-var OrderSchema = new Schema({
-
-  order_date:{type: Date,required: true},
-  product:  {type: Schema.Types.ObjectId,required: true},
+  date:{type: Date,required: true, default: new Date()},
   units: {type: Number, default: 0, required:true},
   pricePeUnit: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
-  orderType: OrderTypeSchema,
+  expense: {type: String, required:true, default: ""},
   description: {type: String},
   status: {type:String, enum: Object.values(constants.OrderStatus), default: constants.OrderStatus.CREATED},
-  member: {type: Schema.Types.ObjectId,ref: Member, required:true}
+  source: {
+    id: {type: String, required: true},
+    type: {type: String, enum: Object.values(constants.EAccountType), required: true}
+  },
+  destination: {
+    id: {type: String, required: true},
+    type: {type: String, enum: Object.values(constants.EAccountType) , required: true}
+  }
 },{toJSON: {getters: true}})
 
 function getDecimal(value) {
@@ -23,5 +27,4 @@ function getDecimal(value) {
   }
   return value;
 };
-
-module.exports = mongoose.model("Order", OrderSchema);
+module.exports = mongoose.model("Expense", ExpenseSchema);

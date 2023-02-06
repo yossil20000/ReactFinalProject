@@ -6,7 +6,8 @@ var TransactionSchema = new Schema({
   destination: {type: String, required: true},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   order:  {type: Schema.Types.ObjectId, ref: "Order", required: true},
-  description: {type: String}
+  description: {type: String},
+  date: {type: Date, default: new Date()}
 },{toJSON: {getters: true}})
 
 function getDecimal(value) {

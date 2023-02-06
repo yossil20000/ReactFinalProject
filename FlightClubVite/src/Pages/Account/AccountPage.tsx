@@ -2,6 +2,7 @@ import { Box, Paper } from "@mui/material";
 import { MembersContext } from "../../app/Context/MemberContext";
 import ScrollableTabs, { ScrollableTabsItem } from "../../Components/Buttons/ScrollableTabs"
 import useLocalStorage from "../../hooks/useLocalStorage";
+import AccountExpenseTab from "./AccountExpenseTab";
 import AccountFlightsTab from "./AccountFlightsTab";
 import AccountOrders from "./AccountOrdersTab";
 import AccountsTab from "./AccountsTab";
@@ -11,8 +12,8 @@ import OrdersTab from "./OrdersTab";
 const items: ScrollableTabsItem[] = [
   { id: 0, label: "Accounts" },
   { id: 1, label: "Flights" },
-  { id: 2, label: "Orders" },
-  { id: 3, label: "3" },
+  { id: 2, label: "Expense" },
+  { id: 3, label: "Orders" },
   { id: 4, label: "4" }
 
 ]
@@ -34,8 +35,8 @@ function AccountPage() {
             <Paper style={{height: "100%"}}>
               {value === 0 && (<AccountsTab/>)}
               {value === 1 && (<AccountFlightsTab/>)}
-              {value === 2 && (<AccountOrders/>)}
-              {value === 3 && (<OrdersTab/>)}
+              {value === 2 && (<AccountExpenseTab/>)}
+              {value === 3 && (<AccountOrders/>)}
               {value === 4 && (<AccountTest/>)}
             </Paper>
             </Box>

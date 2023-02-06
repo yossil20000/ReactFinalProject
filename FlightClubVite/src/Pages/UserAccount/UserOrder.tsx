@@ -4,7 +4,7 @@ import { useAppSelector } from '../../app/hooks';
 import OrderTable from '../../Components/OrderTable';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container'
 
-function UserOrder() {
+function UserOrderTab() {
   const login = useAppSelector((state) => state.authSlice);
   return (
     <ContainerPage>
@@ -23,4 +23,4 @@ function UserOrder() {
   )
 }
 
-export default UserOrder
+export default UserOrderTab

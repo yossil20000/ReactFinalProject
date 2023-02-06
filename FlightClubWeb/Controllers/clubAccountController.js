@@ -8,6 +8,8 @@ const {Transaction,TransactionSchema} = require('../Models/transaction')
 const { ApplicationError } = require('../middleware/baseErrors');
 const { CValidationError } = require('../Utils/CValidationError');
 const constants = require('../Models/constants');
+const Expense = require('../Models/expense');
+
 const transactionOptions = {
   readPreference: 'primary',
   readConcern: { level: 'local' },
@@ -296,80 +298,40 @@ exports.add_transaction = [
   }
 ]
 
-exports.add_transaction_ = [
-  body('source._id').isLength({ min: 24, max: 24 }).withMessage("source must be 24 characters"),
-  body('source.accountType').isLength({ min: 6, max: 6 }).withMessage("must be valid"),
-  body('destination._id').isLength({ min: 24, max: 24 }).withMessage("destination must be 24 characters"),
-  body('destination.accountType').isLength({ min: 6, max: 6 }).withMessage("must be valid"),
-  body('amount', "Must be number").isNumeric(),
-  body('order').isLength({ min: 24, max: 24 }).withMessage("order must be 24 characters"),
+exports.list_expense = [ 
   async (req, res, next) => {
+    let {filter} = req.body;
+    if(filter === undefined) filter={};
     try {
-      const { source, destination, amount, order, description } = req.body;
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
-      }
-      /* Transaction */
-      const session = await mongoose.startSession();
-      try {
-        const transactionResult = await session.withTransaction(async () => {
-          var sourceTransaction;
-          var destinationTransaction;
-          if (source.accountType == "100100")
-            sourceTransaction = await ClubAccount.findById({_id : source._id},  {  session });
-          else if (source.accountType == "200200")
-            sourceTransaction = await Account.findById({_id: source._id}, {  session });
-          else{
-            await session.abortTransaction();
-            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source._id, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
-          }
-          if(destination.accountType === "100100"){
-            destinationTransaction = await ClubAccount.findById({_id: destination._id}, { session });
-          }else if(destination.accountType === "200200"){
-            destinationTransaction = await Account.findById({_id: destination._id}, {  session });
-          }else{
-            await session.abortTransaction();
-            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination._id, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
-          }
-          
-          const orderTransaction = await Order.findById({order}, {  session });
-
-          if (!sourceTransaction) {
-            await session.abortTransaction();
-            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
-          }
-
-          if (!destinationTransaction) {
-            await session.abortTransaction();
-            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
-          }
-
-          if (!orderTransaction) {
-            await session.abortTransaction();
-            return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(order, `Order not found`, 'order', "DB.ClubAccount")).validationResult.errors }));
-          }
-
-          if (false) {
-            await session.abortTransaction();
-          }
-
-        }, transactionOptions);
-        if (transactionResult) {
-          log.info("trananctionResult/add_transaction update succefully", trananctionResult);
-          return res.status(201).json({ success: true, errors: ["add_transaction success"], data: [] })
-        }
-      }
-      catch (error) {
-        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.EXCEPTION", { name: "EXCEPTION", error }));
-      }
-      finally {
-        await session.endSession();
-      }
-
+    const results = await Expense.find(filter).exec();
+    if(results){
+      return res.status(201).json({ success: true, data: results });
+    }
+    return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Expense Not Exist", '', "DB")).validationResult.errors }));
     }
     catch (error) {
-      return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("club_create", 400, "CONTROLLER.CLUB.CLUB_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
+]
+
+exports.upsert_expense = [
+  async (req, res, next) => {
+   
+    try {
+      let {filter,update} = req.body;
+      if(filter === undefined) filter={};
+      if(update === undefined) update={};
+
+    const results = await Expense.findOneAndUpdate(filter,update,{
+      new: true, upsert: true}).exec();
+    if(results){
+      return res.status(201).json({ success: true, data: results });
+    }
+    return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Expense Not Exist", '', "DB")).validationResult.errors }));
+    }
+    catch (error) {
+      return next(new ApplicationError("club_create", 400, "CONTROLLER.CLUB.CLUB_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]

@@ -23,6 +23,7 @@ exports.account_search = [async function (req, res, next) {
     log.info('account_search/params', req.query);
 
     const { accounts } = await findAccount(req.query);
+    log.info('account_search/accounts', accounts);
     res.status(201).json({ success: true, errors: [], data: accounts });
     return;
   }

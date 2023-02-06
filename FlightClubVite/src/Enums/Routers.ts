@@ -55,6 +55,7 @@ export  enum URLS{
     ACCOUNT_CREATE = 'api/accounts/create',
     ACCOUNT_STATUS = 'api/accounts/status',
     ACCOUNTS_COMBO = 'api/accounts/combo',
+    ACCOUNTS_SEARCH = 'api/accounts/search/filter',
     ORDERS = 'api/orders',
     ORDERS_SEARCH = 'api/orders/search',
     ORDERS_DELETE = 'api/orders/delete',
@@ -63,6 +64,8 @@ export  enum URLS{
     CLUB = 'api/club_account',
     CLUB_COMBO = 'api/club_account/combo',
     CLUB_ADD_ACCOUNT = 'api/club_account/add_account',
-    CLUB_ADD_TRANSACTION ='api/club_account/add_transaction'
+    CLUB_ADD_TRANSACTION ='api/club_account/add_transaction',
+    CLUB_EXPENSE = 'api/club_account/expense',
+    CLUB_UPSERT_EXPENSE = 'api/club_account/upsert_expense'
     
 }

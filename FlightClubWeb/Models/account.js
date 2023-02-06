@@ -21,6 +21,6 @@ function getDecimal(value) {
 const Account = mongoose.model("Account", AccountSchema);
 
 module.exports = {
-  Account: mongoose.model("Account", AccountSchema),
+  Account: Account,
   AccountSchema: AccountSchema
 }

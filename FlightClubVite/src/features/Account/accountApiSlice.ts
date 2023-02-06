@@ -4,6 +4,7 @@ import { RootState } from "../../app/userStor"
 import { getServerAddress, URLS } from "../../Enums/Routers"
 import { IAccount, IAccountBase, IAccountsCombo, IAccountsComboFilter, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
 import { IAddTransaction, IClubAccount, IClubAccountsCombo, IClubAddAccount } from "../../Interfaces/API/IClub"
+import { IExpense, IExpenseBase, IUpsertExpanse } from "../../Interfaces/API/IExpense"
 import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
@@ -22,7 +23,7 @@ export const accountApiSlice = createApi({
       return headers
     },
   }),
-  tagTypes: ["Accounts","Orders","ClubAccount"],
+  tagTypes: ["Accounts","Orders","ClubAccount","Expense"],
   endpoints(builder) {
     return {
       fetchAllAccounts: builder.query<IResultBase<IAccount>, IFilter>({
@@ -35,6 +36,14 @@ export const accountApiSlice = createApi({
       fetchAccount: builder.query<IResultBase<IAccount>, string>({
         query: (_id) => ({
           url: `/${URLS.ACCOUNTS}/${_id}`,
+          method: "GET"
+        }),
+        providesTags: ["Accounts"],
+
+      }),
+      fetchAccountSearch: builder.query<IResultBase<IAccount>, {[key: string]: string}>({
+        query: (params) => ({
+          url:getUrlWithParams(`/${URLS.ACCOUNTS_SEARCH}`,params) ,
           method: "GET"
         }),
         providesTags: ["Accounts"],
@@ -76,7 +85,7 @@ export const accountApiSlice = createApi({
           params: filter
         }),
         providesTags: ["Orders"]
-      }),
+      }), 
       getOrderSearch: builder.query<IResultBase<IOrder>,{[key: string]: string}>({
         query: (filter) => ({
           url:getUrlWithParams(`/${URLS.ORDERS_SEARCH}/filter`,filter) ,
@@ -145,6 +154,23 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" }]
       }),
+      fetchExpense: builder.query<IResultBase<IExpense>, IFilter>({
+        query: (filter) => ({
+          url: `/${URLS.CLUB_EXPENSE}`,
+          method: "PATCH",
+          params: filter
+        }),
+        providesTags: ["Expense"]
+      }),
+      addUpdateExpense: builder.mutation<IResultBaseSingle<IExpense>,IUpsertExpanse>({
+        query: (filter) => ({
+          url: `/${URLS.CLUB_UPSERT_EXPENSE}`,
+          method: "PUT",
+          body: filter
+        }),
+        invalidatesTags: ["Expense"]
+        
+      })
 
     }
   }
@@ -158,6 +184,7 @@ export const {
   useFetchAccountQuery,
   useFetchAccountsComboQuery,
   useFetchAllAccountsQuery,
+  useFetchAccountSearchQuery,
   useFetchAllOrdersQuery,
   useFetchOrderQuery,
   useDeleteOrderMutation,
@@ -167,5 +194,7 @@ export const {
   useClubAccountQuery,
   useClubAddAccountMutation,
   useClubAccountComboQuery,
-  useClubAddTransactionMutation
+  useClubAddTransactionMutation,
+  useFetchExpenseQuery,
+  useAddUpdateExpenseMutation
 } = accountApiSlice;

@@ -2,7 +2,8 @@ import { Box, Paper } from "@mui/material";
 import { MembersContext } from "../../app/Context/MemberContext";
 import ScrollableTabs, { ScrollableTabsItem } from "../../Components/Buttons/ScrollableTabs"
 import useLocalStorage from "../../hooks/useLocalStorage";
-import UserOrder from "./UserOrder";
+import UserAccountTab from "./UserAccountTab";
+import UserOrderTab from "./UserOrder";
 
 
 const items: ScrollableTabsItem[] = [
@@ -26,8 +27,8 @@ function UserAccount() {
         {/* <MembersContext.Provider value={{ selectedItem: selectedMember, setSelectedItem: setSelectedMember, members: members?.data }}> */}
         <Box height={"100%"} sx={{backgroundColor: "white"}}>
             <Paper style={{height: "100%"}}>
-              {value === 0 && (<UserOrder/>)}
-              {value === 1 && (<></>)}
+              {value === 0 && (<UserOrderTab/>)}
+              {value === 1 && (<UserAccountTab/>)}
             </Paper>
             </Box>
 {/*         </MembersContext.Provider> */}

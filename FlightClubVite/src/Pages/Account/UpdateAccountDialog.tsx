@@ -2,6 +2,7 @@ import { Dialog, DialogTitle, DialogContent, createTheme, Paper, styled, Grid, B
 import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
+import MemberTypeCombo from "../../Components/Buttons/MemberTypeCombo";
 import StatusCombo from "../../Components/Buttons/StatusCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import MembersCombo from "../../Components/Members/MembersCombo";

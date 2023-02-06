@@ -9,6 +9,7 @@ import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTabl
 import { useClubAccountQuery, useFetchAllAccountsQuery } from '../../features/Account/accountApiSlice'
 import { IAccount } from '../../Interfaces/API/IAccount'
 import { IClubAccount } from '../../Interfaces/API/IClub'
+import { MemberType } from '../../Interfaces/API/IMember'
 import { Status } from '../../Interfaces/API/IStatus'
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
 import AddAccountToBankDialog from './AddAccountToBankDialog'
@@ -20,6 +21,7 @@ interface Data {
   bank: React.ReactNode,
   _id: string;
   account_id: string;
+  member_type: MemberType;
   name: string;
   balance: number;
   status: Status;
@@ -31,6 +33,7 @@ function createData(
   bank: React.ReactNode,
   _id: string,
   account_id: string,
+  member_type: MemberType,
   name: string,
   balance: number,
   status: Status,
@@ -38,7 +41,7 @@ function createData(
   render?: React.ReactNode
 ): Data {
 
-  return { bank, _id, account_id, name, balance, status, description, render };
+  return { bank, _id, account_id,member_type, name, balance, status, description, render };
 }
 ;
 
@@ -48,6 +51,7 @@ interface IAccountFilter {
   active_only: boolean;
 }
 function AccountsTab() {
+  
   const columns: Column[] = [
     {
       id: 'bank',
@@ -58,6 +62,7 @@ function AccountsTab() {
       isCell: true
     },
     { id: 'account_id', label: 'Account Number', minWidth: 170, isCell: true, align: 'left' },
+    { id: 'member_type', label: 'Type', minWidth: 170, isCell: true, align: 'left' },
     { id: 'name', label: 'Name', minWidth: 100, align: 'left', isCell: true },
     {
       id: 'balance',
@@ -106,9 +111,10 @@ function AccountsTab() {
       bankFound = bankAccounts?.data.find((bank) => (bank.club.brand === "BAZ" && bank.club.branch === "HAIFA"))
       setBank(bankFound)
     }
+    console.log("getData/bankAccounts,bank", bankAccounts,bank);
+      
     const rows = data?.data.map((row) => {
       let bankRow: React.ReactNode = <><ActionButtons OnAction={onBankAction} show={[EAction.ADD]} item={row.account_id} /></>;
-      console.log("getData/bankAccounts,bank", bankAccounts,bank);
       
       let foundAccount : IAccount | undefined = undefined
       
@@ -119,7 +125,7 @@ function AccountsTab() {
         if(foundAccount)
         bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
-      return createData(bankRow, row._id, row.account_id, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
+      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
     })
     console.log("Account/getData", rows)
     return rows === undefined ? [] : rows;
