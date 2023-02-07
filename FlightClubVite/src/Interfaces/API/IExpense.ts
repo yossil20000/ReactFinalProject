@@ -1,5 +1,6 @@
 import { OrdefStatus } from "./IAccount"
 import { EAccountType } from "./IClub"
+import { MemberType } from "./IMember"
 
 export interface IUpsertExpanse {
   filter?:{
@@ -17,11 +18,11 @@ export interface IExpenseBase {
   status: OrdefStatus,
   source: {
     id: string,
-    type: EAccountType
+    type: MemberType
   }
   destination: {
     id: string,
-    type: EAccountType
+    type: MemberType
   }
 }
 export interface IExpense extends IExpenseBase {
@@ -38,10 +39,10 @@ export const newExpense : IExpenseBase= {
   status: OrdefStatus.CREATED,
   source: {
     id: "",
-    type: EAccountType.EAT_ACCOUNT
+    type: MemberType.Member
   },
   destination: {
     id: "",
-    type: EAccountType.EAT_ACCOUNT
+    type: MemberType.Member
   }
 }

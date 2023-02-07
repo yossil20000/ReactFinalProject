@@ -13,11 +13,11 @@ var ExpenseSchema = new Schema({
   status: {type:String, enum: Object.values(constants.OrderStatus), default: constants.OrderStatus.CREATED},
   source: {
     id: {type: String, required: true},
-    type: {type: String, enum: Object.values(constants.EAccountType), required: true}
+    type: {type: String, enum: Object.values(constants.MemberType), required: true}
   },
   destination: {
     id: {type: String, required: true},
-    type: {type: String, enum: Object.values(constants.EAccountType) , required: true}
+    type: {type: String, enum: Object.values(constants.MemberType) , required: true}
   }
 },{toJSON: {getters: true}})
 

@@ -20,14 +20,14 @@ function MembersCombo(props : ComboProps) {
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
   const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
  
-  const devicesToItemCombo = (input: IMemberCombo): InputComboItem => {
-    return {  lable: `${input.family_name} ${input.member_id}`, _id: input._id ,description: ""}
+  const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
+    return {  lable: `${input.family_name} ${input.member_id}`, _id: input._id ,description: "",key: input.member_type }
   }
   
   useEffect(() => {
     console.log("MembersCombo/ data", data?.data)
     
-    let items  =   data?.data.map((item: IMemberCombo) => devicesToItemCombo(item));
+    let items  =   data?.data.map((item: IMemberCombo) => membersToItemCombo(item));
     console.log("MembersCombo/ Item", items)
     if (items !== undefined)
       setItems(items);

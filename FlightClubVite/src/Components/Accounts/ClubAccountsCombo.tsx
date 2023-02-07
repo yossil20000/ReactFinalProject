@@ -4,7 +4,7 @@ import { useClubAccountQuery, useFetchAccountsComboQuery } from '../../features/
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { IAccount, IAccountsCombo } from '../../Interfaces/API/IAccount';
 import { IClubAccount } from '../../Interfaces/API/IClub';
-import { IMemberCombo, IMemberComboFilter } from '../../Interfaces/API/IMember';
+import { IMemberCombo, IMemberComboFilter, MemberType } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
@@ -15,7 +15,7 @@ const filterCombo: IMemberComboFilter = {
 }
 
 function ClubAccountsCombo(props: ComboProps) {
-  const { onChanged, source, filter } = props;
+  const { onChanged, source, filter,title } = props;
   const { data: clubAccounts } = useClubAccountQuery();
   const [bankaccounts, setbankAccounts] = useState<InputComboItem[]>([])
 
@@ -35,7 +35,7 @@ function ClubAccountsCombo(props: ComboProps) {
   const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`${source}`, undefined);
 
   const clubsAccountToItemCombo = (input: IClubAccount): InputComboItem => {
-    return { lable: `${input.club.brand}/${input.club.branch}/${input.club.account_id}`, _id: input._id, description: "" }
+    return { lable: `${input.club.brand}/${input.club.branch}/${input.club.account_id}`, _id: input._id, description: "" ,key: MemberType.Club}
   }
 
 
@@ -66,7 +66,7 @@ function ClubAccountsCombo(props: ComboProps) {
       onChanged(selectedItem)
   }, [])
   return (
-    <ControledCombo onSelectedItem={onSelectedItem} selectedItem={selectedItem === undefined ? null : selectedItem} items={bankaccounts} title="Account" />
+    <ControledCombo onSelectedItem={onSelectedItem} selectedItem={selectedItem === undefined ? null : selectedItem} items={bankaccounts} title={title === undefined ? "Account" : title} />
   )
 }
 

@@ -66,6 +66,7 @@ export  enum URLS{
     CLUB_ADD_ACCOUNT = 'api/club_account/add_account',
     CLUB_ADD_TRANSACTION ='api/club_account/add_transaction',
     CLUB_EXPENSE = 'api/club_account/expense',
-    CLUB_UPSERT_EXPENSE = 'api/club_account/upsert_expense'
+    CLUB_UPSERT_EXPENSE = 'api/club_account/upsert_expense',
+    TYPES = 'api/type'
     
 }

@@ -3,7 +3,7 @@ const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
 const {SelectionType} = require('../Models/orderType')
 
-exports.type = [
+exports.expense_type = [
  
   async function (req, res, next) {
     try {

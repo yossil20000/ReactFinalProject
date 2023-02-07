@@ -14,7 +14,8 @@ export enum Gender {
 }
 export enum MemberType{
     Supplier ="Supplier",
-    Member  = "Member"  
+    Member  = "Member",
+    Club = "Club" 
 }
 export enum Status {
     "Active" = "Active","Suspended" = "Suspended","Removed"="Removed"
@@ -94,6 +95,7 @@ export interface IMemberCombo{
     member_id: string;
     family_name: string;
     first_name: string;
+    member_type: MemberType
   }
 
   export interface IMemberStatus {

@@ -7,7 +7,7 @@ export interface ComboProps {
   source: string;
   selectedItem?: InputComboItem;
   filter?: any;
-  title?: string;
+  title?: any;
 }
 export interface StateComboProps {
   onChanged: (item: InputComboItem) => void;
@@ -19,6 +19,7 @@ export interface InputComboItem{
   _id: string;
   lable: string;
   description: string;
+  key?: string;
 }
 export const newInputComboItem : InputComboItem = {
   _id: '',

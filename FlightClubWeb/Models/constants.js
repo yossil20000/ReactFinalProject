@@ -36,10 +36,15 @@ const ERROR_TYPE = {
     EXCEPTION: "EXCEPTION",
 }
 const  EAccountType = {
-    EAT_BANK: "100100",
-    EAT_ACCOUNT: '200200',
-    EAT_SUPPLIERS: '100300'
+    BANK: "100100",
+    MEMBER: '200200',
+    SUPPLIERS: '100300'
   }
+  const  MemberType ={
+    CLUB: "Club",
+    MEMBER: "Member",
+    SUPPLIERS: "Supplier"    
+}
 module.exports.ERROR_TYPE = ERROR_TYPE;
 module.exports.ROLES = ROLES;
 module.exports.DEVICE_STATUS = DEVICE_STATUS;
@@ -48,4 +53,5 @@ module.exports.DEVICE_MET = DEVICE_MET;
 module.exports.DEVICE_INS = DEVICE_INS;
 module.exports.STATUS = STATUS;
 module.exports.OrderStatus = OrderStatus;
-module.exports.EAccountType = EAccountType
+module.exports.EAccountType = EAccountType;
+module.exports.MemberType = MemberType;

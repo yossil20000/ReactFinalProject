@@ -175,9 +175,11 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
         <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
           <Grid item xs={12}>
             <Item>
-              <MembersCombo onChanged={onMemberChanged} source={source} filter={{filter: {
-    status: Status.Active,member_type: MemberType.Member
-  }}} />
+              <MembersCombo onChanged={onMemberChanged} source={source} filter={{
+                filter: {
+                  status: Status.Active, member_type: MemberType.Member
+                }
+              }} />
             </Item>
           </Grid>
           {action === EAction.DELETE ? null : (
@@ -195,7 +197,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
                   />
                 </Item>
               </Grid>
-              <Grid item xs={12}  sx={{ marginLeft: "0px" }}>
+              <Grid item xs={12} sx={{ marginLeft: "0px" }}>
                 <Item>
                   <TextField
                     disabled

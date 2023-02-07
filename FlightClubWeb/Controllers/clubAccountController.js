@@ -323,8 +323,7 @@ exports.upsert_expense = [
       if(filter === undefined) filter={};
       if(update === undefined) update={};
 
-    const results = await Expense.findOneAndUpdate(filter,update,{
-      new: true, upsert: true}).exec();
+    const results = await Expense.insertMany([update]);
     if(results){
       return res.status(201).json({ success: true, data: results });
     }

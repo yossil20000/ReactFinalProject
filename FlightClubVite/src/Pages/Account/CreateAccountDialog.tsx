@@ -84,6 +84,8 @@ function CreateAccountDialog({ onClose, onSave, open, ...other }: CreateAccountD
 
 
       }).catch((err) => {
+        const validation = getValidationFromError(err, handleOnValidatiobClose);
+      setValidationAlert(validation);
         console.log("CreateAccountDialog/onSave/error", err.data.errors);
       });
     }

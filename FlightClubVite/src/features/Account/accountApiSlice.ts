@@ -1,13 +1,12 @@
-import { Filter } from "@mui/icons-material"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { getServerAddress, URLS } from "../../Enums/Routers"
-import { IAccount, IAccountBase, IAccountsCombo, IAccountsComboFilter, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
+import { IAccount, IAccountsCombo, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
 import { IAddTransaction, IClubAccount, IClubAccountsCombo, IClubAddAccount } from "../../Interfaces/API/IClub"
-import { IExpense, IExpenseBase, IUpsertExpanse } from "../../Interfaces/API/IExpense"
+import { IExpense, IUpsertExpanse } from "../../Interfaces/API/IExpense"
+import { ITypes } from "../../Interfaces/API/ITypes"
 import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
-import { IStatus } from "../../Interfaces/API/IStatus"
 import { getUrlWithParams } from "../../Utils/url"
 
 export const accountApiSlice = createApi({
@@ -170,6 +169,13 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: ["Expense"]
         
+      }),
+      fetchTypes: builder.query<IResultBaseSingle<ITypes>,string>({
+        query: (key) => ({
+          url: `/${URLS.TYPES}/${key}`,
+          method: "GET",
+
+        })
       })
 
     }
@@ -196,5 +202,6 @@ export const {
   useClubAccountComboQuery,
   useClubAddTransactionMutation,
   useFetchExpenseQuery,
-  useAddUpdateExpenseMutation
+  useAddUpdateExpenseMutation,
+  useFetchTypesQuery
 } = accountApiSlice;
