@@ -75,7 +75,7 @@ function AccountExpenseTab() {
       
     const rows = data?.data.map((row) => {
           
-      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense,row.description,row.status,row.source.display,row.destination.display, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} /></>)
+      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense,row.description,row.status,row.source.display,row.destination.display, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{key: EAction.EDIT,value: "Edit Me"}]} /></>)
     })
     console.log("AccountExpenseTab/getData", rows)
     return rows === undefined ? [] : rows;
