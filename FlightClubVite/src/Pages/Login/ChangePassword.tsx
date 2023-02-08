@@ -53,7 +53,7 @@ function ChangePassword() {
     if (login.member.username)
       return (
         <ThemeProvider theme={theme}>
-          <Container component="main" maxWidth="xs">
+          <Container component="main" maxWidth="xs" style={{overflow:'auto'}}>
             <CssBaseline />
             <Box
               sx={{

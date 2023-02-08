@@ -161,11 +161,20 @@ export const accountApiSlice = createApi({
         }),
         providesTags: ["Expense"]
       }),
-      addUpdateExpense: builder.mutation<IResultBaseSingle<IExpense>,IUpsertExpanse>({
+      createExpense: builder.mutation<IResultBaseSingle<IExpense>,IUpsertExpanse>({
         query: (filter) => ({
-          url: `/${URLS.CLUB_UPSERT_EXPENSE}`,
+          url: `/${URLS.CLUB_CREATE_EXPENSE}`,
           method: "PUT",
           body: filter
+        }),
+        invalidatesTags: ["Expense"]
+        
+      }),
+      updateExpense: builder.mutation<IResultBaseSingle<IExpense>,IUpsertExpanse>({
+        query: (expense) => ({
+          url: `/${URLS.CLUB_UPDATE_EXPENSE}`,
+          method: "POST",
+          body: expense
         }),
         invalidatesTags: ["Expense"]
         
@@ -202,6 +211,7 @@ export const {
   useClubAccountComboQuery,
   useClubAddTransactionMutation,
   useFetchExpenseQuery,
-  useAddUpdateExpenseMutation,
+  useCreateExpenseMutation,
+  useUpdateExpenseMutation,
   useFetchTypesQuery
 } = accountApiSlice;

@@ -18,11 +18,13 @@ export interface IExpenseBase {
   status: OrdefStatus,
   source: {
     id: string,
-    type: MemberType
+    type: MemberType,
+    display: string
   }
   destination: {
     id: string,
-    type: MemberType
+    type: MemberType,
+    display: string
   }
 }
 export interface IExpense extends IExpenseBase {
@@ -39,10 +41,12 @@ export const newExpense : IExpenseBase= {
   status: OrdefStatus.CREATED,
   source: {
     id: "",
-    type: MemberType.Member
+    type: MemberType.Member,
+    display: ""
   },
   destination: {
     id: "",
-    type: MemberType.Member
+    type: MemberType.Member,
+    display: ""
   }
 }

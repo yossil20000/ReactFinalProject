@@ -15,7 +15,7 @@ const filterCombo: IMemberComboFilter = {
 }
 
 function ClubAccountsCombo(props: ComboProps) {
-  const { onChanged, source, filter,title } = props;
+  const { onChanged, source, filter,title,selectedItem:initialItem } = props;
   const { data: clubAccounts } = useClubAccountQuery();
   const [bankaccounts, setbankAccounts] = useState<InputComboItem[]>([])
 

@@ -6,18 +6,25 @@ import EditIcon from '@mui/icons-material/Edit';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import CloseIcon from '@mui/icons-material/Close';
+import { keys } from '@mui/system';
 export enum EAction {
 "ADD","DELETE","SAVE","EDIT","PAY","ORDER","CLOSE"
 }
 export interface IActionButtonsProps {
 show: EAction[],
 OnAction: (action: EAction ,event?: React.MouseEvent<HTMLButtonElement, MouseEvent> ,item?:string   ) =>void ,
-item:string
+item:string,
+display?: [{key: EAction,value:string}]
 }
 
-function ActionButtons({OnAction,show,item = ""}: IActionButtonsProps) {
+function ActionButtons({OnAction,show,item = "",display}: IActionButtonsProps) {
 
+  const getName = (key: EAction): string =>  {
+    if(display !== undefined){
 
+    }
+    return key.toString();
+  }
   return (
     <>
       { show.includes(EAction.ADD) == true && <Button key={"Add"}  variant='outlined' onClick={(event) => OnAction(EAction.ADD,undefined,item)} color='success' startIcon={<AddCircleOutlineIcon />}>Add</Button>}

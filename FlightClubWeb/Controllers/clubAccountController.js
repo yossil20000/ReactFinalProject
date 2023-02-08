@@ -315,10 +315,10 @@ exports.list_expense = [
   }
 ]
 
-exports.upsert_expense = [
+exports.create_expense = [
   async (req, res, next) => {
    
-    try {
+    try {  
       let {filter,update} = req.body;
       if(filter === undefined) filter={};
       if(update === undefined) update={};
@@ -327,10 +327,30 @@ exports.upsert_expense = [
     if(results){
       return res.status(201).json({ success: true, data: results });
     }
-    return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Expense Not Exist", '', "DB")).validationResult.errors }));
+    return next(new ApplicationError("create_expense", 400, "CONTROLLER.CLUB_ACCOUNT.CREATE_EXPENSE.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Expense Not Exist", '', "DB")).validationResult.errors }));
     }
     catch (error) {
-      return next(new ApplicationError("club_create", 400, "CONTROLLER.CLUB.CLUB_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
+      return next(new ApplicationError("create_expense", 400, "CONTROLLER.CLUB.CREATE_EXPENSE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]
+exports.update_expense = [
+  async (req, res, next) => {
+   
+    try {  
+      let {filter,update} = req.body;
+      if(filter === undefined) filter={};
+      if(update === undefined) update={};
+
+    const results = await Expense.findByIdAndUpdate(update._id,update);
+    if(results){
+      return res.status(201).json({ success: true, data: results });
+    }
+    return next(new ApplicationError("update_expense", 400, "CONTROLLER.CLUB_ACCOUNT.UPDATE_EXPENSE.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Expense Not Exist", '', "DB")).validationResult.errors }));
+    }
+    catch (error) {
+      return next(new ApplicationError("update_expense", 400, "CONTROLLER.CLUB.UPDATE_EXPENSE.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
+]
+

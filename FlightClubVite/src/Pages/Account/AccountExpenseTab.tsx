@@ -75,9 +75,9 @@ function AccountExpenseTab() {
       
     const rows = data?.data.map((row) => {
           
-      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense,row.description,row.status,row.source.id,row.destination.id, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} /></>)
+      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense,row.description,row.status,row.source.display,row.destination.display, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} /></>)
     })
-    console.log("Account/getData", rows)
+    console.log("AccountExpenseTab/getData", rows)
     return rows === undefined ? [] : rows;
   }, [data])
 
@@ -95,14 +95,15 @@ function AccountExpenseTab() {
 
     return filter;
   }
+  
   const OnSelectedAccount = (item: string): void => {
     const found = data?.data.find((expense) => expense._id === item);
-  
+  console.log("AccountExpenseTab/OnSelectedAccount",found);
     setSelectedExpense(found);
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("Account/ActionButtons/onAction", event?.target, action, item)
+    console.log("AccountExpenseTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
 
@@ -127,7 +128,7 @@ function AccountExpenseTab() {
     refetch();
     setOpenExpenseAdd(false);
     setOpenExpenseEdit(false);
-    console.log("Account/handleAddOnSave/value", value);
+    console.log("AccountExpenseTab/handleAddOnSave/value", value);
 
   }
   return (

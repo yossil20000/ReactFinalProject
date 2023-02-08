@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Grid, IconButton, TextField, Tooltip } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Grid, IconButton, LinearProgress, TextField, Tooltip } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
@@ -6,7 +6,7 @@ import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons
 import TypesCombo from '../../Components/Buttons/TypesCombo';
 import Item from '../../Components/Item';
 import MembersCombo from '../../Components/Members/MembersCombo';
-import { useAddUpdateExpenseMutation, useClubAccountQuery } from '../../features/Account/accountApiSlice';
+import { useCreateExpenseMutation, useClubAccountQuery } from '../../features/Account/accountApiSlice';
 import { newAccount } from '../../Interfaces/API/IAccount';
 import { IClubAccount } from '../../Interfaces/API/IClub';
 import { IExpenseBase, IUpsertExpanse, newExpense } from '../../Interfaces/API/IExpense';
@@ -15,6 +15,7 @@ import { Check } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
+import FullScreenLoader from '../../Components/FullScreenLoader';
 export interface CreateExpenseDialogProps {
 
   onClose: () => void;
@@ -25,8 +26,8 @@ const filterData: IUpsertExpanse = {
 
 }
 function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseDialogProps) {
-  const [createExpense, { isError, isLoading }] = useAddUpdateExpenseMutation();
-  const { data: bankAccounts } = useClubAccountQuery();
+  const [createExpense, { isError, isLoading }] = useCreateExpenseMutation();
+  const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery();
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
   const [selectedExpense, setSelectedExpense] = useState<IExpenseBase>(newExpense);
@@ -39,24 +40,28 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   const [isSaved, setIsSaved] = useState(false);
   const UpdateSourceAccountFields = (): IExpenseBase => {
     let newObj = selectedExpense;
-    console.log("CreateExspenseDialog/UpdateSourceAccountFields/selectedMember",selectedMember)
-    if(flipSource){
-      newObj =  setProperty(selectedExpense,"source.id",selectedMember?._id)
-      newObj =  setProperty(newObj,"source.type",selectedMember?.key)
-      newObj =  setProperty(newObj,"destination.id",selectedClub?._id)
-      newObj =  setProperty(newObj,"destination.type",selectedClub?.key)
+    console.log("CreateExspenseDialog/UpdateSourceAccountFields/selectedMember", selectedMember,selectedClub)
+    if (flipSource) {
+      newObj = setProperty(selectedExpense, "source.id", selectedMember?._id)
+      newObj = setProperty(newObj, "source.type", selectedMember?.key)
+      newObj = setProperty(newObj, "source.display", selectedMember?.lable)
+      newObj = setProperty(newObj, "destination.id", selectedClub?._id)
+      newObj = setProperty(newObj, "destination.type", selectedClub?.key)
+      newObj = setProperty(newObj, "destination.display", selectedClub?.lable)
     }
-    else{
-      newObj =  setProperty(selectedExpense,"destination.id",selectedMember?._id)
-      newObj =  setProperty(newObj,"destination.type",selectedMember?.key)
-      newObj =  setProperty(newObj,"source.id",selectedClub?._id)
-      newObj =  setProperty(newObj,"source.type",selectedClub?.key)
+    else {
+      newObj = setProperty(selectedExpense, "destination.id", selectedMember?._id)
+      newObj = setProperty(newObj, "destination.type", selectedMember?.key)
+      newObj = setProperty(newObj, "destination.display", selectedMember?.lable)
+      newObj = setProperty(newObj, "source.id", selectedClub?._id)
+      newObj = setProperty(newObj, "source.type", selectedClub?.key)
+      newObj = setProperty(newObj, "source.display", selectedClub?.lable)
     }
-    console.log("CreateExspenseDialog/UpdateSourceAccountFields/newobj",newObj)
+    console.log("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
     return newObj
   }
- 
+
   const handleOnCancel = () => {
     setValidationAlert([])
     if (isSaved)
@@ -71,38 +76,38 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   const handleOnSave = async () => {
     console.log("CreateExspenseDialog/onSave", selectedExpense)
     setValidationAlert([]);
-    
+
     /* account.copy(accountCreate); */
-    
+
     if (selectedMember !== undefined) {
 
       const expanse = UpdateSourceAccountFields()
       const filterData: IUpsertExpanse = {
         update: expanse
       }
-       await createExpense(filterData).unwrap().then((data) => {
+      await createExpense(filterData).unwrap().then((data) => {
         console.log("CreateExspenseDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
-       
+
 
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
-      setValidationAlert(validation);
+        setValidationAlert(validation);
         console.log("CreateExspenseDialog/onSave/error", err.data.errors);
       });
-    } 
+    }
 
 
 
   }
   const onMemberChanged = (item: InputComboItem) => {
-    console.log("onMemberChanged/item",item)
+    console.log("onMemberChanged/item", item)
     setSelectedMember(item)
     /* UpdateSourceAccountFields() */
   }
-  
+
   const OnSelectedClubAccount = (item: InputComboItem): void => {
     let bankFound: IClubAccount | undefined = undefined;
     setSelectedClub(item);
@@ -158,65 +163,78 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   const onTypeChanged = (item: InputComboItem) => {
     console.log("ExpenseDialog/onTypeChanged/item", item)
     setSelectedType(item)
-    
-    setSelectedExpense(setProperty(selectedExpense,item._id.toLowerCase(),item.lable))
+
+    setSelectedExpense(setProperty(selectedExpense, item._id.toLowerCase(), item.lable))
   }
   return (
+
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="lg" open={open} {...other}>
       <DialogTitle>Create Expense</DialogTitle>
-      <DialogContent>
-        <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
-          <Grid item xs={12} sm={5}  >
-            {sourceCombo}
+      {(isQuery && isLoading) ? (
+        <>
+          <FullScreenLoader />
+        </>
+      ) : (
+        <>
+          <DialogContent>
 
-          </Grid >
-          <Grid item xs={12} sm={2} >
-            <Box display={'flex'} justifyContent={"center"} alignContent={"baseline"}>
-              <IconButton style={{ fontSize: "40px" }} onClick={onFipSource} >
-                <ChangeCircleIcon fontSize='inherit' />
-              </IconButton>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={5}>
-            {destinationCombo}
-          </Grid>
-          <Grid item xs={6}>
-            <TypesCombo title={'Expense'} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField fullWidth={true} onChange={handleChange} id="units" name="units"
-              type={"number"}
-              label="Units" placeholder="Units" variant="standard"
-              value={selectedExpense?.units} required
-              helperText="" error={false} InputLabelProps={{ shrink: true }} />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField fullWidth={true} onChange={handleChange} id="pricePeUnit" name="pricePeUnit"
-              type={"number"}
-              label="Unit Price" placeholder="Per Unit" variant="standard"
-              value={selectedExpense?.pricePeUnit} required
-              helperText="" error={false} InputLabelProps={{ shrink: true }} />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField fullWidth={true} onChange={handleChange} id="amount" name="amount"
-              type={"number"}
-              label="Amount" placeholder="Amount" variant="standard"
-              value={selectedExpense?.amount} required
-              helperText="" error={false} InputLabelProps={{ shrink: true }} />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
-             multiline
-              label="Description" placeholder="Expense Description" variant="standard"
-              value={selectedExpense?.description} required
-              helperText="" error={false} InputLabelProps={{ shrink: true }} />
-          </Grid>
-        </Grid>
-      </DialogContent>
+            <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
+              <Grid item xs={12} sm={5}  >
+                {sourceCombo}
+
+              </Grid >
+              <Grid item xs={12} sm={2} >
+                <Box display={'flex'} justifyContent={"center"} alignContent={"baseline"}>
+                  <IconButton style={{ fontSize: "40px" }} onClick={onFipSource} >
+                    <ChangeCircleIcon fontSize='inherit' />
+                  </IconButton>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={5}>
+                {destinationCombo}
+              </Grid>
+              <Grid item xs={6}>
+                <TypesCombo title={'Expense'} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField fullWidth={true} onChange={handleChange} id="units" name="units"
+                  type={"number"}
+                  label="Units" placeholder="Units" variant="standard"
+                  value={selectedExpense?.units} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField fullWidth={true} onChange={handleChange} id="pricePeUnit" name="pricePeUnit"
+                  type={"number"}
+                  label="Unit Price" placeholder="Per Unit" variant="standard"
+                  value={selectedExpense?.pricePeUnit} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField fullWidth={true} onChange={handleChange} id="amount" name="amount"
+                  type={"number"}
+                  label="Amount" placeholder="Amount" variant="standard"
+                  value={selectedExpense?.amount} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
+                  multiline
+                  label="Description" placeholder="Expense Description" variant="standard"
+                  value={selectedExpense?.description} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+              </Grid>
+            </Grid>
+          </DialogContent>
+        </>
+      )}
+
       <DialogActions>
+
         <Grid container sx={{ width: "100%" }} justifyContent="center">
+          {true ? (<><LinearProgress /></>) : null}
           {validationAlert.map((item) => (
             <Grid item xs={12}>
               <Item>
@@ -225,7 +243,13 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
               </Item>
             </Grid>
           ))}
-          <Grid item xs={12} md={6} xl={6}>
+          {isLoading ? (
+            <>
+            <Grid item xs={12} alignItems={'center'}><Item>Loading</Item></Grid>
+            <Grid item xs={12}><Item><LinearProgress  /></Item></Grid>
+            </>) : (
+            <>
+                      <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
 
@@ -233,12 +257,16 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
             </Button></Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
+
             <Item><Button variant="outlined" sx={{ width: "100%" }}
+
               disabled={isSaved === true ? true : false}
               onClick={handleOnSave}>
               {isSaved === true ? "Created" : "Create"}
             </Button></Item>
-          </Grid>
+          </Grid></>
+          )}
+
 
         </Grid>
       </DialogActions>

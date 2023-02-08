@@ -6,6 +6,10 @@ import { IMemberCombo, IMemberComboFilter } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
+export  const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
+  return {  lable: `${input.family_name}/${input.member_id}`, _id: input._id ,description: "",key: input.member_type }
+}
+
 const filterCombo : IMemberComboFilter = {
   filter: {
     status: Status.Active
@@ -20,10 +24,7 @@ function MembersCombo(props : ComboProps) {
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
   const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
  
-  const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
-    return {  lable: `${input.family_name} ${input.member_id}`, _id: input._id ,description: "",key: input.member_type }
-  }
-  
+
   useEffect(() => {
     console.log("MembersCombo/ data", data?.data)
     
