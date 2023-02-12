@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Grid, IconButton, LinearProgress, TextField, Tooltip } from '@mui/material';
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
@@ -22,41 +22,32 @@ export interface CreateExpenseDialogProps {
   onSave: (value: IExpenseBase) => void;
   open: boolean;
 }
-const filterData: IUpsertExpanse = {
 
-}
 function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseDialogProps) {
   const [createExpense, { isError, isLoading }] = useCreateExpenseMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery();
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
   const [selectedExpense, setSelectedExpense] = useState<IExpenseBase>(newExpense);
-  const [selectedMember, setSelectedMember] = useState<InputComboItem>()
-  const [selectedClub, setSelectedClub] = useState<InputComboItem>()
+  const [selectedSource, setSelectedSource] = useState<InputComboItem>()
+  const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
   const [selectedType, setSelectedType] = useState<InputComboItem>()
-
+  const [selectedCategory, setSelectedCategory] = useState<InputComboItem>()
 
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const UpdateSourceAccountFields = (): IExpenseBase => {
     let newObj = selectedExpense;
-    console.log("CreateExspenseDialog/UpdateSourceAccountFields/selectedMember", selectedMember,selectedClub)
-    if (flipSource) {
-      newObj = setProperty(selectedExpense, "source.id", selectedMember?._id)
-      newObj = setProperty(newObj, "source.type", selectedMember?.key)
-      newObj = setProperty(newObj, "source.display", selectedMember?.lable)
-      newObj = setProperty(newObj, "destination.id", selectedClub?._id)
-      newObj = setProperty(newObj, "destination.type", selectedClub?.key)
-      newObj = setProperty(newObj, "destination.display", selectedClub?.lable)
-    }
-    else {
-      newObj = setProperty(selectedExpense, "destination.id", selectedMember?._id)
-      newObj = setProperty(newObj, "destination.type", selectedMember?.key)
-      newObj = setProperty(newObj, "destination.display", selectedMember?.lable)
-      newObj = setProperty(newObj, "source.id", selectedClub?._id)
-      newObj = setProperty(newObj, "source.type", selectedClub?.key)
-      newObj = setProperty(newObj, "source.display", selectedClub?.lable)
-    }
+    console.log("CreateExspenseDialog/UpdateSourceAccountFields/selectedSource", selectedSource,selectedDestination)
+    newObj = setProperty(selectedExpense, "source.id", selectedSource?._id)
+    newObj = setProperty(newObj, "source.type", selectedSource?.key)
+    newObj = setProperty(newObj, "source.display", selectedSource?.lable)
+    newObj = setProperty(newObj, "source.account_id", selectedSource?.key2);
+    newObj = setProperty(newObj, "destination.id", selectedDestination?._id)
+      newObj = setProperty(newObj, "destination.type", selectedDestination?.key)
+      newObj = setProperty(newObj, "destination.display", selectedDestination?.lable)
+      newObj = setProperty(newObj, "destination.account_id", selectedDestination?.key2)
+    
     console.log("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
     return newObj
@@ -77,9 +68,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     console.log("CreateExspenseDialog/onSave", selectedExpense)
     setValidationAlert([]);
 
-    /* account.copy(accountCreate); */
-
-    if (selectedMember !== undefined) {
+    if (selectedSource !== undefined) {
 
       const expanse = UpdateSourceAccountFields()
       const filterData: IUpsertExpanse = {
@@ -91,7 +80,6 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
           setIsSaved(true)
         }
 
-
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
@@ -102,52 +90,29 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
 
   }
-  const onMemberChanged = (item: InputComboItem) => {
-    console.log("onMemberChanged/item", item)
-    setSelectedMember(item)
-    /* UpdateSourceAccountFields() */
+  const onSelectedSource = (item: InputComboItem) => {
+    console.log("onSelectedSource/item", item)
+    setSelectedSource(item)
   }
 
-  const OnSelectedClubAccount = (item: InputComboItem): void => {
-    let bankFound: IClubAccount | undefined = undefined;
-    setSelectedClub(item);
-    if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
-      bankFound = bankAccounts?.data.find((bank) => (bank._id === item._id))
-      console.log("ExpenseDialog/OnSelectedClubAccount/item,bank", item, bankFound)
-      setBank(bankFound)
+  const OnselectedDestination = (item: InputComboItem): void => {
 
-    }
-    UpdateSourceAccountFields()
+    setSelectedDestination(item);
   }
 
+  const RenderSource = (): JSX.Element => {
 
-  const [flipSource, setFlipSource] = useState(false);
-  const RenderSource = (flip: boolean): JSX.Element => {
-
-    return <ClubAccountsCombo title={flip ? "Source" : "Destination"} onChanged={OnSelectedClubAccount} source={"_ExpenseDialogs"} />
+    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_ExpenseDialogs/Source"} />
   }
-  const RenderDestination = (flip: boolean): JSX.Element => {
+  const RenderDestination = (): JSX.Element => {
 
-    return <MembersCombo title={flip ? "Destination" : "Source"} selectedItem={selectedMember} onChanged={onMemberChanged} source={"_CreateExspense/members"} filter={{}} />
+    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} />
 
   }
-  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(RenderSource(false))
-  const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(RenderDestination(true))
-  const onFipSource = () => {
-    console.log("ExpenseDialog/flipSource")
-    const destination = destinationCombo;
-    const source = sourceCombo
-    const flip = flipSource
-    if (flip) {
-      setSourceCombo(RenderSource(flip))
-      setDestinationCombo(RenderDestination(flip))
-    }
-    else {
-      setSourceCombo(RenderDestination(flip))
-      setDestinationCombo(RenderSource(flip))
-    }
-    setFlipSource(!flip);
-  }
+
+  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(RenderSource())
+  const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(RenderDestination())
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("ExpenseDialog/handleChange", event.target.name, event.target.value)
     const newObj: IExpenseBase = SetProperty(selectedExpense, event.target.name, event.target.value) as IExpenseBase;
@@ -160,11 +125,17 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     console.log("ExpenseDialog/SetProperty/newobj", newObj)
     return newObj;
   }
+  const onCategoryChanged = (item: InputComboItem) => {
+    console.log("ExpenseDialog/onCategoryChanged/item", item)
+    setSelectedCategory(item)
+    
+    setSelectedExpense(setProperty(selectedExpense, `expense.category`, item.lable))
+  }
   const onTypeChanged = (item: InputComboItem) => {
     console.log("ExpenseDialog/onTypeChanged/item", item)
     setSelectedType(item)
 
-    setSelectedExpense(setProperty(selectedExpense, item._id.toLowerCase(), item.lable))
+    setSelectedExpense(setProperty(selectedExpense, `expense.type`, item.lable))
   }
   return (
 
@@ -179,24 +150,18 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
       ) : (
         <>
           <DialogContent>
-
             <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
-              <Grid item xs={12} sm={5}  >
+              <Grid item xs={12} sm={6}  >
                 {sourceCombo}
-
               </Grid >
-              <Grid item xs={12} sm={2} >
-                <Box display={'flex'} justifyContent={"center"} alignContent={"baseline"}>
-                  <IconButton style={{ fontSize: "40px" }} onClick={onFipSource} >
-                    <ChangeCircleIcon fontSize='inherit' />
-                  </IconButton>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={5}>
+              <Grid item xs={12} sm={6}>
                 {destinationCombo}
               </Grid>
               <Grid item xs={6}>
-                <TypesCombo title={'Expense'} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
+                <TypesCombo selectedKey='Expense' title={'Category'} selectedValue={selectedExpense.expense.category} onChanged={onCategoryChanged} source={"_CreateExspense/Type"} />
+              </Grid>
+              <Grid item xs={6}>
+                <TypesCombo selectedKey={`Expense.${selectedCategory?.lable}`} title={"Type"} selectedValue={selectedExpense.expense.type} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
               </Grid>
               <Grid item xs={6}>
                 <TextField fullWidth={true} onChange={handleChange} id="units" name="units"

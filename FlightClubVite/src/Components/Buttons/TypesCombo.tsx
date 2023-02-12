@@ -6,49 +6,63 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import { IMemberCombo, IMemberComboFilter } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
 import { ITypes } from '../../Interfaces/API/ITypes';
-import ControledCombo, { ComboProps, InputComboItem } from './ControledCombo';
+import ControledCombo, { ComboProps, InputComboItem, newInputComboItem, SelectComboProps } from './ControledCombo';
 
-const filterCombo : IMemberComboFilter = {
+const filterCombo: IMemberComboFilter = {
   filter: {
     status: Status.Active
   }
-  }
-  
-function TypesCombo(props : ComboProps) {
-  const {onChanged,source,filter,selectedItem: initialSelected,title} = props;
-  const { data, isError, isLoading, error } = useFetchTypesQuery(title === undefined ? "" : title);
-  
-  const [items,setItems] = useState<InputComboItem[]>([]);
+}
+
+function TypesCombo(props: SelectComboProps) {
+  const { onChanged, source, filter, selectedItem: initialSelected, title, selectedKey, selectedValue } = props;
+  const { data, isError, isLoading, error, refetch } = useFetchTypesQuery(selectedKey === undefined ? "" : selectedKey);
+
+  const [items, setItems] = useState<InputComboItem[]>([]);
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/${title}`,undefined);
- 
-  const TypesToItemCombo = (key: string,value: string): InputComboItem => {
-    return {  lable: value, _id: key ,description: `${key} for ${value}`}
+  const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>();
+
+  const TypesToItemCombo = (key: string, value: string): InputComboItem => {
+    return { lable: value, _id: key, description: `${key} for ${value}` }
   }
-  
+
   useEffect(() => {
-    console.log("TypesCombo/ data", data?.data)
+    refetch()
+    console.log(`TypesCombo/useeffect/${title}/find`, selectedValue,items,selectedKey)
+    if (items.length > 0) {
+      const item = items.find((i) => i.lable === selectedValue  );
+      if (item !== undefined) {
+        setSelectedItem(item)
+        console.log(`TypesCombo/useeffect/${title}/found`, item)
+      }
+      else{
+        setSelectedItem(newInputComboItem)
+      }
+    }
+  }, [selectedValue, items])
+
+  useEffect(() => {
+    console.log(`TypesCombo/useeffect/${title}/data`, data?.data)
     const key = data?.data.key
-    if(key === undefined) return;
-    let items  =   data?.data.values.map((value: string) => TypesToItemCombo(key,value));
+    if (key === undefined) return;
+    let items = data?.data.values.map((value: string) => TypesToItemCombo(key, value));
     console.log("TypesCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
-  }, [data?.data])
+  }, [data?.data,selectedKey])
+  useEffect(() => {
+refetch()
+console.log(`TypesCombo/useeffect/${title}/selectedKey`, selectedKey)
+  },[selectedKey])
 
-  const onSelectedItem = (item : InputComboItem) => {
+  const onSelectedItem = (item: InputComboItem) => {
     setSelectedItem(item);
     onChanged(item);
   }
-  useEffect(()=> {
-    if(selectedItem)
-      onChanged(selectedItem)
-  },[])
-  useEffect(() => {
-    setSelectedItem(initialSelected)
-  },[initialSelected])
+
+
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title={title=== undefined ? "" : title} />
+    <ControledCombo onSelectedItem={onSelectedItem} selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title={title === undefined ? "" : title} />
   )
 }
 

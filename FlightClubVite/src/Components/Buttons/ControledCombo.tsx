@@ -9,6 +9,11 @@ export interface ComboProps {
   filter?: any;
   title?: any;
 }
+
+export interface SelectComboProps extends ComboProps {
+  selectedKey : string | undefined,
+  selectedValue: string 
+}
 export interface StateComboProps {
   onChanged: (item: InputComboItem) => void;
   source: string;
@@ -20,11 +25,15 @@ export interface InputComboItem{
   lable: string;
   description: string;
   key?: string;
+  key2?: string;
+  
 }
 export const newInputComboItem : InputComboItem = {
   _id: '',
   lable: '',
-  description: ''
+  description: '',
+  key: "",
+  key2: "",
 }
 export interface InputComboProps{
   items: InputComboItem[];

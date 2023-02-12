@@ -12,7 +12,7 @@ import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageM
 
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
-  const [accountFilter, setAccountFilter] = useState({ member: login.member._id })
+  const [accountFilter, setAccountFilter] = useState({ member: [login.member._id ]})
   const { data, isLoading, isError } = useFetchAccountSearchQuery(accountFilter);
   const getTransaction = useMemo(() : ITransaction[] | []=> {
     if(data?.data !== null  && data?.data !== undefined){

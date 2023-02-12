@@ -1,9 +1,9 @@
 import '../../Types/Array.extensions';
 import { useEffect, useState } from 'react'
-import { useClubAccountQuery, useFetchAccountsComboQuery } from '../../features/Account/accountApiSlice';
+import { useClubAccountComboQuery, useClubAccountQuery, useFetchAccountsComboQuery } from '../../features/Account/accountApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { IAccount, IAccountsCombo } from '../../Interfaces/API/IAccount';
-import { IClubAccount } from '../../Interfaces/API/IClub';
+import { IClubAccount, IClubAccountCombo, IClubAccountsCombo } from '../../Interfaces/API/IClub';
 import { IMemberCombo, IMemberComboFilter, MemberType } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
@@ -17,6 +17,7 @@ const filterCombo: IMemberComboFilter = {
 function ClubAccountsCombo(props: ComboProps) {
   const { onChanged, source, filter,title,selectedItem:initialItem } = props;
   const { data: clubAccounts } = useClubAccountQuery();
+  const { data: accounts} = useClubAccountComboQuery();
   const [bankaccounts, setbankAccounts] = useState<InputComboItem[]>([])
 
 /*   const getDiff = () => {
@@ -34,13 +35,13 @@ function ClubAccountsCombo(props: ComboProps) {
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
   const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`${source}`, undefined);
 
-  const clubsAccountToItemCombo = (input: IClubAccount): InputComboItem => {
-    return { lable: `${input.club.brand}/${input.club.branch}/${input.club.account_id}`, _id: input._id, description: "" ,key: MemberType.Club}
+
+  const accountToItemCombo = (input: IClubAccountCombo): InputComboItem => {
+    return { lable: `${input.member.family_name}/${input.member.member_id}/${input.account_id}`, _id: input._id, description: "" ,key: input.member.member_type, key2: input.account_id}
   }
 
 
-
-  useEffect(() => {
+/*   useEffect(() => {
 
     console.log("ClubAccountsCombo/clubAccounts/data", clubAccounts?.data)
 
@@ -54,7 +55,31 @@ function ClubAccountsCombo(props: ComboProps) {
 
     }
     console.log("ClubAccountsCombo/clubAccounts/items", items)
-  }, [clubAccounts?.data])
+  }, [clubAccounts?.data]) */
+
+  useEffect(() => {
+
+    console.log("ClubAccountsCombo/accounts/data", accounts?.data)
+
+     let items = accounts?.data.map((item: IClubAccountsCombo) => (item));
+    if (items !== undefined && items?.length > 0) {
+      const club = items.at(0);
+      let clubAccount : InputComboItem[] = [];
+      const clubInput : InputComboItem =  { lable: `${club?.club.brand}/${club?.club.branch}/${club?.club.account_id}`, _id: club?._id === undefined ? "" : club?._id , description: "" ,key: MemberType.Club , key2:club?.club.account_id}
+      const foudItems = club?.accounts.map((item) => accountToItemCombo(item));
+      const itemsClubAccount : InputComboItem[] = foudItems === undefined ? [] : foudItems;
+      if(clubInput !== undefined){
+        itemsClubAccount.push(clubInput);
+      }
+      
+      if (itemsClubAccount !== undefined) {
+        setbankAccounts(itemsClubAccount)
+        console.log("ClubAccountsCombo/accounts/itemsClubAccount", itemsClubAccount)
+      }
+
+    } 
+    console.log("ClubAccountsCombo/clubAccounts/items", items) 
+  }, [accounts?.data])
 
   const onSelectedItem = (item: InputComboItem) => {
     setSelectedItem(item);

@@ -13,18 +13,23 @@ export interface IExpenseBase {
   units: number,
   pricePeUnit: number,
   amount: number,
-  expense: string,
+  expense: {
+    category: string,
+    type: string
+  }
   description: string,
   status: OrdefStatus,
   source: {
     id: string,
     type: MemberType,
-    display: string
+    display: string,
+    account_id: string
   }
   destination: {
     id: string,
     type: MemberType,
-    display: string
+    display: string,
+    account_id: string
   }
 }
 export interface IExpense extends IExpenseBase {
@@ -36,17 +41,22 @@ export const newExpense : IExpenseBase= {
   units: 0,
   pricePeUnit: 0,
   amount: 0,
-  expense: "",
+  expense: {
+    category:"",
+    type: ""
+  },
   description: "",
   status: OrdefStatus.CREATED,
   source: {
     id: "",
     type: MemberType.Member,
-    display: ""
+    display: "",
+    account_id: ""
   },
   destination: {
     id: "",
     type: MemberType.Member,
-    display: ""
+    display: "",
+    account_id: ""
   }
 }

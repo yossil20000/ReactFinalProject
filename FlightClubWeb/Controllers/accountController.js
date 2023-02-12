@@ -20,9 +20,12 @@ exports.account_list = [async function (req, res, next) {
 ]
 exports.account_search = [async function (req, res, next) {
   try {
-    log.info('account_search/params', req.query);
-
-    const { accounts } = await findAccount(req.query);
+      log.info('account_search/params', req.query);
+      let accounts={}
+    if(Object.keys(req.query).length == 0 )
+    accounts  = await findAccount();
+    else
+    accounts  = await findAccount({ $or: [{ member: req.query.member[0] }, { member: req.query.member[1] }] });
     log.info('account_search/accounts', accounts);
     res.status(201).json({ success: true, errors: [], data: accounts });
     return;
@@ -113,7 +116,7 @@ exports.combo = function (req, res, next) {
   try {
     log.info("combo/filter", req.body);
     Account.find(req?.body?.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
-      .populate({ path: "member", select: "member_id first_name family_name" })
+      .populate({ path: "member", select: "member_id first_name family_name member_type" })
       .select('account_id _id')
       .sort([['account_id', 'ascending']])
       .exec(function (err, list_members) {

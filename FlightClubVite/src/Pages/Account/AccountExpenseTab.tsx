@@ -10,39 +10,42 @@ import IMember from '../../Interfaces/API/IMember'
 import { IStatus, Status } from '../../Interfaces/API/IStatus'
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container'
 import CreateExpenseDialog from './CreateExpenseDialog'
+import CreateTransactionDialog from './CreateTransactionDialog'
 import UpdateExpenseDialog from './UpdateExpenseDialog'
 
 interface Data {
-  _id:string,
-  date:Date,
+  _id: string,
+  date: Date,
   units: number,
   pricePeUnit: number,
   amount: number,
-  expense: string,
+  category: string,
+  type: string,
   description: string,
   status: OrdefStatus,
   source: IMember | string,
   destination: IMember | string,
   render?: React.ReactNode
 }
-function createData(_id:string,date:Date,
+function createData(_id: string, date: Date,
   units: number,
   pricePeUnit: number,
   amount: number,
-  expense: string,
+  category: string,
+  type: string,
   description: string,
   status: OrdefStatus,
   source: IMember | string,
   destination: IMember | string,
-  render?: React.ReactNode) : Data{
-  return {_id,date,units,pricePeUnit,amount,expense,description,status,source,destination,render}
+  render?: React.ReactNode): Data {
+  return { _id, date, units, pricePeUnit, amount, category ,type, description, status, source, destination, render }
 }
 
 
 function AccountExpenseTab() {
   const columns: Column[] = [
     { id: '_id', label: 'id', minWidth: 50, isCell: false, align: 'left' },
-    { id: 'date', label: 'Date', minWidth: 30, isCell: true, align: 'left',format: (value: Date) => new Date(value).toLocaleDateString() },
+    { id: 'date', label: 'Date', minWidth: 30, isCell: true, align: 'left', format: (value: Date) => new Date(value).toLocaleDateString() },
     { id: 'units', label: 'Units', minWidth: 40, align: 'left', isCell: true },
     {
       id: 'pricePeUnit',
@@ -52,31 +55,40 @@ function AccountExpenseTab() {
       format: (value: number) => value.toLocaleString('en-US'),
       isCell: true
     },
-    {id: 'amount',label: 'Amount',minWidth: 70,align: 'left',isCell: true},
-    {id: 'expense',label: 'Expense',minWidth: 70,align: 'left',isCell: true},
-    {id: 'description',label: 'Description',minWidth: 170,align: 'left',isCell: true},
-    {id: 'status',label: 'Status',minWidth: 70, align: 'left',format: (value: Status) => value.toLocaleUpperCase(),isCell: true },
-    {id: 'source',label: 'Source',minWidth: 170,align: 'left',isCell: true},
-    {id: 'destination',label: 'Destination',minWidth: 170,align: 'left',isCell: true},
-    {id: 'render',label: '', minWidth: 70,align: 'center',render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} /></>),isCell: true}
-  ];  
-  
+    { id: 'amount', label: 'Amount', minWidth: 70, align: 'left', isCell: true },
+    { id: 'category', label: 'Category', minWidth: 70, align: 'left', isCell: true },
+    { id: 'type', label: 'Type', minWidth: 70, align: 'left', isCell: true },
+    { id: 'description', label: 'Description', minWidth: 170, align: 'left', isCell: true },
+    { id: 'status', label: 'Status', minWidth: 70, align: 'left', format: (value: Status) => value.toLocaleUpperCase(), isCell: true },
+    { id: 'source', label: 'Source', minWidth: 170, align: 'left', isCell: true },
+    { id: 'destination', label: 'Destination', minWidth: 170, align: 'left', isCell: true },
+    { id: 'render', label: '', minWidth: 70, align: 'center', render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} /></>), isCell: true }
+  ];
+
 
   const { data, refetch } = useFetchExpenseQuery({});
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseEdit, setOpenExpenseEdit] = useState(false);
-  const [selectedExpense,setSelectedExpense] = useState<IExpense | undefined>(undefined);
+  const [openAddTransaction, setOpenAddTransaction] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState<IExpense | undefined>(undefined);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [filterData, setFilterData] = useState({ } )
+  const [filterData, setFilterData] = useState({})
   const getData = useMemo(() => {
-    
- 
+
+
     console.log("getData/bankAccounts,bank", data);
-      
+
     const rows = data?.data.map((row) => {
-          
-      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense,row.description,row.status,row.source.display,row.destination.display, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{key: EAction.EDIT,value: "Edit Me"}]} /></>)
-    })
+
+      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.description, row.status, row.source.display, row.destination.display,
+        <>{row.status == OrdefStatus.CREATED ? (<>
+          <Box display={'flex'} flexDirection={'column'} gap={1}>
+            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} />
+          </Box>
+        </>) : (<></>)}
+        </>)
+    });
     console.log("AccountExpenseTab/getData", rows)
     return rows === undefined ? [] : rows;
   }, [data])
@@ -95,10 +107,10 @@ function AccountExpenseTab() {
 
     return filter;
   }
-  
+
   const OnSelectedAccount = (item: string): void => {
     const found = data?.data.find((expense) => expense._id === item);
-  console.log("AccountExpenseTab/OnSelectedAccount",found);
+    console.log("AccountExpenseTab/OnSelectedAccount", found);
     setSelectedExpense(found);
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
@@ -107,7 +119,7 @@ function AccountExpenseTab() {
     switch (action) {
       case EAction.ADD:
 
-      setOpenExpenseAdd(true)
+        setOpenExpenseAdd(true)
         break;
       case EAction.EDIT:
         if (item !== undefined) {
@@ -115,21 +127,25 @@ function AccountExpenseTab() {
           setOpenExpenseEdit(true);
         }
         break;
-      case EAction.SAVE:
-        /* onSave() */
+      case EAction.PAY:
+        if (item !== undefined) {
+          OnSelectedAccount(item);
+          setOpenAddTransaction(true);
+        }
         break;
     }
   }
   const handleAddOnClose = () => {
     setOpenExpenseAdd(false);
     setOpenExpenseEdit(false);
+    setOpenAddTransaction(false);
   }
-  const handleAddOnSave = (value: IExpenseBase) => {
+  const handleAddOnSave = () => {
     refetch();
     setOpenExpenseAdd(false);
     setOpenExpenseEdit(false);
-    console.log("AccountExpenseTab/handleAddOnSave/value", value);
-
+    setOpenAddTransaction(false);
+    
   }
   return (
     <Box fontSize={{ xs: "1rem", md: "1.2rem" }}>
@@ -139,14 +155,15 @@ function AccountExpenseTab() {
 
             <Box marginTop={2}>
               <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
-             
+
               </Grid>
             </Box>
           </ContainerPageHeader>
           <ContainerPageMain>
             <>
-             {openExpenseAdd == true ? (<CreateExpenseDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseAdd} />) : (null)}
+              {openExpenseAdd == true ? (<CreateExpenseDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseAdd} />) : (null)}
               {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
+              {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
               <ColumnGroupingTable rows={getData.filter(filterAccont)} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
             </>
 

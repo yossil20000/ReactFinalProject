@@ -1,4 +1,4 @@
-import { IAccount, IOrder } from "./IAccount";
+import { IAccount, IAccountsCombo, IOrder } from "./IAccount";
 import { Status } from "./IStatus";
 
 export interface IClubAccountBase {
@@ -78,12 +78,14 @@ export interface IClubAddAccount {
   account_id: string
 }
 export interface IClubAccountCombo {
+  
   _id: string,
   account_id: string,
   member: {
     _id: string,
     member_id: string,
-    family_name: string
+    family_name: string,
+    member_type : string
   }
 }
 export interface IClubAccountsCombo {
@@ -91,7 +93,8 @@ export interface IClubAccountsCombo {
   account_id: string,
   club: {
     brand: string,
-    branch: string
+    branch: string,
+    account_id: string
   },
   accounts: IClubAccountCombo[]
 }

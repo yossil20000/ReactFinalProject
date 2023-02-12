@@ -7,7 +7,7 @@ import { IExpense, IUpsertExpanse } from "../../Interfaces/API/IExpense"
 import { ITypes } from "../../Interfaces/API/ITypes"
 import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
-import { getUrlWithParams } from "../../Utils/url"
+import { getUrlWithParams, getUrlWithParamsArray } from "../../Utils/url"
 
 export const accountApiSlice = createApi({
   reducerPath: "accountApiSlice",
@@ -40,9 +40,9 @@ export const accountApiSlice = createApi({
         providesTags: ["Accounts"],
 
       }),
-      fetchAccountSearch: builder.query<IResultBase<IAccount>, {[key: string]: string}>({
+      fetchAccountSearch: builder.query<IResultBase<IAccount>,  {[key: string]: string[]} >({
         query: (params) => ({
-          url:getUrlWithParams(`/${URLS.ACCOUNTS_SEARCH}`,params) ,
+          url:getUrlWithParamsArray(`/${URLS.ACCOUNTS_SEARCH}`,params) ,
           method: "GET"
         }),
         providesTags: ["Accounts"],
@@ -134,7 +134,7 @@ export const accountApiSlice = createApi({
       clubAccountCombo: builder.query<IResultBase<IClubAccountsCombo>, void>({
         query: () => ({
           url: `/${URLS.CLUB_COMBO}`,
-          method: 'GET'
+          method: 'POST'
         })
       }),
       clubAddAccount: builder.mutation<IResultBaseSingle<IClubAccount>,IClubAddAccount >({

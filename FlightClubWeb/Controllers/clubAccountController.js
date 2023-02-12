@@ -109,14 +109,14 @@ exports.club_create_account = [
 exports.combo = function (req, res, next) {
   try {
     log.info("combo/filter", req.body);
-    ClubAccount.findById(req?.body?.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
+    ClubAccount.find(req?.body?.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
       .select("accounts _id  club")
       .populate({
         path: "accounts", model: "Account", select: { "_id": 1, "account_id": 1 }
         , populate: [{
           path: 'member',
           model: "Member",
-          select: { "_id": 1, "family_name": 1, "member_id": 1 }
+          select: { "_id": 1, "family_name": 1, "member_id": 1 ,"member_type": 1}
         }]
       })
 
@@ -147,6 +147,7 @@ exports.add_transaction = [
   body('order').isLength({ min: 24, max: 24 }).withMessage("order must be 24 characters"),
   async (req, res, next) => {
     try {
+     
       let { source, destination, amount, order, description } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -319,6 +320,7 @@ exports.create_expense = [
   async (req, res, next) => {
    
     try {  
+    
       let {filter,update} = req.body;
       if(filter === undefined) filter={};
       if(update === undefined) update={};

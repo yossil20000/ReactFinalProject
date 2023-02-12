@@ -1,19 +1,16 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, LinearProgress, TextField } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField } from '@mui/material';
+import { useCallback, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem, newInputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import TypesCombo from '../../Components/Buttons/TypesCombo';
 import Item from '../../Components/Item';
-import MembersCombo from '../../Components/Members/MembersCombo';
 import { useUpdateExpenseMutation, useClubAccountQuery } from '../../features/Account/accountApiSlice';
 import { IClubAccount } from '../../Interfaces/API/IClub';
 import { IExpense, IExpenseBase, IUpsertExpanse } from '../../Interfaces/API/IExpense';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import { setProperty,getSelectedItem } from '../../Utils/setProperty';
+import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
-import { MemberType } from '../../Interfaces/API/IMember';
 export interface UpdateExpenseDialogProps {
 
   onClose: () => void;
@@ -21,42 +18,34 @@ export interface UpdateExpenseDialogProps {
   open: boolean;
   value: IExpense;
 }
-const filterData: IUpsertExpanse = {
 
-}
-function UpdateExpenseDialog({ onClose, onSave, open,value, ...other }: UpdateExpenseDialogProps) {
+function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateExpenseDialogProps) {
   const [UpdateExpense, { isError, isLoading }] = useUpdateExpenseMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery();
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
   const [selectedExpense, setSelectedExpense] = useState<IExpense>(value);
-  const [selectedMember, setSelectedMember] = useState<InputComboItem>()
-  const [selectedClub, setSelectedClub] = useState<InputComboItem>()
+  const [selectedSource, setSelectedSource] = useState<InputComboItem>()
+  const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
   const [selectedType, setSelectedType] = useState<InputComboItem>()
+  const [selectedCategory, setSelectedCategory] = useState<InputComboItem>()
 
 
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
-  const UpdateSourceAccountFields = (): IExpense => {
+  const UpdateSourceAccountFields = (): IExpenseBase => {
     let newObj = selectedExpense;
-    console.log("UpdateExspenseDialog/UpdateSourceAccountFields/selectedMember", selectedMember,selectedClub)
-    if (flipSource) {
-      newObj = setProperty(selectedExpense, "source.id", selectedMember?._id)
-      newObj = setProperty(newObj, "source.type", selectedMember?.key)
-      newObj = setProperty(newObj, "source.display", selectedMember?.lable)
-      newObj = setProperty(newObj, "destination.id", selectedClub?._id)
-      newObj = setProperty(newObj, "destination.type", selectedClub?.key)
-      newObj = setProperty(newObj, "destination.display", selectedClub?.lable)
-    }
-    else {
-      newObj = setProperty(selectedExpense, "destination.id", selectedMember?._id)
-      newObj = setProperty(newObj, "destination.type", selectedMember?.key)
-      newObj = setProperty(newObj, "destination.display", selectedMember?.lable)
-      newObj = setProperty(newObj, "source.id", selectedClub?._id)
-      newObj = setProperty(newObj, "source.type", selectedClub?.key)
-      newObj = setProperty(newObj, "source.display", selectedClub?.lable)
-    }
-    console.log("UpdateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
+    console.log("CreateExspenseDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
+    newObj = setProperty(selectedExpense, "source.id", selectedSource?._id)
+    newObj = setProperty(newObj, "source.type", selectedSource?.key)
+    newObj = setProperty(newObj, "source.display", selectedSource?.lable)
+    newObj = setProperty(newObj, "source.account_id", selectedSource?.key2);
+    newObj = setProperty(newObj, "destination.id", selectedDestination?._id)
+    newObj = setProperty(newObj, "destination.type", selectedDestination?.key)
+    newObj = setProperty(newObj, "destination.display", selectedDestination?.lable)
+    newObj = setProperty(newObj, "destination.account_id", selectedDestination?.key2)
+
+    console.log("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
     return newObj
   }
@@ -76,9 +65,7 @@ function UpdateExpenseDialog({ onClose, onSave, open,value, ...other }: UpdateEx
     console.log("UpdateExspenseDialog/onSave", selectedExpense)
     setValidationAlert([]);
 
-    /* account.copy(accountUpdate); */
-
-    if (selectedMember !== undefined) {
+    if (selectedSource !== undefined) {
 
       const expanse = UpdateSourceAccountFields()
       const filterData: IUpsertExpanse = {
@@ -102,52 +89,27 @@ function UpdateExpenseDialog({ onClose, onSave, open,value, ...other }: UpdateEx
 
 
   }
-  const onMemberChanged = (item: InputComboItem) => {
-    console.log("onMemberChanged/item", item)
-    setSelectedMember(item)
-    /* UpdateSourceAccountFields() */
+  const onSelectedSource = (item: InputComboItem) => {
+    console.log("onSelectedSource/item", item)
+    setSelectedSource(item)
   }
 
-  const OnSelectedClubAccount = (item: InputComboItem): void => {
-    let bankFound: IClubAccount | undefined = undefined;
-    setSelectedClub(item);
-    if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
-      bankFound = bankAccounts?.data.find((bank) => (bank._id === item._id))
-      console.log("ExpenseDialog/OnSelectedClubAccount/item,bank", item, bankFound)
-      setBank(bankFound)
-
-    }
-    UpdateSourceAccountFields()
+  const OnselectedDestination = (item: InputComboItem): void => {
+    setSelectedDestination(item);
   }
 
+  const RenderSource = (): JSX.Element => {
 
-  const [flipSource, setFlipSource] = useState(false);
-  const RenderSource = (flip: boolean): JSX.Element => {
-
-    return <ClubAccountsCombo title={flip ? "Source" : "Destination"} onChanged={OnSelectedClubAccount} source={"_ExpenseDialogs"} selectedItem={newInputComboItem}/>
+    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_ExpenseDialogs/Source"} />
   }
-  const RenderDestination = (flip: boolean): JSX.Element => {
+  const RenderDestination = (): JSX.Element => {
 
-    return <MembersCombo title={flip ? "Destination" : "Source"} selectedItem={selectedMember} onChanged={onMemberChanged} source={"_UpdateExspense/members"} filter={{}} />
+    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} />
 
   }
-  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(RenderSource(false))
-  const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(RenderDestination(true))
-  const onFipSource = () => {
-    console.log("ExpenseDialog/flipSource")
-    const destination = destinationCombo;
-    const source = sourceCombo
-    const flip = flipSource
-    if (flip) {
-      setSourceCombo(RenderSource(flip))
-      setDestinationCombo(RenderDestination(flip))
-    }
-    else {
-      setSourceCombo(RenderDestination(flip))
-      setDestinationCombo(RenderSource(flip))
-    }
-    setFlipSource(!flip);
-  }
+  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(RenderSource())
+  const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(RenderDestination())
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("ExpenseDialog/handleChange", event.target.name, event.target.value)
     const newObj: IExpense = SetProperty(selectedExpense, event.target.name, event.target.value) as IExpense;
@@ -160,18 +122,20 @@ function UpdateExpenseDialog({ onClose, onSave, open,value, ...other }: UpdateEx
     console.log("ExpenseDialog/SetProperty/newobj", newObj)
     return newObj;
   }
+  const onCategoryChanged = (item: InputComboItem) => {
+    console.log("ExpenseDialog/onCategoryChanged/item", item)
+    setSelectedCategory(item)
+   /*  setSelectedType(newInputComboItem) */
+    setSelectedExpense(setProperty(selectedExpense, `expense.category`, item.lable))
+   /*  setSelectedExpense(setProperty(selectedExpense, `expense.type`, "")) */
+  }
   const onTypeChanged = (item: InputComboItem) => {
     console.log("ExpenseDialog/onTypeChanged/item", item)
     setSelectedType(item)
 
-    setSelectedExpense(setProperty(selectedExpense, item._id.toLowerCase(), item.lable))
+    setSelectedExpense(setProperty(selectedExpense, `expense.type`, item.lable))
   }
-  useEffect(() => {
-    console.log("UpdateExpenseDialog/value",value)
-    if(value.destination.type === MemberType.Club){
-    
-    }
-      },[])
+
   return (
 
     <Dialog
@@ -187,22 +151,17 @@ function UpdateExpenseDialog({ onClose, onSave, open,value, ...other }: UpdateEx
           <DialogContent>
 
             <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
-              <Grid item xs={12} sm={5}  >
+              <Grid item xs={12} sm={6}  >
                 {sourceCombo}
-
               </Grid >
-              <Grid item xs={12} sm={2} >
-                <Box display={'flex'} justifyContent={"center"} alignContent={"baseline"}>
-                  <IconButton style={{ fontSize: "40px" }} onClick={onFipSource} >
-                    <ChangeCircleIcon fontSize='inherit' />
-                  </IconButton>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={5}>
+              <Grid item xs={12} sm={6}>
                 {destinationCombo}
               </Grid>
               <Grid item xs={6}>
-                <TypesCombo title={'Expense'} selectedItem={getSelectedItem(selectedExpense.expense)} onChanged={onTypeChanged} source={"_UpdateExspense/Type"} />
+                <TypesCombo selectedKey='Expense' title={'Category'} selectedValue={selectedExpense.expense.category} selectedItem={selectedCategory} onChanged={onCategoryChanged} source={"_CreateExspense/category"} />
+              </Grid>
+              <Grid item xs={6}>
+                <TypesCombo selectedKey={`Expense.${selectedExpense.expense.category}`} title={"Type"} selectedValue={selectedExpense.expense.type} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
               </Grid>
               <Grid item xs={6}>
                 <TextField fullWidth={true} onChange={handleChange} id="units" name="units"
@@ -251,26 +210,26 @@ function UpdateExpenseDialog({ onClose, onSave, open,value, ...other }: UpdateEx
           ))}
           {isLoading ? (
             <>
-            <Grid item xs={12} alignItems={'center'}><Item>Loading</Item></Grid>
-            <Grid item xs={12}><Item><LinearProgress  /></Item></Grid>
+              <Grid item xs={12} alignItems={'center'}><Item>Loading</Item></Grid>
+              <Grid item xs={12}><Item><LinearProgress /></Item></Grid>
             </>) : (
             <>
-                      <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
-              onClick={handleOnCancel}>
+              <Grid item xs={12} md={6} xl={6}>
+                <Item><Button variant="outlined" sx={{ width: "100%" }}
+                  onClick={handleOnCancel}>
 
-              {isSaved === true ? "Close " : "Cancle"}
-            </Button></Item>
-          </Grid>
-          <Grid item xs={12} md={6} xl={6}>
+                  {isSaved === true ? "Close " : "Cancle"}
+                </Button></Item>
+              </Grid>
+              <Grid item xs={12} md={6} xl={6}>
 
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
+                <Item><Button variant="outlined" sx={{ width: "100%" }}
 
-              disabled={isSaved === true ? true : false}
-              onClick={handleOnSave}>
-              {isSaved === true ? "Updated" : "Update"}
-            </Button></Item>
-          </Grid></>
+                  disabled={isSaved === true ? true : false}
+                  onClick={handleOnSave}>
+                  {isSaved === true ? "Updated" : "Update"}
+                </Button></Item>
+              </Grid></>
           )}
 
 
