@@ -64,10 +64,12 @@ export  enum URLS{
     CLUB = 'api/club_account',
     CLUB_COMBO = 'api/club_account/combo',
     CLUB_ADD_ACCOUNT = 'api/club_account/add_account',
+    CLUB_ADD_ORDER_TRANSACTION ='api/club_account/add_order_transaction',
     CLUB_ADD_TRANSACTION ='api/club_account/add_transaction',
     CLUB_EXPENSE = 'api/club_account/expense',
     CLUB_CREATE_EXPENSE = 'api/club_account/create_expense',
     CLUB_UPDATE_EXPENSE = 'api/club_account/update_expense',
+    CLUB_DELETE_EXPENSE = 'api/club_account/delete_expense',
     TYPES = 'api/type'
     
 }

@@ -2,7 +2,7 @@ const log = require('debug-level').log('AccountController');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
 const { findAccount } = require('../Services/accountService')
-const {Account} = require('../Models/account');
+const { Account } = require('../Models/account');
 const Member = require('../Models/member');
 const async = require('async');
 
@@ -18,17 +18,26 @@ exports.account_list = [async function (req, res, next) {
   }
 }
 ]
+
 exports.account_search = [async function (req, res, next) {
   try {
-      log.info('account_search/params', req.query);
-      let accounts={}
-    if(Object.keys(req.query).length == 0 )
-    accounts  = await findAccount();
+    log.info('account_search/params', req.query);
+        
+    if (Object.keys(req.query).length == 0 || Array.isArray(req.query) === false)
+     {
+      if(req.query.member){
+        const {accounts} = await findAccount({member: req.query.member});
+        return res.status(201).json({ success: true, errors: [], data: accounts });
+      }
+      const {accounts} = await findAccount();
+      return res.status(201).json({ success: true, errors: [], data: accounts });
+    }
     else
-    accounts  = await findAccount({ $or: [{ member: req.query.member[0] }, { member: req.query.member[1] }] });
-    log.info('account_search/accounts', accounts);
-    res.status(201).json({ success: true, errors: [], data: accounts });
-    return;
+    {
+      const {accounts} = await findAccount({ $or: [{ member: req.query.member[0] }, { member: req.query.member[1] }] });
+      return res.status(201).json({ success: true, errors: [], data: accounts });
+    }
+     
   }
   catch (error) {
     return next(new ApplicationError("account_search", 400, "CONTROLLER.ACCOUNT.ACCOUT_SEARCH.EXCEPTION", { name: "EXCEPTION", error }));
@@ -68,16 +77,16 @@ exports.account_create = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("account_create", 400, "CONTROLLER.ACCOUNT.CREATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      Member.findById(req.body.member_id ).exec((err, member) => {
+      Member.findById(req.body.member_id).exec((err, member) => {
         if (err) {
           log.info('account_create/err', err);
         }
         if (member === null) {
           return res.status(400).json({ success: false, errors: ["member not exist"], message: "member not exist", data: req.body.member_id });
-        
+
         }
         let account_id = `BZ${member.member_id}`;
-        if(member.member_type === "Supplier")
+        if (member.member_type === "Supplier")
           account_id = `BS${member.member_id}`;
         Account.findOne({ $or: [{ 'member': req.body.member_id }, { 'account_id': account_id }] }).exec((err, account) => {
           if (err) {
@@ -136,7 +145,7 @@ exports.account_update = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("account_update", 400, "CONTROLLER.ACCOUNT.UPDATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const account = await Account.findByIdAndUpdate(req.body._id, {status: req.body.status,description: req.body.description}).exec();
+      const account = await Account.findByIdAndUpdate(req.body._id, { status: req.body.status, description: req.body.description }).exec();
       if (account) {
         return res.status(201).json({ success: true, errors: [], data: account })
       }
@@ -158,7 +167,7 @@ exports.account_delete = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("account_delete", 400, "CONTROLLER.ACCOUNT.DELETE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      
+
     }
     catch (error) {
       return next(new ApplicationError("account_delete", 400, "CONTROLLER.ACCOUNT.ACCOUNT_DELETE.EXCEPTION", { name: "EXCEPTION", error }));

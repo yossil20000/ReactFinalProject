@@ -131,20 +131,21 @@ exports.combo = function (req, res, next) {
   }
 }
 const getTranctionName = (source, sourceTransaction) => {
-  if(source.accountType === '100100'){
+  if(source.accountType === constants.EAccountType.BANK){
     return `${sourceTransaction.club.brand}/${sourceTransaction.club.branch}/${sourceTransaction.club.account_id}`
   }
-  else if(source.accountType === '200200') {
+  else  {
     return `${sourceTransaction.member.member_id}/${sourceTransaction.member.family_name}/${sourceTransaction.account_id}`
   }
 }
-exports.add_transaction = [
+exports.add_order_transaction = [
   body('source._id').isLength({ min: 0, max: 24 }).withMessage("source must be 24 characters"),
   body('source.accountType').isLength({ min: 6, max: 6 }).withMessage("must be valid"),
-   body('destination._id').isLength({ min: 24, max: 24 }).withMessage("destination must be 24 characters"),
+  body('destination._id').isLength({ min: 24, max: 24 }).withMessage("destination must be 24 characters"),
   body('destination.accountType').isLength({ min: 6, max: 6 }).withMessage("must be valid"),
   body('amount', "Must be number").isNumeric(),
-  body('order').isLength({ min: 24, max: 24 }).withMessage("order must be 24 characters"),
+  body('order._id').isLength({ min: 24, max: 24 }).withMessage("order._id must be 24 characters"),
+  body('order.type').isLength({ min: 1}).withMessage("order.type must valid"),
   async (req, res, next) => {
     try {
      
@@ -153,7 +154,7 @@ exports.add_transaction = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const orderDoc = await Order.findById(order).select("member").lean().exec();
+      const orderDoc = await Order.findById(order._id).select("member").lean().exec();
       const account =  await Account.findOne({"member": orderDoc.member}).lean().exec();
       log.info("Find member",orderDoc);
     
@@ -298,7 +299,184 @@ exports.add_transaction = [
     }
   }
 ]
+exports.add_transaction = [
+  body('source._id').isLength({ min: 4 }).withMessage("source must at lease 4 characters"),
+  body('source.accountType').isLength({ min: 6,max:6 }).withMessage("must be valid"),
+   body('destination._id').isLength({ min: 4 }).withMessage("destination must at least 4 characters"),
+  body('destination.accountType').isLength({ min: 4 ,max:6}).withMessage("must be valid"),
+  body('amount', "Must be number").isNumeric(),
+  body('order._id').isLength({ min: 24, max: 24 }).withMessage("order._id must be 24 characters"),
+  body('order.type').isLength({ min: 1}).withMessage("order.type must valid"),
+ 
+  async (req, res, next) => {
+    try {
+     
+      let { source, destination, amount, order, description } = req.body;
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
+      }
+      
+      /* Transaction */
+      const session = await mongoose.startSession();
+      try {
+        session.startTransaction();
+        const expense = await Expense.findById(order._id).exec();
+        if(expense) {
+          expense.status = constants.OrderStatus.CLOSE;
+          await expense.save({session});
+        }
+        else{
+          await session.abortTransaction();
+            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(order._id, `Expense not found`, 'order._id', "DB.ClubAccount")).validationResult.errors }));
+        }
+        /* const transactionResult = await session.withTransaction(async () => { */
+          var sourceTransaction;
+          var destinationTransaction;
+          if (source.accountType == constants.EAccountType.BANK)
+            sourceTransaction = await ClubAccount.findOne({account_id : source._id}).exec();
+          else if (source.accountType == constants.EAccountType.MEMBER || source.accountType == constants.EAccountType.SUPPLIERS)
+            sourceTransaction = await Account.findOne({account_id: source._id}).populate('member');
+          else{
+            await session.abortTransaction();
+            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source._id, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
+          }
+          if(destination.accountType === constants.EAccountType.BANK){
+            destinationTransaction = await ClubAccount.findOne({account_id: destination._id});
+          }else if(destination.accountType === constants.EAccountType.MEMBER || destination.accountType === constants.EAccountType.SUPPLIERS){
+            destinationTransaction = await Account.findOne({account_id: destination._id}).populate('member');
+          }else{
+            await session.abortTransaction();
+            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination._id, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
+          }
+          log.info("sourceTransaction",sourceTransaction);
+          log.info("destinationTransaction",destinationTransaction)
+          
 
+          if (!sourceTransaction) {
+            await session.abortTransaction();
+            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
+          }
+
+          if (!destinationTransaction) {
+            await session.abortTransaction();
+            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
+          }
+
+          
+          const tSource = getTranctionName(source,sourceTransaction);
+          log.info("tSource",tSource)
+          const tDestination = getTranctionName(destination,destinationTransaction);
+          log.info("tDestination",tDestination)
+      const newSourceTransaction = new Transaction({
+        source: tSource,
+        destination: tDestination,
+        amount: -amount,
+        date: source.date,
+        description: description,
+        order: order
+      });
+      
+     sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) -  Number(Number(amount).toFixed(2));
+     
+     if(isNaN(sourceTransaction.balance))
+      {
+        throw new Error('Source: The new balance is not a number!');
+      }
+      
+      sourceTransaction.transactions.push(newSourceTransaction); 
+      await sourceTransaction.save({session})
+      await newSourceTransaction.save({session});
+
+      const newDestinationTransaction = new Transaction({
+        source: tSource,
+        destination: tDestination,
+        amount: amount,
+        date: source.date,
+        description: description,
+        order: order
+      });
+
+      destinationTransaction.transactions.push(newDestinationTransaction);
+      destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(amount.toFixed(2));
+      if(isNaN(destinationTransaction.balance))
+      {
+        throw new Error('Destination: The new balance is not a number!');
+      }
+      await destinationTransaction.save({session})
+      await newDestinationTransaction.save({session});
+
+      /* await Order.findByIdAndUpdate(order,{status: constants.OrderStatus.CLOSE},{session})
+       */
+         await session.commitTransaction();
+         const savedCA = await ClubAccount.find().populate('transactions')
+         console.log("savedCA",savedCA)
+       /*  }, transactionOptions); */
+/*         if (transactionResult) {
+          log.info("trananctionResult/add_transaction update succefully", trananctionResult);
+          return res.status(201).json({ success: true, errors: ["add_transaction success"], data: [] })
+        } */
+        
+        return res.status(201).json({ success: true, errors: ["add_transaction success"], data: [] })
+      }
+      catch (error) {
+        await session.abortTransaction();
+        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.EXCEPTION", { name: "EXCEPTION", error }));
+      }
+      finally {
+        
+        await session.endSession();
+      }
+
+    }
+    catch (error) {
+      return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
+]
+
+exports.delete_expense = [
+  param('_id').isLength({ min: 24, max: 24 }).withMessage("_id must be 24 characters"),
+ async (req, res, next) => {
+    try {
+      let {_id } = req.params;
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
+      }
+      
+      /* Transaction */
+      const session = await mongoose.startSession();
+      try {
+        session.startTransaction();
+        const expense = await Expense.findByIdAndDelete(_id).exec();
+        
+        if(!expense) {
+         
+          await session.abortTransaction();
+            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(_id, `Expense not found`, '_id', "DB.ClubAccount")).validationResult.errors }));
+        }
+
+          
+         await session.commitTransaction();
+         
+        return res.status(201).json({ success: true, errors: ["add_transaction success"], data: [] })
+      }
+      catch (error) {
+        await session.abortTransaction();
+        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.EXCEPTION", { name: "EXCEPTION", error }));
+      }
+      finally {
+        
+        await session.endSession();
+      }
+
+    }
+    catch (error) {
+      return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
+]
 exports.list_expense = [ 
   async (req, res, next) => {
     let {filter} = req.body;

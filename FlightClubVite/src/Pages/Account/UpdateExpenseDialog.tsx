@@ -179,9 +179,10 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
               </Grid>
               <Grid item xs={6}>
                 <TextField fullWidth={true} onChange={handleChange} id="amount" name="amount"
+                  disabled
                   type={"number"}
                   label="Amount" placeholder="Amount" variant="standard"
-                  value={selectedExpense?.amount} required
+                  value={selectedExpense?.units * selectedExpense?.pricePeUnit } required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={12}>

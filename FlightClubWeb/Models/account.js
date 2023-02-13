@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 const AccountSchema = new Schema({
   account_id: {type: String, required: true},
   member: {type: Schema.Types.ObjectId, ref: "Member", required: true},
-  transactions: [TransactionSchema],
+  transactions:[ {type: Schema.Types.ObjectId, ref: "Transaction", required: true}],
   balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   description: {type: String},
   status:{type:String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active},

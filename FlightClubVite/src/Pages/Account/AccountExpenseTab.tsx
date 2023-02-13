@@ -11,6 +11,7 @@ import { IStatus, Status } from '../../Interfaces/API/IStatus'
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container'
 import CreateExpenseDialog from './CreateExpenseDialog'
 import CreateTransactionDialog from './CreateTransactionDialog'
+import DeleteExpenseDialog from './DeleteExpenseDialog'
 import UpdateExpenseDialog from './UpdateExpenseDialog'
 
 interface Data {
@@ -70,6 +71,7 @@ function AccountExpenseTab() {
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseEdit, setOpenExpenseEdit] = useState(false);
   const [openAddTransaction, setOpenAddTransaction] = useState(false);
+  const [openDeleteExpense,setOpenDeleteExpense] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<IExpense | undefined>(undefined);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [filterData, setFilterData] = useState({})
@@ -85,6 +87,7 @@ function AccountExpenseTab() {
           <Box display={'flex'} flexDirection={'column'} gap={1}>
             <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} />
             <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} />
           </Box>
         </>) : (<></>)}
         </>)
@@ -133,18 +136,25 @@ function AccountExpenseTab() {
           setOpenAddTransaction(true);
         }
         break;
+      case EAction.DELETE:
+        if(item !== undefined){
+          OnSelectedAccount(item);
+          setOpenDeleteExpense(true);
+        }
     }
   }
   const handleAddOnClose = () => {
     setOpenExpenseAdd(false);
     setOpenExpenseEdit(false);
     setOpenAddTransaction(false);
+    setOpenDeleteExpense(false)
   }
   const handleAddOnSave = () => {
     refetch();
     setOpenExpenseAdd(false);
     setOpenExpenseEdit(false);
     setOpenAddTransaction(false);
+    setOpenDeleteExpense(false);
     
   }
   return (
@@ -164,6 +174,7 @@ function AccountExpenseTab() {
               {openExpenseAdd == true ? (<CreateExpenseDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseAdd} />) : (null)}
               {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
               {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
+              {(openDeleteExpense == true && selectedExpense !== undefined) ? (<DeleteExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openDeleteExpense} />) : (null)}
               <ColumnGroupingTable rows={getData.filter(filterAccont)} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
             </>
 

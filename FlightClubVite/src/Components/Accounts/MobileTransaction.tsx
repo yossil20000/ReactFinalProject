@@ -1,7 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Fab, Grid, SvgIcon, SvgIconProps, Tooltip, Typography } from '@mui/material'
 import React, { useMemo } from 'react'
 import { IOrderType, OT_REF } from '../../Interfaces/API/IAccount'
-import { ITransaction } from '../../Interfaces/API/IClub'
+import { ITransaction, Transaction_OT } from '../../Interfaces/API/IClub'
 import FlightIcon from '@mui/icons-material/Flight';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -25,30 +25,30 @@ export function ShekelIcon(props: SvgIconProps) {
 }
 
 
-const getOrderIcon = (orderType: IOrderType): JSX.Element => {
+const getOrderIcon = (orderType: Transaction_OT): JSX.Element => {
   let node = <></>;
-  if (orderType.referance === OT_REF.FLIGHT) {
+  if (orderType === Transaction_OT.FLIGHT) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Flight"}>
         <FlightIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType.referance === OT_REF.EXPENSE) {
+  if (orderType === Transaction_OT.EXPENSE) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Transaction Done"}>
         <MiscellaneousServicesIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType.referance === OT_REF.MONTLY) {
+  if (orderType === Transaction_OT.MONTLY) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Transaction Done"}>
         <FlightIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType.referance === OT_REF.OTHER) {
+  if (orderType === Transaction_OT.OTHER) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Transaction Done"}>
         <FlightIcon />
@@ -98,16 +98,17 @@ export const getSign = (val: number | undefined) : string => {
   return (val !== undefined && val > 0) ? "green" : 'red'
 }
 function MobileTransaction({ item }: MobileTransactionProps) {
+  console.log("MobileTransaction/item",item)
   return (
     <Box>
       <Accordion>
         <AccordionSummary>
           <Grid container sx={{ width: "100%", height: "100%" }} gap={0} justifyContent="space-around" columns={12}>
             <Grid item xs={2} alignSelf={"center"} justifySelf={"start"}>
-              {getOrderIcon(item.order.orderType)}
+              {getOrderIcon(item.order.type)}
             </Grid>
             <Grid item xs={8} sm={8}>
-              <Grid>{item.destination}</Grid>
+              <Grid>{item.source}</Grid>
               <Grid>{(new Date(item.date)).toLocaleDateString()}</Grid>
               
             </Grid>
@@ -127,15 +128,10 @@ function MobileTransaction({ item }: MobileTransactionProps) {
             <Grid item xs={4}>Destination</Grid>
             <Grid item xs={8}>{item.destination}</Grid>
             <Grid item xs={4}>Operation</Grid>
-            <Grid item xs={8}>{item.order.orderType.operation}</Grid>
+            <Grid item xs={8}>{item.order.type}</Grid>
             <Grid item xs={4}>Order Ref</Grid>
             <Grid item xs={8}>{item.order._id}</Grid>
-            <Grid item xs={4}>Item</Grid>
-            <Grid item xs={4}>Discount</Grid>
-            <Grid item xs={4}>Total</Grid>
-            <Grid item xs={4}>{item.order.orderType.referance}</Grid>
-            <Grid item xs={4}>{item.order.discount}</Grid>
-            <Grid item xs={4}>{item.order.amount}</Grid>
+
           </Grid>
          </AccordionDetails>
       </Accordion>

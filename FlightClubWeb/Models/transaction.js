@@ -5,7 +5,10 @@ var TransactionSchema = new Schema({
   source: {type: String, required: true},
   destination: {type: String, required: true},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
-  order:  {type: Schema.Types.ObjectId, ref: "Order", required: true},
+  order:  {
+    _id: {type: String},
+    type: {type: String}
+  },
   description: {type: String},
   date: {type: Date, default: new Date()}
 },{toJSON: {getters: true}})

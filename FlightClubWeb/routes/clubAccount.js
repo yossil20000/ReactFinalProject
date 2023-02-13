@@ -11,5 +11,7 @@ router.put("/create_expense",clubAccountController.create_expense);
 router.post("/update_expense",clubAccountController.update_expense);
 router.put("/add_account",clubAccountController.add_account); 
 router.post('/combo',[authJWT.authenticate],  clubAccountController.combo);
+router.put('/add_order_transaction',clubAccountController.add_order_transaction);
 router.put('/add_transaction',clubAccountController.add_transaction);
+router.delete('/delete_expense/:_id',clubAccountController.delete_expense)
 module.exports = router;

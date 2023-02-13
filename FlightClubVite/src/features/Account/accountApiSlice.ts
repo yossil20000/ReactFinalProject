@@ -145,6 +145,14 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: [{ type: "ClubAccount" }]
       }),
+      clubAddOrderTransaction: builder.mutation<IResultBaseSingle<IClubAccount>,IAddTransaction >({
+        query: (addTransaction) => ({
+          url: `/${URLS.CLUB_ADD_ORDER_TRANSACTION}`,
+          method: 'PUT',
+          body: addTransaction
+        }),
+        invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" }]
+      }),
       clubAddTransaction: builder.mutation<IResultBaseSingle<IClubAccount>,IAddTransaction >({
         query: (addTransaction) => ({
           url: `/${URLS.CLUB_ADD_TRANSACTION}`,
@@ -179,6 +187,14 @@ export const accountApiSlice = createApi({
         invalidatesTags: ["Expense"]
         
       }),
+      deleteExpense: builder.mutation<IResultBaseSingle<IExpense>,string>({
+        query: (_id) => ({
+          url: `/${URLS.CLUB_DELETE_EXPENSE}/${_id}`,
+          method: "DELETE"
+        }),
+        invalidatesTags: ["Expense"]
+        
+      }),
       fetchTypes: builder.query<IResultBaseSingle<ITypes>,string>({
         query: (key) => ({
           url: `/${URLS.TYPES}/${key}`,
@@ -209,9 +225,11 @@ export const {
   useClubAccountQuery,
   useClubAddAccountMutation,
   useClubAccountComboQuery,
+  useClubAddOrderTransactionMutation,
   useClubAddTransactionMutation,
   useFetchExpenseQuery,
   useCreateExpenseMutation,
   useUpdateExpenseMutation,
+  useDeleteExpenseMutation,
   useFetchTypesQuery
 } = accountApiSlice;

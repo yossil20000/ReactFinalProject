@@ -7,7 +7,7 @@ import { OrdefStatus } from '../../Interfaces/API/IAccount';
 import PaymentIcon from '@mui/icons-material/Payment';
 import PaidIcon from '@mui/icons-material/Paid';
 import { EAccountType, IAddTransaction, IClubAccountCombo } from '../../Interfaces/API/IClub';
-import { useClubAddTransactionMutation } from '../../features/Account/accountApiSlice';
+import { useClubAddOrderTransactionMutation } from '../../features/Account/accountApiSlice';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { IValidationAlertProps } from '../Buttons/TransitionAlert';
 import ErrorDialog from '../ErrorDialog';
@@ -24,7 +24,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [validationAlert,setValidationAlert] = useState<IValidationAlertProps[]>([])
-  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionMutation();
+  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddOrderTransactionMutation();
   
   /*  console.log("TransactionAction/params",id,_idMember,rowId) */
 

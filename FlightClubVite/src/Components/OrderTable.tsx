@@ -4,7 +4,7 @@ import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
 import TransactionAction from './Accounts/TransactionAction';
 import { IOrder } from '../Interfaces/API/IAccount';
-import { EAccountType, IAddTransaction } from '../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, Transaction_OT } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 
 interface IOrderTableProps {
@@ -29,7 +29,10 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
         accountType: EAccountType.EAT_BANK
       },
       amount: amount,
-      order: id,
+      order: {
+        _id: id,
+        type: Transaction_OT.ORDER
+      },
       description: description,
       date: new Date()
     }

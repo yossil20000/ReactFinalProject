@@ -38,7 +38,7 @@ const ERROR_TYPE = {
 const  EAccountType = {
     BANK: "100100",
     MEMBER: '200200',
-    SUPPLIERS: '100300'
+    SUPPLIERS: '200300'
   }
   const  MemberType ={
     CLUB: "Club",

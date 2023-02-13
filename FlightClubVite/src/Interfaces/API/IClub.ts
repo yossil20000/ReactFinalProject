@@ -38,9 +38,15 @@ export interface IClubAccount extends IClubAccountBase {
 export enum EAccountType {
   EAT_BANK= "100100",
   EAT_ACCOUNT= '200200',
-  EAT_SUPPLIERS = '100300'
+  EAT_SUPPLIERS = '200300'
 }
-
+export enum Transaction_OT {
+  FLIGHT = "Flight",
+  EXPENSE = "Expense",
+  MONTLY = "Montly",
+  ORDER = 'Order',
+  OTHER = "Other"
+}
 export interface IAddTransaction {
   source: {
     _id: string,
@@ -51,7 +57,10 @@ export interface IAddTransaction {
     accountType: string
   },
   amount: number,
-  order: string,
+  order: {
+    type: Transaction_OT,
+    _id: string
+  }
   description: string,
   date: Date
 }
@@ -60,7 +69,10 @@ export interface ITransactionBase {
   source: string,
   destination: string,
   amount: number,
-  order: IOrder,
+  order: {
+    type: Transaction_OT,
+    _id: string
+  }
   description: string,
   date: Date
 }

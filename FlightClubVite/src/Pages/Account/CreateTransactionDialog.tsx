@@ -1,10 +1,10 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, Grid, IconButton, LinearProgress, TextField, Tooltip } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Fab, Grid, IconButton, LinearProgress, TextField, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import Item from '../../Components/Item';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { IExpense } from '../../Interfaces/API/IExpense';
-import { EAccountType, IAddTransaction } from '../../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, Transaction_OT } from '../../Interfaces/API/IClub';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import { useClubAddTransactionMutation, useFetchAccountSearchQuery } from '../../features/Account/accountApiSlice';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
@@ -17,8 +17,8 @@ export interface CreateTransactionDialogProps {
   onClose: () => void;
   onSave: () => void;
   open: boolean;
-
 }
+
 
 const newTransaction: IAddTransaction = {
   source: {
@@ -30,7 +30,10 @@ const newTransaction: IAddTransaction = {
     accountType: ''
   },
   amount: 0,
-  order: '',
+  order: {
+    type: Transaction_OT.ORDER,
+    _id: ""
+  },
   description: '',
   date: new Date()
 }
@@ -83,8 +86,11 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
       });
     }
   }
-  const getAccountType = (memberType: MemberType) : string =>
+  const getAccountType = (memberType: string) : string =>
   {
+    /* console.log("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
+    /* console.log("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
+   
     switch(memberType){
       case MemberType.Club:
         return EAccountType.EAT_BANK;
@@ -97,16 +103,17 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
     }
   }
   
+  
   const filterAccount = ()=> {
     
     const values : string[] = []
     values.push(value.source.id)
     values.push(value.destination.id)
-    console.log("getTransaction/values",values)
+    console.log("getTransaction/filterAccount/values",values)
     const valuesFilter : filter = {
       member: [value.source.id,value.destination.id]
     }
-    console.log("getTransaction/valuesfilter",valuesFilter)
+    console.log("getTransaction/filterAccount/valuesfilter",valuesFilter)
 
     return valuesFilter;
   }
@@ -117,14 +124,17 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
       const newTransaction: IAddTransaction = {
         source: {
           _id: value.source.account_id,
-          accountType: getAccountType(value.source.type)
+          accountType: getAccountType(value.source.type )
         },
         destination: {
-          _id: value.destination.display,
+          _id: value.destination.account_id,
           accountType: getAccountType(value.destination.type)
         },
         amount: value.amount,
-        order: '',
+        order: {
+          type: Transaction_OT.EXPENSE,
+          _id: value._id
+        },
         description: value.description,
         date: new Date()
       }
@@ -142,7 +152,63 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
       <DialogTitle textAlign={"center"}>Add Expense Transaction</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
+        <Grid item xs={12}><Divider/></Grid>
+         <Grid item xs={12} sm={6}>
+            <Grid container sx={{ width: "100%" }} justifyContent="center" columns={3}>
+              <Grid item xs={3}>
+                  <Typography textAlign={'center'} >Transaction Source</Typography>
+              </Grid>
+              <Grid item xs={6}><Divider/></Grid>
+              
+              <Grid item xs={1}>
+                Account
+              </Grid>
+              <Grid item xs={2}>
+              {selectedTransaction.source._id }
+              </Grid>
+              <Grid item xs={1}>
+                Acoount Type
+              </Grid>
+              <Grid item xs={2}>
+              {selectedTransaction.source.accountType }
+              </Grid>
+            </Grid>
+         </Grid>
+         <Grid item xs={12} sm={6}>
+            <Grid container sx={{ width: "100%" }} justifyContent="center" columns={3}>
+              <Grid item xs={3}>
+              <Typography textAlign={'center'} >Transaction Destination</Typography>
+              </Grid>
+              <Grid item xs={6}><Divider/></Grid>
+              <Grid item xs={1}>
+                Account
+              </Grid>
+              <Grid item xs={2}>
+                {selectedTransaction.destination._id }
+              </Grid>
+              <Grid item xs={1}>
+                Account Type
+              </Grid>
+              <Grid item xs={2}>
+                {selectedTransaction.destination.accountType }
+              </Grid>
+            </Grid>
 
+         </Grid>
+         <Grid item xs={12}><Divider/></Grid>
+         <Grid item xs={12}>
+          <Typography textAlign={'center'} >Transaction description</Typography>
+          </Grid>
+          <Grid item xs={12}><Divider/></Grid>
+          <Grid item xs={12}>
+          <Typography textAlign={'center'} >{`Amount: ${selectedTransaction.amount}`}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+          <Typography textAlign={'center'} >{`Date: ${new Date(selectedTransaction.date).toLocaleDateString()}`}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+          <Typography textAlign={'center'} >{`Description: ${selectedTransaction.description}`}</Typography>
+          </Grid> 
         </Grid>
       </DialogContent>
       <DialogActions>
