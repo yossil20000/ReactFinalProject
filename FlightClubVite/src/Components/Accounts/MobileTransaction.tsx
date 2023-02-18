@@ -7,7 +7,8 @@ import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices
 import PaidIcon from '@mui/icons-material/Paid';
 import { green } from '@mui/material/colors';
 export interface MobileTransactionProps {
-  item: ITransaction
+  item: ITransaction;
+  accountId: string | undefined;
 }
 function HomeIcon(props: SvgIconProps) {
   return (
@@ -104,8 +105,26 @@ export const getSign = (val: number | undefined) : string => {
   
   return (val !== undefined && val > 0) ? "green" : 'red'
 }
-function MobileTransaction({ item }: MobileTransactionProps) {
+export const getValue = (val: number | undefined) : string => {
+  
+  return (val !== undefined && val > 0) ? "green" : 'red'
+}
+function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
   console.log("MobileTransaction/item",item)
+  const getAccountSign = () : string => {
+    if(accountId !== undefined && item.source.includes(accountId))
+      return "red"
+    else
+      return "green";
+    
+  }
+   const getAmount = () : number => {
+    if(accountId !== undefined && item.source.includes(accountId))
+    return item.amount * -1
+  else
+    return item.amount
+    
+  }
   return (
     <Box>
       <Accordion>
@@ -115,14 +134,14 @@ function MobileTransaction({ item }: MobileTransactionProps) {
               {getOrderIcon(item.order.type)}
             </Grid>
             <Grid item xs={8} sm={8}>
-              <Grid>{item.source}</Grid>
+              <Grid>{item.destination}</Grid>
               <Grid>{(new Date(item.date)).toLocaleDateString()}</Grid>
               
             </Grid>
             <Grid item xs={2} sm={2} alignItems={"center"} justifyItems={"left"}>
               <Box display={"flex"} alignSelf={"baseline"}>
                 <ShekelIcon sx={{ fontSize: "0.7rem" }} /> 
-                <Typography style={{color: getSign(item.amount)}}>{item.amount}</Typography>
+                <Typography style={{color: getAccountSign()}}>{getAmount()}</Typography>
               </Box>
             </Grid>
            

@@ -57,7 +57,7 @@ function UserAccountTab() {
                   </Box>
                   <Box>
                   
-                    <Typography noWrap={false} style={{ color: getSign(getAccount?.balance) }}>{getAccount?.balance}</Typography>
+                    <Typography noWrap={false} style={{ color: getSign(getAccount?.balance) }}>{getAccount?.balance.toFixed(2)}</Typography>
                   </Box>
 
                 </Box>
@@ -81,9 +81,9 @@ function UserAccountTab() {
               {(isError === false && isLoading === false) ? (
                 <Grid container sx={{ width: "100%", height: "100%" }} rowGap={1}  gap={1} justifyContent="space-around" columns={12}>
                   {getTransaction.map((transaction) => (
-                    <Grid item xs={12} md={6} mx={{xs: 0, md:1}} sx={{ maxWidth: { xs: "100%", md: "48%" } }}>
-                      <MobileTransaction item={transaction} />
-                      <CardTransaction item={transaction}/>
+                    <Grid item xs={12} lg={6} mx={{xs: 0, lg:1}} sx={{ maxWidth: { xs: "100%", md: "48%" } }}>
+                      <MobileTransaction item={transaction} accountId={getAccount?.account_id}/>
+                      
                     </Grid>
                     
                   ))}
