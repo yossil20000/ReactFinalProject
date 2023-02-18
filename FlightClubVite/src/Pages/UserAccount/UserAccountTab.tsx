@@ -2,6 +2,7 @@ import { Box, Divider, Grid, Paper, Typography } from '@mui/material';
 import { height } from '@mui/system';
 import { useMemo, useState } from 'react';
 import { useAppSelector } from '../../app/hooks';
+import CardTransaction from '../../Components/Accounts/CardTransaction';
 import MobileTransaction, { getSign, ShekelIcon } from '../../Components/Accounts/MobileTransaction';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { useFetchAccountSearchQuery } from '../../features/Account/accountApiSlice'
@@ -78,12 +79,15 @@ function UserAccountTab() {
               {isLoading === true ? "loading" : null}
 
               {(isError === false && isLoading === false) ? (
-                <Grid container sx={{ width: "100%", height: "100%" }} gap={0} justifyContent="space-around" columns={12}>
+                <Grid container sx={{ width: "100%", height: "100%" }} rowGap={1}  gap={1} justifyContent="space-around" columns={12}>
                   {getTransaction.map((transaction) => (
-                    <Grid item xs={12} md={6} mx={1} sx={{ maxWidth: { xs: "95%", md: "47%" } }}>
+                    <Grid item xs={12} md={6} mx={{xs: 0, md:1}} sx={{ maxWidth: { xs: "100%", md: "48%" } }}>
                       <MobileTransaction item={transaction} />
+                      <CardTransaction item={transaction}/>
                     </Grid>
+                    
                   ))}
+
                 </Grid>
               ) : (
                 <></>

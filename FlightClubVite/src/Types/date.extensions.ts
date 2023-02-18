@@ -20,8 +20,16 @@ declare global {
       getLastDateOfMonth(year: number,month:number) : Date;
       getFirstDateOfMonth(year: number,month:number) : Date;
       getLocalTimeWithOffset(offset: number) : Date;
+      getStartDayDate() : Date;
+      getEndDayDate() : Date;
    }
 }
+Date.prototype.getStartDayDate = function() : Date {
+ return new Date(this.getFullYear(),this.getMonth(),this.getDate(),0,0,0);
+}
+Date.prototype.getEndDayDate = function() : Date {
+   return new Date(this.getFullYear(),this.getMonth(),this.getDate(),23,59,59);
+  }
 Date.prototype.getLocalTimeWithOffset = function(offset: number) : Date {
    const correctionOffset = offset - this.getTimezoneOffset()
    return new Date(this.addMinutes(correctionOffset))

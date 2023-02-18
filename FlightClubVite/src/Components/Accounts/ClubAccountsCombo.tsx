@@ -37,7 +37,7 @@ function ClubAccountsCombo(props: ComboProps) {
 
 
   const accountToItemCombo = (input: IClubAccountCombo): InputComboItem => {
-    return { lable: `${input.member.family_name}/${input.member.member_id}/${input.account_id}`, _id: input._id, description: "" ,key: input.member.member_type, key2: input.account_id}
+    return { lable: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: "" ,key: input.member.member_type, key2: input.account_id}
   }
 
 

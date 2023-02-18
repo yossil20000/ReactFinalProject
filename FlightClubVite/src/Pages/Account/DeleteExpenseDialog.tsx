@@ -28,7 +28,6 @@ function DeleteExpenseDialog({ onClose, onSave, open, value, ...other }: DeleteE
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
 
-
   const handleOnCancel = () => {
     setValidationAlert([])
     if (isSaved)

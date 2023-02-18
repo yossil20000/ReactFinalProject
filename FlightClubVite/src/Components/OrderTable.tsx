@@ -48,7 +48,8 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
       unitPrice: row.pricePeUnit,
       orderBy: `${row.member?.family_name}/${row.member?.member_id}`,
       member: row.member === undefined ? undefined : row.member,
-      status: row.status
+      status: row.status,
+      description: `${row.description}`
       ,
     }))
     if (rows !== undefined) {

@@ -2,12 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { getServerAddress, URLS } from "../../Enums/Routers"
 import { IAccount, IAccountsCombo, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
-import { IAddTransaction, IClubAccount, IClubAccountsCombo, IClubAddAccount } from "../../Interfaces/API/IClub"
+import { IAddTransaction, IClubAccount, IClubAccountsCombo, IClubAddAccount, ITransaction } from "../../Interfaces/API/IClub"
 import { IExpense, IUpsertExpanse } from "../../Interfaces/API/IExpense"
 import { ITypes } from "../../Interfaces/API/ITypes"
 import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { getUrlWithParams, getUrlWithParamsArray } from "../../Utils/url"
+import { IDateFilter } from "../../Interfaces/IDateFilter"
 
 export const accountApiSlice = createApi({
   reducerPath: "accountApiSlice",
@@ -22,7 +23,7 @@ export const accountApiSlice = createApi({
       return headers
     },
   }),
-  tagTypes: ["Accounts","Orders","ClubAccount","Expense"],
+  tagTypes: ["Accounts","Orders","ClubAccount","Expense","Transaction"],
   endpoints(builder) {
     return {
       fetchAllAccounts: builder.query<IResultBase<IAccount>, IFilter>({
@@ -159,7 +160,7 @@ export const accountApiSlice = createApi({
           method: 'PUT',
           body: addTransaction
         }),
-        invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" }]
+        invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" },{type: "Transaction"}]
       }),
       fetchExpense: builder.query<IResultBase<IExpense>, IFilter>({
         query: (filter) => ({
@@ -195,14 +196,22 @@ export const accountApiSlice = createApi({
         invalidatesTags: ["Expense"]
         
       }),
+      fetchTransaction: builder.query<IResultBase<ITransaction>,IDateFilter>({
+        query: (filter) => ({
+          
+          url:`/${URLS.CLUB_TRANSACTION_SEARCH}?from=${filter.from}&to=${filter.to}`,
+          method: 'GET'
+        })
+      }),
+
       fetchTypes: builder.query<IResultBaseSingle<ITypes>,string>({
         query: (key) => ({
           url: `/${URLS.TYPES}/${key}`,
           method: "GET",
 
         })
-      })
-
+      }),
+      
     }
   }
 
@@ -231,5 +240,6 @@ export const {
   useCreateExpenseMutation,
   useUpdateExpenseMutation,
   useDeleteExpenseMutation,
-  useFetchTypesQuery
+  useFetchTypesQuery,
+  useFetchTransactionQuery
 } = accountApiSlice;

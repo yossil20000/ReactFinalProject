@@ -45,6 +45,16 @@ const  EAccountType = {
     MEMBER: "Member",
     SUPPLIERS: "Supplier"    
 }
+
+const NotifyOn = {
+    CREATEd: "CREATE",
+    CHANGED: "CHANGED",
+    DELETED: "DELETED"
+}
+const NotifyBy = {
+    EMAIL: "EMAIL"
+}
+module.exports.NotifyBy = NotifyBy;
 module.exports.ERROR_TYPE = ERROR_TYPE;
 module.exports.ROLES = ROLES;
 module.exports.DEVICE_STATUS = DEVICE_STATUS;
@@ -55,3 +65,4 @@ module.exports.STATUS = STATUS;
 module.exports.OrderStatus = OrderStatus;
 module.exports.EAccountType = EAccountType;
 module.exports.MemberType = MemberType;
+module.exports.NotifyOn = NotifyOn;

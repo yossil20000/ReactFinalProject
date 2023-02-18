@@ -7,6 +7,7 @@ import AccountFlightsTab from "./AccountFlightsTab";
 import AccountOrders from "./AccountOrdersTab";
 import AccountsTab from "./AccountsTab";
 import AccountTest from "./AccountTest";
+import AccountTransactionsTab from "./AccountTransactionsTab";
 import OrdersTab from "./OrdersTab";
 
 const items: ScrollableTabsItem[] = [
@@ -14,7 +15,7 @@ const items: ScrollableTabsItem[] = [
   { id: 1, label: "Flights" },
   { id: 2, label: "Expense" },
   { id: 3, label: "Orders" },
-  { id: 4, label: "4" }
+  { id: 4, label: "Transactions" }
 
 ]
 
@@ -37,7 +38,8 @@ function AccountPage() {
               {value === 1 && (<AccountFlightsTab/>)}
               {value === 2 && (<AccountExpenseTab/>)}
               {value === 3 && (<AccountOrders/>)}
-              {value === 4 && (<AccountTest/>)}
+              {value === 4 && (<AccountTransactionsTab/>)}
+              {value === 5 && (<AccountTest/>)}
             </Paper>
             </Box>
 {/*         </MembersContext.Provider> */}

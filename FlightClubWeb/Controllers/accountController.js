@@ -27,6 +27,7 @@ exports.account_search = [async function (req, res, next) {
      {
       if(req.query.member){
         const {accounts} = await findAccount({member: req.query.member});
+        log.info('account_search/account', accounts);
         return res.status(201).json({ success: true, errors: [], data: accounts });
       }
       const {accounts} = await findAccount();
