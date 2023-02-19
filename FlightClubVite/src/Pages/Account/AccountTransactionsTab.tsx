@@ -1,6 +1,6 @@
 
-import { Box, Button, Divider, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SwipeableDrawer } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { Box, Button, Grid } from '@mui/material';
+import { useState } from 'react';
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import TransactionTable, { ITransactionTableFilter } from '../../Components/TransactionTable';
@@ -8,28 +8,26 @@ import TransactionTable, { ITransactionTableFilter } from '../../Components/Tran
 import useLocalStorage from '../../hooks/useLocalStorage';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import React from 'react';
 import FilterDrawer from '../../Components/FilterDrawer';
 import { setProperty } from '../../Utils/setProperty';
-import { IDateFilter } from '../../Interfaces/IDateFilter';
+import { IDateFilter, newDataFilter } from '../../Interfaces/IDateFilter';
 export interface IFilterItems {
   key: string;
   value: any;
   setValue:  React.Dispatch<React.SetStateAction<any>>
 }
-const dataFilter : IDateFilter ={
-  to: (new Date().addDays(1)).getEndDayDate(),
-  from: (new Date().addDays(-30)).getStartDayDate(),
-  currentOffset: 0
-}
+const dataFilter : IDateFilter = newDataFilter;
+
 function AccountTransactionsTab() {
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
-  const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dataFilter.to)
-  const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dataFilter.from)
+  /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dataFilter.to)
+  const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dataFilter.from) */
+  const [dateTo,setDateTo] = useState( dataFilter.to)
+  const [dateFrom,setDateFrom] = useState(dataFilter.from)
   const [filter,setFilter] = useState<ITransactionTableFilter>({dataFilter: dataFilter} as ITransactionTableFilter);
+  
   const OnSelectedClubAccount = (item: InputComboItem): void => {
     setSelectedClubAccount(item);
     
