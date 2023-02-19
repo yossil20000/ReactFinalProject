@@ -1,3 +1,4 @@
+const constants = require('../Models/constants');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -8,6 +9,10 @@ var TransactionSchema = new Schema({
   order:  {
     _id: {type: String},
     type: {type: String}
+  },
+  payment:{
+    method: {type:String, enum: Object.values(constants.PaymentMethod),default: constants.PaymentMethod.TRANSFER},
+    referance: {type: String, default: ""}
   },
   description: {type: String},
   date: {type: Date, default: new Date()}

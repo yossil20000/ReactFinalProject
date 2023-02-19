@@ -4,7 +4,7 @@ import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons'
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert'
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable'
 import { useFetchExpenseQuery } from '../../features/Account/accountApiSlice'
-import { OrdefStatus } from '../../Interfaces/API/IAccount'
+import { OrderStatus } from '../../Interfaces/API/IAccount'
 import { IExpense, IExpenseBase } from '../../Interfaces/API/IExpense'
 import IMember from '../../Interfaces/API/IMember'
 import { IStatus, Status } from '../../Interfaces/API/IStatus'
@@ -22,8 +22,9 @@ interface Data {
   amount: number,
   category: string,
   type: string,
+  utilizated:string,
   description: string,
-  status: OrdefStatus,
+  status: OrderStatus,
   source: IMember | string,
   destination: IMember | string,
   render?: React.ReactNode
@@ -34,12 +35,13 @@ function createData(_id: string, date: Date,
   amount: number,
   category: string,
   type: string,
+  utilizated: string,
   description: string,
-  status: OrdefStatus,
+  status: OrderStatus,
   source: IMember | string,
   destination: IMember | string,
   render?: React.ReactNode): Data {
-  return { _id, date, units, pricePeUnit, amount, category ,type, description, status, source, destination, render }
+  return { _id, date, units, pricePeUnit, amount, category ,type,utilizated, description, status, source, destination, render }
 }
 
 
@@ -59,6 +61,7 @@ function AccountExpenseTab() {
     { id: 'amount', label: 'Amount', minWidth: 70, align: 'left', isCell: true },
     { id: 'category', label: 'Category', minWidth: 70, align: 'left', isCell: true },
     { id: 'type', label: 'Type', minWidth: 70, align: 'left', isCell: true },
+    { id: 'utilizated', label: 'Utilizated', minWidth: 70, align: 'left', isCell: true },
     { id: 'description', label: 'Description', minWidth: 170, align: 'left', isCell: true },
     { id: 'status', label: 'Status', minWidth: 70, align: 'left', format: (value: Status) => value.toLocaleUpperCase(), isCell: true },
     { id: 'source', label: 'Source', minWidth: 170, align: 'left', isCell: true },
@@ -76,14 +79,10 @@ function AccountExpenseTab() {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [filterData, setFilterData] = useState({})
   const getData = useMemo(() => {
-
-
-    console.log("getData/bankAccounts,bank", data);
-
+    console.log("AccountExpenseTab/getData/expense/data", data);
     const rows = data?.data.map((row) => {
-
-      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.description, row.status, row.source.display, row.destination.display,
-        <>{row.status == OrdefStatus.CREATED ? (<>
+      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type,row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
+        <>{row.status == OrderStatus.CREATED ? (<>
           <Box display={'flex'} flexDirection={'column'} gap={1}>
             <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} />
             <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} />
@@ -92,7 +91,7 @@ function AccountExpenseTab() {
         </>) : (<></>)}
         </>)
     });
-    console.log("AccountExpenseTab/getData", rows)
+    console.log("AccountExpenseTab/getData/rows", rows)
     return rows === undefined ? [] : rows;
   }, [data])
 

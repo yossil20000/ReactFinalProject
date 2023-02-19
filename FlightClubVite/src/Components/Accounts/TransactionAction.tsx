@@ -3,7 +3,7 @@ import { Box, CircularProgress, Fab, Tooltip } from '@mui/material';
 import { green } from '@mui/material/colors';
 import { GridRenderCellParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
-import { OrdefStatus } from '../../Interfaces/API/IAccount';
+import { OrderStatus } from '../../Interfaces/API/IAccount';
 import PaymentIcon from '@mui/icons-material/Payment';
 import PaidIcon from '@mui/icons-material/Paid';
 import { EAccountType, IAddTransaction, IClubAccountCombo } from '../../Interfaces/API/IClub';
@@ -68,7 +68,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
     <Box  >
       {openError === true ? (<ErrorDialog setOpen={setOpenError} open={openError} validationAlert={validationAlert}/>) : null}
       {
-        params.row.status.toString() === OrdefStatus.CLOSE  &&
+        params.row.status.toString() === OrderStatus.CLOSE  &&
         (
           <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
             <Tooltip title={"Transaction Done"}>
@@ -86,7 +86,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
           </Fab>
         )
       }
-      {params.row.status !== OrdefStatus.CLOSE && isSuccess == false && isloading == false &&
+      {params.row.status !== OrderStatus.CLOSE && isSuccess == false && isloading == false &&
         (
           <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleTransaction} >
             <Tooltip title={"Place Transaction"}>

@@ -15,7 +15,7 @@ export enum OT_REF {
   MONTLY = "Montly",
   OTHER = "Other"
 }
-export enum OrdefStatus {
+export enum OrderStatus {
   "CREATED"= "Created",
   "CLOSE" = "Close"
 }
@@ -41,7 +41,7 @@ export interface IOrderBase {
   amount: number,
   orderType: IOrderType,
   description: string,
-  status: OrdefStatus,
+  status: OrderStatus,
   member: IMember | undefined,
   orderBy: string
 }
@@ -54,7 +54,7 @@ export class COrderCreate  implements IOrderBase {
   amount: number
   orderType: IOrderType
   description: string
-  status: OrdefStatus
+  status: OrderStatus
   member:  IMember | undefined
   orderBy: string
   constructor(){
@@ -66,7 +66,7 @@ export class COrderCreate  implements IOrderBase {
   this.amount= 0;
   this.orderType= {operation: OT_OPERATION.CREDIT,referance: OT_REF.FLIGHT};
   this.description = "";
-  this.status= OrdefStatus.CREATED;
+  this.status= OrderStatus.CREATED;
   this.member = undefined;
   this.orderBy = ""
   }

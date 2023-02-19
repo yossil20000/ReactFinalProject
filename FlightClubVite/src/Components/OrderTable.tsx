@@ -4,7 +4,7 @@ import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
 import TransactionAction from './Accounts/TransactionAction';
 import { IOrder } from '../Interfaces/API/IAccount';
-import { EAccountType, IAddTransaction, Transaction_OT } from '../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 
 interface IOrderTableProps {
@@ -32,6 +32,10 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
       order: {
         _id: id,
         type: Transaction_OT.ORDER
+      },
+      payment:{
+        method: PaymentMethod.TRANSFER,
+        referance: ""
       },
       description: description,
       date: new Date()

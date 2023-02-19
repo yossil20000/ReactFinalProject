@@ -10,7 +10,8 @@ var ExpenseSchema = new Schema({
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   expense: {
     category: {type: String, required:true, default: ""},
-    type: {type: String, required:true, default: ""}
+    type: {type: String, required:true, default: ""},
+    utilizated: {type: String, enum : Object.values(constants.Utilizated) , default: constants.Utilizated.HOURS_0000 }
   },
   description: {type: String,default: ""},
   status: {type:String, enum: Object.values(constants.OrderStatus), default: constants.OrderStatus.CREATED},

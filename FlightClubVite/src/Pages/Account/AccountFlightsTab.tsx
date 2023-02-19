@@ -6,7 +6,7 @@ import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTabl
 import DevicesFlightCombo from '../../Components/Devices/DeviceFlightCombo';
 import DevicesCombo from '../../Components/Devices/DevicesCombo';
 import { useGetAllFlightsSearchQuery } from '../../features/Flight/flightApi';
-import { COrderCreate, IOrderBase, OrdefStatus, OT_OPERATION, OT_REF } from '../../Interfaces/API/IAccount';
+import { COrderCreate, IOrderBase, OrderStatus, OT_OPERATION, OT_REF } from '../../Interfaces/API/IAccount';
 import { DEVICE_MET } from '../../Interfaces/API/IDevice';
 import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
 
@@ -149,7 +149,7 @@ function AccountFlightsTab() {
         amount: amount,
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
         description: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
-        status: OrdefStatus.CREATED,
+        status: OrderStatus.CREATED,
         member: flightFound.member,
         orderBy: `${flightFound.member.family_name} / ${flightFound.member.member_id}`
       }

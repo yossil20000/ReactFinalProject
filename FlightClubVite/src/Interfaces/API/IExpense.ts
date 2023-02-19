@@ -1,7 +1,14 @@
-import { OrdefStatus } from "./IAccount"
+import { OrderStatus } from "./IAccount"
 import { EAccountType } from "./IClub"
 import { MemberType } from "./IMember"
-
+export enum Utilizated {
+  HOURS_0000= "HOURS_0000",
+  HOURS_0001= "HOURS_0001",
+  HOURS_0500= "HOURS_0500",
+  HOURS_1000= "HOURS_1000",
+  HOURS_1500= "HOURS_1500",
+  HOURS_2000= "HOURS_2000"
+}
 export interface IUpsertExpanse {
   filter?:{
   },
@@ -15,10 +22,11 @@ export interface IExpenseBase {
   amount: number,
   expense: {
     category: string,
-    type: string
+    type: string,
+    utilizated: Utilizated
   }
   description: string,
-  status: OrdefStatus,
+  status: OrderStatus,
   source: {
     id: string,
     type: MemberType,
@@ -43,10 +51,11 @@ export const newExpense : IExpenseBase= {
   amount: 0,
   expense: {
     category:"",
-    type: ""
+    type: "",
+    utilizated: Utilizated.HOURS_0000
   },
   description: "",
-  status: OrdefStatus.CREATED,
+  status: OrderStatus.CREATED,
   source: {
     id: "",
     type: MemberType.Member,

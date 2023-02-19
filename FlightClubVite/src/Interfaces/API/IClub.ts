@@ -47,6 +47,12 @@ export enum Transaction_OT {
   ORDER = 'Order',
   OTHER = "Other"
 }
+export enum PaymentMethod {
+  VISA= "VISA",
+    CHECK = "CHECK",
+    TRANSFER = "TRANSFER"
+}
+
 export interface IAddTransaction {
   source: {
     _id: string,
@@ -60,7 +66,11 @@ export interface IAddTransaction {
   order: {
     type: Transaction_OT,
     _id: string
-  }
+  },
+  payment:{
+    method: PaymentMethod, 
+    referance: string
+  },
   description: string,
   date: Date
 }
@@ -72,7 +82,11 @@ export interface ITransactionBase {
   order: {
     type: Transaction_OT,
     _id: string
-  }
+  },
+  payment:{
+    method: string, 
+    referance: string
+  },
   description: string,
   date: Date
 }

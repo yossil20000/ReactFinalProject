@@ -57,6 +57,8 @@ useEffect(()=>{
       source: row.source,
       destination: row.destination,
       amount: row.amount,
+      paymentMethod : row.payment.method,
+      paymentReferance: row.payment.referance,
       order: row.order.type,
       description: row.description
     }))
@@ -76,6 +78,8 @@ useEffect(()=>{
     { field: 'destination', headerName: 'Destination', minWidth: 100, flex: 3 },
     { field: 'order', headerName: 'Order', minWidth: 70, flex: 1 },
     { field: 'amount', headerName: 'Amount', type: 'number', minWidth: 70, flex: 1 },
+    { field: 'paymentMethod', headerName: 'PayMethod', type: 'text', minWidth: 80, flex: 1 },
+    { field: 'paymentReferance', headerName: 'PayRef', type: 'text', minWidth: 80, flex: 1 },
     { field: 'description', headerName: 'Description', minWidth: 300, flex: 1 },
 
 
