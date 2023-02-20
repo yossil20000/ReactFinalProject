@@ -123,8 +123,8 @@ const address = {
 /* const roles = new Role({
     roles: [CE.ROLES[2], CE.ROLES[4]]
 }); */
-function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,password,membership,roles,username ,cb) {
-    let memberShip = new Membership();
+function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,password,membership,roles,username,member_type ,cb) {
+   
     memberdetail = { username: username,first_name: first_name, family_name: family_name, member_id: memberId ,
         contact:{
             email: email,
@@ -135,7 +135,8 @@ function memberCreate(first_name, family_name, d_birth, d_join, memberId,email,p
         },
         role: roles,
         password: password,
-        membership: membership
+        membership: membership,
+        member_type:member_type
         }
     if (d_birth != false) memberdetail.date_of_birth = d_birth
     if (d_join != false) memberdetail.date_of_join = d_join
@@ -170,81 +171,86 @@ function createMembers(cb) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-            memberCreate("Yaki", "Aizental", "1965-08-21", "2011-11-01", "0001000","yos.1965@gmail.com", "Pass1000@",memberships[0],roles,"User1000@", callback);
+            memberCreate("Yaki", "Aizental", "1965-08-21", "2011-11-01", "0001000","yos.1965@gmail.com", "Pass1000@",memberships[0],roles,"User1000@","Member", callback);
 
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-             memberCreate("Azriel", "Lucatz", "1965-08-21", "2011-11-01", "0002000","yos.1965@gmail.com", "Pass2000@",memberships[0],roles,"User2000@", callback);
+             memberCreate("Azriel", "Lucatz", "1965-08-21", "2011-11-01", "0002000","yos.1965@gmail.com", "Pass2000@",memberships[0],roles,"User2000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2],CE.ROLES[5]]
             })
-            memberCreate("Udi", "Efrat", "1965-08-21", "2011-11-01", "0003000","yos.1965@gmail.com", "Pass3000@",memberships[0],roles,"User3000@", callback);
-        }
-        ,
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2],CE.ROLES[5]]
-            })
-            memberCreate("Udi", "Efrat", "1965-08-21", "2011-11-01", "0003000","yos.1965@gmail.com", "Pass3000@",memberships[0],roles,"User3000@", callback);
+            memberCreate("Udi", "Efrat", "1965-08-21", "2011-11-01", "0003000","yos.1965@gmail.com", "Pass3000@",memberships[0],roles,"User3000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-            memberCreate("Dov", "Haimovitz", "1965-08-21", "2011-11-01", "0004000","yos.1965@gmail.com", "Pass4000@",memberships[0],roles,"User4000@", callback);
+            memberCreate("Dov", "Haimovitz", "1965-08-21", "2011-11-01", "0004000","yos.1965@gmail.com", "Pass4000@",memberships[0],roles,"User4000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[0],CE.ROLES[1],CE.ROLES[2],CE.ROLES[3],CE.ROLES[4],CE.ROLES[5]]
             })
-            memberCreate("Yossi", "Levy", "1965-08-21", "2011-11-01", "059828392","yos.1965@gmail.com", "Pass5000@",memberships[0],roles,"User5000@", callback);
+            memberCreate("Yossi", "Levy", "1965-08-21", "2011-11-01", "059828392","yos.1965@gmail.com", "Pass5000@",memberships[0],roles,"User5000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-            memberCreate("Ohad", "Levy", "1965-08-21", "2011-11-01", "0006000","yos.1965@gmail.com", "Pass6000@",memberships[0],roles,"User6000@", callback);
+            memberCreate("Ohad", "Levy", "1965-08-21", "2011-11-01", "0006000","yos.1965@gmail.com", "Pass6000@",memberships[0],roles,"User6000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-            memberCreate("Uri", "Eitan", "1965-08-21", "2011-11-01", "0007000","yos.1965@gmail.com", "Pass7000@",memberships[0],roles,"User7000@", callback);
+            memberCreate("Uri", "Eitan", "1965-08-21", "2011-11-01", "0007000","yos.1965@gmail.com", "Pass7000@",memberships[0],roles,"User7000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-            memberCreate("Oren", "Witzman", "1965-08-21", "2011-11-01", "0008000","yos.1965@gmail.com", "Pass8000@",memberships[0],roles,"User8000@", callback);
+            memberCreate("Oren", "Witzman", "1965-08-21", "2011-11-01", "0008000","yos.1965@gmail.com", "Pass8000@",memberships[0],roles,"User8000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2],CE.ROLES[4],CE.ROLES[5]]
             })
-            memberCreate("Giora", "Yael", "1965-08-21", "2011-11-01", "0009000","yos.1965@gmail.com", "Pass9000@",memberships[0],roles,"User9000@", callback);
+            memberCreate("Giora", "Yael", "1965-08-21", "2011-11-01", "0009000","yos.1965@gmail.com", "Pass9000@",memberships[0],roles,"User9000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-            memberCreate("Gadi", "Fux", "1965-08-21", "2011-11-01", "0010000","yos.1965@gmail.com", "Pass10000@",memberships[0],roles,"User10000@", callback);
+            memberCreate("Gadi", "Fux", "1965-08-21", "2011-11-01", "0010000","yos.1965@gmail.com", "Pass10000@",memberships[0],roles,"User10000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2]]
             })
-            memberCreate("Boris", "Tsyrlin", "1965-08-21", "2011-11-01", "00011000","yos.1965@gmail.com", "Pass11000@",memberships[0],roles,"User11000@", callback);
+            memberCreate("Boris", "Tsyrlin", "1965-08-21", "2011-11-01", "00011000","yos.1965@gmail.com", "Pass11000@",memberships[0],roles,"User11000@","Member", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[2],CE.ROLES[4],CE.ROLES[5]]
             })
-            memberCreate("Golan", "Bartal", "1965-08-21", "2011-11-01", "00012000","yos.1965@gmail.com", "Pass12000@",memberships[0],roles,"User12000@", callback);
+            memberCreate("Golan", "Bartal", "1965-08-21", "2011-11-01", "00012000","yos.1965@gmail.com", "Pass12000@",memberships[0],roles,"User12000@","Member", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Moonair", "Garage", "1965-08-21", "2011-11-01", "00013000","yos.1965@gmail.com", "Pass13000@",memberships[0],roles,"User13000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Supplier", "Others", "1965-08-21", "2011-11-01", "00014000","yos.1965@gmail.com", "Pass14000@",memberships[0],roles,"User14000@","Supplier", callback);
         }
         
 
