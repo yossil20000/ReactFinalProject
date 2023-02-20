@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import IDevice, { DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -18,6 +18,7 @@ import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import IDeviceType from '../../../Interfaces/API/IDeviceType';
 import StatusCombo from '../../../Components/Buttons/StatusCombo';
 import { blue } from '@mui/material/colors';
+import { resizeFileTobase64 } from '../../../Utils/files';
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
   const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
@@ -188,6 +189,27 @@ function DeviceTabItem() {
       description: ""}
       return selected;
   } */
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : "";
+    console.log("PersonalInfo/handleImageChange/file", file);
+    if (file) {
+      /* const base64 = await convertFileTobase64(file); */
+      await resizeFileTobase64(file, 300).then((result) => {
+        console.log("PersonalInfo/handleImageChange/result", result);
+        const newObj: IDevice = SetProperty(selectedItem, "details.image", result as string) as IDevice;
+        setSelectedItem(newObj)
+
+      }
+
+      ).catch((error) => {
+        console.log("PersonalInfo/handleImageChange/error", error);
+      }
+
+      )
+      /* console.log("PersonalInfo/handleImageChange/base64", base64) */
+    }
+
+  }
     return (
     <>
     {(selectedItem === undefined || selectedItem === null) ? 
@@ -331,6 +353,40 @@ function DeviceTabItem() {
             </Grid>
             </Grid>
           </Grid>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+      <AccordionSummary style={{ height: "48px" }} expandIcon={<ExpandMoreIcon />} aria-controls="general-content" id="general-header">
+          <Grid container spacing={0.5} padding={1} columns={{ xs: 2 }}>
+            <Grid item xs={1}>
+              <Typography sx={{ width: "100%", flexShrink: 0 }}>Image</Typography>
+            </Grid>
+          </Grid>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={1} columns={{ xs: 2, sm: 2, md: 3 }}>
+          <Grid item xs={12}>
+          <img src={selectedItem?.details.image} alt="Device Image" />
+        </Grid>
+          <Grid item xs={12}>
+          <Button
+            variant="contained"
+            component="label"
+          >
+            Upload File
+            <input
+              hidden
+              type="file"
+              name='image'
+              id='file-upload'
+              accept='.jpg, .png , .jpg'
+              onChange={(e) => handleImageChange(e)}
+            />
+          </Button>
+
+        </Grid>
+          </Grid>
+
         </AccordionDetails>
       </Accordion>
       </>
