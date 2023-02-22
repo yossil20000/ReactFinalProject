@@ -1,11 +1,13 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Fab, Grid, SvgIcon, SvgIconProps, Tooltip, Typography } from '@mui/material'
 import React, { useMemo } from 'react'
 import { IOrderType, OT_REF } from '../../Interfaces/API/IAccount'
-import { ITransaction, Transaction_OT } from '../../Interfaces/API/IClub'
+import { ITransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub'
 import FlightIcon from '@mui/icons-material/Flight';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 import PaidIcon from '@mui/icons-material/Paid';
+import GroupsIcon from '@mui/icons-material/Groups';
 import { green } from '@mui/material/colors';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 export interface MobileTransactionProps {
   item: ITransaction;
   accountId: string | undefined;
@@ -37,15 +39,15 @@ const getOrderIcon = (orderType: Transaction_OT): JSX.Element => {
   }
   if (orderType === Transaction_OT.EXPENSE) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Transaction Done"}>
+      <Tooltip title={"Expense Done"}>
         <MiscellaneousServicesIcon />
       </Tooltip>
     </Fab>
   }
   if (orderType === Transaction_OT.MONTLY) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Transaction Done"}>
-        <FlightIcon />
+      <Tooltip title={"Monthly Expense"}>
+        <GroupsIcon />
       </Tooltip>
     </Fab>
   }
@@ -58,8 +60,15 @@ const getOrderIcon = (orderType: Transaction_OT): JSX.Element => {
   }
   if (orderType === Transaction_OT.ORDER) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Transaction Done"}>
+      <Tooltip title={"Order Done"}>
         <FlightIcon />
+      </Tooltip>
+    </Fab>
+  }
+  if (orderType === Transaction_OT.TRANSFER) {
+    node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+      <Tooltip title={"Tranfer Money"}>
+        <MonetizationOnIcon />
       </Tooltip>
     </Fab>
   }
@@ -110,16 +119,22 @@ export const getValue = (val: number | undefined) : string => {
   return (val !== undefined && val > 0) ? "green" : 'red'
 }
 function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
-  console.log("MobileTransaction/item",item)
+  
   const getAccountSign = () : string => {
-    if(accountId !== undefined && item.source.includes(accountId))
+    console.log("MobileTransaction/item",item,item.type,Transaction_Type.CREDIT)
+    if(item.type === Transaction_Type.TRANSFER){
+      return 'gray';
+    }
+    if(accountId !== undefined && item.source.includes(accountId) && item.type === Transaction_Type.CREDIT)
       return "red"
     else
       return "green";
     
   }
    const getAmount = () : number => {
-    if(accountId !== undefined && item.source.includes(accountId))
+    if(item.type === Transaction_Type.TRANSFER)
+      return item.amount;
+    if(accountId !== undefined && item.source.includes(accountId) && item.type === Transaction_Type.CREDIT)
     return item.amount * -1
   else
     return item.amount
@@ -157,6 +172,10 @@ function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
             <Grid item xs={8}>{item.order.type}</Grid>
             <Grid item xs={4}>Order Ref</Grid>
             <Grid item xs={8}>{item.order._id}</Grid>
+            <Grid item xs={4}>Payment by</Grid>
+            <Grid item xs={8}>{item.payment.method}</Grid>
+            <Grid item xs={4}>Payment referance</Grid>
+            <Grid item xs={8}>{item.payment.referance}</Grid>
             <Grid item xs={4}>Description</Grid>
             <Grid item xs={8}>{item.description}</Grid>
 

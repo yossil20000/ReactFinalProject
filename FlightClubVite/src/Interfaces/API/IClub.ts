@@ -45,9 +45,16 @@ export enum Transaction_OT {
   EXPENSE = "Expense",
   MONTLY = "Montly",
   ORDER = 'Order',
-  OTHER = "Other"
+  OTHER = "Other",
+  TRANSFER= "Transfer"
+}
+export enum Transaction_Type {
+  CREDIT =  "Credit",
+  DEBIT = "Debit",
+  TRANSFER = "Transfer"
 }
 export enum PaymentMethod {
+  
   VISA= "VISA",
     CHECK = "CHECK",
     TRANSFER = "TRANSFER"
@@ -63,6 +70,7 @@ export interface IAddTransaction {
     accountType: string
   },
   amount: number,
+  type: Transaction_Type,
   order: {
     type: Transaction_OT,
     _id: string
@@ -79,12 +87,13 @@ export interface ITransactionBase {
   source: string,
   destination: string,
   amount: number,
+  type: Transaction_Type,
   order: {
     type: Transaction_OT,
     _id: string
   },
   payment:{
-    method: string, 
+    method: PaymentMethod, 
     referance: string
   },
   description: string,

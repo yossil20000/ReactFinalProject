@@ -145,10 +145,11 @@ exports.add_order_transaction = [
   body('amount', "Must be number").isNumeric(),
   body('order._id').isLength({ min: 24, max: 24 }).withMessage("order._id must be 24 characters"),
   body('order.type').isLength({ min: 1 }).withMessage("order.type must valid"),
+  body('payment.method').isLength({ min: 1 }).withMessage("Payment methos is missing"),
   async (req, res, next) => {
     try {
 
-      let { source, destination, amount, order, description } = req.body;
+      let { source, destination, amount, order, description, payment ,type} = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
@@ -222,33 +223,25 @@ exports.add_order_transaction = [
           await session.abortTransaction();
           return next(new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(orderTransaction.status, `Order Status Already Closed`, 'order.status', "DB.ClubAccount")).validationResult.errors }));
         }
-
         const tSource = getTranctionName(source, sourceTransaction);
         log.info("tSource", tSource)
         const tDestination = getTranctionName(destination, destinationTransaction);
         log.info("tDestination", tDestination)
 
-                   let transactionS = new Transaction({
-                    source: tSource,
-                    destination: tDestination,
-                    amount: -amount,
-                    order: {
-                      _id: order._id.toString(),
-                      type: order.type
-                    },
-                    description: description === undefined ? "" : description
-                  });  
-                  let transactionD = new Transaction({
-                    source: tSource,
-                    destination: tDestination,
-                    amount: amount,
-                    order: {
-                      _id: order._id.toString(),
-                      type: order.type
-                    },
-                    description: description === undefined ? "" : description
-                  });   
-        sourceTransaction.transactions.push(transactionS)
+        let transaction = new Transaction({
+          source: tSource,
+          destination: tDestination,
+          amount: amount,
+          type: type,
+          order: {
+            _id: order._id.toString(),
+            type: order.type
+          },
+          payment: payment,
+          description: description === undefined ? "" : description
+        });
+        await transaction.save({ session })
+        sourceTransaction.transactions.push(transaction)
         sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) - Number(Number(amount).toFixed(2));
 
         if (isNaN(sourceTransaction.balance)) {
@@ -257,14 +250,14 @@ exports.add_order_transaction = [
 
 
         await sourceTransaction.save({ session })
-        await transactionS.save({session})
-        destinationTransaction.transactions.push(transactionD)
+
+        destinationTransaction.transactions.push(transaction)
         destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(amount.toFixed(2));
         if (isNaN(destinationTransaction.balance)) {
           throw new Error('Destination: The new balance is not a number!');
         }
         await destinationTransaction.save({ session })
-        await transactionD.save({session})
+
         await Order.findByIdAndUpdate(order._id, { status: constants.OrderStatus.CLOSE }, { session })
 
         await session.commitTransaction();
@@ -299,13 +292,13 @@ exports.add_transaction = [
   body('destination._id').isLength({ min: 4 }).withMessage("destination must at least 4 characters"),
   body('destination.accountType').isLength({ min: 4, max: 6 }).withMessage("must be valid"),
   body('amount', "Must be number").isNumeric(),
-  body('order._id').isLength({ min: 24, max: 24 }).withMessage("order._id must be 24 characters"),
+  body('type').isLength({min:1}),
+  body('order._id').isLength({ min: 0, max: 24 }).withMessage("order._id must be 24 characters"),
   body('order.type').isLength({ min: 1 }).withMessage("order.type must valid"),
 
   async (req, res, next) => {
-    try {
-
-      let { source, destination, amount, order, description ,payment} = req.body;
+    try { 
+      let { source, destination, amount, order, description, payment,type } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
@@ -313,16 +306,18 @@ exports.add_transaction = [
 
       /* Transaction */
       const session = await mongoose.startSession();
-      try {
+      try { 
         session.startTransaction();
-        const expense = await Expense.findById(order._id).exec();
-        if (expense) {
-          expense.status = constants.OrderStatus.CLOSE;
-          await expense.save({ session });
-        }
-        else {
-          await session.abortTransaction();
-          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(order._id, `Expense not found`, 'order._id', "DB.ClubAccount")).validationResult.errors }));
+        if (type !== constants.TransactionType.TRANSFER) {
+          const expense = await Expense.findById(order._id).exec();
+          if (expense) {
+            expense.status = constants.OrderStatus.CLOSE;
+            await expense.save({ session });
+          }
+          else {
+            await session.abortTransaction();
+            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(order._id, `Expense not found`, 'order._id', "DB.ClubAccount")).validationResult.errors }));
+          }
         }
         /* const transactionResult = await session.withTransaction(async () => { */
         var sourceTransaction;
@@ -366,13 +361,19 @@ exports.add_transaction = [
           source: tSource,
           destination: tDestination,
           amount: amount,
+          type: type,
           date: source.date,
           description: description,
           payment: payment,
           order: order
         });
 
-        sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) - Number(Number(amount).toFixed(2));
+        if (type === constants.TransactionType.TRANSFER) {
+          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
+        }
+        else {
+          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) - Number(Number(amount).toFixed(2));
+        }
 
         if (isNaN(sourceTransaction.balance)) {
           throw new Error('Source: The new balance is not a number!');
@@ -385,12 +386,12 @@ exports.add_transaction = [
 
 
         destinationTransaction.transactions.push(newTransaction);
-        destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(amount.toFixed(2));
+        destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
         if (isNaN(destinationTransaction.balance)) {
           throw new Error('Destination: The new balance is not a number!');
         }
         await destinationTransaction.save({ session })
-        
+
 
         /* await Order.findByIdAndUpdate(order,{status: constants.OrderStatus.CLOSE},{session})
          */
@@ -520,9 +521,9 @@ exports.update_expense = [
   }
 ]
 
-exports.list_transaction =[
-  async (req,res,next) => {
-    
+exports.list_transaction = [
+  async (req, res, next) => {
+
     try {
       let from = new Date(req.query.from);
       let to = new Date(req.query.to);
@@ -541,5 +542,5 @@ exports.list_transaction =[
       return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB.TRANSACTION_LIST.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
-  
+
 ]

@@ -1,3 +1,4 @@
+import '../../Types/Number.extensions'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField } from '@mui/material';
 import { useCallback, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
@@ -116,6 +117,14 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
 
     setSelectedExpense(newObj)
   };
+  const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    
+    console.log("ExpenseDialog/handleNumberChange", event.target.name, event.target.value)
+    const newObj: IExpense = SetProperty(selectedExpense, event.target.name, Number(event.target.value).setFix(2)) as IExpense;
+    newObj.amount = Number((newObj.units * newObj.pricePeUnit).toFixed(2))
+    setSelectedExpense(newObj)
+  };
+
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
@@ -164,14 +173,14 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
                 <TypesCombo selectedKey={`Expense.${selectedExpense.expense.category}`} title={"Type"} selectedValue={selectedExpense.expense.type} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
               </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleChange} id="units" name="units"
+                <TextField fullWidth={true} onChange={handleNumberChange} id="units" name="units"
                   type={"number"}
                   label="Units" placeholder="Units" variant="standard"
                   value={selectedExpense?.units} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleChange} id="pricePeUnit" name="pricePeUnit"
+                <TextField fullWidth={true} onChange={handleNumberChange} id="pricePeUnit" name="pricePeUnit"
                   type={"number"}
                   label="Unit Price" placeholder="Per Unit" variant="standard"
                   value={selectedExpense?.pricePeUnit} required
@@ -182,7 +191,7 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
                   disabled
                   type={"number"}
                   label="Amount" placeholder="Amount" variant="standard"
-                  value={selectedExpense?.units * selectedExpense?.pricePeUnit } required
+                  value={selectedExpense?.amount } required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={12}>

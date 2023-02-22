@@ -150,7 +150,7 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
                 name="units"
                 id="units"
                 variant="standard"
-                key={"unints"}
+                key={"units"}
                 value={orderCreate.units}
                 InputLabelProps={{ shrink: true }}
                 label="Units"

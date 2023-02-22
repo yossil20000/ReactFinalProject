@@ -76,7 +76,6 @@ export interface IMemberAdmin  extends IMemberBase{
 export default interface IMember  extends IMemberBase{
     _id:string
     status: Status
-    password: string
     username: string;
     member_type: MemberType
     role: {

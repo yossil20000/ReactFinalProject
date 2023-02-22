@@ -9,7 +9,8 @@ import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFoo
 function AccountOrdersTab() {
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccoun",null)
   const OnSelectedClubAccount = (item: InputComboItem): void => {
- setSelectedClubAccount(item);
+ console.log("AccountOrdersTab/OnSelectedClubAccount/item",item)
+    setSelectedClubAccount(item);
     
   }
   return (

@@ -10,6 +10,7 @@ var TransactionSchema = new Schema({
     _id: {type: String},
     type: {type: String}
   },
+  type: {type: String, enum: Object.values(constants.TransactionType), default: constants.TransactionType.CREDIT},
   payment:{
     method: {type:String, enum: Object.values(constants.PaymentMethod),default: constants.PaymentMethod.TRANSFER},
     referance: {type: String, default: ""}

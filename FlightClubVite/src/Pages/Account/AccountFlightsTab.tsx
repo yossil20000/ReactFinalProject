@@ -143,10 +143,10 @@ function AccountFlightsTab() {
       let order: IOrderBase = {
         order_date: flightFound.date,
         product: flightFound._id,
-        units: units,
-        pricePeUnit: pricePeUnit,
+        units: Number(units.toFixed(2)),
+        pricePeUnit: Number(pricePeUnit.toFixed(2)),
         discount: Number(discount.toFixed(2)),
-        amount: amount,
+        amount: Number(amount.toFixed(2)),
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
         description: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
         status: OrderStatus.CREATED,

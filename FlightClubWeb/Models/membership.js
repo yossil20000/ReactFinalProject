@@ -6,7 +6,7 @@ const MembershipSchema = new Schema({
     name: {
         type: String,
          required: true,
-         default: "Normal",
+         default: "Member",
          index: {unique:[true , "name already exist in database"]},
         },
     entry_price: {type: m.Decimal128 , default: 18950,get: getDecimal},

@@ -54,6 +54,11 @@ const NotifyOn = {
 const NotifyBy = {
     EMAIL: "EMAIL"
 }
+const TransactionType = {
+    CREDIT: "Credit",
+  DEBIT: "Debit",
+  TRANSFER: "Transfer"
+}
 const PaymentMethod ={
     VISA: "VISA",
     CHECK: "CHECK",
@@ -67,6 +72,7 @@ const Utilizated = {
   HOURS_1500: "HOURS_1500",
   HOURS_2000: "HOURS_2000"
 }
+module.exports.TransactionType = TransactionType;
 module.exports.Utilizated = Utilizated;
 module.exports.PaymentMethod = PaymentMethod;
 module.exports.NotifyBy = NotifyBy;

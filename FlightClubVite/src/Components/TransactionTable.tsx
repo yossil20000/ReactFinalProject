@@ -35,6 +35,7 @@ export default function TransactionTable({ hideAction = false, filter = {} as IT
 useEffect(()=>{
   console.log("TransactionTable/filter", filter)
 },[filter])
+
   const getData = useMemo(() => {
 
     console.log("TransactionTable/getData", dataTransaction)

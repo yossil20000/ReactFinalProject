@@ -4,7 +4,7 @@ import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
 import TransactionAction from './Accounts/TransactionAction';
 import { IOrder } from '../Interfaces/API/IAccount';
-import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT } from '../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 
 interface IOrderTableProps {
@@ -16,9 +16,9 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
   const { data: orders } = useGetOrderSearchQuery(filter);
-  console.log("transaction/selectedClubAccount/",selectedClubAccount)
+  console.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   const getTransaction = useMemo (() => (sourseId: string,destinationId: string , id: string ,amount: number,description: string) : IAddTransaction => {
-    console.log("transaction/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
+    console.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     let addTransaction : IAddTransaction = {
       source: {
         _id: sourseId,
@@ -29,6 +29,7 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
         accountType: EAccountType.EAT_BANK
       },
       amount: amount,
+      type: Transaction_Type.CREDIT,
       order: {
         _id: id,
         type: Transaction_OT.ORDER
@@ -40,7 +41,7 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
       description: description,
       date: new Date()
     }
-    console.log("transaction/getTransaction/addTransaction",addTransaction,orders)
+    console.log("OrderTable/getTransaction/addTransaction",addTransaction,orders)
     return addTransaction;
   },[selectedClubAccount] )
   const orderRows = useMemo(() => {
@@ -100,7 +101,7 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
 
     },
 
-  ], [rowId,hideAction]);
+  ], [rowId,hideAction,selectedClubAccount]);
 
   return (
     <div style={{ height: "100%", width: '100%' }}>

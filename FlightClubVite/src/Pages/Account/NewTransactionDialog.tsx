@@ -6,87 +6,132 @@ import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import TypesCombo from '../../Components/Buttons/TypesCombo';
 import Item from '../../Components/Item';
-import { useCreateExpenseMutation, useClubAccountQuery } from '../../features/Account/accountApiSlice';
-import { IClubAccount } from '../../Interfaces/API/IClub';
+import { useCreateExpenseMutation, useClubAccountQuery, useClubAddTransactionMutation } from '../../features/Account/accountApiSlice';
+import { EAccountType, IAddTransaction, IClubAccount, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
 import { IExpenseBase, IUpsertExpanse, newExpense, Utilizated } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import UtilizatedCombo from '../../Components/Buttons/UtilizatedCombo';
-export interface CreateExpenseDialogProps {
+import PaymentMethodCombo from '../../Components/Buttons/PaymentMethodCombo';
+import { MemberType } from '../../Interfaces/API/IMember';
+export interface NewTransactionDialogProps {
 
   onClose: () => void;
   onSave: (value: IExpenseBase) => void;
   open: boolean;
 }
+let newTransaction : IAddTransaction={
+  source: {
+    _id: "",
+    accountType: ""
+  },
+  destination: {
+    _id:"" ,
+    accountType: "" 
+  },
+  amount: Number("-1"),
+  type: Transaction_Type.TRANSFER,
+  order: {
+    type: Transaction_OT.TRANSFER,
+    _id: ''
+  },
+  payment: {
+    method: PaymentMethod.TRANSFER,
+    referance: ''
+  },
+  description: '',
+  date: new Date()
+}
+const getAccountType = (memberType: string | undefined): string => {
+  /* console.log("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
+  /* console.log("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
+ if(memberType === undefined){
+  memberType = ""
+}
 
-function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseDialogProps) {
-  const [createExpense, { isError, isLoading }] = useCreateExpenseMutation();
+  switch (memberType) {
+    case MemberType.Club:
+      return EAccountType.EAT_BANK;
+    case MemberType.Member:
+      return EAccountType.EAT_ACCOUNT;
+    case MemberType.Supplier:
+      return EAccountType.EAT_SUPPLIERS
+    default:
+      return ""
+  }
+}
+
+function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactionDialogProps) {
+  const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
+  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery();
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
-  const [selectedExpense, setSelectedExpense] = useState<IExpenseBase>(newExpense);
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
-  const [selectedType, setSelectedType] = useState<InputComboItem>()
-  const [selectedCategory, setSelectedCategory] = useState<InputComboItem>()
-
+  
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
-  const UpdateSourceAccountFields = (): IExpenseBase => {
-    let newObj = selectedExpense;
-    console.log("CreateExspenseDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
-    newObj = setProperty(selectedExpense, "source.id", selectedSource?._id)
-    newObj = setProperty(newObj, "source.type", selectedSource?.key)
-    newObj = setProperty(newObj, "source.display", selectedSource?.lable)
-    newObj = setProperty(newObj, "source.account_id", selectedSource?.key2);
-    newObj = setProperty(newObj, "destination.id", selectedDestination?._id)
-    newObj = setProperty(newObj, "destination.type", selectedDestination?.key)
-    newObj = setProperty(newObj, "destination.display", selectedDestination?.lable)
-    newObj = setProperty(newObj, "destination.account_id", selectedDestination?.key2)
-
-    console.log("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
+  const UpdateSourceAccountFields = (): IAddTransaction => {
+    let newObj : IAddTransaction = selectedTransaction
+    newObj = {
+      source: {
+        _id: selectedSource?.key2 === undefined ? "" : selectedSource?.key2,
+        accountType: getAccountType(selectedSource?.key)
+      },
+      destination: {
+        _id: selectedDestination?.key2 === undefined ? "" : selectedDestination?.key2,
+        accountType: getAccountType(selectedDestination?.key)
+      },
+      type: selectedTransaction.type,
+      amount: selectedTransaction.amount,
+      order: {
+        type: Transaction_OT.TRANSFER,
+        _id: ''
+      },
+      payment: {
+        method: PaymentMethod.TRANSFER,
+        referance: selectedTransaction.payment.referance
+      },
+      description: selectedTransaction.description,
+      date: new Date()
+    }
+    console.log("NewTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
+    console.log("NewTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
+    setSelectedTransaction(newObj);
     return newObj
   }
 
   const handleOnCancel = () => {
     setValidationAlert([])
-    if (isSaved)
-      onSave(selectedExpense)
-    else
+  
       onClose()
   }
   const handleOnValidatiobClose = useCallback(() => {
     setValidationAlert([])
 
   }, [])
+
   const handleOnSave = async () => {
-    console.log("CreateExspenseDialog/onSave", selectedExpense)
+    console.log("NewTransactionDialog/onSave", selectedTransaction)
     setValidationAlert([]);
-
-    if (selectedSource !== undefined) {
-
-      const expanse = UpdateSourceAccountFields()
-      const filterData: IUpsertExpanse = {
-        update: expanse
-      }
-      await createExpense(filterData).unwrap().then((data) => {
-        console.log("CreateExspenseDialog/onSave/", data);
+ const transaction = UpdateSourceAccountFields()
+    if (transaction !== undefined) {
+      await AddTransaction(transaction).unwrap().then((data) => {
+        console.log("NewTransactionDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
-
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
-        console.log("CreateExspenseDialog/onSave/error", err.data.errors);
+        console.log("NewTransactionDialog/onSave/error", err.data.errors);
       });
     }
-
-
-
   }
+  
   const onSelectedSource = (item: InputComboItem) => {
     console.log("onSelectedSource/item", item)
     setSelectedSource(item)
@@ -99,7 +144,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
   const RenderSource = (): JSX.Element => {
 
-    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_ExpenseDialogs/Source"} />
+    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} />
   }
   const RenderDestination = (): JSX.Element => {
 
@@ -109,47 +154,37 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
   const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
-    console.log("ExpenseDialog/handleNumberChange", event.target.name, event.target.value)
-    const newObj: IExpenseBase = SetProperty(selectedExpense, event.target.name, Number(event.target.value).setFix(2)) as IExpenseBase;
-    newObj.amount = Number((newObj.units * newObj.pricePeUnit).toFixed(2))
-    setSelectedExpense(newObj)
+    console.log("NewTransaction/handleNumberChange", event.target.name, event.target.value)
+    const number : number = Number(event.target.value)/10
+    if(isNaN(number)) return;
+    const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, number) as IAddTransaction;
+    
+    setSelectedTransaction(newObj)
   };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
-    console.log("ExpenseDialog/handleChange", event.target.name, event.target.value)
-    const newObj: IExpenseBase = SetProperty(selectedExpense, event.target.name, event.target.value) as IExpenseBase;
+    console.log("NewTransaction/handleChange", event.target.name, event.target.value)
+    const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
 
-    setSelectedExpense(newObj)
+    setSelectedTransaction(newObj)
   };
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("ExpenseDialog/SetProperty/newobj", newObj)
+    console.log("NewTransaction/SetProperty/newobj", newObj)
     return newObj;
   }
-  const onCategoryChanged = (item: InputComboItem) => {
-    console.log("ExpenseDialog/onCategoryChanged/item", item)
-    setSelectedCategory(item)
-
-    setSelectedExpense(setProperty(selectedExpense, `expense.category`, item.lable))
-  }
-  const onTypeChanged = (item: InputComboItem) => {
-    console.log("ExpenseDialog/onTypeChanged/item", item)
-    setSelectedType(item)
-
-    setSelectedExpense(setProperty(selectedExpense, `expense.type`, item.lable))
-  }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    setSelectedExpense(setProperty(selectedExpense, prop, item.lable))
+    setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
 
-    console.log("selectedExpense", selectedExpense)
+    console.log("CNewTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
   }
   return (
 
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="lg" open={open} {...other}>
-      <DialogTitle>Create Expense</DialogTitle>
+      <DialogTitle>Create Transaction</DialogTitle>
       {(isQuery && isLoading) ? (
         <>
           <FullScreenLoader />
@@ -164,43 +199,33 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
               <Grid item xs={12} sm={6}>
                 {RenderDestination()}
               </Grid>
-              <Grid item xs={4}>
-                <TypesCombo selectedKey='Expense' title={'Category'} selectedValue={selectedExpense.expense.category} onChanged={onCategoryChanged} source={"_CreateExspense/Category"} />
-              </Grid>
-              <Grid item xs={4}>
-                <TypesCombo selectedKey={`Expense.${selectedCategory?.lable}`} title={"Type"} selectedValue={selectedExpense.expense.type} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
-              </Grid>
-              <Grid item xs={4}>
-                <UtilizatedCombo onChanged={(item) => onComboChanged(item, "expense.utilizated")} source={""}
-                  selectedItem={{ lable: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
-              </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleNumberChange} id="units" name="units"
-                  type={"number"}
-                  label="Units" placeholder="Units" variant="standard"
-                  value={selectedExpense?.units} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
-              </Grid>
+              <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
+              disabled
+              label="Pay Method" placeholder="Payment Method" variant="standard"
+              value={selectedTransaction?.payment.method} required
+              helperText="" error={false} InputLabelProps={{ shrink: true }} />
+            </Grid>
+          <Grid item xs={6}>
+            <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
+              multiline
+              label="Pay Referance" placeholder="Payment Referance" variant="standard"
+              value={selectedTransaction?.payment.referance} required
+              helperText="" error={false} InputLabelProps={{ shrink: true }} />
+          </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleNumberChange} id="pricePeUnit" name="pricePeUnit"
-                  type={"number"}
-                  label="Unit Price" placeholder="Per Unit" variant="standard"
-                  value={selectedExpense?.pricePeUnit} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleNumberChange} id="amount" name="amount"
-                  disabled
-                  type={"number"}
+                <TextField fullWidth={true} onChange={handleChange} id="amount" name="amount"
+                  
+                  type="number"
                   label="Amount" placeholder="Amount" variant="standard"
-                  value={selectedExpense?.amount} required
+                  value={selectedTransaction?.amount} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={12}>
                 <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
                   multiline
                   label="Description" placeholder="Expense Description" variant="standard"
-                  value={selectedExpense?.description} required
+                  value={selectedTransaction?.description} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
             </Grid>
@@ -251,4 +276,4 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   )
 }
 
-export default CreateExpenseDialog
+export default NewTransactionDialog

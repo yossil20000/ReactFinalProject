@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import Item from '../../Components/Item';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { IExpense } from '../../Interfaces/API/IExpense';
-import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT } from '../../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import { useClubAddTransactionMutation, useFetchAccountSearchQuery } from '../../features/Account/accountApiSlice';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
@@ -16,7 +16,7 @@ interface filter {
   member: string[]
 }
 export interface CreateTransactionDialogProps {
-  value: IExpense
+  value: IExpense | undefined
   onClose: () => void;
   onSave: () => void;
   open: boolean;
@@ -33,6 +33,7 @@ const newTransaction: IAddTransaction = {
     accountType: ''
   },
   amount: 0,
+  type: Transaction_Type.CREDIT,
   order: {
     type: Transaction_OT.ORDER,
     _id: ""
@@ -113,46 +114,52 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
   const filterAccount = () => {
 
     const values: string[] = []
-    values.push(value.source.id)
-    values.push(value.destination.id)
-    console.log("CreateTransactionDialog/filterAccount/values", values)
-    const valuesFilter: filter = {
-      member: [value.source.id, value.destination.id]
+    if (value) {
+      values.push(value.source.id)
+      values.push(value.destination.id)
+      console.log("CreateTransactionDialog/filterAccount/values", values)
+      const valuesFilter: filter = {
+        member: [value.source.id, value.destination.id]
+      }
+      console.log("CreateTransactionDialog/filterAccount/valuesfilter", valuesFilter)
+      return valuesFilter;
     }
-    console.log("CreateTransactionDialog/filterAccount/valuesfilter", valuesFilter)
+    return []
 
-    return valuesFilter;
+
   }
   useEffect(() => {
-    if (value !== undefined || Object.keys(value).length > 0) {
-
-      console.log("CreateTransactionDialog/value", value)
-      const newTransaction: IAddTransaction = {
-        source: {
-          _id: value.source.account_id,
-          accountType: getAccountType(value.source.type)
-        },
-        destination: {
-          _id: value.destination.account_id,
-          accountType: getAccountType(value.destination.type)
-        },
-        amount: value.amount,
-        order: {
-          type: Transaction_OT.EXPENSE,
-          _id: value._id
-        },
-        payment: {
-          method: PaymentMethod.TRANSFER,
-          referance: ""
-        },
-        description: value.description,
-        date: new Date()
+    if (value !== undefined) {
+      if (Object.keys(value).length > 0) {
+        console.log("CreateTransactionDialog/value", value)
+        const newTransaction: IAddTransaction = {
+          source: {
+            _id: value.source.account_id,
+            accountType: getAccountType(value.source.type)
+          },
+          destination: {
+            _id: value.destination.account_id,
+            accountType: getAccountType(value.destination.type)
+          },
+          amount: value.amount,
+          type: Transaction_Type.CREDIT,
+          order: {
+            type: Transaction_OT.EXPENSE,
+            _id: value._id
+          },
+          payment: {
+            method: PaymentMethod.TRANSFER,
+            referance: ""
+          },
+          description: value.description,
+          date: new Date()
+        }
+        setSelectedTransaction(newTransaction);
+        const filter = filterAccount;
+        setAccountFilter(filter);
+        refetch()
+        console.log("CreateTransactionDialog/transaction", newTransaction, filter)
       }
-      setSelectedTransaction(newTransaction);
-      const filter = filterAccount;
-      setAccountFilter(filter);
-      refetch()
-      console.log("CreateTransactionDialog/transaction", newTransaction, filter)
     }
 
   }, [value])
@@ -242,15 +249,15 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
           </Grid>
           <Grid item xs={6}>
             <PaymentMethodCombo onChanged={(item) => onComboChanged(item, "payment.method")} source={""}
-                  selectedItem={{ lable: selectedTransaction.payment.method === undefined ? "" : selectedTransaction.payment.method.toString(), _id: "", description: "" }} />
+              selectedItem={{ lable: selectedTransaction.payment.method === undefined ? "" : selectedTransaction.payment.method.toString(), _id: "", description: "" }} />
           </Grid>
           <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
-                  multiline
-                  label="Pay Referance" placeholder="Payment Referance" variant="standard"
-                  value={selectedTransaction?.payment.referance} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
-              </Grid>
+            <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
+              multiline
+              label="Pay Referance" placeholder="Payment Referance" variant="standard"
+              value={selectedTransaction?.payment.referance} required
+              helperText="" error={false} InputLabelProps={{ shrink: true }} />
+          </Grid>
 
         </Grid>
       </DialogContent>

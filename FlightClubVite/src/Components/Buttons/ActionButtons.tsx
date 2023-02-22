@@ -31,13 +31,13 @@ function ActionButtons({ OnAction, show, item = "", display }: IActionButtonsPro
   }
   return (
     <>
-      {show.includes(EAction.ADD) == true && <Button key={"Add"} variant='outlined' onClick={(event) => OnAction(EAction.ADD, undefined, item)} color='success' startIcon={<AddCircleOutlineIcon />}>{getName(EAction.EDIT,"Add")}</Button>}
+      {show.includes(EAction.ADD) == true && <Button key={"Add"} variant='outlined' onClick={(event) => OnAction(EAction.ADD, undefined, item)} color='success' startIcon={<AddCircleOutlineIcon />}>{getName(EAction.ADD,"Add")}</Button>}
       {show.includes(EAction.EDIT) == true && <Button key={"Edit"} variant='outlined' onClick={(event) => OnAction(EAction.EDIT, undefined, item)} startIcon={<EditIcon />}>{getName(EAction.EDIT,"Edit")}</Button>}
-      {show.includes(EAction.DELETE) == true && <Button key={"Delete"} variant='outlined' onClick={(event) => OnAction(EAction.DELETE, undefined, item)} color='secondary' startIcon={<DeleteIcon />}>{getName(EAction.EDIT,"Delete")}</Button>}
-      {show.includes(EAction.ORDER) == true && <Button key={"Order"} variant='outlined' onClick={(event) => OnAction(EAction.ORDER, undefined, item)} startIcon={<AddShoppingCartIcon />}>{getName(EAction.EDIT,"Order")}</Button>}
+      {show.includes(EAction.DELETE) == true && <Button key={"Delete"} variant='outlined' onClick={(event) => OnAction(EAction.DELETE, undefined, item)} color='secondary' startIcon={<DeleteIcon />}>{getName(EAction.DELETE,"Delete")}</Button>}
+      {show.includes(EAction.ORDER) == true && <Button key={"Order"} variant='outlined' onClick={(event) => OnAction(EAction.ORDER, undefined, item)} startIcon={<AddShoppingCartIcon />}>{getName(EAction.ORDER,"Order")}</Button>}
       {show.includes(EAction.PAY) == true && <Button key={"Pay"} variant='outlined' onClick={(event) => OnAction(EAction.PAY, undefined, item)} startIcon={<PaymentIcon />}>{getName(EAction.PAY,"Pay")}</Button>}
-      {show.includes(EAction.CLOSE) == true && <Button key={"Close"} variant='outlined' onClick={(event) => OnAction(EAction.CLOSE, undefined, item)} startIcon={<CloseIcon />}>{getName(EAction.EDIT,"Close")}</Button>}
-      {show.includes(EAction.SAVE) == true && <Button key={"Save"} variant='outlined' onClick={(event) => OnAction(EAction.SAVE, undefined, item)} startIcon={<Save />}>{getName(EAction.EDIT,"Save")}</Button>}
+      {show.includes(EAction.CLOSE) == true && <Button key={"Close"} variant='outlined' onClick={(event) => OnAction(EAction.CLOSE, undefined, item)} startIcon={<CloseIcon />}>{getName(EAction.CLOSE,"Close")}</Button>}
+      {show.includes(EAction.SAVE) == true && <Button key={"Save"} variant='outlined' onClick={(event) => OnAction(EAction.SAVE, undefined, item)} startIcon={<Save />}>{getName(EAction.SAVE,"Save")}</Button>}
     </>
   )
 }
