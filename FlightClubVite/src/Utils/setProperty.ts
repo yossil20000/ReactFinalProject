@@ -31,3 +31,9 @@ export const getSelectedItem = (value: string | undefined , device?: any): Input
     console.log("getSelectedItem/selected", selected)
     return selected;
 }
+export const SetProperty = (obj: any, path: string, value: any): any => {
+    let newObj = { ...obj };
+    newObj = setProperty(newObj, path, value);
+    console.log("SetProperty/newobj", newObj, path, value)
+    return newObj;
+  }

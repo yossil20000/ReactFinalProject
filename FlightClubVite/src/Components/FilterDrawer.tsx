@@ -9,12 +9,12 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import { createTheme, ListItemIcon, TextField } from '@mui/material';
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { IFilterItems } from '../Pages/Account/AccountTransactionsTab';
+
 import DateRangeIcon from '@mui/icons-material/DateRange';
+import { IFilterItems } from '../Interfaces/IDateFilter';
 const drawerWidth = 320;
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -31,9 +31,10 @@ export interface FilterDrawerProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
   onFilterChanged: (key: string, value: any) => void
-  items: IFilterItems[]
+  items: IFilterItems[];
+  children?: string | JSX.Element | JSX.Element[] | (() => JSX.Element);
 }
-export default function FilterDrawer({ setOpen, open, onFilterChanged, items }: FilterDrawerProps) {
+export default function FilterDrawer({ setOpen, open, onFilterChanged, items, children }: FilterDrawerProps) {
   const theme = useTheme();
   const handleDrawerClose = () => {
     setOpen(false);
@@ -85,8 +86,8 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items }: 
         <List sx={{ display: 'flex', flexDirection: 'column' }}>
           <ListItem key={"fromDate"} disablePadding>
             <ListItemButton>
-            <ListItemIcon>
-                <DateRangeIcon/>
+              <ListItemIcon>
+                <DateRangeIcon />
               </ListItemIcon>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
@@ -109,10 +110,10 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items }: 
           <ListItem key={"toDate"} disablePadding>
 
             <ListItemButton>
-            <ListItemIcon>
-                <DateRangeIcon/>
+              <ListItemIcon>
+                <DateRangeIcon />
               </ListItemIcon>
-              
+
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDatePicker
@@ -133,7 +134,7 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items }: 
         </List>
 
         <Divider />
-
+        {children === undefined ? null : <>{children}</>}
 
       </Drawer>
 

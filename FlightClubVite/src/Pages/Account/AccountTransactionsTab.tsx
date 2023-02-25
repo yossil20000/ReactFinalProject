@@ -1,5 +1,5 @@
 
-import { Box, Button, Grid, IconButton } from '@mui/material';
+import { Box, Grid, IconButton } from '@mui/material';
 import { useState } from 'react';
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
@@ -10,45 +10,35 @@ import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFoo
 
 import React from 'react';
 import FilterDrawer from '../../Components/FilterDrawer';
-import { setProperty } from '../../Utils/setProperty';
-import { IDateFilter, newDataFilter } from '../../Interfaces/IDateFilter';
+import { SetProperty } from '../../Utils/setProperty';
+import { IDateFilter, IFilterItems, newDateFilter } from '../../Interfaces/IDateFilter';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
-import CreateTransactionDialog from './CreateTransactionDialog';
 import NewTransactionDialog from './NewTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
-export interface IFilterItems {
-  key: string;
-  value: any;
-  setValue: React.Dispatch<React.SetStateAction<any>>
-}
-const dataFilter: IDateFilter = newDataFilter;
+
+const dateFilter: IDateFilter = newDateFilter;
 
 function AccountTransactionsTab() {
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
-  /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dataFilter.to)
-  const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dataFilter.from) */
-  const [dateTo, setDateTo] = useState(dataFilter.to)
-  const [dateFrom, setDateFrom] = useState(dataFilter.from)
-  const [filter, setFilter] = useState<ITransactionTableFilter>({ dataFilter: dataFilter } as ITransactionTableFilter);
+  /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dateFilter.to)
+  const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dateFilter.from) */
+  const [dateTo, setDateTo] = useState(dateFilter.to)
+  const [dateFrom, setDateFrom] = useState(dateFilter.from)
+  const [filter, setFilter] = useState<ITransactionTableFilter>({ dateFilter: dateFilter } as ITransactionTableFilter);
   const [openAddTransaction, setOpenAddTransaction] = useState(false);
   const OnSelectedClubAccount = (item: InputComboItem): void => {
     setSelectedClubAccount(item);
 
   }
 
-  const SetProperty = (obj: any, path: string, value: any): any => {
-    let newObj = { ...obj };
-    newObj = setProperty(newObj, path, value);
-    console.log("SetProperty/newobj", newObj, path, value)
-    return newObj;
-  }
+
   const onFilterChanged = (key: string, value: any): void => {
     console.log("onFilterChanged/key,value,filter", key, value, filter)
     const newKey = key == 'fromDate' ? "from" : key == 'toDate' ? 'to' : "";
     if (newKey == "") { console.log("onFilterChanged/ value not set", key); return }
 
-    const newObj = SetProperty(filter, `dataFilter.${newKey}`, new Date(value));
+    const newObj = SetProperty(filter, `dateFilter.${newKey}`, new Date(value));
     setFilter(newObj);
 
   }
@@ -101,7 +91,10 @@ function AccountTransactionsTab() {
         <ContainerPageMain>
           <>
             {(openAddTransaction == true) ? (<NewTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
-            <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()} />
+            <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
+            <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
+            
+            </FilterDrawer>
             <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter} />
           </>
 

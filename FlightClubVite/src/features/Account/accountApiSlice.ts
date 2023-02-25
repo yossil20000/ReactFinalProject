@@ -125,9 +125,9 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: [{ type: "Orders" }]
       }),
-      clubAccount: builder.query<IResultBase<IClubAccount>, void>({
-        query: () => ({
-          url: `/${URLS.CLUB}`,
+      clubAccount: builder.query<IResultBase<IClubAccount>, boolean>({
+        query: (include_accounts) => ({
+          url: `/${URLS.CLUB}/${include_accounts}`,
           method: 'GET'
         }),
         providesTags: [{type: "ClubAccount"}]

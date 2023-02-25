@@ -11,12 +11,14 @@ interface IOrderTableProps {
   hideAction?: boolean;
   filter?: any;
   selectedClubAccount: InputComboItem | null;
+  selectedMember: InputComboItem | null;
 }
-export default function OrderTable({hideAction=false,filter={},selectedClubAccount}: IOrderTableProps) {
+export default function OrderTable({selectedMember, hideAction=false,filter={},selectedClubAccount}: IOrderTableProps) {
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
   const { data: orders } = useGetOrderSearchQuery(filter);
   console.log("OrderTable/selectedClubAccount/",selectedClubAccount)
+  
   const getTransaction = useMemo (() => (sourseId: string,destinationId: string , id: string ,amount: number,description: string) : IAddTransaction => {
     console.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     let addTransaction : IAddTransaction = {
@@ -44,8 +46,15 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
     console.log("OrderTable/getTransaction/addTransaction",addTransaction,orders)
     return addTransaction;
   },[selectedClubAccount] )
+
   const orderRows = useMemo(() => {
-    const rows = orders?.data.map((row : IOrder) => ({
+    const rows = orders?.data.filter((item) => {
+      console.log("OrderTable/orderRows/filter/item", item,selectedMember)
+      if(selectedMember?.lable == "") return true;
+      if(selectedMember?._id == item.member?._id)
+        return true;
+      return false;
+    }).map((row : IOrder) => ({
       id: row._id, date: new Date(row.order_date).toLocaleDateString(),
       amount: row.amount,
       product: row.orderType.referance,
@@ -64,7 +73,9 @@ export default function OrderTable({hideAction=false,filter={},selectedClubAccou
     return []
 
 
-  }, [orders])
+  }, [orders,selectedMember])
+
+  
 
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id', hide: true },

@@ -5,6 +5,7 @@ const authorize = require('../middleware/authorize');
 const { ROLES } = require('../Models/constants');
 const clubAccountController = require('../Controllers/clubAccountController');
 
+router.get("/:include_accounts",clubAccountController.club); 
 router.get("/",clubAccountController.club); 
 router.patch("/expense", clubAccountController.list_expense)
 router.put("/create_expense",clubAccountController.create_expense);

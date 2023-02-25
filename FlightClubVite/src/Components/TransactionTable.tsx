@@ -1,34 +1,24 @@
 import "../Types/date.extensions"
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from 'react';
-import { useClubAccountQuery, useFetchTransactionQuery } from '../features/Account/accountApiSlice';
-import { Box } from '@mui/material';
-import { IClubAccount, ITransaction } from '../Interfaces/API/IClub';
+import { useFetchTransactionQuery } from '../features/Account/accountApiSlice';
+import { ITransaction } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 import { IDateFilter } from '../Interfaces/IDateFilter';
 
+
+export interface ITransactionTableFilter {
+  dateFilter : IDateFilter
+}
 interface ITransactionTableProps {
   hideAction?: boolean;
   filter?: ITransactionTableFilter;
   selectedClubAccount: InputComboItem | null;
+}
 
-}
-const today = new Date();
-export interface ITransactionTableFilter {
-    dataFilter : IDateFilter
-}
-const transactionTableFilter: ITransactionTableFilter = {
-  dataFilter: {
-    from: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0).addDays(-1),
-    to: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0).addDays(1),
-    currentOffset: 0
-  }
-  
-}
 export default function TransactionTable({ hideAction = false, filter = {} as ITransactionTableFilter, selectedClubAccount }: ITransactionTableProps) {
-  const { data: bankAccounts } = useClubAccountQuery();
-  const { data: dataTransaction } = useFetchTransactionQuery(filter.dataFilter)
-  const [bank, setBank] = useState<IClubAccount | undefined>();
+  
+  const { data: dataTransaction } = useFetchTransactionQuery(filter.dateFilter)
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);

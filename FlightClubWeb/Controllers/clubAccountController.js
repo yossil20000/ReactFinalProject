@@ -17,9 +17,13 @@ const transactionOptions = {
 };
 
 exports.club = async function (req, res, next) {
-  log.info("club");
+  
   try {
-    const clubAccount = await ClubAccount.find().populate('accounts contact').exec();
+    log.info("club/req.params", req.params);
+    const include_accounts = req.params.include_accounts === undefined ? true : req.params.include_accounts
+    log.info("club/req.params", req.params.include_accounts);
+    const filter = `${include_accounts == "true" ? 'accounts ' : ''}contact`;
+    const clubAccount = await ClubAccount.find().populate(filter).exec();
     if (clubAccount) {
       return res.status(201).json({ success: true, errors: [], data: clubAccount });
     }

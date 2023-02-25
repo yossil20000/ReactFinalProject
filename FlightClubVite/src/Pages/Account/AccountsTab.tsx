@@ -103,7 +103,7 @@ function AccountsTab() {
    const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const { data, refetch } = useFetchAllAccountsQuery({});
-  const { data: bankAccounts } = useClubAccountQuery();
+  const { data: bankAccounts } = useClubAccountQuery(true);
   const [filterData, setFilterData] = useState({ account_id: "", active_only: false } as IAccountFilter)
   const getData = useMemo(() => {
     let bankFound : IClubAccount | undefined = undefined;
@@ -244,10 +244,7 @@ const  RenderClubAccount = useMemo(() => {
               <Grid item xs={12}>
               {RenderClubAccount}
               </Grid>
-            <Grid item xs={4}  >
-                <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accounts"} />
-                
-              </Grid >
+
               <Grid item xs={4}  >
                 <AccountsCombo onChanged={onAccountChange} source={"_accounts"} />
 
