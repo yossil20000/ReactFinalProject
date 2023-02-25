@@ -4,6 +4,8 @@ import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
 import { INotification } from '../../Interfaces/API/INotification';
+import { SetProperty } from '../../Utils/setProperty';
+import Notify from './Notify';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -13,17 +15,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNotify , setFormNotify }: IPageNavigate<IMemberUpdate,INotification>) {
-  const handleContactChange = (prop: any) => (event: any) => {
-    setFormData(prev => ({ ...prev, contact: { ...prev.contact, shipping_address: { ...prev.contact.shipping_address, [prop]: event.target.value } } }));
-    console.log("formData", formData)
+function Notification({ numPage, page, setPage, formData, setFormData ,formNotify,setFormNotify}: IPageNavigate<IMemberUpdate,INotification>) {
+  const handleNotifyChange = (prop: string) => (event: any) => {
+    let newObj = SetProperty(formNotify,prop,event.target.value)
+    setFormNotify(newObj);
+    console.log("notifyForm", newObj)
   };
-  const handleTimeChange = (newValue: Date | null) => {
-    if (newValue === null)
-      return;
-    setFormData({ ...formData, date_of_birth: newValue });
-    console.log("formData", formData)
-  };
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -31,7 +29,7 @@ function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNot
 
         <Grid item xs={12}>
           <Typography variant="h5" component="div" align='center'>
-            Shipping Address
+            Notification
           </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -60,10 +58,10 @@ function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNot
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
               required
-              id="line1"
-              label="Line1"
-              value={formData.contact.shipping_address.line1}
-              onChange={handleContactChange("line1")}
+              id="fullName"
+              label="Full Name"
+              value={formNotify.member.fullName}
+              onChange={handleNotifyChange("member.fullName")}
             />
           </Item>
         </Grid>
@@ -71,10 +69,10 @@ function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNot
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
               required
-              id="line2"
-              label="line2"
-              value={formData.contact.shipping_address.line2}
-              onChange={handleContactChange("line2")}
+              id="email"
+              label="email"
+              value={formNotify.member.email}
+              onChange={handleNotifyChange("member.email")}
             />
           </Item>
         </Grid>
@@ -82,33 +80,21 @@ function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNot
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
               required
-              id="city"
-              label="City"
-              value={formData.contact.shipping_address.city}
-              onChange={handleContactChange("city")}
+              id="phone"
+              label="Phone"
+              value={formNotify.member.phone}
+              onChange={handleNotifyChange("member.phone")}
             />
           </Item>
         </Grid>
         <Grid item xs={6}>
           <Item>
-            <TextField sx={{ width: "100%", margin: "auto" }}
-              required
-              id="postcode"
-              label="Postcode"
-              value={formData.contact.shipping_address.postcode}
-              onChange={handleContactChange("postcode")}
-            />
+             <Notify notify={formNotify.notify[0]}/>
           </Item>
         </Grid>
         <Grid item xs={6}>
           <Item>
-            <TextField sx={{ width: "100%", margin: "auto" }}
-
-              id="province"
-              label="Province"
-              value={formData.contact.shipping_address.province}
-              onChange={handleContactChange("province")}
-            />
+          <Notify notify={formNotify.notify[1]}/>
           </Item>
         </Grid>
         <Grid item xs={6}>
@@ -117,8 +103,8 @@ function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNot
               required
               id="state"
               label="State"
-              value={formData.contact.shipping_address.state}
-              onChange={handleContactChange("state")}
+              value={formNotify.notify}
+              onChange={handleNotifyChange("state")}
             />
           </Item>
         </Grid>
@@ -130,4 +116,4 @@ function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNot
 
 
 
-export default ShippingAddress
+export default Notification

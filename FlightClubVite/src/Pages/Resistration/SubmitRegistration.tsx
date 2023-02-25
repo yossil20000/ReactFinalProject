@@ -13,6 +13,7 @@ import { IValidation } from '../../Interfaces/IValidation';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
+import { INotification } from '../../Interfaces/API/INotification';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -23,7 +24,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function SubmitRegistration({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberCreate>) {
+function SubmitRegistration({ numPage, page, setPage, formData, setFormData ,formNotify , setFormNotify }: IPageNavigate<IMemberCreate,INotification>) {
     const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
     const [createMember, { isError, isLoading, isSuccess, error }] = useCreateMemberMutation();
     const navigate = useNavigate();

@@ -6,6 +6,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
 import checkPassword, { checkUsername, IValidation } from '../../Utils/registerUtils';
+import { INotification } from '../../Interfaces/API/INotification';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -19,7 +20,7 @@ const defaultCheckPassword: IValidation = {
     valid: false,
     validation: []
 }
-function Register({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberCreate>) {
+function Register({ numPage, page, setPage, formData, setFormData ,formNotify , setFormNotify }: IPageNavigate<IMemberCreate,INotification>) {
     const [verifiedPassword, setVerifiedPassword] = useState("");
     const [isPasswordValid, setIsPasswordValid] = useState<IValidation>(defaultCheckPassword);
     const [isusernameValid, setIsUsernameValid] = useState<IValidation>(defaultCheckPassword);

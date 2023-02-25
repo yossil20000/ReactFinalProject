@@ -47,7 +47,7 @@ const  EAccountType = {
 }
 
 const NotifyOn = {
-    CREATEd: "CREATE",
+    CREATED: "CREATED",
     CHANGED: "CHANGED",
     DELETED: "DELETED"
 }
@@ -72,6 +72,11 @@ const Utilizated = {
   HOURS_1500: "HOURS_1500",
   HOURS_2000: "HOURS_2000"
 }
+const NotifyEvent = {
+    "ClubNotice": "ClubNotice",
+    "FlightReservation": "FlightReservation"
+}
+module.exports.NotifyEvent = NotifyEvent;
 module.exports.TransactionType = TransactionType;
 module.exports.Utilizated = Utilizated;
 module.exports.PaymentMethod = PaymentMethod;

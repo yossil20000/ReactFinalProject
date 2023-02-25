@@ -11,6 +11,7 @@ import FemaleIcon from '@mui/icons-material/Female';
 import { resizeFileTobase64 } from '../../Utils/files';
 import GenderCombo from '../../Components/Buttons/GenderCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
+import { INotification } from '../../Interfaces/API/INotification';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -20,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
+function PersonalInfo({ numPage, page, setPage, formData, setFormData ,formNotify , setFormNotify }: IPageNavigate<IMemberUpdate,INotification>) {
 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";

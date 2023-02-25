@@ -10,6 +10,7 @@ import IMemberUpdate from '../../Interfaces/IMemberInfo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { ROUTES } from '../../Types/Urls';
+import { INotification } from '../../Interfaces/API/INotification';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -20,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
+function SubmitProfile({ numPage, page, setPage, formData, setFormData,formNotify ,setFormNotify }: IPageNavigate<IMemberUpdate,INotification>) {
     const navigate = useNavigate();
     const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
     

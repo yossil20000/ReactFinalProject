@@ -71,6 +71,10 @@ export  enum URLS{
     CLUB_UPDATE_EXPENSE = 'api/club_account/update_expense',
     CLUB_DELETE_EXPENSE = 'api/club_account/delete_expense',
     CLUB_TRANSACTION_SEARCH = 'api/club_account/transaction/search',
-    TYPES = 'api/type'
+    TYPES = 'api/type',
+    NOTIFY = 'api/notification',
+    NOTIFY_SEARCH = 'api/notification/search',
+    NOTIFY_CREATE = 'api/notification/create',
+    NOTIFY_UPDATE = 'api/notification/update'
     
 }

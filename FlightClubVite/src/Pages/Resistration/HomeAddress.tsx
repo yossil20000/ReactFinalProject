@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
+import { INotification } from '../../Interfaces/API/INotification';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -13,7 +14,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function HomeAddress({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
+function HomeAddress({ numPage, page, setPage, formData, setFormData,formNotify , setFormNotify }: IPageNavigate<IMemberUpdate,INotification>) {
   const handleContactChange = (prop: any) => (event: any) => {
     //setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
     setFormData(prev => ({ ...prev, contact: { ...prev.contact, billing_address: { ...prev.contact.billing_address, [prop]: event.target.value } } }));
