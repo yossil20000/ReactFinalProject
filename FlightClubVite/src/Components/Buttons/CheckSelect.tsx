@@ -1,8 +1,5 @@
-import { CheckBox } from '@mui/icons-material';
-import { Box, Checkbox, Chip, FormControl, InputLabel, ListItemText, MenuItem, Input, OutlinedInput, Select, SelectChangeEvent, TextField, Theme, useTheme } from '@mui/material'
-import { style } from '@mui/system';
-import { ChangeEventHandler, useEffect, useState } from 'react';
-import { InputComboItem } from './ControledCombo';
+import { Box, Checkbox, Chip, FormControl, InputLabel, ListItemText, MenuItem, Input, Select, SelectChangeEvent, Theme, useTheme } from '@mui/material'
+import { useEffect, useState } from 'react';
 import { LabelType } from './MultiOptionCombo';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

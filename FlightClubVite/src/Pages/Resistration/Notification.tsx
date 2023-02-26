@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Paper, TextField } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, Grid, Paper, TextField } from '@mui/material';
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
@@ -21,7 +21,12 @@ function Notification({ numPage, page, setPage, formData, setFormData ,formNotif
     setFormNotify(newObj);
     console.log("notifyForm", newObj)
   };
+  const handleBoolainChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("DeviceTabItem/handleBoolainChange", event.target.name, event.target.checked)
+    const newObj = SetProperty(formNotify, event.target.name, event.target.checked) ;
 
+    setFormNotify(newObj)
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -54,6 +59,9 @@ function Notification({ numPage, page, setPage, formData, setFormData ,formNotif
             </Button>
           </Item>
         </Grid>
+        <Grid item xs={4} >
+        <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"enabled"} checked={formNotify?.enabled === undefined ? false : formNotify?.enabled} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Enabled" />
+      </Grid>
         <Grid item xs={12} md={12}>
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
@@ -76,7 +84,7 @@ function Notification({ numPage, page, setPage, formData, setFormData ,formNotif
             />
           </Item>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
               required
@@ -97,17 +105,7 @@ function Notification({ numPage, page, setPage, formData, setFormData ,formNotif
           <Notify notify={formNotify.notify[1]}/>
           </Item>
         </Grid>
-        <Grid item xs={6}>
-          <Item>
-            <TextField sx={{ width: "100%", margin: "auto" }}
-              required
-              id="state"
-              label="State"
-              value={formNotify.notify}
-              onChange={handleNotifyChange("state")}
-            />
-          </Item>
-        </Grid>
+
       </Grid>
     </Box>
 
