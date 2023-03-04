@@ -20,7 +20,7 @@ export interface IValidationAlertProps extends IValidation, IAlertAction {
 
 export default function TransitionAlert(props: ITransitionAlrertProps) {
   const {severity,alertTitle,alertMessage,open,onClose} = props;
-  console.log("ValidationAlert/alertMessage,open",alertMessage,open)
+  console.log("ValidationAlert/alertMessage,open",severity,alertTitle,alertMessage,open,onClose)
   return(
     <Collapse in={open}>
       <Alert severity={severity} action={

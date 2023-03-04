@@ -35,7 +35,7 @@ const pages: page[] = [
   { name: "Login", route: "login" },
   
   ];
-const settings = ['Profile', 'MyAccount', 'Dashboard', 'change_password', 'Logout'];
+const settings = ['Profile', 'MyAccount','Notification', 'Dashboard', 'change_password', 'Logout'];
 
 const ResponsiveAppBar = () => {
   const navigate = useNavigate();

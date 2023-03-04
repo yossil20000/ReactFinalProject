@@ -44,21 +44,33 @@ export const newNotification : INotification = {
     phone: ""
   },
   enabled: false,
-  notify: [{
-    event: NotifyEvent.ClubNotice,
-    enabled: false,
-    notifyWhen: [NotifyOn.CHANGED,NotifyOn.CREATED,NotifyOn.DELETED],
-    notifyBy: [NotifyBy.EMAIL]
-  },{
-    event: NotifyEvent.FlightReservation,
-    enabled: false,
-    notifyWhen: [NotifyOn.CHANGED,NotifyOn.CREATED,NotifyOn.DELETED],
-    notifyBy: [NotifyBy.EMAIL]
-  }]
+  notify: []
 }
-export const newNotify : INotify = {
+export let newNotify : INotify = {
   event: NotifyEvent.ClubNotice,
   enabled: false,
   notifyWhen: [NotifyOn.CHANGED,NotifyOn.CREATED,NotifyOn.DELETED],
   notifyBy: [NotifyBy.EMAIL]
+}
+export function getNewNotify(event: NotifyEvent) : INotify {
+  const notify = {...newNotify}
+  notify.event = event;
+  return notify;
+}
+export function getNewNotification (memberId : string = "") : INotification  {
+  const notification : INotification = {
+    _id: "",
+    member: {
+      _id: memberId,
+      fullName: "",
+      email: "",
+      phone: ""
+    },
+    enabled: false,
+    notify: []
+  }
+  notification.notify.push(getNewNotify(NotifyEvent.ClubNotice))
+  notification.notify.push(getNewNotify(NotifyEvent.FlightReservation))
+  
+  return notification;
 }

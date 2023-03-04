@@ -20,7 +20,7 @@ const defaultCheckPassword: IValidation = {
     valid: false,
     validation: []
 }
-function Register({ numPage, page, setPage, formData, setFormData ,formNotify , setFormNotify }: IPageNavigate<IMemberCreate,INotification>) {
+function Register({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberCreate>) {
     const [verifiedPassword, setVerifiedPassword] = useState("");
     const [isPasswordValid, setIsPasswordValid] = useState<IValidation>(defaultCheckPassword);
     const [isusernameValid, setIsUsernameValid] = useState<IValidation>(defaultCheckPassword);

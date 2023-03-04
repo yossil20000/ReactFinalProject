@@ -6,22 +6,23 @@ const constants = require('../Models/constants');
 
 exports.notification_list = function (req, res, next) {
   try {
-    log.info('notice_list/req', req.body);
-    Notification.find()
+    log.info('notification_list/req', req.body);
+    const filter = req.params.member_id === undefined ? {} : {"member._id" : req.params.member_id}
+    Notification.find(filter)
       .exec(function (err, list_notification) {
         if (err) {
           log.debug(err);
           return next(err);
         }
         else {
-          log.info('notice_list/results', list_notification.length);
+          log.info('notification_list/results', list_notification.length);
           res.status(201).json({ success: true, errors: [], data: list_notification });
           return;
         }
       });
   }
   catch (error) {
-    return next(new ApplicationError("notice_list", 400, "CONTROLLER.NOTIFICATION.NOTIFICATION_LIST.EXCEPTION", { name: "EXCEPTION", error }));
+    return next(new ApplicationError("notification_list", 400, "CONTROLLER.NOTIFICATION.NOTIFICATION_LIST.EXCEPTION", { name: "EXCEPTION", error }));
   }
 }
 /* 
@@ -29,7 +30,7 @@ exports.notification_list = function (req, res, next) {
     "filter":{
         "$and": [{"notify.enabled": true},{"notify.event": "FlightReservation"},{"notify.notifyWhen": "CHANGED"}]
     },
-    "select":  "member.email notify",
+    "select":  "member notify",
     "find_select": {
     }
 }
@@ -129,7 +130,9 @@ exports.notification_create = [
       })
       newNotification.save((err, result) => {
         if (err) {
-          return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: newNotification })
+          let appError = new ApplicationError("notification_create", 400, "CONTROLLER.NOTIFICATION.NOTIFICATION_CREATE.DB", err);
+          return next(appError);
+          
         }
         if (result) {
           log.info("notification_create/save/Result", result);

@@ -11,6 +11,7 @@ import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { ROUTES } from '../../Types/Urls';
 import { INotification } from '../../Interfaces/API/INotification';
+import { useCreateNotifyMutation, useUpdateNotifyMutation } from '../../features/Notification/notificationApiSlice';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -21,15 +22,23 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function SubmitProfile({ numPage, page, setPage, formData, setFormData,formNotify ,setFormNotify }: IPageNavigate<IMemberUpdate,INotification>) {
+function SubmitProfile({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberUpdate>) {
     const navigate = useNavigate();
     const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
     
     const [updateMember, { isError, isLoading, isSuccess, error }] = useUpdateMemberMutation();
     const onSaveProfileHandler = async () => {
         console.log("onSaveProfileHandler", formData);
-        const payload = await updateMember(formData as IMemberInfo).unwrap();
-        console.log("useUpdateMemberMutation/payload", payload)
+        try{
+            const payload = await updateMember(formData as IMemberInfo).unwrap();
+            console.log("onSaveProfileHandler/useUpdateMemberMutation/payload", payload)
+        }
+        catch(error){
+            console.log("onSaveProfileHandler/error", error)
+            let validation = getValidationFromError(error, onValidationAlertClose);
+            setValidationAlert(validation);
+        }
+        
     }
     const onValidationAlertClose = () => {
         setValidationAlert([]);

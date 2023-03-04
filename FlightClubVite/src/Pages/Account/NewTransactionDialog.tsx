@@ -65,7 +65,7 @@ const getAccountType = (memberType: string | undefined): string => {
 function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactionDialogProps) {
   const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionMutation();
-  const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery();
+  const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()

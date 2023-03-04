@@ -14,7 +14,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function HomeAddress({ numPage, page, setPage, formData, setFormData,formNotify , setFormNotify }: IPageNavigate<IMemberUpdate,INotification>) {
+function HomeAddress({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
   const handleContactChange = (prop: any) => (event: any) => {
     //setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
     setFormData(prev => ({ ...prev, contact: { ...prev.contact, billing_address: { ...prev.contact.billing_address, [prop]: event.target.value } } }));

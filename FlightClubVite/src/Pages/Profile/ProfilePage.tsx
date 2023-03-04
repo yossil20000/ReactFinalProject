@@ -3,21 +3,16 @@ import { useEffect, useState } from 'react'
 import PersonalInfo from '../Resistration/PersonalInfo';
 import HomeAddress from '../Resistration/HomeAddress';
 import ShippingAddress from '../Resistration/ShippingAddress';
-import Notification from '../Resistration/Notification';
 import { useGetMemberByIdQuery } from '../../features/Users/userSlice';
 import { useAppSelector } from '../../app/hooks';
 import SubmitProfile from './SubmitProfile';
 import { Gender } from '../../Interfaces/API/IMember';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
-import { INotification, newNotification, newNotify, NotifyEvent } from '../../Interfaces/API/INotification';
-const notifications= newNotification;
 
-console.log("Notification", notifications)
 function ProfilePage() {
   const steps = [
-    '25%',
-    '50%',
-    '75%',
+    '33%',
+    '66%',
     '100%',
     'Submit',
   ];
@@ -60,15 +55,13 @@ function ProfilePage() {
 
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberUpdate>(initialForm);
-  const [formNotify,setFormNotify] = useState<INotification>(notifications)
   console.log("formData", login.member)
-  const numPage = 5;
+  const numPage = 4;
   const componentList = [
-    <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <HomeAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <ShippingAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <Notification numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <SubmitProfile numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>
+    <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <HomeAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <ShippingAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <SubmitProfile numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />
   ]
 
   useEffect(() => {

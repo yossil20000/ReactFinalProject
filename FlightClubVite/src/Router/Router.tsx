@@ -15,6 +15,7 @@ import MembersTablePage from '../Pages/Members/MembersTablePage'
 import ProfilePage from '../Pages/Profile/ProfilePage'
 import ReservationsPage from '../Pages/Reservations/ReservationsPage'
 import RegistrationPage from '../Pages/Resistration/RegistrationPage'
+import NotificationPage from '../Pages/UserAccount/Notification'
 import MyAccount from '../Pages/UserAccount/UserAccount'
 
 
@@ -70,6 +71,7 @@ export function PagesRouter() {
           <Route path='/members' element={<MembersTablePage></MembersTablePage>} />
           <Route path='/flights' element={<FlightPage></FlightPage>} />
           <Route path='/myaccount' element={<MyAccount></MyAccount>} />
+          <Route path='/notification' element={<NotificationPage></NotificationPage>} />
           
 
           

@@ -15,7 +15,7 @@ function UserOrderTab() {
         </Box>
         
       </ContainerPageHeader>
-      <ContainerPageMain><OrderTable hideAction={true} filter={{member: login.member._id}} selectedClubAccount={null}/></ContainerPageMain>
+      <ContainerPageMain><OrderTable selectedMember={null} hideAction={true} filter={{member: login.member._id}} selectedClubAccount={null}/></ContainerPageMain>
       <ContainerPageFooter><></></ContainerPageFooter>
     </>
 

@@ -5,7 +5,7 @@ import Register from './Register';
 import SubmitRegistration from './SubmitRegistration';
 import HomeAddress from './HomeAddress';
 import ShippingAddress from './ShippingAddress';
-import Notification from './Notification';
+import Notification from '../UserAccount/Notification';
 import { useAppSelector } from '../../app/hooks';
 import { Gender, Role } from '../../Interfaces/API/IMember';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
@@ -52,25 +52,22 @@ function RegistrationPage() {
     gender: Gender.male
   }
   const steps = [
-    '20%',
-    '40%',
-    '60%',
-    '80%',
+    '25%',
+    '50%',
+    '75%',
     '100%',
     'Submit',
   ];
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberCreate>(initialForm);
-  const [formNotify,setFormNotify] = useState<INotification>(newNotification)
   console.log("formData", login.member)
-  const numPage = 6;
+  const numPage = 5;
   const componentList = [
-    <Register numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <HomeAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <ShippingAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <Notification numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>,
-    <SubmitRegistration numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} formNotify={formNotify} setFormNotify={setFormNotify}/>
+    <Register numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <HomeAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <ShippingAddress numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
+    <SubmitRegistration numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />
   ]
   return (
     <div className='main' style={{ width: "99%", margin: "1% auto" ,overflow:"auto"}}>

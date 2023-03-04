@@ -13,7 +13,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function ShippingAddress({ numPage, page, setPage, formData, setFormData,formNotify , setFormNotify }: IPageNavigate<IMemberUpdate,INotification>) {
+function ShippingAddress({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberUpdate>) {
   const handleContactChange = (prop: any) => (event: any) => {
     setFormData(prev => ({ ...prev, contact: { ...prev.contact, shipping_address: { ...prev.contact.shipping_address, [prop]: event.target.value } } }));
     console.log("formData", formData)

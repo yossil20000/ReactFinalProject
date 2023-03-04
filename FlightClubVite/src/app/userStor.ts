@@ -11,6 +11,7 @@ import { membershipApiSlice } from "../features/membership/membershipApiSlice";
 import noticeSliceReducer from "../features/clubNotice/noticeSlice";
 import { imageApiSlice } from "../features/image/imageApiSlice";
 import { accountApiSlice } from "../features/Account/accountApiSlice";
+import {notifyApiSlice} from '../features/Notification/notificationApiSlice';
 
 export const storeUser = configureStore({
     reducer:{
@@ -24,6 +25,7 @@ export const storeUser = configureStore({
         [membershipApiSlice.reducerPath] : membershipApiSlice.reducer,
         [imageApiSlice.reducerPath] : imageApiSlice.reducer,
         [accountApiSlice.reducerPath] : accountApiSlice.reducer,
+        [notifyApiSlice.reducerPath] : notifyApiSlice.reducer,
         authSlice: authSliceReducer ,
         selectedNotice: noticeSliceReducer
     },
@@ -41,6 +43,7 @@ export const storeUser = configureStore({
         .concat(membershipApiSlice.middleware)
         .concat(imageApiSlice.middleware)
         .concat(accountApiSlice.middleware)
+        .concat(notifyApiSlice.middleware)
     }
 });
 

@@ -24,7 +24,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function SubmitRegistration({ numPage, page, setPage, formData, setFormData ,formNotify , setFormNotify }: IPageNavigate<IMemberCreate,INotification>) {
+function SubmitRegistration({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberCreate>) {
     const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
     const [createMember, { isError, isLoading, isSuccess, error }] = useCreateMemberMutation();
     const navigate = useNavigate();

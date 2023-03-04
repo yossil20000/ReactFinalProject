@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 const NotificationSchema = new Schema({
   member: {
-    _id: {type: String, required: true},
+    _id: {type: String, required: true,unique:true},
     fullName: {type: String, required: true},
     email: {type: String, required: true},
     phone: {type: String, required: true}

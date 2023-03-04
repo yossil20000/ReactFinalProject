@@ -20,26 +20,7 @@ export type CheckSelectProps = {
 }
 
 function CheckSelect({ items, label, selectedItems, onSelected, property }: CheckSelectProps) {
-  const theme = useTheme();
-  const [item, setItem] = useState<LabelType[]>(selectedItems)
-
-
-  /*   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
-      console.log("handleOnChange", event.target.value as string);
-      const newValue = event.target.value as T;
-      setItem((prev: T[]) => ({ ...prev, newValue }))
-      handlerChange(event.target.value as T, property)
-    } */
-  const handleChange = (event: SelectChangeEvent<typeof items>) => {
-    const { target: { value }, } = event;
-    console.log("CheckSelect/handleOnChange/value", event.target.value);
-
-    const newValue = items.find((i) => event.target.value == i.name);
-    console.log("CheckSelect/handleOnChange/newValue", newValue);
-    console.log("CheckSelect/handleOnChange", event.target.value as string, newValue, items);
-    setItem((prev: LabelType[]) => ({ ...prev, newValue }))
-    onSelected(event.target.value as LabelType[], property)
-  };
+ 
   function getStyles(name: LabelType, personName: readonly LabelType[], theme: Theme) {
     return {
       fontWeight:
@@ -48,19 +29,20 @@ function CheckSelect({ items, label, selectedItems, onSelected, property }: Chec
           : theme.typography.fontWeightMedium,
     };
   }
-  const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
-  const handleRoleChange = (event: any) => {
-    const { value } = event.target;
-    setSelectedRoleIds(value);
-    const selected = items.filter((i) => value.includes(i.name) );
-    console.log("handleRoleChange/selected", value,items,selected)
-    console.log("handleRoleChange/selected", selected)
-    onSelected(selected, property)
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
+  const handleProperyChange = (event: any) => {
+    const { value } = event.target;
+
+    const selected = items.filter((i) => value.includes(i.name) );
+    console.log("handleProperyChange/selected", value,items,selected)
+    console.log("handleProperyChange/selected", selected)
+    onSelected(selected, property)
+    setSelectedOptions(value);
   };
   useEffect(() => {
     if (selectedItems) {
-      setSelectedRoleIds(selectedItems.map((i: any) => i.name));
+      setSelectedOptions(selectedItems.map((i: any) => i.name));
     }
 
   }, [selectedItems]);
@@ -72,23 +54,23 @@ function CheckSelect({ items, label, selectedItems, onSelected, property }: Chec
         <Select
           multiple
           fullWidth
-          value={selectedRoleIds}
-          onChange={handleRoleChange}
+          value={selectedOptions}
+          onChange={handleProperyChange}
           variant={"standard"}
           input={<Input id="select-multiple-chip" />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((roleId) => (
-                <Chip key={roleId} label={items === undefined ? "" : items?.find(e => e.name === roleId) === undefined ? "" : items?.find(e => e.name === roleId) ? roleId : ""} />
+              {selected.map((property) => (
+                <Chip key={property} label={items === undefined ? "" : items?.find(e => e.name === property) === undefined ? "" : items?.find(e => e.name === property) ? property : ""} />
               ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          {items.map((role) => (
-            <MenuItem key={role._id} value={role.name}>
-              <Checkbox checked={selectedRoleIds.includes(role.name)} />
-              <ListItemText primary={role.name} color={role.color}/>
+          {items.map((property) => (
+            <MenuItem key={property._id} value={property.name}>
+              <Checkbox checked={selectedOptions.includes(property.name)} />
+              <ListItemText primary={property.name} color={property.color}/>
             </MenuItem>
           ))}
         </Select>

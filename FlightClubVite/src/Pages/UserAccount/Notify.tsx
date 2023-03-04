@@ -1,15 +1,16 @@
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import CheckSelect from '../../Components/Buttons/CheckSelect'
 import { LabelType } from '../../Components/Buttons/MultiOptionCombo'
 import Item from '../../Components/Item'
 import { INotify, NotifyOn } from '../../Interfaces/API/INotification'
 import { SetProperty } from '../../Utils/setProperty'
 export interface INotifyProps {
-  notify: INotify
+  notify: INotify 
+ onChanged: (notify : INotify)  => void
 }
-function Notify({ notify }: INotifyProps) {
-  const [selectNotify, setSelectNotify] = useState<INotify>(notify);
+function Notify({ notify ,onChanged}: INotifyProps) {
+  /* const [selectNotify, setSelectNotify] = useState<INotify>(notify); */
   const labelsFromNotifyOn = useCallback((): LabelType[] => {
     const lables: LabelType[] = Object.keys(NotifyOn).filter((v) => isNaN(Number(v))).
       map((name, index) => {
@@ -22,16 +23,27 @@ function Notify({ notify }: INotifyProps) {
       })
     return lables;
   }, [])
-  const onNotifyOnChanged = useCallback((item: LabelType[], prop: string): void => {
-    console.log("onNotifyOnChanged/item", item, prop);
-    const newObj: INotify = SetProperty(selectNotify, prop, item.map((i) => i.name)) as INotify;
-    setSelectNotify(newObj)
-    console.log("onNotifyOnChanged/newObj", newObj);
-  }, [selectNotify]);
+
+  const handleBoolainChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Notify/handleBoolainChange", event.target.name, event.target.checked)
+    let newObj: INotify = SetProperty(notify, event.target.name, event.target.checked) as INotify;
+    onChanged(newObj);
+    console.log("Notify/handleBoolainChange/newObj", newObj)
+    /* setSelectNotify(newObj) */
+  };
+
+  const onNotifyOnChanged = (item: LabelType[], prop: string): void => {
+    console.log("Notify/onNotifyOnChanged/item", item, prop);
+    let newObj: INotify = SetProperty(notify, prop, item.map((i) => i.name)) as INotify;
+    /* setSelectNotify(newObj) */
+    onChanged(newObj);
+    console.log("Notify/onNotifyOnChanged/newObj", newObj);
+  };
+
   const getSelectedItems = useCallback((): LabelType[] => {
 
-    if (selectNotify !== undefined && selectNotify && selectNotify.notifyWhen !== undefined) {
-      const initial = selectNotify.notifyWhen.map((item) => {
+    if (notify !== undefined && notify && notify.notifyWhen !== undefined) {
+      const initial = notify.notifyWhen.map((item) => {
         return item.toString();
       });
       const result = labelsFromNotifyOn().filter((item) => (initial.includes(item.name)))
@@ -39,15 +51,11 @@ function Notify({ notify }: INotifyProps) {
 
     }
     return [];
-  }, [labelsFromNotifyOn, selectNotify?.notifyWhen])
-  const handleBoolainChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("DeviceTabItem/handleBoolainChange", event.target.name, event.target.checked)
-    const newObj: INotify = SetProperty(selectNotify, event.target.name, event.target.checked) as INotify;
+  }, [labelsFromNotifyOn, notify?.notifyWhen])
 
-    setSelectNotify(newObj)
-  };
+
   return (
-    <Grid container columns={4}>
+    <Grid container columns={4} sx={{'&.MuiPaper-root':{height:"100%"}}} style={{height: 'inherit'}} alignContent={'space-between'}>
 
       <Grid item xs={4}>
         <Item>
@@ -55,12 +63,12 @@ function Notify({ notify }: INotifyProps) {
             disabled
             id="event"
             label="Event"
-            value={selectNotify.event}
+            value={notify.event}
           />
         </Item>
       </Grid>
       <Grid item xs={4} >
-        <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"enabled"} checked={selectNotify?.enabled === undefined ? false : selectNotify?.enabled} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Enabled" />
+        <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"enabled"} checked={notify?.enabled === undefined ? false : notify?.enabled} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Enabled" />
       </Grid>
       <Grid item xs={4}>
         <Item>
@@ -74,7 +82,7 @@ function Notify({ notify }: INotifyProps) {
             disabled
             id="notifyBy"
             label="NotifyBy"
-            value={selectNotify.notifyBy}
+            value={notify.notifyBy}
           />
         </Item>
 

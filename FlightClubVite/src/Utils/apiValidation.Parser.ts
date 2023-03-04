@@ -11,8 +11,15 @@ export function apiValidationParse(validation: IValidation): string {
 export function getValidationFromError(error: any, onclose: () => void): IValidationAlertProps[] {
   console.log("getValidationFromError", error)
   let validation: IValidationAlertProps[] = [];
+
   try{
-    if ((error as any).data?.errorType !== "VALIDATION") {
+    const keys = Object.keys(error)
+    console.log("getValidationFromError/errorKeys/", keys)
+    console.log("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data'))
+    console.log("getValidationFromError/object.hasOwnProperty/", error.data.hasOwnProperty('errors'))
+    console.log("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data.success'))
+    if ((error as any).data?.errorType !== "VALIDATION" && (error as any).data?.errorType !== undefined) {
+      console.log("getValidationFromError/1", (error as any).data?.errorType)
       validation = (error as any).data?.errors.map((item: string) => {
         const alert: IValidationAlertProps = {
           location: '',
@@ -34,9 +41,9 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
         alert.open = true;
         return alert;
       })
-      
+      console.log("getValidationFromError/2/validation/", validation)
     }
-    if( validation === undefined){
+    if( validation === undefined || validation.length == 0){
       if(error.error){
         const alert: IValidationAlertProps = {
           location: '',
@@ -47,6 +54,7 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
           onClose: onclose
         };
         validation = [alert]
+        console.log("getValidationFromError/3/validation/", validation)
       }
       else if(Array.isArray(error)){
         validation = (error as any).map((item: any) => {
@@ -67,6 +75,7 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
           
           return alert;
         })
+        console.log("getValidationFromError/4/validation/", validation)
       }
       else {
      
@@ -82,12 +91,14 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
           alert.msg = error.message;
         }
         validation = [alert]
+        console.log("getValidationFromError/5/validation/", validation)
       }
     }
-    console.log("isError/validation", validation)
+    console.log("getValidationFromError/isError/validation/", validation)
     validation = validation === undefined ? [] : validation;
   }
   catch(err : any){
+    console.log("getValidationFromError/err/", err)
     let alert: IValidationAlertProps = {
       location: '',
       msg: err.message,
@@ -99,7 +110,7 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
     validation.push(alert);
   }
   finally{
-    console.log("getValidationFromError/2/validation", validation)
+    console.log("getValidationFromError/finanly/validation", validation)
     return validation;
   }
 

@@ -22,7 +22,7 @@ export interface CreateExpenseDialogProps {
 
 function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseDialogProps) {
   const [createExpense, { isError, isLoading }] = useCreateExpenseMutation();
-  const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery();
+  const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
   const [selectedExpense, setSelectedExpense] = useState<IExpenseBase>(newExpense);
