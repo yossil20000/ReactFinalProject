@@ -2,7 +2,8 @@ const log = require('debug-level').log('ClubNoticeController');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
 const ClubNotice = require('../Models/clubNotice');
-
+const { sendNotification } = require('../Services/notificationService');
+const constants = require('../Models/constants')
 exports.notice_list = function (req, res, next) {
     try {
         log.info('notice_list/req', req.body);
@@ -69,6 +70,7 @@ exports.notice_create = [
                     return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: notice })
                 }
                 if (result) {
+                    sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED, notice.notification)
                     log.info("notice_create/save/Result", result);
                     return res.status(201).json({ success: true, errors: [], data: notice })
                 }
@@ -95,6 +97,7 @@ exports.notice_update = [
             }
             const notice = await ClubNotice.findByIdAndUpdate(req.body._id, req.body).exec();
             if (notice) {
+                sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CHANGED, notice.notification)
                 return res.status(201).json({ success: true, errors: [], data: notice })
             }
             return res.status(400).json({ success: false, errors: ["Notice update failed"], data: [] })
@@ -119,6 +122,7 @@ exports.notice_delete = [
             if (notice === null || notice === undefined) {
                 return res.status(400).json({ success: false, errors: ["Notice Not Exist"], data: [] })
             }
+            sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.DELETED, notice.notification)
             return res.status(201).json({ success: true, errors: [], data: notice })
         }
         catch (error) {

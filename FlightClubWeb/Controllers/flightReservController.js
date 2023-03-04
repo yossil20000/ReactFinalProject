@@ -153,10 +153,12 @@ exports.reservation_delete = function (req, res, next) {
 								res.status(400).json({ success: false, errors: [err], data: doc });
 							}
 							else {
+								const notifyMessage = `Flight from: ${doc.date_from} to: ${doc.date_to} \n on device: ${doc.device.device_id} by: ${doc.member.full_name}`
+						 sendNotification(constants.NotifyEvent.FlightReservation,constants.NotifyOn.DELETED, notifyMessage)
 								res.status(201).json({ success: true, errors: ["delete"], data: doc });
 							}
 							return;
-						})
+						}).populate('device member')
 					}
 				});
 			}
@@ -216,9 +218,10 @@ exports.reservation_create = [
 				]
 			}).exec();
 
-			const notifyResult = await sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,"Flight resservstion");
-			log.info("FlightReservation/notifyResult", notifyResult);
+			
+			
 			log.info("FlightReservation.find/doc", found?._doc);
+			
 			if (found?._doc === undefined) {
 				await newReservation.save(err => {
 					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
@@ -232,9 +235,10 @@ exports.reservation_create = [
 				await member.save(err => {
 					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
 				});
-
+				const notifyResult = await sendNotification(constants.NotifyEvent.FlightReservation,constants.NotifyOn.CREATED, `Flight from: ${newReservation.date_from} to: ${newReservation.date_to} \n on device: ${device.device_id} by: ${member.full_name}`);
+        log.info("FindSameFlight/end/flightNotification",newReservation.flightNotification);
 				res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
-				log.info("FindSameFlight/end/created");
+				log.info("FindSameFlight/end/created",newReservation.flightNotification);
 				return;
 			}
 			else {
@@ -262,7 +266,8 @@ exports.reservation_update = [
 			if ((new Date(value) - new Date(req.body.date_from)) > 0) return true;
 			return false;
 		}),
-	(req, res, next) => {
+	async (req, res, next) => {
+		let notifyMessage = ""
 		try {
 			log.info("reservation_update/body", req.body);
 			const errors = validationResult(req);
@@ -270,18 +275,27 @@ exports.reservation_update = [
 				return next(new ApplicationError("reservation_update", 400, "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 			}
 			else {
-				FlightReservation.findOneAndUpdate(req.body._id, { date_from: req.body.date_from, date_to: req.body.date_to ,timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())}, (err, results) => {
+				const results =  await  FlightReservation.findOneAndUpdate(req.body._id, { date_from: req.body.date_from, date_to: req.body.date_to ,timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())}).populate('device member')
+				notifyMessage = `Flight from: ${results.date_from} to: ${results.date_to} \n on device: ${results.device.device_id} by: ${results.member.full_name}`
+						await sendNotification(constants.NotifyEvent.FlightReservation,constants.NotifyOn.CHANGED, notifyMessage)
+						return res.status(201).json({ success: true, errors: [], data: [] });
+						/* FlightReservation.findOneAndUpdate(req.body._id, { date_from: req.body.date_from, date_to: req.body.date_to ,timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())}, (err, results) => {
 					if (err) {
 						return res.status(400).json({ success: false, errors: [err], data: req.body });
 					}
 					else {
+						
+
 						return res.status(201).json({ success: true, errors: [], data: results });
 					}
-				})
+				}) */
 			}
 		}
 		catch (error) {
 			return next(new ApplicationError("reservation_update", 400, "CONTROLLER.FLIGHT_RESERV.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+		}
+		finally{
+			
 		}
 	}
 ];

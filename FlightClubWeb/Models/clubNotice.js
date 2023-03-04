@@ -23,4 +23,10 @@ ClubNoticeScema
 .get(function() {
     return DateTime.fromJSDate(this.date).toLocaleString(DateTime.DATE_MED);
 });
+
+ClubNoticeScema
+.virtual('notification')
+.get(function() {
+    return `Notification : \n ${this.title} \n ${this.description} \n valid from: ${this.issue_date} \ndeu Date: ${this.isExpired ?   this.due_date : ''} `
+})
 module.exports = mongoose.model("ClubNotice",ClubNoticeScema);
