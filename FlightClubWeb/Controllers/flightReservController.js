@@ -1,5 +1,6 @@
 const Device = require('../Models/device');
 const Member = require('../Models/member');
+const constants = require('../Models/constants')
 const FlightReservation = require('../Models/flightReservation');
 const { ApplicationError } = require('../middleware/baseErrors');
 
@@ -7,6 +8,7 @@ const async = require('async');
 const log = require('debug-level').log('flightReservationController');
 
 const { body, check, validationResult } = require('express-validator');
+const { sendNotification } = require('../Services/notificationService');
 
 exports.reservation = function (req, res, next) {
 	try {
@@ -214,8 +216,8 @@ exports.reservation_create = [
 				]
 			}).exec();
 
-
-
+			const notifyResult = await sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,"Flight resservstion");
+			log.info("FlightReservation/notifyResult", notifyResult);
 			log.info("FlightReservation.find/doc", found?._doc);
 			if (found?._doc === undefined) {
 				await newReservation.save(err => {
@@ -226,9 +228,11 @@ exports.reservation_create = [
 				await device.save(err => {
 					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
 				});
+		
 				await member.save(err => {
 					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
 				});
+
 				res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
 				log.info("FindSameFlight/end/created");
 				return;
@@ -241,6 +245,10 @@ exports.reservation_create = [
 		catch (error) {
 			log.info("Create/catch (err)",error);
 			return next(new ApplicationError("reservation_create", 400, "CONTROLLER.FLIGHT_RESERV.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+		}
+		finally{
+			
+			
 		}
 		log.info("Create/end");
 	}];
