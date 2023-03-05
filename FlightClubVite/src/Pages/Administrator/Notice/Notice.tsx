@@ -19,7 +19,7 @@ export interface INoticeProps {
   selectedNotice: IClubNotice;
   seSelectedNotice: React.Dispatch<React.SetStateAction<IClubNotice>>;
 }
-function Notice() {
+function NoticeEdit() {
   const notice : IClubNotice = useAppSelector((state) => state.selectedNotice);
   const noticeDispatch = useAppDispatch();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,4 +122,4 @@ function Notice() {
   )
 }
 
-export default Notice
+export default NoticeEdit

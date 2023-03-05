@@ -3,7 +3,7 @@ const Member = require('../Models/member');
 const constants = require('../Models/constants')
 const FlightReservation = require('../Models/flightReservation');
 const { ApplicationError } = require('../middleware/baseErrors');
-
+const { CValidationError } = require('../Utils/CValidationError');
 const async = require('async');
 const log = require('debug-level').log('flightReservationController');
 
@@ -243,7 +243,8 @@ exports.reservation_create = [
 			}
 			else {
 				log.info("Create/else");
-				res.status(400).json({ success: false, errors: ["Reservation Already Exist"], data: newReservation });
+				return next(new ApplicationError("reservation_create", 400, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError(newReservation._id, `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist`, '', "DB.Reservation")).validationResult.errors }));
+				
 			}
 		}
 		catch (error) {

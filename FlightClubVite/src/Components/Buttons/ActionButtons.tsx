@@ -10,11 +10,14 @@ import { keys } from '@mui/system';
 export enum EAction {
   "ADD", "DELETE", "SAVE", "EDIT", "PAY", "ORDER", "CLOSE"
 }
+export interface IActionDispaly {
+  key: EAction, value: string
+}
 export interface IActionButtonsProps {
   show: EAction[],
   OnAction: (action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) => void,
   item: string,
-  display?: [{ key: EAction, value: string }]
+  display?: IActionDispaly[]
 }
 
 function ActionButtons({ OnAction, show, item = "", display }: IActionButtonsProps) {
