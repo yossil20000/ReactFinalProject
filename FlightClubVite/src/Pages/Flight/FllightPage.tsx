@@ -1,23 +1,33 @@
 import "../../Types/date.extensions"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, Paper, styled, TablePagination, Tooltip, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, styled, TablePagination, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
 import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, FlightStatus } from "../../Interfaces/API/IFlight";
-
-
 import GeneralCanDo, { CanDo } from "../../Utils/owner";
 import { useAppSelector } from "../../app/hooks";
 import { ILoginResult } from "../../Interfaces/API/ILogin";
-import FilterButtons from "../../Components/Buttons/FilterButtons";
 import UpdateFlightDialog from "./UpdateFlightDialog";
 import SortButtons, { ISortCell, Order } from "../../Components/Buttons/SortButtons";
 import CreateFlightDialog from "./CreateFlightDialog";
 
-import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
-import { IDateFilter } from "../../Interfaces/IDateFilter";
-import { getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering";
+import { IDateFilter, newDateFilter } from "../../Interfaces/IDateFilter";
+import { getDayFilter, getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering";
+
+import GeneralDrawer from "../../Components/GeneralDrawer.js";
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import { SetProperty } from "../../Utils/setProperty.js";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import TodayIcon from '@mui/icons-material/Today';
+import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons.js";
+import DatePickerDate from "../../Components/Buttons/DatePickerDate";
+
+const dateFilter: IDateFilter = newDateFilter;
 const StyledAccordion = styled(Box)(({ theme }) => ({
   color: theme?.palette.primary.main,
   "& .MuiAccordionSummary-content:nth-of-type(2n+1)":
@@ -105,18 +115,17 @@ let flightAddIntitial: IFlightCreate = {
   timeOffset: 0
 }
 const FlightPage = () => {
+  const [dateRef, setDateRef] = useState(new Date())
+  const [openFilter, setOpenFilter] = useState(false)
   const [openFlightAdd, setOpenFlightAdd] = useState(false);
   const [openFlightUpdate, setOpenFlightUpdate] = useState(false);
-  const [flightUpdate, setFlightUpdate] = useState<IFlightUpdate>(flightUpdateIntitial);
   const [DeleteFlight] = useDeleteFlightMutation();
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof IFlightData>("_id");
   const [flightsData, setFilghtData] = useState<IFlightData[]>([]);
   const [expanded, setExpanded] = useState<string | false>('panel0');
-  const [isByDateRange, setIsByDateRange] = useState(false);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
-  const [filterBydate, setFilterByDate] = useState(0);
-  const [filterDate, setFilterDate] = useState<IReservationFilterDate>({} as IReservationFilterDate);
+  const [filterDate, setFilterDate] = useState<IReservationFilterDate>(dateFilter as IReservationFilterDate);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
@@ -195,53 +204,6 @@ const FlightPage = () => {
       console.log("DeleteFlight/err", err)
     }
   }
-  const handleFilterOwner = () => {
-    setIsFilterOwner(!isFilterOwner);
-  }
-
-  const handleFilterClick = (selectedIndex: number) => {
-    console.log("handleFilterClick", selectedIndex);
-    let filterDate: IDateFilter | null = null;
-    switch (selectedIndex) {
-      case 0:
-        filterDate = getTodayFilter();
-        break;
-      case 1:
-        filterDate = getWeekFilter(todayDate);
-        break;
-      case 2:
-        filterDate = getMonthFilter(todayDate);
-        break;
-
-    }
-    if (selectedIndex == 3)
-      setIsByDateRange(true);
-    else
-      setIsByDateRange(false);
-    if (filterDate) {
-      /* setFromDateFilter(filterDate.from);
-      setToDateFilter(filterDate.to); */
-      setFilterDate(filterDate as IReservationFilterDate)
-    }
-    console.log("handleFilterClick", selectedIndex, isByDateRange);
-
-  }
-  const isInDateRange = (row: IFlightData): boolean => {
-    console.log("isInDateRange/filterBydate", filterBydate)
-    switch (filterBydate) {
-      case 0:
-        return row.date.isSameDate(todayDate);
-      case 1:
-        return row.date.getWeek() == todayDate.getWeek();
-      case 2:
-        return row.date.isSameMonth(todayDate);
-      case 3:
-        if (filterDate.from && filterDate.to)
-          return row.date >= filterDate.from && row.date <= filterDate.to
-        break;
-    }
-    return true;
-  }
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   }
@@ -295,6 +257,75 @@ const FlightPage = () => {
     setOpenFlightAdd(false);
   }
   const getFilteredDataMemo = getFilteredData()
+    const onTodayChanged = () => {
+    const filter = getTodayFilter();
+    setFilterDate(filter);
+
+  }
+  const onWeekChanged = () => {
+    setDateRef(new Date())
+    const filter = getWeekFilter(new Date());
+    setFilterDate(filter);
+
+  }
+  const onPrevDay = () => {
+    const newRefDate = dateRef.addDays(-1)
+    setDateRef(newRefDate)
+    const filter = getDayFilter(newRefDate);
+    setFilterDate(filter);
+  }
+  const onNextDay = () => {
+    const newRefDate = dateRef.addDays(1)
+    setDateRef(newRefDate)
+    const filter = getDayFilter(newRefDate);
+    setFilterDate(filter);
+  }
+  const onPrevWeek = () => {
+    const newRefDate = dateRef.addDays(-7)
+    setDateRef(newRefDate)
+    const filter = getWeekFilter(newRefDate);
+    setFilterDate(filter);
+  }
+  const onNextWeek = () => {
+    const newRefDate = dateRef.addDays(7)
+    setDateRef(newRefDate)
+    const filter = getWeekFilter(newRefDate);
+    setFilterDate(filter);
+  }
+  const onMonthChanged = () => {
+    setDateRef(new Date())
+    const filter = getMonthFilter(new Date());
+    setFilterDate(filter);
+
+  }
+  const onPrevMonth = () => {
+    const newRefDate = dateRef.addDays(-30)
+    setDateRef(newRefDate)
+    const filter = getMonthFilter(newRefDate);
+    setFilterDate(filter);
+  }
+  const onNextMonth = () => {
+    const newRefDate = dateRef.addDays(30)
+    setDateRef(newRefDate)
+    const filter = getMonthFilter(newRefDate);
+    setFilterDate(filter);
+  }
+  function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
+    event?.defaultPrevented
+    console.log("AccountExpenseTab/onAction", event?.target, action, item)
+    switch (action) {
+      case EAction.ADD:
+        setOpenFlightAdd(true);
+
+        break;
+    }
+  }
+  const onDateChanged = (key: string, value: Date | null) => {
+    console.log("AccountOrdersTab/onDateChanged", key, value)
+    const newFilter = SetProperty(filterDate, key, value);
+    setFilterDate(newFilter)
+    refetch()
+  }
   return (
     <>
       <div className='header'><Typography variant="h6" align="center">Flight Page</Typography></div>
@@ -303,21 +334,106 @@ const FlightPage = () => {
         {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
         <Box sx={{ width: '100%', height: '100%' }}>
           <Paper sx={{ width: '100%', mb: 1 }}>
-            <FilterButtons filterDate={filterDate} setFilterDate={setFilterDate} isByDateRange={isByDateRange} OnFilterOwner={handleFilterOwner} isFilterOwner={isFilterOwner}
-              handleFilterClick={handleFilterClick} />
+
             <Box display={'flex'} justifyContent={"space-between"}>
+            <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+                <FilterListIcon fontSize="inherit" />
+              </IconButton>
+              <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
+                <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <ListItem key={"fromDate"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <DateRangeIcon />
+                      </ListItemIcon>
+                      <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="from" lable='From Date' onChange={onDateChanged} />
+
+                    </ListItemButton>
+
+                  </ListItem>
+                  <ListItem key={"toDate"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <DateRangeIcon />
+                      </ListItemIcon>
+                      <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"to"} lable='To Date' onChange={onDateChanged} />
+
+                    </ListItemButton>
+
+                  </ListItem>
+                  <ListItem key={'today'} disablePadding>
+                    <ListItemButton onClick={onTodayChanged}>
+                      <ListItemIcon>
+                        <TodayIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+                    <ListItemButton onClick={onPrevDay}>
+                      <ListItemIcon>
+                        <NavigateBeforeIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+                    <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Day</ListItemButton>
+                    <ListItemButton>
+                      <ListItemIcon onClick={onNextDay}>
+                        <NavigateNextIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+
+                  </ListItem>
+                  <ListItem key={'week'} disablePadding>
+                    <ListItemButton onClick={onWeekChanged}>
+                      <ListItemIcon>
+                        <CalendarViewWeekIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+                    <ListItemButton onClick={onPrevWeek}>
+                      <ListItemIcon>
+                        <NavigateBeforeIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+                    <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
+                    <ListItemButton>
+                      <ListItemIcon onClick={onNextWeek}>
+                        <NavigateNextIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+
+                  </ListItem>
+                  <ListItem key={'month'} disablePadding>
+                    <ListItemButton onClick={onMonthChanged}>
+                      <ListItemIcon>
+                        <CalendarMonthIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+                    <ListItemButton onClick={onPrevMonth}>
+                      <ListItemIcon>
+                        <NavigateBeforeIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+                    <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
+                    <ListItemButton onClick={onNextMonth}>
+                      <ListItemIcon>
+                        <NavigateNextIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+
+                  </ListItem>
+
+                </List>
+
+
+              </GeneralDrawer>
+
               <Tooltip title="Add Flight">
-                <IconButton color={'info'} onClick={handleAddClick}><AddCircleOutlineSharpIcon /></IconButton>
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "flight" }]} />
+
               </Tooltip>
-              <TablePagination
-                rowsPerPageOptions={[1, 5, 10, 25]}
-                component="div"
-                count={flightsData?.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
             </Box>
 
             <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
@@ -390,7 +506,15 @@ const FlightPage = () => {
         </Box>
       </div>
       <footer className='footer' style={{ overflowY: "hidden" }}>
-
+      <TablePagination
+                rowsPerPageOptions={[1, 5, 10, 25]}
+                component="div"
+                count={flightsData?.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
       </footer>
     </>
 

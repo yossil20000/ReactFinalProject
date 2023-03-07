@@ -22,7 +22,6 @@ import { IReservationCreateApi, IReservationDelete, IReservationUpdate } from ".
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
-import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import { IDateFilter, newDateFilter } from "../../Interfaces/IDateFilter.js";
 import { getDayFilter, getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering.js";
 import DatePickerDate from "../../Components/Buttons/DatePickerDate.js";
@@ -37,7 +36,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons.js";
 
-const todayDate = new Date();
+
 const dateFilter: IDateFilter = newDateFilter;
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
@@ -193,14 +192,9 @@ function ReservationsPageOld() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery(filterDate);
   const [rows, setRows] = useState<ItableData[]>([])
-
-  const [isByDateRange, setIsByDateRange] = useState(false);
   const [DeleteReservation] = useDeleteReservationMutation();
-
   const [isReservationUpdate, setIsReservationUpdate] = useState(false);
-
   const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
-  console.log("ReservationsPage", reservations?.data)
 
   function SetReservationUpdate(id_reservation: string) {
     const reservation = rows.filter(item => item._id_reservaion === id_reservation)
@@ -240,49 +234,12 @@ function ReservationsPageOld() {
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
-  const [filterBydate, setFilterByDate] = useState(0);
 
-
-  const handleFilterClick = (selectedIndex: number) => {
-    console.log("handleFilterClick", selectedIndex);
-    let filter: IDateFilter | null = { ...filterDate };
-    switch (selectedIndex) {
-      case 0:
-        filter = getTodayFilter();
-        break;
-      case 1:
-        filter = getWeekFilter(todayDate);
-        break;
-      case 2:
-        filter = getMonthFilter(todayDate);
-        break;
-
-    }
-    if (selectedIndex == 3)
-      setIsByDateRange(true);
-    else
-      setIsByDateRange(false);
-    if (filter) {
-      /* setFromDateFilter(filterDate.from);
-      setToDateFilter(filterDate.to); */
-      setFilterDate(filter as IReservationFilterDate)
-    }
-    console.log("handleFilterClick", selectedIndex, isByDateRange);
-
-  }
-  const handleFilterOwner = () => {
-    setIsFilterOwner(!isFilterOwner);
-  }
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ItableData) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   }
-
-
-
-
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -292,15 +249,8 @@ function ReservationsPageOld() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
-
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const [expanded, setExpanded] = React.useState<string | false>('panel0');
 
@@ -434,7 +384,6 @@ function ReservationsPageOld() {
               <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
                 <FilterListIcon fontSize="inherit" />
               </IconButton>
-
               <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
                 <List sx={{ display: 'flex', flexDirection: 'column' }}>
                   <ListItem key={"fromDate"} disablePadding>
@@ -460,7 +409,7 @@ function ReservationsPageOld() {
                   <ListItem key={'today'} disablePadding>
                     <ListItemButton onClick={onTodayChanged}>
                       <ListItemIcon>
-                        <CalendarViewWeekIcon />
+                        <TodayIcon />
                       </ListItemIcon>
                     </ListItemButton>
                     <ListItemButton onClick={onPrevDay}>
@@ -529,7 +478,6 @@ function ReservationsPageOld() {
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
 
               </Tooltip>
-
             </Box>
             <TableContainer>
               <Table stickyHeader={true}
