@@ -61,8 +61,8 @@ export function PagesRouter() {
           <Route path="/account" element={<AccountPage></AccountPage>}/>
         </Route>
         <Route element={<RequireAuth roles={[Role.user, Role.desk, Role.admin, Role.account]} />}>
-        <Route path="/reservationsOld" element={<ReservationsPageOld></ReservationsPageOld>} />
-          <Route path="/reservations" element={<ReservationsPage></ReservationsPage>} />
+        <Route path="/reservationsOld" element={<ReservationsPage></ReservationsPage>} />
+          <Route path="/reservations" element={<ReservationsPageOld></ReservationsPageOld>} />
           <Route path='gallery' element={<GalleryPage></GalleryPage>}/>
           <Route path="/logout" element={<LogoutPage></LogoutPage>} />
 
