@@ -16,7 +16,7 @@ export interface IActionDispaly {
 export interface IActionButtonsProps {
   show: EAction[],
   OnAction: (action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) => void,
-  item: string,
+  item: string | any,
   display?: IActionDispaly[]
 }
 

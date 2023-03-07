@@ -1,5 +1,5 @@
 
-import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { useState } from 'react';
 import { ITransactionTableFilter } from '../../Components/TransactionTable';
 
@@ -19,7 +19,15 @@ import { SetProperty } from "../../Utils/setProperty.js";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CreateReservationDialog from './CreateReservationDialog';
 import { IReservationCreateApi } from '../../Interfaces/API/IReservation';
+import TodayIcon from '@mui/icons-material/Today';
+import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import { getMonthFilter, getTodayFilter, getWeekFilter } from '../../Utils/filtering';
+
 const dateFilter: IDateFilter = newDateFilter;
+
 
 function ReservationPage() {
   const [openFilter, setOpenFilter] = useState(false)
@@ -27,6 +35,7 @@ function ReservationPage() {
   const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dateFilter.from) */
   const [dateTo, setDateTo] = useState(dateFilter.to)
   const [dateFrom, setDateFrom] = useState(dateFilter.from)
+  const [dateRef,setDateRef] = useState(new Date())
   const [filter, setFilter] = useState<ITransactionTableFilter>({ dateFilter: dateFilter } as ITransactionTableFilter);
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
 
@@ -66,10 +75,51 @@ function ReservationPage() {
   }
   const onDateChanged = (key: string, value: Date | null) => {
     console.log("AccountOrdersTab/onDateChanged", key, value)
-    if(value === null) return;
+    if (value === null) return;
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
     console.log("AccountOrdersTab/onDateChanged/newFilter", newFilter)
+  }
+  const onTodayChanged = () =>{
+    const todayFilter = getTodayFilter();
+    setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
+    
+  }
+  const onWeekChanged = () =>{
+    setDateRef(new Date())
+    const todayFilter = getWeekFilter(new Date());
+    setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
+    
+  }
+  const onPrevWeek = () =>{
+    const newRefDate = dateRef.addDays(-7)
+    setDateRef(newRefDate)
+    const todayFilter = getWeekFilter(newRefDate);
+    setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
+  }
+  const onNextWeek = () =>{
+    const newRefDate = dateRef.addDays(7)
+    setDateRef(newRefDate)
+    const todayFilter = getWeekFilter(newRefDate);
+    setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
+  }
+  const onMonthChanged = () =>{
+    setDateRef(new Date())
+    const todayFilter = getMonthFilter(new Date());
+    setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
+    
+  }
+  const onPrevMonth = () =>{
+    const newRefDate = dateRef.addDays(-30)
+    setDateRef(newRefDate)
+    const todayFilter = getMonthFilter(newRefDate);
+    setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
+  }
+  const onNextMonth = () =>{
+    const newRefDate = dateRef.addDays(30)
+    setDateRef(newRefDate)
+    const todayFilter = getMonthFilter(newRefDate);
+    setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
   }
   let reservationAddIntitial: IReservationCreateApi = {
     date_from: new Date(),
@@ -101,7 +151,7 @@ function ReservationPage() {
             </ContainerPageHeader>
             <ContainerPageMain>
               <>
-              {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
+                {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
                 <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
                   <List sx={{ display: 'flex', flexDirection: 'column' }}>
                     <ListItem key={"fromDate"} disablePadding>
@@ -123,6 +173,56 @@ function ReservationPage() {
 
                       </ListItemButton>
 
+                    </ListItem>
+                    <ListItem key={'today'} disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <TodayIcon />
+                        </ListItemIcon>
+                        <Button onClick={onTodayChanged}>Today</Button>
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={'week'} disablePadding>
+                      <ListItemButton onClick={onWeekChanged}>
+                        <ListItemIcon>
+                          <CalendarViewWeekIcon />
+                        </ListItemIcon>
+                      </ListItemButton>
+                      <ListItemButton onClick={onPrevWeek}>
+                        <ListItemIcon>
+                          <NavigateBeforeIcon />
+                        </ListItemIcon>
+                        </ListItemButton>
+
+                       <ListItemButton onClick={onWeekChanged} sx={{textAlign:'center'}}>Week</ListItemButton>
+                       <ListItemButton>
+                       <ListItemIcon onClick={onNextWeek}>
+                          <NavigateNextIcon />
+                        </ListItemIcon>
+                       </ListItemButton>
+
+                      
+                    </ListItem>
+                    <ListItem key={'month'} disablePadding>
+                      <ListItemButton onClick={onMonthChanged}>
+                        <ListItemIcon>
+                          <CalendarMonthIcon />
+                        </ListItemIcon>
+                      </ListItemButton>
+                      <ListItemButton onClick={onPrevMonth}>
+                        <ListItemIcon>
+                          <NavigateBeforeIcon />
+                        </ListItemIcon>
+                        </ListItemButton>
+
+                       <ListItemButton onClick={onMonthChanged} sx={{textAlign:'center'}}>Month</ListItemButton>
+                       <ListItemButton onClick={onNextMonth}>
+                       <ListItemIcon>
+                          <NavigateNextIcon />
+                        </ListItemIcon>
+                       </ListItemButton>
+
+                      
                     </ListItem>
 
                   </List>

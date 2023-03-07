@@ -56,10 +56,18 @@ export class ReservationUpdate implements IReservationUpdate {
         return false;
     }
     copy(i : IReservationUpdate) :void {
-        this.date_from = i.date_from;
-        this.date_to = i.date_to;
+        this._id = i._id;
+        this.date_from = new Date(i.date_from);
+        this.date_to = new Date(i.date_to);
         this.member_name = i.member_name;
         this.device_name = i.device_name;
+    }
+    copyReservation(i : IReservation) :void {
+        this._id = i._id;
+        this.date_from = new Date(i.date_from);
+        this.date_to = new Date(i.date_to);
+        this.member_name = i.member.family_name;
+        this.device_name = i.device.device_id;
     }
 }
 

@@ -2,15 +2,23 @@ import "../Types/date.extensions"
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from 'react';
 import { IDateFilter } from '../Interfaces/IDateFilter';
-import IReservation from "../Interfaces/API/IReservation";
+import IReservation, { IReservationUpdate, ReservationUpdate } from "../Interfaces/API/IReservation";
 import { useFetchAllReservationsQuery } from "../features/Reservations/reservationsApiSlice";
-import { IReservationFilterDate } from "../Interfaces/API/IFlightReservation";
 import { useAppSelector } from "../app/hooks";
 import { ILoginResult } from "../Interfaces/API/ILogin";
 import GeneralCanDo, { CanDo } from "../Utils/owner";
 import { Box } from "@mui/material";
 import ActionButtons, { EAction } from "./Buttons/ActionButtons";
-import ReservationAction from "../Pages/Reservations/ReservationAction";
+import UpdateReservationDialog from "../Pages/Reservations/UpdateReservationDialog";
+
+let reservationUpdateIntitial: IReservationUpdate = {
+  date_from: new Date(),
+  date_to: new Date(),
+  _id: "",
+  device_name: "",
+  member_name: ""
+
+}
 
 
 export interface IReservationTableFilter {
@@ -27,12 +35,13 @@ export interface IReservationTable extends IReservation {
 
 export default function ReservationTable({ hideAction = false, filter = {} as IReservationTableFilter }: IReservationTableProps) {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
-
+  const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
   const { data: dataReservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery(filter.dateFilter);
-  
+  const [openUpdate,setOpenUpdate] = useState(false)
+  const [openDelete,setOpenDelete] = useState(false)
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
-  const [reservations, setReservations] = useState<IReservation[]>([]);
+  const [reservations, setReservations] = useState<IReservation[]>();
 useEffect(()=>{
   console.log("ReservationTable/filter", filter)
 },[filter])
@@ -41,27 +50,27 @@ useEffect(() => {
   console.log("ReservationTable/useEffect", dataReservations)
   if(dataReservations?.data)
    setReservations(dataReservations.data)
-},[dataReservations])
+},[isLoading])
 
-  const transactionRows = useMemo(() => {
+  const transactionRows = () => {
 
     const rows = reservations?.map((row: IReservation) => ({
       id: row._id,
       device: row.device.device_id,
-      date_from: new Date(row.date_from).toLocaleDateString(),
-      date_to: new Date(row.date_to).toLocaleDateString(),
+      date_from: new Date(row.date_from).toLocaleString(),
+      date_to: new Date(row.date_to).toLocaleString(),
       name: row.member.family_name,
       member_id: row.member.member_id,
       validOperation : GeneralCanDo(row.member._id, login.member._id, login.member.roles)
     }))
     if (rows !== undefined) {
-      console.log("ReservationTable/orders", rows, reservations);
+      console.log("ReservationTable/rows", rows, reservations);
       return rows
     }
     return []
 
 
-  }, [reservations])
+  }
   const getCanDoAction = (canDo : CanDo) : EAction[] => {
     console.log("ReservationTable/getCanDoAction",canDo)
     let actions : EAction[] = []
@@ -97,35 +106,47 @@ useEffect(() => {
 
     },
 
-  ], [rowId, hideAction]);
+  ], [rowId, hideAction,reservations]);
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
     console.log("ReservationTable/onAction", event?.target, action, item)
     switch (action) {
-      case EAction.ADD:
 
-        
-        break;
       case EAction.EDIT:
         if (item !== undefined) {
-          
-        }
-        break;
-      case EAction.PAY:
-        if (item !== undefined) {
-          
+          getReservationUpdate(item)
+          setOpenUpdate(true);
         }
         break;
       case EAction.DELETE:
         if(item !== undefined){
-          
+          setOpenDelete(true);
         }
     }
   }
+  const handleOnClose = () => {
+    setOpenDelete(false);
+    setOpenUpdate(false);
+  }
+ const getReservationUpdate = (item: string) : any => {
+  const reservation = reservations?.find((i) => i._id == item) 
+  if(reservation !== undefined)
+  {
+    const updateReservation = new ReservationUpdate();
+    updateReservation.copyReservation(reservation);
+    setReservationUpdate(updateReservation as IReservationUpdate)
+    return updateReservation as unknown as IReservationUpdate
+  }
+  
+
+  
+  return new ReservationUpdate() as IReservationUpdate
+ }
   return (
     <div style={{ height: "100%", width: '100%' }}>
+      {openUpdate && <UpdateReservationDialog onClose={handleOnClose} value={reservationUpdate} open={openUpdate} onSave={handleOnClose} />}
       <DataGrid
-        rows={transactionRows}
+        rows={transactionRows()}
         columns={columns}
         pageSize={pageSize}
         rowsPerPageOptions={[5, 10, 15, 20]}

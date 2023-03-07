@@ -16,7 +16,7 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
     const keys = Object.keys(error)
     console.log("getValidationFromError/errorKeys/", keys)
     console.log("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data'))
-    console.log("getValidationFromError/object.hasOwnProperty/", error.data.hasOwnProperty('errors'))
+    console.log("getValidationFromError/object.hasOwnProperty/", error.data?.hasOwnProperty('errors'))
     console.log("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data.success'))
     if ((error as any).data?.errorType !== "VALIDATION" && (error as any).data?.errorType !== undefined) {
       console.log("getValidationFromError/1", (error as any).data?.errorType)

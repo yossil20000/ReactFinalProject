@@ -4,9 +4,10 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import TransitionAlert, { ITransitionAlrertProps } from "../../Components/Buttons/TransitionAlert";
+import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import { useUpdateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
 import { IReservationUpdate, ReservationUpdate } from "../../Interfaces/API/IReservation";
+import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 
 export interface UpdateReservationDialogProps {
   value: IReservationUpdate;
@@ -34,14 +35,16 @@ let transitionAlertInitial : ITransitionAlrertProps ={
 function UpdateReservationDialog({value,onClose,onSave,open,...other}: UpdateReservationDialogProps) {
   
   console.log("UpdateReserationDialog/value", value)
-  
+  const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [updateReservation,{isError,isLoading,error,isSuccess}] = useUpdateReservationMutation();
   const [reservationUpdate,setReservationUpdate] = useState<IReservationUpdate>(value);
   const [dateErrorAlert,setdateErrorAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const onCloseDateError = () => {
     setdateErrorAlert((prev) => ({...prev,open:false}))
   }
-
+const handleCloseValidarion = () => {
+  setValidationAlert([])
+}
   useEffect(() => {
     console.log("UpdateReservationDialog/useEffect",isError,isSuccess,isLoading )
     if(isSuccess){
@@ -50,13 +53,15 @@ function UpdateReservationDialog({value,onClose,onSave,open,...other}: UpdateRes
       
     }
     if(isError){
-      if(Array.isArray((error as any).data.error)){
-        (error as any).data.error.forEach((element : any) => {
+      if(Array.isArray((error as any).data.errors)){
+        (error as any).data.errors.forEach((element : any) => {
           console.log("Error", element);
         });
+        const validation = getValidationFromError((error as any).data.errors,handleCloseValidarion);
+      setValidationAlert(validation);
       }
       else{
-        console.log("Error/single",(error as any).data.error.message )
+        console.log("Error/single",(error as any).data.errors.message )
       }
     }
   },[isLoading])
@@ -70,7 +75,6 @@ function UpdateReservationDialog({value,onClose,onSave,open,...other}: UpdateRes
     setReservationUpdate(prev => ({ ...prev, date_to: newDate }))
   };
   const handleOnCancel = () => {
-
     onClose()
   }
   const handleOnSave = async () => {
@@ -84,9 +88,16 @@ function UpdateReservationDialog({value,onClose,onSave,open,...other}: UpdateRes
       return;
     }
     
-    console.log("UpdateReserationDialog/onSave/date_from", reservationUpdate.date_from?.toUTCString())
     
-    await updateReservation(reservationUpdate);
+    try {
+      const result = await updateReservation(reservationUpdate);
+      console.log("UpdateReserationDialog/onSave/result", result ,reservationUpdate)
+
+    }
+    catch(error){
+      console.log("UpdateReserationDialog/onSave/error",error)
+    }
+    
     //onSave(reservationUpdate);
 
   }
@@ -167,6 +178,13 @@ function UpdateReservationDialog({value,onClose,onSave,open,...other}: UpdateRes
 
       </Item>
     </Grid>
+    {validationAlert.map((item) => (
+            <Grid item xs={12}>
+              <Item>
+                <ValidationAlert {...item} />
+              </Item>
+            </Grid>
+          ))}
     <Grid item xs={12} md={6} xl={6}>
       <Item><Button variant="outlined" sx={{ width: "100%" }}
         onClick={handleOnCancel}>
