@@ -4,14 +4,23 @@ import { IDateFilter } from "../Interfaces/IDateFilter";
 export function getTodayFilter(): IDateFilter {
 
   let filter: IDateFilter = {
-    from: new Date(),
-    to: (new Date()).addDays(1),
+    from: new Date().getStartDayDate(),
+    to: (new Date()).getEndDayDate(),
     currentOffset: 0
   };
   console.log("getTodayFilter", filter)
   return filter;
 }
+export function getDayFilter(today: Date): IDateFilter {
 
+  let filter: IDateFilter = {
+    from: today.getStartDayDate(),
+    to: today.getEndDayDate(),
+    currentOffset: 0
+  };
+  console.log("getTodayFilter", filter)
+  return filter;
+}
 export function getWeekFilter(today: Date): IDateFilter {
   let filter: IDateFilter = {
     from: today.getFirstDateOfWeek(),
