@@ -2,8 +2,8 @@
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 import "../../Types/date.extensions.js"
 
-import { Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import { Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react'
 import { visuallyHidden } from '@mui/utils';
 import MediaQuery from "react-responsive";
 import { styled } from '@mui/material/styles';
@@ -18,7 +18,7 @@ import { useAppSelector } from '../../app/hooks';
 
 
 import { ILoginResult } from "../../Interfaces/API/ILogin.js";
-import { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
+import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
@@ -35,6 +35,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons.js";
+import TableViewIcon from '@mui/icons-material/TableView';
+import CalnanderViewDay from "../../Components/Calander/CalnanderViewDay.js";
 
 
 const dateFilter: IDateFilter = newDateFilter;
@@ -183,8 +185,14 @@ const reservationFilter: IReservationFilterDate = {
   to: (new Date()).addDays(30),
   currentOffset: (new Date()).getTimezoneOffset()
 }
+enum EviewMode {
+  E_VM_DAY,
+  E_VM_NORMAL
+}
 
 function ReservationsPageOld() {
+  const theme = useTheme();
+  const [viewMode, setViewMode] = useState<EviewMode>(EviewMode.E_VM_NORMAL);
   const [dateRef, setDateRef] = useState(new Date())
   const [openFilter, setOpenFilter] = useState(false)
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>(dateFilter as IReservationFilterDate);
@@ -301,7 +309,7 @@ function ReservationsPageOld() {
 
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("AccountExpenseTab/onAction", event?.target, action, item)
+    console.log("ReservationPage/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         setOpenReservationAdd(true);
@@ -310,7 +318,7 @@ function ReservationsPageOld() {
     }
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    console.log("AccountOrdersTab/onDateChanged", key, value)
+    console.log("ReservationPage/onDateChanged", key, value)
     const newFilter = SetProperty(filterDate, key, value);
     setFilterDate(newFilter)
     refetch()
@@ -369,226 +377,248 @@ function ReservationsPageOld() {
     const filter = getMonthFilter(newRefDate);
     setFilterDate(filter);
   }
+  const handleViewMode = (
+    event: React.MouseEvent<HTMLElement>,
+    newView: EviewMode | null,
+  ) => {
+    if(newView !== null)
+    setViewMode(newView);
+  };
+
+  const getViewDayReservations  = (): IReservation[] => {
+    console.log("ReservationPage/getViewDayReservations/dateRef",dateRef)
+     const viewDayReservation = reservations?.data.filter((element)=> new Date(element.date_from).isSameDate(dateRef))
+     if(viewDayReservation !== undefined)
+      return viewDayReservation;
+     return []
+  }
   return (
     <>
 
-      <div className='header'><Typography variant="h6" align="center">{`Reservations ${filterDate.from.toLocaleDateString()} : ${filterDate.to.toLocaleDateString()}`}</Typography></div>
-      <div className='main' style={{ overflow: 'auto' }}>
-        {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
-        {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
-        <Box sx={{ width: '100%', height: '100%' }}>
-          <Paper sx={{ width: '100%', mb: 1 }}>
-
-
-            <Box display={'flex'} justifyContent={"space-between"}>
-              <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
-                <FilterListIcon fontSize="inherit" />
-              </IconButton>
-              <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
-                <List sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <ListItem key={"fromDate"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <DateRangeIcon />
-                      </ListItemIcon>
-                      <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="dateFilter.from" lable='From Date' onChange={onDateChanged} />
-
-                    </ListItemButton>
-
-                  </ListItem>
-                  <ListItem key={"toDate"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <DateRangeIcon />
-                      </ListItemIcon>
-                      <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"dateFilter.to"} lable='To Date' onChange={onDateChanged} />
-
-                    </ListItemButton>
-
-                  </ListItem>
-                  <ListItem key={'today'} disablePadding>
-                    <ListItemButton onClick={onTodayChanged}>
-                      <ListItemIcon>
-                        <TodayIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevDay}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-                    <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Day</ListItemButton>
-                    <ListItemButton>
-                      <ListItemIcon onClick={onNextDay}>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-
-                  </ListItem>
-                  <ListItem key={'week'} disablePadding>
-                    <ListItemButton onClick={onWeekChanged}>
-                      <ListItemIcon>
-                        <CalendarViewWeekIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevWeek}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-                    <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
-                    <ListItemButton>
-                      <ListItemIcon onClick={onNextWeek}>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-
-                  </ListItem>
-                  <ListItem key={'month'} disablePadding>
-                    <ListItemButton onClick={onMonthChanged}>
-                      <ListItemIcon>
-                        <CalendarMonthIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevMonth}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-                    <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
-                    <ListItemButton onClick={onNextMonth}>
-                      <ListItemIcon>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-
-                  </ListItem>
-
-                </List>
-
-
-              </GeneralDrawer>
-              <Tooltip title="Add Flight">
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
-
-              </Tooltip>
+      <div className='header'>
+        <Box sx={{ width: '100%' }}>
+          {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
+          {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
+          <Typography variant="h6" align="center">{`Reservations ${filterDate.from.toLocaleDateString()} : ${filterDate.to.toLocaleDateString()}`}</Typography>
+          <Box display={'flex'} justifyContent={"space-between"}>
+          <Box display={'flex'} justifyContent={"space-between"}>
+            <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+              <FilterListIcon fontSize="inherit" />
+            </IconButton>
+            <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
+            <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view"> <TodayIcon /></ToggleButton>
+            <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view"> <TableViewIcon /></ToggleButton>
+            </ToggleButtonGroup>
             </Box>
-            <TableContainer>
-              <Table stickyHeader={true}
-                sx={{ minWidth: 750 }}
-                aria-labelledby="tableTitle"
-                size={dense ? 'small' : 'medium'}
-              >
-                <EnhancedTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
+            <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
+              <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                <ListItem key={"fromDate"} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <DateRangeIcon />
+                    </ListItemIcon>
+                    <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="dateFilter.from" lable='From Date' onChange={onDateChanged} />
 
-                />
-                <MediaQuery minWidth={768}>
-                  <TableBody sx={{ "& tr:nth-of-type(2n+1)": { backgroundColor: "gray", color: "white", "& .MuiTableCell-root": { color: "white" } }, "color": "red" }}>
-                    {
+                  </ListItemButton>
 
-                      rows.filter((r) => {
-                        /* if (!isInDateRange(r)) return false; */
-                        if (!isFilterOwner) return true
-                        if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
-                        return false;
-                      }).sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row: ItableData) => {
-                          return (
-                            <TableRow hover role="checkbox" tabIndex={-1} key={row._id_reservaion}>
-                              <TableCell align="left">{row.device_name}</TableCell>
-                              <TableCell align="left">{new Date(row.date_from).toLocaleString()}</TableCell>
-                              <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
-                              <TableCell align="left">{row.name}</TableCell>
-                              <TableCell align="left">{row.member_id}</TableCell>
-                              <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}</TableCell>
-                              <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
-                            </TableRow>
-                          );
-                        })}
-                  </TableBody>
-                </MediaQuery>
+                </ListItem>
+                <ListItem key={"toDate"} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <DateRangeIcon />
+                    </ListItemIcon>
+                    <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"dateFilter.to"} lable='To Date' onChange={onDateChanged} />
 
-              </Table>
-            </TableContainer>
-            <MediaQuery maxWidth={767}>
-              {
-                rows.filter((r) => {
+                  </ListItemButton>
 
-                  /* if (!isInDateRange(r)) return false; */
-                  if (!isFilterOwner) return true
-                  if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
-                  return false;
-                })
-                  .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row: ItableData, index: number) => {
-                    return (
-                      <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
-                        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                          <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Grid container spacing={1}>
-                            <Grid item xs={3} >
-                              <Typography>
-                                {row.name}
-                              </Typography>
-                            </Grid>
-                            <Grid item sm={3} >
-                              <Typography>
-                                Id:
-                              </Typography>
-                              <Typography>
-                                {row.member_id}
-                              </Typography>
-                            </Grid>
-                            <Grid item sm={3} >
-                              <Typography>
-                                {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
+                </ListItem>
+                <ListItem key={'today'} disablePadding>
+                  <ListItemButton onClick={onTodayChanged}>
+                    <ListItemIcon>
+                      <TodayIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
+                  <ListItemButton onClick={onPrevDay}>
+                    <ListItemIcon>
+                      <NavigateBeforeIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
 
-                              </Typography>
-                              <Typography>
-                                {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}
-                              </Typography>
+                  <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Day</ListItemButton>
+                  <ListItemButton>
+                    <ListItemIcon onClick={onNextDay}>
+                      <NavigateNextIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
 
-                            </Grid>
-                          </Grid>
-                        </AccordionDetails>
-                      </Accordion>
-                    );
-                  })
-              }
-            </MediaQuery>
-          </Paper>
-          {/*         <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Dense padding"
-        /> */}
+
+                </ListItem>
+                <ListItem key={'week'} disablePadding>
+                  <ListItemButton onClick={onWeekChanged}>
+                    <ListItemIcon>
+                      <CalendarViewWeekIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
+                  <ListItemButton onClick={onPrevWeek}>
+                    <ListItemIcon>
+                      <NavigateBeforeIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
+
+                  <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
+                  <ListItemButton>
+                    <ListItemIcon onClick={onNextWeek}>
+                      <NavigateNextIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
+
+
+                </ListItem>
+                <ListItem key={'month'} disablePadding>
+                  <ListItemButton onClick={onMonthChanged}>
+                    <ListItemIcon>
+                      <CalendarMonthIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
+                  <ListItemButton onClick={onPrevMonth}>
+                    <ListItemIcon>
+                      <NavigateBeforeIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
+
+                  <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
+                  <ListItemButton onClick={onNextMonth}>
+                    <ListItemIcon>
+                      <NavigateNextIcon />
+                    </ListItemIcon>
+                  </ListItemButton>
+
+
+                </ListItem>
+
+              </List>
+
+
+            </GeneralDrawer>
+            <Tooltip title="Add Flight">
+              <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
+
+            </Tooltip>
+          </Box>
+
         </Box>
+      </div>
+      <div className='main' style={{ overflow: 'auto', height: "100%" }}>
 
+        <Box sx={{ width: '100%', height: '100%' }}>
+          <Paper sx={{ height: "100%" ,width: '100%', mb: 1 }}>
+            {viewMode === EviewMode.E_VM_NORMAL ? (
+              <>
+                <TableContainer>
+                  <Table stickyHeader={true}
+                    sx={{ minWidth: 750 }}
+                    aria-labelledby="tableTitle"
+                    size={dense ? 'small' : 'medium'}
+                  >
+                    <EnhancedTableHead
+                      order={order}
+                      orderBy={orderBy}
+                      onRequestSort={handleRequestSort}
 
+                    />
+                    <MediaQuery minWidth={768}>
+                      <TableBody sx={{ "& tr:nth-of-type(2n+1)": { backgroundColor: theme.palette.grey[300], color: "white", "& .MuiTableCell-root": { color: "black" } }, "color": "red" }}>
+                        {
 
+                          rows.filter((r) => {
+                            /* if (!isInDateRange(r)) return false; */
+                            if (!isFilterOwner) return true
+                            if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                            return false;
+                          }).sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row: ItableData) => {
+                              return (
+                                <TableRow hover role="checkbox" tabIndex={-1} key={row._id_reservaion}>
+                                  <TableCell align="left">{row.device_name}</TableCell>
+                                  <TableCell align="left">{new Date(row.date_from).toLocaleString()}</TableCell>
+                                  <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
+                                  <TableCell align="left">{row.name}</TableCell>
+                                  <TableCell align="left">{row.member_id}</TableCell>
+                                  <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}</TableCell>
+                                  <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
+                                </TableRow>
+                              );
+                            })}
+                      </TableBody>
+                    </MediaQuery>
 
-      
+                  </Table>
+                </TableContainer>
+                <MediaQuery maxWidth={767}>
+                  {
+                    rows.filter((r) => {
+
+                      /* if (!isInDateRange(r)) return false; */
+                      if (!isFilterOwner) return true
+                      if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
+                      return false;
+                    })
+                      .sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row: ItableData, index: number) => {
+                        return (
+                          <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
+                            <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                              <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Grid container spacing={1}>
+                                <Grid item xs={3} >
+                                  <Typography>
+                                    {row.name}
+                                  </Typography>
+                                </Grid>
+                                <Grid item sm={3} >
+                                  <Typography>
+                                    Id:
+                                  </Typography>
+                                  <Typography>
+                                    {row.member_id}
+                                  </Typography>
+                                </Grid>
+                                <Grid item sm={3} >
+                                  <Typography>
+                                    {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
+
+                                  </Typography>
+                                  <Typography>
+                                    {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}
+                                  </Typography>
+
+                                </Grid>
+                              </Grid>
+                            </AccordionDetails>
+                          </Accordion>
+                        );
+                      })
+                  }
+                </MediaQuery>
+              </>)
+              : (
+                <CalnanderViewDay title={`Reservation ${dateRef.toLocaleDateString()}`} reservations={getViewDayReservations()}/>
+              )}
+          </Paper>
+        </Box>
       </div>
       <div className='footer' style={{ overflow: 'auto' }}>
-      <TablePagination
-                rowsPerPageOptions={[1, 5, 10, 25]}
-                component="div"
-                count={rows ? rows.length : 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+        <TablePagination
+          rowsPerPageOptions={[1, 5, 10, 25]}
+          component="div"
+          count={rows ? rows.length : 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
     </>
   )

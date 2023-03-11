@@ -1,3 +1,4 @@
+
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from '../Components/Layout'
 import RequireAuth from '../Components/RequireAuth'
@@ -18,7 +19,7 @@ import ReservationsPageOld from '../Pages/Reservations/ReservationsPageOld'
 import RegistrationPage from '../Pages/Resistration/RegistrationPage'
 import NotificationPage from '../Pages/UserAccount/Notification'
 import MyAccount from '../Pages/UserAccount/UserAccount'
-
+import CalnanderViewDay from '../Components/Calander/CalnanderViewDay'
 
 
 
@@ -48,7 +49,7 @@ export function PagesRouter() {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
-        
+      <Route path="/calander" element={<CalnanderViewDay title='Yossi'/>} />
         <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
           <Route path="/home" element={<HomePage></HomePage>} />
         </Route>

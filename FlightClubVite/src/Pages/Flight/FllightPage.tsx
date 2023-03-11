@@ -31,7 +31,7 @@ const dateFilter: IDateFilter = newDateFilter;
 const StyledAccordion = styled(Box)(({ theme }) => ({
   color: theme?.palette.primary.main,
   "& .MuiAccordionSummary-content:nth-of-type(2n+1)":
-    { backgroundColor: "gray", color: "white" }
+    { backgroundColor: theme.palette.grey[300], color: "black" }
 }
 ))
 
@@ -82,7 +82,6 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 }
 
 
-const todayDate = new Date();
 let flightUpdateIntitial: IFlightUpdate = {
   date: new Date(),
   _id: "",
@@ -328,7 +327,7 @@ const FlightPage = () => {
   }
   return (
     <>
-      <div className='header'><Typography variant="h6" align="center">Flight Page</Typography></div>
+      <div className='header'><Typography variant="h6" align="center">{`Flights ${dateFilter.from.toLocaleDateString()} - ${dateFilter.to.toLocaleDateString()}`}</Typography></div>
       <div className='main' style={{ overflow: "auto" }} >
         {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
         {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}

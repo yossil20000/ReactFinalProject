@@ -96,14 +96,14 @@ function AccountTransactionsTab() {
             <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
             
             </FilterDrawer>
-            <ReservationTable/>
+            
             <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter} />
           </>
 
         </ContainerPageMain>
         <ContainerPageFooter>
           <>
-            footer
+            
           </>
         </ContainerPageFooter>
       </>

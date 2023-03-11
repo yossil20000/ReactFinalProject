@@ -1,4 +1,10 @@
 
+import {
+    createTheme,
+    responsiveFontSizes,
+    ThemeProvider,
+  } from '@mui/material/styles';
+
 import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import './App.css';
@@ -43,6 +49,8 @@ export function LocalStorage() {
     )
 
 }
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 
 function App() {
     const {isError,isLoading,isSuccess,isFetching,error,data} = useFetchAllNoticesQuery();
@@ -62,6 +70,7 @@ function App() {
           },[data])
   
     return (
+        <ThemeProvider theme={theme}>
         <BrowserRouter>
         <NoticeContext.Provider value={{notices:notices ,selectedItem: selectedNotice ?? NewNotice, setSelectedItem:setSelectedNotice}}>
 
@@ -69,6 +78,7 @@ function App() {
             <PagesRouter />
         </NoticeContext.Provider>
         </BrowserRouter>
+        </ThemeProvider>
     )
 
 }

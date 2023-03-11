@@ -22,8 +22,31 @@ declare global {
       getLocalTimeWithOffset(offset: number) : Date;
       getStartDayDate() : Date;
       getEndDayDate() : Date;
+      compareTime(date: Date): number;
+      getHoursDiff(date: Date) : number;
+      getLocal24Hours() : string;
    }
 }
+Date.prototype.getLocal24Hours = function(isLong: boolean = false) : string {
+   if(isLong)
+      return this.toLocaleTimeString("en-US",{hour12: false})
+   
+   return `${(this.getHours().toString().padStart(2,"0"))}:${this.getMinutes().toString().padStart(2,"0")}`
+   
+}
+Date.prototype.getHoursDiff = function (date: Date) : number {
+   return this.getHours() - date.getHours()
+}
+Date.prototype.compareTime = function (date: Date) : number {
+   const deltaH = this.getHours() - date.getHours() 
+   if(deltaH > 0) return 1;
+   else if(deltaH < 0) return -1
+   const deltaM = this.getMinutes() - date.getMinutes();
+   if(deltaM > 0) return 1
+   else if(deltaM < 0) return -1
+   return 0
+
+} 
 Date.prototype.getStartDayDate = function() : Date {
  return new Date(this.getFullYear(),this.getMonth(),this.getDate(),0,0,0);
 }
