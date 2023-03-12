@@ -1,13 +1,13 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, TablePagination } from '@mui/material'
 import React, { useMemo, useState } from 'react'
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons'
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert'
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable'
 import { useFetchExpenseQuery } from '../../features/Account/accountApiSlice'
 import { OrderStatus } from '../../Interfaces/API/IAccount'
-import { IExpense, IExpenseBase } from '../../Interfaces/API/IExpense'
+import { IExpense } from '../../Interfaces/API/IExpense'
 import IMember from '../../Interfaces/API/IMember'
-import { IStatus, Status } from '../../Interfaces/API/IStatus'
+import { Status } from '../../Interfaces/API/IStatus'
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container'
 import CreateExpenseDialog from './CreateExpenseDialog'
 import CreateTransactionDialog from './CreateTransactionDialog'
@@ -22,7 +22,7 @@ interface Data {
   amount: number,
   category: string,
   type: string,
-  utilizated:string,
+  utilizated: string,
   description: string,
   status: OrderStatus,
   source: IMember | string,
@@ -41,7 +41,7 @@ function createData(_id: string, date: Date,
   source: IMember | string,
   destination: IMember | string,
   render?: React.ReactNode): Data {
-  return { _id, date, units, pricePeUnit, amount, category ,type,utilizated, description, status, source, destination, render }
+  return { _id, date, units, pricePeUnit, amount, category, type, utilizated, description, status, source, destination, render }
 }
 
 
@@ -74,14 +74,25 @@ function AccountExpenseTab() {
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseEdit, setOpenExpenseEdit] = useState(false);
   const [openAddTransaction, setOpenAddTransaction] = useState(false);
-  const [openDeleteExpense,setOpenDeleteExpense] = useState(false);
+  const [openDeleteExpense, setOpenDeleteExpense] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<IExpense | undefined>(undefined);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [filterData, setFilterData] = useState({})
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [count,setCount] = useState(0);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
   const getData = useMemo(() => {
     console.log("AccountExpenseTab/getData/expense/data", data);
-    const rows = data?.data.map((row) => {
-      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type,row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
+    let rows = data?.data.map((row) => {
+      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
         <>{row.status == OrderStatus.CREATED ? (<>
           <Box display={'flex'} flexDirection={'column'} gap={1}>
             <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} />
@@ -92,24 +103,12 @@ function AccountExpenseTab() {
         </>)
     });
     console.log("AccountExpenseTab/getData/rows", rows)
-    return rows === undefined ? [] : rows;
+    rows =  rows === undefined ? [] : rows;
+    setCount(rows.length);
+    return rows;
   }, [data])
 
-  const filterAccont = (item: Data): boolean => {
-    let filter: boolean = true;
-    /* if (filterData.account_id != "") {
-      if (filterData.account_id !== item._id) {
-        filter = false;
-        return filter;
-      }
-    }
-    if (filterData.active_only) {
-      filter = item.status === Status.Active
-    } */
-
-    return filter;
-  }
-
+  
   const OnSelectedAccount = (item: string): void => {
     const found = data?.data.find((expense) => expense._id === item);
     console.log("AccountExpenseTab/OnSelectedAccount", found);
@@ -120,7 +119,6 @@ function AccountExpenseTab() {
     console.log("AccountExpenseTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
-
         setOpenExpenseAdd(true)
         break;
       case EAction.EDIT:
@@ -136,7 +134,7 @@ function AccountExpenseTab() {
         }
         break;
       case EAction.DELETE:
-        if(item !== undefined){
+        if (item !== undefined) {
           OnSelectedAccount(item);
           setOpenDeleteExpense(true);
         }
@@ -154,17 +152,15 @@ function AccountExpenseTab() {
     setOpenExpenseEdit(false);
     setOpenAddTransaction(false);
     setOpenDeleteExpense(false);
-    
+
   }
   return (
-    <Box fontSize={{ xs: "1rem", md: "1.2rem" }}>
+    <Box fontSize={{ xs: "1rem", md: "1.2rem" }} height={'100%'}>
       <ContainerPage>
         <>
           <ContainerPageHeader>
-
             <Box marginTop={2}>
               <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
-
               </Grid>
             </Box>
           </ContainerPageHeader>
@@ -174,26 +170,31 @@ function AccountExpenseTab() {
               {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
               {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
               {(openDeleteExpense == true && selectedExpense !== undefined) ? (<DeleteExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openDeleteExpense} />) : (null)}
-              <ColumnGroupingTable rows={getData.filter(filterAccont)} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
+              <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
             </>
-
-
           </ContainerPageMain>
           <ContainerPageFooter>
             <>
-
               <Grid container>
+                <Grid item xs={12}>
+                  <TablePagination
+                    rowsPerPageOptions={[1, 5, 10, 25, 100]}
+                    component="div"
+                    count={count}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </Grid>
                 {validationAlert.map((item) => (
                   <Grid item xs={12}>
-
                     <ValidationAlert {...item} />
-
                   </Grid>
                 ))}
               </Grid></>
           </ContainerPageFooter>
         </>
-
       </ContainerPage>
     </Box>
   )

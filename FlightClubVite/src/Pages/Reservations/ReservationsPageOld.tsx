@@ -402,11 +402,13 @@ function ReservationsPageOld() {
           <Typography variant="h6" align="center">{`Reservations ${filterDate.from.toLocaleDateString()} : ${filterDate.to.toLocaleDateString()}`}</Typography>
           <Box display={'flex'} justifyContent={"space-between"}>
           <Box display={'flex'} justifyContent={"space-between"}>
-            <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+          <Tooltip title="Filtering">
+            <IconButton aria-label="filter" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
               <FilterListIcon fontSize="inherit" />
             </IconButton>
+          </Tooltip>
             <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
-            <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view"> <TodayIcon /></ToggleButton>
+            <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view"> <Tooltip title="Switch to day view"><TodayIcon /></Tooltip></ToggleButton>
             <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view"> <TableViewIcon /></ToggleButton>
             </ToggleButtonGroup>
             </Box>

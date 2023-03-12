@@ -73,15 +73,15 @@ function AccountTransactionsTab() {
         <ContainerPageHeader>
           <Box marginTop={2}>
             <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
-              <Grid item xs={1}>
+              <Grid item xs={2} sm={2}>
                 <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
                   <FilterListIcon fontSize="inherit" />
                 </IconButton>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={10} sm={4}>
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Transaction" }]} />
               </Grid>
-              <Grid item xs={4}  >
+              <Grid item xs={12}  sm={6}>
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
 
               </Grid >

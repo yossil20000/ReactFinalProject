@@ -5,11 +5,9 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import ActionButtons, { IActionButtonsProps } from './Buttons/ActionButtons';
 import { Box } from '@mui/material';
-import { height } from '@mui/system';
 
 export interface GroupHeader {
   id: string,
@@ -30,21 +28,13 @@ export interface IColumnGroupingTableProps<T> {
  columns: Column[],
  header: GroupHeader[],
  rows: T[],
- action:IActionButtonsProps
+ action:IActionButtonsProps,
+ rowsPerPage: number,
+ page: number,
 }
 export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps<T>) {
   const keyId = React.useId();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
  function RenderCell<T>(row: T, column: Column) {
   const value = row[column.id as keyof   T] as unknown as string;
   let render = row[column.render as keyof   T] as unknown as React.ReactNode;
@@ -82,7 +72,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
           </TableHead>
           <TableBody>
             {props.rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .slice(props.page * props.rowsPerPage, props.page * props.rowsPerPage + props.rowsPerPage)
               .map((row,index) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={`${keyId}-${index}`}>
@@ -113,15 +103,6 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5,10, 25, 100]}
-        component="div"
-        count={props.rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </Paper>
   );
 }

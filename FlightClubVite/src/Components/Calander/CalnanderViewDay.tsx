@@ -61,7 +61,7 @@ function getDateRows(times: IDateViewFilter[]): IDateViewFilter[] {
 
 
   });
-  if (start.compareTime(start.getEndDayDate()) < 0) {
+  if (start.compareTime(start.getEndDayDate()) < 0 ) {
     let newRow: IDateViewFilter = {
       from: start,
       to: start.getEndDayDate(),
@@ -69,7 +69,7 @@ function getDateRows(times: IDateViewFilter[]): IDateViewFilter[] {
       currentOffset: 0,
       marked: false,
       hourseDiff: Math.abs(start.getHoursDiff(start.getEndDayDate())),
-      title: ""
+      title: "valid"
     }
     dateRows.push(newRow)
   }
@@ -133,13 +133,13 @@ function CalnanderViewDay({ reservations,title="Reservation date" }: ICalanderVi
           <Grid item xs={12}><Typography textAlign={'center'}>{title}</Typography></Grid>
           {getDateRows(viewDataFromReservation).map((i, index) => (
             <>
-              <Grid item xs={3} width={"100%"} height={`${i.hourseDiff * x}%`} style={{ background: 'red' }}>
+              <Grid item xs={3} width={"100%"} maxHeight={`${i.hourseDiff * x}%`} style={{ minHeight: "2ch"}}>
                 <Box height={'100%'} display={'flex'} flexDirection={'column'} alignContent={'space-between'} sx={{ background: theme?.palette.info.light, height: "100%" }}>
                   <div style={{height: '100%'}}>{i.from.getLocal24Hours()}</div>
                   {/* <div >{i.to.getLocal24Hours()}</div> */}
                 </Box>
               </Grid>
-              <Grid item xs={9} width={"100%"} height={`${i.hourseDiff * x}%`} style={{ background: 'red' }}>
+              <Grid item xs={9} width={"100%"} height={`${i.hourseDiff * x}%`} style={{ minHeight: "2ch" }}>
                 <Box sx={{ background: i.hasDate ? lightBlue[100] : grey[300], height: "100%" }}>{i.hasDate? i.title: ""}</Box>
               </Grid>
             </>

@@ -19,9 +19,7 @@ function AccountOrdersTab() {
   const [openFilter, setOpenFilter] = useState(false)
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
   const [selectedMember, setSelectedMember] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedMember", null)
- 
   const [filter, setFilter] = useState<IOrderTableFilter>(from_to_Filter(new Date()));
-
 
   const OnSelectedClubAccount = (item: InputComboItem): void => {
     console.log("AccountOrdersTab/OnSelectedClubAccount/item", item)
@@ -49,14 +47,12 @@ function AccountOrdersTab() {
               </Grid>
               <Grid item xs={4}  >
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} />
-
               </Grid >
             </Grid>
           </Box>
         </ContainerPageHeader>
         <ContainerPageMain>
           <>
-
             <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
               <List sx={{ display: 'flex', flexDirection: 'column' }}>
                 <ListItem key={"fromDate"} disablePadding>
@@ -65,9 +61,7 @@ function AccountOrdersTab() {
                       <DateRangeIcon />
                     </ListItemIcon>
                     <DatePickerDate value={filter.from === undefined ? new Date() : filter.from} param="from" lable='From Date' onChange={onDateChanged} />
-
                   </ListItemButton>
-
                 </ListItem>
                 <ListItem key={"toDate"} disablePadding>
                   <ListItemButton>
@@ -75,28 +69,20 @@ function AccountOrdersTab() {
                       <DateRangeIcon />
                     </ListItemIcon>
                     <DatePickerDate value={filter.to === undefined ? new Date() : filter.to} param={"to"} lable='To Date' onChange={onDateChanged} />
-
                   </ListItemButton>
-
                 </ListItem>
                 <ListItem>
                 <MembersCombo onChanged={OnselectedMember} source={'_accountOrder'}/>
-                
                 </ListItem>
               </List>
-
-
             </GeneralDrawer>
             <OrderTable selectedMember={selectedMember} selectedClubAccount={selectedClubAccount} filter={filter} />
           </>
         </ContainerPageMain>
         <ContainerPageFooter>
-          <>
-            footer
-          </>
+          <></>
         </ContainerPageFooter>
       </>
-
     </ContainerPage>
   )
 }
