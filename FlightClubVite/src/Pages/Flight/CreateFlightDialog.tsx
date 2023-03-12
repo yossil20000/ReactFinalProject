@@ -48,25 +48,22 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
+  
   useEffect(() => {
     console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
-
       setAlert((prev) => ({ ...prev, alertTitle: "Flight Create", alertMessage: "Flight Create Successfully", open: true, onClose: onClose, severity: "success" }))
-
     }
     if (isError) {
-
       const validation = getValidationFromError(error,handleOnValidatiobClose);
       setValidationAlert(validation);
       return;
-      
-
     }
   }, [isLoading])
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    newDate.setSeconds(0,0)
     setFlightCreate(prev => ({ ...prev, date: newDate }))
   };
 
@@ -113,7 +110,6 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="sm"
-
       open={open} {...other}>
       <DialogTitle>Flight Create</DialogTitle>
       <DialogContent>
@@ -126,7 +122,6 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} md={6} xl={6}>
             <Item>
             <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice}/>
-              
             </Item>
           </Grid>
           <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
@@ -141,9 +136,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                     onChange={handleFromDateFilterChange}
                     renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
-
                 </ThemeProvider>
-
               </LocalizationProvider>
             </Item>
 

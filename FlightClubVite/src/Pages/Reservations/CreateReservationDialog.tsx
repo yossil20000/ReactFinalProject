@@ -20,6 +20,7 @@ export interface CreateReservationDialogProps {
   onSave: (value: IReservationCreateApi) => void;
   open: boolean;
 }
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -30,6 +31,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const defaultMaterialThem = createTheme({
 
 })
+
 let transitionAlertInitial: ITransitionAlrertProps = {
   severity: "success",
   alertTitle: "Create Flight",
@@ -37,38 +39,38 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
+
 function CreateReservationDialog({ value, onClose, onSave, open, ...other }: CreateReservationDialogProps) {
 
   console.log("CreateReservationDialog/value", value)
-
   const [CreateReservation, { isError, isLoading, error, isSuccess }] = useCreateReservationMutation();
   const [reservationCreate, setReservationCreate] = useState<IReservationCreateApi>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [deviceDescription, setDeviceDescription] = useState("");
   const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
+  
   useEffect(() => {
     console.log("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
-
       setAlert((prev) => ({ ...prev, alertTitle: "Reservation Create", alertMessage: "Reserva Create Successfully", open: true, onClose: onClose, severity: "success" }))
-
     }
     if (isError) {
       const validation = getValidationFromError(error,handleCloseValidarion);
       setValidationAlert(validation);
       return;
-      
     }
   }, [isLoading])
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    newDate.setSeconds(0,0)
     setReservationCreate(prev => ({ ...prev, date_from: newDate }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     console.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    newDate.setSeconds(0,0)
     console.log("CreateFlightDialoq/handleToDateFilterChange/", newDate);
     setReservationCreate(prev => ({ ...prev, date_to: newDate }))
     console.log("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
@@ -109,7 +111,6 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="sm"
-
       open={open} {...other}>
       <DialogTitle>Reservation Create</DialogTitle>
       <DialogContent>
@@ -167,11 +168,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-              
               <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice}/>
             </Item>
           </Grid>
-
           <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
             <Item>
               <TextField
@@ -190,11 +189,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id }/>
             </Item>
           </Grid>
-
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
-
               Cancle
             </Button></Item>
           </Grid>
