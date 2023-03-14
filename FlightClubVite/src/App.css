@@ -71,7 +71,7 @@ button {
   flex-direction: column;
   grid-area: main;
   background-color: white;
- 
+ height: 100%;
 }
 .yl__container .l_footer {
   grid-area: l_footer;

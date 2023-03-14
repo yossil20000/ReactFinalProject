@@ -157,11 +157,9 @@ function DeviceTab() {
         <div className='main' style={{ overflow: "auto", height: "100%" }}>
           <Box marginTop={1} height={"100%"}>
             <DeviceTabItem />
-
           </Box>
-
         </div>
-        <div className='footer' >
+        <div className='footer' style={{ overflow: 'hidden',height:'auto' }}>
         <Grid container>
             {validationAlert.map((item) => (
               <Grid item xs={12}>

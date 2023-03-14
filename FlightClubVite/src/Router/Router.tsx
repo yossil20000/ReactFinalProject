@@ -20,7 +20,7 @@ import RegistrationPage from '../Pages/Resistration/RegistrationPage'
 import NotificationPage from '../Pages/UserAccount/Notification'
 import MyAccount from '../Pages/UserAccount/UserAccount'
 import CalnanderViewDay from '../Components/Calander/CalnanderViewDay'
-
+import AccountReport from '../Pages/Report/AccountReport.jsx'
 
 
 export function PagesRouter() {
@@ -50,6 +50,7 @@ export function PagesRouter() {
     <Routes>
       <Route path='/' element={<Layout />}>
       <Route path="/calander" element={<CalnanderViewDay title='Yossi'/>} />
+      <Route path="/report" element={<AccountReport/>} />
         <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
           <Route path="/home" element={<HomePage></HomePage>} />
         </Route>

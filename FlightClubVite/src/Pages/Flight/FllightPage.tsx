@@ -26,6 +26,8 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons.js";
 import DatePickerDate from "../../Components/Buttons/DatePickerDate";
+import { Container } from "@mui/system";
+import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from "../Layout/Container";
 
 const dateFilter: IDateFilter = newDateFilter;
 const StyledAccordion = styled(Box)(({ theme }) => ({
@@ -256,7 +258,7 @@ const FlightPage = () => {
     setOpenFlightAdd(false);
   }
   const getFilteredDataMemo = getFilteredData()
-    const onTodayChanged = () => {
+  const onTodayChanged = () => {
     const filter = getTodayFilter();
     setFilterDate(filter);
 
@@ -327,193 +329,207 @@ const FlightPage = () => {
   }
   return (
     <>
-      <div className='header'><Typography variant="h6" align="center">{`Flights ${dateFilter.from.toLocaleDateString()} - ${dateFilter.to.toLocaleDateString()}`}</Typography></div>
-      <div className='main' style={{ overflow: "auto" }} >
-        {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
-        {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
-        <Box sx={{ width: '100%', height: '100%' }}>
-          <Paper sx={{ width: '100%', mb: 1 }}>
+      <ContainerPage>
+        <>
+          <ContainerPageHeader>
+            <Box marginTop={2} display={'flex'} flexDirection={'column'}>
+              <Typography variant="h6" align="center">{`Flights ${dateFilter.from.toLocaleDateString()} - ${dateFilter.to.toLocaleDateString()}`}</Typography>
+              <Paper sx={{ width: '100%', mb: 1 }}>
 
-            <Box display={'flex'} justifyContent={"space-between"}>
-            <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
-                <FilterListIcon fontSize="inherit" />
-              </IconButton>
-              <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
-                <List sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <ListItem key={"fromDate"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <DateRangeIcon />
-                      </ListItemIcon>
-                      <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="from" lable='From Date' onChange={onDateChanged} />
+                <Box display={'flex'} justifyContent={"space-between"}>
+                  <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+                    <FilterListIcon fontSize="inherit" />
+                  </IconButton>
+                  <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
+                    <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <ListItem key={"fromDate"} disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <DateRangeIcon />
+                          </ListItemIcon>
+                          <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="from" lable='From Date' onChange={onDateChanged} />
 
-                    </ListItemButton>
+                        </ListItemButton>
 
-                  </ListItem>
-                  <ListItem key={"toDate"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <DateRangeIcon />
-                      </ListItemIcon>
-                      <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"to"} lable='To Date' onChange={onDateChanged} />
+                      </ListItem>
+                      <ListItem key={"toDate"} disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <DateRangeIcon />
+                          </ListItemIcon>
+                          <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"to"} lable='To Date' onChange={onDateChanged} />
 
-                    </ListItemButton>
+                        </ListItemButton>
 
-                  </ListItem>
-                  <ListItem key={'today'} disablePadding>
-                    <ListItemButton onClick={onTodayChanged}>
-                      <ListItemIcon>
-                        <TodayIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevDay}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
+                      </ListItem>
+                      <ListItem key={'today'} disablePadding>
+                        <ListItemButton onClick={onTodayChanged}>
+                          <ListItemIcon>
+                            <TodayIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onPrevDay}>
+                          <ListItemIcon>
+                            <NavigateBeforeIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
 
-                    <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Day</ListItemButton>
-                    <ListItemButton>
-                      <ListItemIcon onClick={onNextDay}>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-
-                  </ListItem>
-                  <ListItem key={'week'} disablePadding>
-                    <ListItemButton onClick={onWeekChanged}>
-                      <ListItemIcon>
-                        <CalendarViewWeekIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevWeek}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-
-                    <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
-                    <ListItemButton>
-                      <ListItemIcon onClick={onNextWeek}>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
+                        <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Day</ListItemButton>
+                        <ListItemButton>
+                          <ListItemIcon onClick={onNextDay}>
+                            <NavigateNextIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
 
 
-                  </ListItem>
-                  <ListItem key={'month'} disablePadding>
-                    <ListItemButton onClick={onMonthChanged}>
-                      <ListItemIcon>
-                        <CalendarMonthIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevMonth}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
+                      </ListItem>
+                      <ListItem key={'week'} disablePadding>
+                        <ListItemButton onClick={onWeekChanged}>
+                          <ListItemIcon>
+                            <CalendarViewWeekIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onPrevWeek}>
+                          <ListItemIcon>
+                            <NavigateBeforeIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
+                        <ListItemButton>
+                          <ListItemIcon onClick={onNextWeek}>
+                            <NavigateNextIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                      </ListItem>
+                      <ListItem key={'month'} disablePadding>
+                        <ListItemButton onClick={onMonthChanged}>
+                          <ListItemIcon>
+                            <CalendarMonthIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onPrevMonth}>
+                          <ListItemIcon>
+                            <NavigateBeforeIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
 
-                    <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
-                    <ListItemButton onClick={onNextMonth}>
-                      <ListItemIcon>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
+                        <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
+                        <ListItemButton onClick={onNextMonth}>
+                          <ListItemIcon>
+                            <NavigateNextIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
 
 
-                  </ListItem>
+                      </ListItem>
 
-                </List>
+                    </List>
 
 
-              </GeneralDrawer>
-
-              <Tooltip title="Add Flight">
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "flight" }]} />
-
-              </Tooltip>
+                  </GeneralDrawer>
+                  <Tooltip title="Add Flight">
+                    <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "flight" }]} />
+                  </Tooltip>
+                </Box>
+              </Paper>
             </Box>
 
-            <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
-            <StyledAccordion >
-              {
+          </ContainerPageHeader>
+          <ContainerPageMain>
+            <>
+              {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
+              {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
+              <Box sx={{ width: '100%', height: '100%' }}>
+                <Paper sx={{ width: '100%', mb: 1 }}>
 
-                getFilteredDataMemo.map((row: IFlightData, index: number) => {
-                  return (
-                    <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
-                    >
-                      <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                        <Typography variant='caption'> {row.device_id} , {new Date(row.date).toLocaleString()}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Grid container spacing={1} columns={12}>
-                          <Grid item xs={6}>
-                            <Typography variant='caption'  >description: {row.description}</Typography>
-                          </Grid>
-                          <Grid item xs={6} >
 
-                            <Typography >
-                              {row.name}
-                            </Typography>
-                            <Typography>
-                              {row.member_id}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6} >
-                            <Typography>
-                              {`Hobbs Start: ${row.hobbs_start}`}
-                            </Typography>
-                            <Typography>
-                              {`Hobbs Stop: ${row.hobbs_stop}`}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6} >
-                            <Typography>
-                              {`Engien Start: ${row.engien_start}`}
-                            </Typography>
-                            <Typography>
-                              {`Engien Stop: ${row.engien_stop}`}
-                            </Typography>
-                          </Grid>
-                          {
-                            row.status !== FlightStatus.CREATED ? (null) :
-                              (
-                                <>
-                                  <Grid item xs={6} >
-                                    <Typography>
-                                      {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
-                                    </Typography>
-                                  </Grid>
-                                  <Grid item xs={6} >
-                                    <Typography>
-                                      {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
-                                    </Typography>
-                                  </Grid>
-                                </>
-                              )
-                          }
+                  <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
+                  <StyledAccordion >
+                    {
 
-                        </Grid>
-                      </AccordionDetails>
-                    </Accordion>
-                  )
-                })
-              }
-            </StyledAccordion>
-          </Paper>
-        </Box>
-      </div>
+                      getFilteredDataMemo.map((row: IFlightData, index: number) => {
+                        return (
+                          <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
+                          >
+                            <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                              <Typography variant='caption'> {row.device_id} , {new Date(row.date).toLocaleString()}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Grid container spacing={1} columns={12}>
+                                <Grid item xs={6}>
+                                  <Typography variant='caption'  >description: {row.description}</Typography>
+                                </Grid>
+                                <Grid item xs={6} >
+
+                                  <Typography >
+                                    {row.name}
+                                  </Typography>
+                                  <Typography>
+                                    {row.member_id}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={6} >
+                                  <Typography>
+                                    {`Hobbs Start: ${row.hobbs_start}`}
+                                  </Typography>
+                                  <Typography>
+                                    {`Hobbs Stop: ${row.hobbs_stop}`}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={6} >
+                                  <Typography>
+                                    {`Engien Start: ${row.engien_start}`}
+                                  </Typography>
+                                  <Typography>
+                                    {`Engien Stop: ${row.engien_stop}`}
+                                  </Typography>
+                                </Grid>
+                                {
+                                  row.status !== FlightStatus.CREATED ? (null) :
+                                    (
+                                      <>
+                                        <Grid item xs={6} >
+                                          <Typography>
+                                            {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
+                                          </Typography>
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                          <Typography>
+                                            {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
+                                          </Typography>
+                                        </Grid>
+                                      </>
+                                    )
+                                }
+
+                              </Grid>
+                            </AccordionDetails>
+                          </Accordion>
+                        )
+                      })
+                    }
+                  </StyledAccordion>
+                </Paper>
+              </Box>
+            </>
+          </ContainerPageMain>
+          <ContainerPageFooter>
+            <TablePagination
+              rowsPerPageOptions={[1, 5, 10, 25]}
+              component="div"
+              count={flightsData?.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </ContainerPageFooter>
+        </>
+      </ContainerPage>
+
+
       <footer className='footer' style={{ overflowY: "hidden" }}>
-      <TablePagination
-                rowsPerPageOptions={[1, 5, 10, 25]}
-                component="div"
-                count={flightsData?.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+
       </footer>
     </>
 

@@ -30,7 +30,7 @@ function AccountPage() {
       <div className='header'>
         <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
       </div>
-      <div className='main' style={{ overflow: 'auto', position: 'relative' }}>
+      <div className='main' style={{ overflow: 'auto', position: 'relative' ,height: '100%'}}>
         {/* <MembersContext.Provider value={{ selectedItem: selectedMember, setSelectedItem: setSelectedMember, members: members?.data }}> */}
         <Box height={"100%"} sx={{backgroundColor: "white"}}>
             <Paper style={{height: "100%"}}>

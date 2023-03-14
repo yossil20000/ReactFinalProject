@@ -611,7 +611,7 @@ function ReservationsPageOld() {
           </Paper>
         </Box>
       </div>
-      <div className='footer' style={{ overflow: 'auto' }}>
+      <div className='footer' style={{ overflow: 'hidden',height:'auto' }}>
         <TablePagination
           rowsPerPageOptions={[1, 5, 10, 25]}
           component="div"

@@ -27,7 +27,7 @@ export function ContainerPageMain(props: Props) {
 }
 export function ContainerPageFooter(props: Props) {
   return (
-    <div className='footer' >
+    <div className='footer' style={{ overflow: 'hidden',height:'auto' }}>
       {props.children}
     </div>
   )

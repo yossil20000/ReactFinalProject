@@ -1,0 +1,1 @@
+declare module "C:\Users\Yossil\Documents\Repos\ReactFinalProject\FlightClubVite\src\Pages\Report\AccountReport.jsx"

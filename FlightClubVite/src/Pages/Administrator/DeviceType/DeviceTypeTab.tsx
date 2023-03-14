@@ -32,7 +32,6 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 const inlineStyle = {
   fontSize: '1rem',
   backgroundColor: '#f5f5dc',
-
 }
 
 function DeviceTypeTab() {
@@ -54,9 +53,7 @@ function DeviceTypeTab() {
     if (foundItem && foundItem !== null) {
       setSelectedItem(foundItem);
       console.log("onDeviceTypeChanged/foundItem", foundItem)
-
     }
-
   }
   async function onSave(): Promise<void> {
     let payLoad: any;

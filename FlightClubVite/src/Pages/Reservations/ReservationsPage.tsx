@@ -129,19 +129,21 @@ function ReservationPage() {
   }
   return (
     <>
-      <div className='header'><Typography variant="h6" align="center">Reservation Page</Typography></div>
-      <div className='main' style={{ overflow: 'auto' }}>
         <ContainerPage>
           <>
             <ContainerPageHeader>
-              <Box marginTop={2}>
+              <Box marginTop={2} display={'flex'} flexDirection={'row'}>
+
                 <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
+                  <Grid item xs={12}>
+                  <Typography variant="h6" align="center">Reservation Page</Typography>
+                  </Grid>
                   <Grid item xs={1}>
                     <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
                       <FilterListIcon fontSize="inherit" />
                     </IconButton>
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={11}>
                     <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
                   </Grid>
 
@@ -237,14 +239,12 @@ function ReservationPage() {
             </ContainerPageMain>
             <ContainerPageFooter>
               <>
-                footer
+                reservation 
               </>
             </ContainerPageFooter>
           </>
 
         </ContainerPage>
-      </div>
-      <div className='footer'>main footer</div>
     </>
 
 

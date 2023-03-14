@@ -17,7 +17,6 @@ import { logOut } from '../../features/Auth/authSlice';
 import RollIcon from '../../Components/Buttons/RollIcon';
 import UserIcon from '../../Components/Buttons/UserIcon';
 import { useEffect } from 'react';
-import { ILoginResult } from '../../Interfaces/API/ILogin';
 import { Avatar } from '@mui/material';
 
 type page = {

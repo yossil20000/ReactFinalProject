@@ -112,7 +112,7 @@ function AdminPage() {
       <div className='header'>
         <ScrollableTabs items={items} value={value} setValue={setValue} handleChange={handleChange} />
       </div>
-      <div className='main' style={{ overflow: 'auto' ,position:'relative'}}>
+      <div className='main' style={{ overflow: 'auto' ,position:'relative' ,height: '100%'}}>
         <DevicesContext.Provider value={{ devices: devices?.data, selectedItem: selectedDevice, setSelectedItem: setSelectedDevice ,membersCombo: membersCombo?.data}}>
           <DeviceTypesContext.Provider value={{ deviceTypes: deviceTypes?.data, selectedItem: selectedDeviceTypes, setSelectedItem: setSelectedDeviceTypes }}>
           <MembersContext.Provider value={{selectedItem:selectedMember,setSelectedItem:setSelectedMember,members: members?.data}}>
