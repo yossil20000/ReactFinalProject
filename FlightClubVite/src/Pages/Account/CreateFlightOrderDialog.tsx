@@ -1,13 +1,11 @@
 import { Dialog, DialogTitle, DialogContent, createTheme, Paper, styled, Grid, Button, Card, CardContent, Typography, CardActions, Divider, TextField } from "@mui/material";
-import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react";
-import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
 import { useCreateOrderMutation } from "../../features/Account/accountApiSlice";
 import { COrderCreate,  IOrderBase } from "../../Interfaces/API/IAccount";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 
-export interface CreateOrderDialogProps {
+export interface CreateFlightOrderDialogProps {
   value: IOrderBase;
   onClose: () => void;
   onSave: (value: IOrderBase) => void;
@@ -30,9 +28,9 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrderDialogProps) {
+function CreateFlightOrderDialog({ value, onClose, onSave, open, ...other }: CreateFlightOrderDialogProps) {
 
-  console.log("CreateOrderDialog/value", value)
+  console.log("CreateFlightOrderDialog/value", value)
 
   const [CreateOrder, { isError, isLoading, error, isSuccess }] = useCreateOrderMutation();
   const [orderCreate, setOrderCreate] = useState<IOrderBase>(value);
@@ -41,7 +39,7 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
   const [isSaved,setIsSaved] = useState(false);
 
   useEffect(() => {
-    console.log("CreateOrderDialog/useEffect", isError, isSuccess, isLoading)
+    console.log("CreateFlightOrderDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
 
       setAlert((prev) => ({ ...prev, alertTitle: "Order Create", alertMessage: "Order Create Successfully", open: true, onClose: onClose, severity: "success" }))
@@ -82,14 +80,14 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
 
   }, [])
   const handleOnSave = async () => {
-    console.log("CreateOrderDialog/onSave", orderCreate)
+    console.log("CreateFlightOrderDialog/onSave", orderCreate)
     let order = new COrderCreate();
     order.copy(orderCreate);
-    console.log("CreateOrderDialog/onSave/order", order)
-    console.log("CreateOrderDialog/onSave/date", orderCreate.order_date)
+    console.log("CreateFlightOrderDialog/onSave/order", order)
+    console.log("CreateFlightOrderDialog/onSave/date", orderCreate.order_date)
 
     await CreateOrder(orderCreate as IOrderBase).unwrap().then((data) => {
-      console.log("CreateOrderDialog/onSave/", data);
+      console.log("CreateFlightOrderDialog/onSave/", data);
       if(data.data._id !== undefined){
         setIsSaved(true)
       }
@@ -97,18 +95,12 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
         
       
     }).catch((err) => {
-      console.log("CreateOrderDialog/onSave/error", err.data.errors);
+      console.log("CreateFlightOrderDialog/onSave/error", err.data.errors);
     });
 
 
   }
-  const onDeviceChanged = (item: InputComboItem, has_hobbs: boolean) => {
 
-    setOrderCreate(prev => ({ ...prev, _id_device: item._id, reuired_hobbs: has_hobbs }))
-  }
-  const onMemberChanged = (item: InputComboItem) => {
-    setOrderCreate(prev => ({ ...prev, _id_member: item._id }))
-  }
   return (
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "100%", maxHeight: "auto" } }}
@@ -253,4 +245,4 @@ function CreateOrderDialog({ value, onClose, onSave, open, ...other }: CreateOrd
   )
 }
 
-export default CreateOrderDialog;
+export default CreateFlightOrderDialog;

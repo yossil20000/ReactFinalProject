@@ -39,14 +39,14 @@ export const deviceApiSlice = createApi({
           method: 'PUT',
           body: device
         }),
-        invalidatesTags: [{ type: "Devices" }]
+        invalidatesTags: ["Devices"]
       }),
       deleteDevice: builder.mutation<IResultBaseSingle<IDevice>, string>({
         query: (_id) => ({
           url: `/${URLS.DEVICE_DELETE}/${_id}`,
           method: "DELETE"
         }),
-        invalidatesTags: [{ type: "Devices" }]
+        invalidatesTags: ["Devices"]
       }),
       createDevice: builder.mutation<IResultBaseSingle<IDevice>, IDeviceCreate>({
         query: (device) => ({
@@ -54,7 +54,7 @@ export const deviceApiSlice = createApi({
           method: 'POST',
           body: device
         }),
-        invalidatesTags: [{ type: "Devices" }]
+        invalidatesTags: ["Devices"]
       }),
       fetchDevicsCombo: builder.query<IResultBase<IDeviceCombo>, IDeviceComboFilter>({
         query: (filter) => ({
@@ -76,7 +76,7 @@ export const deviceApiSlice = createApi({
           body: status,
 
         }),
-        invalidatesTags: [{ type: "Devices" }]
+        invalidatesTags: ["Devices"]
       }),
     }
   }

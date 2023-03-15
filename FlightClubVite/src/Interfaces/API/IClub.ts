@@ -2,7 +2,7 @@ import { IAccount, IAccountsCombo, IOrder } from "./IAccount";
 import { Status } from "./IStatus";
 
 export interface IClubAccountBase {
-  
+
   accounts: [IAccount],
   transactions: [ITransaction],
   balance: number,
@@ -36,8 +36,8 @@ export interface IClubAccount extends IClubAccountBase {
   _id: string
 }
 export enum EAccountType {
-  EAT_BANK= "100100",
-  EAT_ACCOUNT= '200200',
+  EAT_BANK = "100100",
+  EAT_ACCOUNT = '200200',
   EAT_SUPPLIERS = '200300'
 }
 export enum Transaction_OT {
@@ -46,18 +46,18 @@ export enum Transaction_OT {
   MONTLY = "Montly",
   ORDER = 'Order',
   OTHER = "Other",
-  TRANSFER= "Transfer"
+  TRANSFER = "Transfer"
 }
 export enum Transaction_Type {
-  CREDIT =  "Credit",
+  CREDIT = "Credit",
   DEBIT = "Debit",
   TRANSFER = "Transfer"
 }
 export enum PaymentMethod {
   
-  VISA= "VISA",
-    CHECK = "CHECK",
-    TRANSFER = "TRANSFER"
+  VISA = "VISA",
+  CHECK = "CHECK",
+  TRANSFER = "TRANSFER"
 }
 
 export interface IAddTransaction {
@@ -75,8 +75,8 @@ export interface IAddTransaction {
     type: Transaction_OT,
     _id: string
   },
-  payment:{
-    method: PaymentMethod, 
+  payment: {
+    method: PaymentMethod,
     referance: string
   },
   description: string,
@@ -92,8 +92,8 @@ export interface ITransactionBase {
     type: Transaction_OT,
     _id: string
   },
-  payment:{
-    method: PaymentMethod, 
+  payment: {
+    method: PaymentMethod,
     referance: string
   },
   description: string,
@@ -106,21 +106,21 @@ export interface ITransaction extends ITransactionBase {
 
 
 export interface IClubAddAccount {
-  
+
 }
 export interface IClubAddAccount {
   _id: string,
   account_id: string
 }
 export interface IClubAccountCombo {
-  
+
   _id: string,
   account_id: string,
   member: {
     _id: string,
     member_id: string,
     family_name: string,
-    member_type : string
+    member_type: string
   }
 }
 export interface IClubAccountsCombo {

@@ -10,7 +10,7 @@ import { DEVICE_MET } from '../../Interfaces/API/IDevice';
 import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
 
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
-import CreateOrderDialog from './CreateOrderDialog';
+import CreateFlightOrderDialog from './CreateFlightOrderDialog';
 interface IData {
   _id: string;
   date: Date;
@@ -163,7 +163,7 @@ function AccountFlightsTab() {
         discount: Number(discount.toFixed(2)),
         amount: Number(amount.toFixed(2)),
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
-        description: `Flight on ${new Date(flightFound.date).toDateString()} , ${flightFound.description}`,
+        description: `Flight: {date: ${new Date(flightFound.date).toDateString()} ,engien_start: ${flightFound.engien_start}, engien_start: ${flightFound.engien_start}: ${flightFound.engien_stop} , description: ${flightFound.description}}`,
         status: OrderStatus.CREATED,
         member: flightFound.member,
         orderBy: `${flightFound.member.family_name} / ${flightFound.member.member_id}`
@@ -202,7 +202,7 @@ function AccountFlightsTab() {
   return (
     <ContainerPage>
       <>
-        {openOrderAdd && <CreateOrderDialog onClose={handleAddOnClose} value={order} open={openOrderAdd} onSave={handleAddOnSave} />}
+        {openOrderAdd && <CreateFlightOrderDialog onClose={handleAddOnClose} value={order} open={openOrderAdd} onSave={handleAddOnSave} />}
         <ContainerPageHeader>
           <Box marginTop={2}>
             <Grid container width={"99%"} height={"100%"} gap={2} columns={12}>

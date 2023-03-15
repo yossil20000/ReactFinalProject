@@ -11,12 +11,11 @@ import AccountTransactionsTab from "./AccountTransactionsTab";
 import OrdersTab from "./OrdersTab";
 
 const items: ScrollableTabsItem[] = [
-  { id: 0, label: "Accounts" },
-  { id: 1, label: "Flights" },
+  { id: 0, label: "Flights" },
+  { id: 1, label: "Orders" },
   { id: 2, label: "Expense" },
-  { id: 3, label: "Orders" },
-  { id: 4, label: "Transactions" }
-
+  { id: 3, label: "Transactions" },
+  { id: 4, label: "Accounts" }
 ]
 
 function AccountPage() {
@@ -34,11 +33,11 @@ function AccountPage() {
         {/* <MembersContext.Provider value={{ selectedItem: selectedMember, setSelectedItem: setSelectedMember, members: members?.data }}> */}
         <Box height={"100%"} sx={{backgroundColor: "white"}}>
             <Paper style={{height: "100%"}}>
-              {value === 0 && (<AccountsTab/>)}
-              {value === 1 && (<AccountFlightsTab/>)}
+              {value === 4 && (<AccountsTab/>)}
+              {value === 0 && (<AccountFlightsTab/>)}
               {value === 2 && (<AccountExpenseTab/>)}
-              {value === 3 && (<AccountOrders/>)}
-              {value === 4 && (<AccountTransactionsTab/>)}
+              {value === 1 && (<AccountOrders/>)}
+              {value === 3 && (<AccountTransactionsTab/>)}
               {value === 5 && (<AccountTest/>)}
             </Paper>
             </Box>

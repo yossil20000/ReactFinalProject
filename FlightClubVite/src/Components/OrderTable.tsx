@@ -50,9 +50,10 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   const orderRows = useMemo(() => {
     const rows = orders?.data.filter((item) => {
       console.log("OrderTable/orderRows/filter/item", item,selectedMember)
-      if(selectedMember?.lable == "") return true;
+      
+      if(!selectedMember  || selectedMember?.lable == "") return true;
       if(selectedMember?._id == item.member?._id)
-        return true;
+        return true ;
       return false;
     }).map((row : IOrder) => ({
       id: row._id, date: new Date(row.order_date).toLocaleDateString(),
@@ -73,7 +74,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     return []
 
 
-  }, [orders,selectedMember])
+  }, [orders,selectedMember,selectedClubAccount])
 
   
 
