@@ -256,7 +256,7 @@ exports.add_order_transaction = [
         await sourceTransaction.save({ session })
 
         destinationTransaction.transactions.push(transaction)
-        destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(amount.toFixed(2));
+        /* destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(amount.toFixed(2)); */
         if (isNaN(destinationTransaction.balance)) {
           throw new Error('Destination: The new balance is not a number!');
         }
