@@ -29,8 +29,13 @@ exports.order_list = function (req, res, next) {
 exports.order_search = [async function (req, res, next) {
   try {
     log.info('order_search/params', req.query);
-
-    const { orders } = await findOrders(req.query);
+    let from = new Date(req.query.from);
+		let to = new Date(req.query.to);
+		let filter = {order_date: {$gte : from, $lte: to}};
+		if(isNaN(from) || isNaN(to)){
+			filter = {}
+		}
+    const { orders } = await findOrders(filter);
     res.status(201).json({ success: true, errors: [], data: orders });
     return;
   }
