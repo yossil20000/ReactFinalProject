@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 var OrderSchema = new Schema({
 
   order_date:{type: Date,required: true},
-  product:  {type: Schema.Types.ObjectId,required: true},
+  product:  {type: Schema.Types.ObjectId,required: false},
   units: {type: Number, default: 0, required:true},
   pricePeUnit: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},

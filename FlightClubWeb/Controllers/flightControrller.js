@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const log = require('debug-level').log('flightController');
 const { ApplicationError } = require('../middleware/baseErrors');
+const { CValidationError } = require('../Utils/CValidationError');
 const { body, validationResult } = require('express-validator');
 const Flight = require('../Models/flight');
 const Member = require('../Models/member');
@@ -131,7 +132,7 @@ exports.flight_update = [
             log.info("flightSaveResult/Flight/Update", flightSaveResult);
             const hobbs_meter = (maxValues?.length == 0 || req.body.hobbs_stop > maxValues[0]?.max_hobbs_stop) ? req.body.hobbs_stop : maxValues[0].max_hobbs_stop;
             const engien_meter = (maxValues?.length == 0 || req.body.engien_stop > maxValues[0]?.max_engien_stop) ? req.body.engien_stop : maxValues[0].max_engien_stop;
-newFlight
+
             const deviceUpdate = await Device.updateOne({ _id: flightToUpdate.device._id }, { engien_meter: engien_meter, hobbs_meter: hobbs_meter }, { session });
 
             log.info("flightSaveResult/Device.updateOne", deviceUpdate);
@@ -281,7 +282,8 @@ exports.flight_create = [
       }
       else {
         log.info("Flight Already exist")
-        return res.status(400).json({ success: false, errors: ["Flight Already exist"], data: [] })
+        return next(new ApplicationError("flight_create", 400, "CONTROLLER.FLIGHT.CREATE_FLIGHT.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body.hobbs_start, `Flight ${req.body.engien_start} ${req.body.engien_stop} Already exist`, 'hobbs_start / hobbs_stop / engien_start / engien_stop', "DB.Fligth")).validationResult.errors }));
+        
       }
 
     }

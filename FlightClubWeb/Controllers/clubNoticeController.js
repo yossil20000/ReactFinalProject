@@ -1,6 +1,7 @@
 const log = require('debug-level').log('ClubNoticeController');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
+const { CValidationError } = require('../Utils/CValidationError');
 const ClubNotice = require('../Models/clubNotice');
 const { sendNotification } = require('../Services/notificationService');
 const constants = require('../Models/constants')
@@ -36,7 +37,7 @@ exports.notice = [
             }
             const notice = await ClubNotice.findById(req.params._id).exec();
             if (notice === null || notice === undefined) {
-                return res.status(400).json({ success: false, errors: ["Notice Not Exist"], data: [] })
+                return next(new ApplicationError("notice", 400, "CONTROLLER.CLUB_NOTICE.NOTICE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.params._id, `Account update failed`, '_id', "DB.Account")).validationResult.errors }));
             }
             return res.status(201).json({ success: true, errors: [], data: notice })
         }
@@ -67,7 +68,7 @@ exports.notice_create = [
             })
             notice.save((err, result) => {
                 if (err) {
-                    return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: notice })
+                    return next(new ApplicationError("notice", 400, "CONTROLLER.CLUB_NOTICE.CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError('', `Notice save failed`, '', "DB.Account")).validationResult.errors }));
                 }
                 if (result) {
                     sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED, notice.notification)
@@ -100,7 +101,7 @@ exports.notice_update = [
                 sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CHANGED, notice.notification)
                 return res.status(201).json({ success: true, errors: [], data: notice })
             }
-            return res.status(400).json({ success: false, errors: ["Notice update failed"], data: [] })
+            return next(new ApplicationError("notice", 400, "CONTROLLER.CLUB_NOTICE.UPDATE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body._id, `Notice update failed`, '_id', "DB.Account")).validationResult.errors }));
         }
         catch (error) {
             return next(new ApplicationError("notice_update",400,"CONTROLLER.NOTICE.NOTICE_UPDATE.EXCEPTION",{name: "EXCEPTION", error}));
@@ -120,7 +121,7 @@ exports.notice_delete = [
             }
             const notice = await ClubNotice.findByIdAndDelete(req.body._id).exec();
             if (notice === null || notice === undefined) {
-                return res.status(400).json({ success: false, errors: ["Notice Not Exist"], data: [] })
+                return next(new ApplicationError("notice", 400, "CONTROLLER.CLUB_NOTICE.DELETE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body._id, `Notice delete failed`, '_id', "DB.Account")).validationResult.errors }));
             }
             sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.DELETED, notice.notification)
             return res.status(201).json({ success: true, errors: [], data: notice })

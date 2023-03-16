@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
 import TransactionAction from './Accounts/TransactionAction';
-import { IOrder } from '../Interfaces/API/IAccount';
+import { IOrder, OT_REF } from '../Interfaces/API/IAccount';
 import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 
@@ -106,7 +106,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       renderCell: (params: GridRenderCellParams) => (
         <Box display={'flex'} flexDirection={'column'} gap={1} height={"5ch"} >
  
-         <TransactionAction {...{params,rowId,setRowId,transaction: getTransaction("",selectedClubAccount ? selectedClubAccount._id : "",params.row.id, params.row.amount,params.row.description)}}/>
+         <TransactionAction {...{params,rowId,setRowId,orderId : params.row.product !== OT_REF.FLIGHT ? params.row.id : undefined  ,transaction: getTransaction("",selectedClubAccount ? selectedClubAccount._id : "",params.row.id, params.row.amount,params.row.description)}}/>
 
         </Box>
       )

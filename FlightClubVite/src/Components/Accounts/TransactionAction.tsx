@@ -2,11 +2,12 @@ import { Check } from '@mui/icons-material';
 import { Box, CircularProgress, Fab, Tooltip } from '@mui/material';
 import { green } from '@mui/material/colors';
 import { useEffect, useState } from 'react';
-import { OrderStatus } from '../../Interfaces/API/IAccount';
+import { IOrder, OrderStatus } from '../../Interfaces/API/IAccount';
 import PaymentIcon from '@mui/icons-material/Payment';
 import PaidIcon from '@mui/icons-material/Paid';
+import Delete from '@mui/icons-material/Delete';
 import { IAddTransaction } from '../../Interfaces/API/IClub';
-import { useClubAddOrderTransactionMutation } from '../../features/Account/accountApiSlice';
+import { useClubAddOrderTransactionMutation, useDeleteOrderMutation } from '../../features/Account/accountApiSlice';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { IValidationAlertProps } from '../Buttons/TransitionAlert';
 import ErrorDialog from '../ErrorDialog';
@@ -15,48 +16,69 @@ export interface ITransactionActionProps {
   rowId: string | null;
   setRowId: React.Dispatch<React.SetStateAction<string | null>>
   transaction: IAddTransaction
+  orderId?: string
 }
 export default function TransactionAction(props: ITransactionActionProps) {
-  const { rowId, setRowId, params,transaction } = props;
-  const { id, _idMember ,amount} = params.row;
+  const { rowId, setRowId, params, transaction, orderId } = props;
+  const { id, _idMember, amount } = params.row;
   const [isloading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
-  const [validationAlert,setValidationAlert] = useState<IValidationAlertProps[]>([])
+  const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([])
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddOrderTransactionMutation();
-  
+  const [deleteOrder, { isError: deleteIsError, isLoading: deleteIsLoading, error: deleteError, isSuccess: deleteSccuess }] = useDeleteOrderMutation();
   /*  console.log("TransactionAction/params",id,_idMember,rowId) */
 
   const handleTransaction = async () => {
-    console.log("TransactionAction/handleTransaction", id, params,transaction)
+    console.log("TransactionAction/handleTransaction", id, params, transaction)
     setIsLoading(true);
     const result: boolean = true;
     await AddTransaction(transaction).unwrap().then((data) => {
       console.log("TransactionAction/handleTransaction/data", data)
       if (data.success === false) {
-        const validation = getValidationFromError(data.errors, () : void =>{});
+        const validation = getValidationFromError(data.errors, (): void => { });
         setValidationAlert(validation);
         setOpenError(true);
         return;
       }
+      setIsSuccess(true);
+      setIsLoading(false)
     }).catch((err) => {
-      const validation = getValidationFromError(err, () : void =>{});
+      const validation = getValidationFromError(err, (): void => { });
       setValidationAlert(validation);
       setOpenError(true);
+      setIsLoading(false)
       return;
     });
-    
-    setInterval(() => {
-      if (result) {
-        
+  }
+  const handleDelete = async () => {
+    console.log("TransactionAction/handleDelete", id, params, transaction)
+
+    const result: boolean = true;
+    if (orderId !== undefined) {
+      setIsLoading(true);
+      await deleteOrder(orderId).unwrap().then((data) => {
+        console.log("TransactionAction/handleDelete/data", data)
+        if (data.success === false) {
+          setIsSuccess(false);
+          const validation = getValidationFromError(data.errors, (): void => { });
+          setValidationAlert(validation);
+          setOpenError(true);
+          return;
+        }
+        setIsLoading(false)
         setIsSuccess(true);
-        setRowId(null);
+      }).catch((err) => {
+        setIsLoading(false)
+        setIsSuccess(false);
+        const validation = getValidationFromError(err, (): void => { });
+        setValidationAlert(validation);
+        setOpenError(true);
+        return;
+      });
+    }
 
-      }
-      setIsLoading(false)
-    }, 2000)
 
-    /* setIsLoading(false) */
   }
 
   useEffect(() => {
@@ -65,9 +87,9 @@ export default function TransactionAction(props: ITransactionActionProps) {
 
   return (
     <Box  >
-      {openError === true ? (<ErrorDialog setOpen={setOpenError} open={openError} validationAlert={validationAlert}/>) : null}
+      {openError === true ? (<ErrorDialog setOpen={setOpenError} open={openError} validationAlert={validationAlert} />) : null}
       {
-        params.row.status.toString() === OrderStatus.CLOSE  &&
+        params.row.status.toString() === OrderStatus.CLOSE &&
         (
           <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
             <Tooltip title={"Transaction Done"}>
@@ -76,7 +98,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
           </Fab>
         )
       }
-       { ( isSuccess == true && isloading == false) &&
+      {(isSuccess == true && isloading == false) &&
         (
           <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
             <Tooltip title={"Transaction Done"}>
@@ -87,12 +109,22 @@ export default function TransactionAction(props: ITransactionActionProps) {
       }
       {params.row.status !== OrderStatus.CLOSE && isSuccess == false && isloading == false &&
         (
-          <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleTransaction} >
-            <Tooltip title={"Place Transaction"}>
-              <PaymentIcon />
-            </Tooltip>
+          <>
+            {orderId === undefined ? (<></>) : (
+              <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleDelete} >
+                <Tooltip title={"Delete Order"}>
+                  <Delete />
+                </Tooltip>
+              </Fab>
+            )}
 
-          </Fab>
+            <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleTransaction} >
+              <Tooltip title={"Place Transaction"}>
+                <PaymentIcon />
+              </Tooltip>
+
+            </Fab>
+          </>
         )
       }
       {isloading == true &&

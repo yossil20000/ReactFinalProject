@@ -1,6 +1,7 @@
 const log = require('debug-level').log('AccountController');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
+const { CValidationError } = require('../Utils/CValidationError');
 const { findAccount } = require('../Services/accountService')
 const { Account } = require('../Models/account');
 const Member = require('../Models/member');
@@ -83,8 +84,7 @@ exports.account_create = [
           log.info('account_create/err', err);
         }
         if (member === null) {
-          return res.status(400).json({ success: false, errors: ["member not exist"], message: "member not exist", data: req.body.member_id });
-
+          return next(new ApplicationError("account_create", 400, "CONTROLLER.ACCOUNT.CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body.member_id, `member not exist`, 'member_id', "DB.Account")).validationResult.errors }));
         }
         let account_id = `BZ${member.member_id}`;
         if (member.member_type === "Supplier")
@@ -94,7 +94,7 @@ exports.account_create = [
             log.info('account_create/err', err);
           }
           if (account) {
-            return res.status(400).json({ success: false, errors: ["account already exist"], message: "account already exist", data: account });
+            return next(new ApplicationError("account_create", 400, "CONTROLLER.ACCOUNT.CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body.member_id, `Account already exist`, 'member_id', "DB.Account")).validationResult.errors }));
           }
           account = new Account({
             member: req.body.member_id,
@@ -150,7 +150,8 @@ exports.account_update = [
       if (account) {
         return res.status(201).json({ success: true, errors: [], data: account })
       }
-      return res.status(400).json({ success: false, errors: ["account update failed"], data: [] })
+      return next(new ApplicationError("account_update", 400, "CONTROLLER.ACCOUNT.UPDDATE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body._id, `Account update failed`, '_id', "DB.Account")).validationResult.errors }));
+      
 
     }
     catch (error) {
@@ -195,7 +196,7 @@ exports.account_status = [
         if (results.account.acknowledged) {
 
           if (results.account.acknowledged == false) {
-            return res.status(400).json({ success: false, errors: [err], data: [] });
+            return next(new ApplicationError("account_status", 400, "CONTROLLER.ACCOUNT.STATUS.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Account update failed`, '', "DB.Account")).validationResult.errors }));
           }
           else {
             return res.status(201).json({ success: true, errors: [], data: results });
