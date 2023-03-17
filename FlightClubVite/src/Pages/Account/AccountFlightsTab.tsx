@@ -208,7 +208,6 @@ function AccountFlightsTab() {
             <Grid container width={"99%"} height={"100%"} gap={2} columns={12}>
               <Grid item xs={6}>
                 <DevicesFlightCombo onChanged={onDeviceChange} source={"_accounts/devices"} />
-
               </Grid >
             </Grid>
           </Box>
