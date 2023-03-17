@@ -124,7 +124,7 @@ function createFlights(cb) {
     }
   ],cb)
 }
-function createFlightsBtch(callback) {
+function createEhud2022FlightsBtch(callback) {
  
       createFlight('000003000',"4XCGC",533.0,533.9,new Date(2022,0,25),"",0,callback)
       createFlight('000003000',"4XCGC",535.5,535.9,new Date(2022,1,2),"",0,callback)
@@ -145,6 +145,21 @@ function createFlightsBtch(callback) {
       createFlight('000003000',"4XCGC",648.8,649.7,new Date(2022,7,23),"",0,callback)
     
 }
+function createYose2022FlightsBtch(callback) {
+ 
+  createFlight('059828392',"4XCGC",542.6,543.2,new Date(2022,1,12),"",0,callback)
+  createFlight('059828392',"4XCGC",545.0,545.6,new Date(2022,1,15),"",0,callback)
+  createFlight('059828392',"4XCGC",555.8,556.5,new Date(2022,2,8),"",0,callback)
+  createFlight('059828392',"4XCGC",560.3,560.9,new Date(2022,2,20),"",0,callback)
+  createFlight('059828392',"4XCGC",561.5,562.8,new Date(2022,2,26),"",0,callback)
+  createFlight('059828392',"4XCGC",577.3,578.2,new Date(2022,3,22),"",0,callback)
+  createFlight('059828392',"4XCGC",618.1,618.8,new Date(2022,6,8),"",0,callback)
+  createFlight('059828392',"4XCGC",642.6,643.3,new Date(2022,7,6),"",0,callback)
+  createFlight('059828392',"4XCGC",667.6,668.8,new Date(2022,8,27),"",0,callback)
+  createFlight('059828392',"4XCGC",684.6,685.7,new Date(2022,9,22),"",0,callback)
+  
+}
+
 
 
 readline.question(`Do You Want to Delete (YeS)?`, ans => {
@@ -154,7 +169,7 @@ readline.question(`Do You Want to Delete (YeS)?`, ans => {
   if (ans == 'YeS') {
     async.waterfall([
       importData,
-      createFlightsBtch
+      createYose2022FlightsBtch
       
     ],
       // Optional callback
