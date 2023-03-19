@@ -27,8 +27,8 @@ const STATUS = {
 }
 
 const OrderStatus = {
-    "CREATED": "Created",
-    "CLOSE" : "Close"
+    "CREATED": "CREATED",
+    "CLOSE" : "CLOSE"
 }
 const ERROR_TYPE = {
     DB : "DB",

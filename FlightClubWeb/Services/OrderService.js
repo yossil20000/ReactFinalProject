@@ -11,7 +11,8 @@ exports.findOrders= findOrders;
 
 function parseQuery(query) {
   let filter = {}
-  const {member, from,to} = query;
+  const {member, from,to,orderStatus} = query;
+  
   if(member != undefined)
    filter['member']= member;
   if(from !== undefined){
@@ -19,6 +20,7 @@ function parseQuery(query) {
   }
   if(to !== undefined && to !== "")
   filter[`order_date`]= {...filter[`order_date`],['$lte'] : new Date(to)};
+  
   console.log("parseQuery/query,filter",query,filter);
   return filter;
 }
