@@ -1,5 +1,6 @@
 import "../Types/date.extensions.js"
 import { IDateFilter } from "../Interfaces/IDateFilter";
+import { OrderStatus } from "../Interfaces/API/IAccount.js";
 
 export function getTodayFilter(): IDateFilter {
 
@@ -42,6 +43,7 @@ export interface IOrderTableFilter {
   member?: string;
   from?: Date;
   to?: Date;
+  orderStatus?: OrderStatus
 }
 export function from_to_Filter(today: Date): any {
   return {
