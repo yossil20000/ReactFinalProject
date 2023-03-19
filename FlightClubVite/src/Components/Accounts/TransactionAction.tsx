@@ -11,6 +11,7 @@ import { useClubAddOrderTransactionMutation, useDeleteOrderMutation } from '../.
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { IValidationAlertProps } from '../Buttons/TransitionAlert';
 import ErrorDialog from '../ErrorDialog';
+import ConfirmationDialog, { ConfirmationDialogProps } from '../ConfirmationDialog';
 export interface ITransactionActionProps {
   params: any;
   rowId: string | null;
@@ -24,11 +25,35 @@ export default function TransactionAction(props: ITransactionActionProps) {
   const [isloading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
+  const [confirmation,setConfirmation] =useState<ConfirmationDialogProps>({open: false} as ConfirmationDialogProps);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([])
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddOrderTransactionMutation();
   const [deleteOrder, { isError: deleteIsError, isLoading: deleteIsLoading, error: deleteError, isSuccess: deleteSccuess }] = useDeleteOrderMutation();
   /*  console.log("TransactionAction/params",id,_idMember,rowId) */
+  const handleConfirmation = (action: string) => {
+    console.log("TransactionAction/handleConfirmation/",action)
+    if(action == "ADD_TRANSACTION"){
+      setConfirmation((prev) => ({...prev,
+        open: true,action: "ADD_TRASACTION",content:"Please confirm \n Add Transaction operation", title: "Confirmation",
+        onClose: onConfirmationClose }))
+      console.log("TransactionAction/handleConfirmation/ADD_TRASACTION",confirmation)
+    }
+    else if(action === "DELETE_ORDER"){
+      setConfirmation((prev) => ({...prev,
+        open: true,action: "DELETE_ORDER",content:"Please, press Confirm to Delete item", title: "Confirmation",
+        onClose: onConfirmationClose }))
+      console.log("TransactionAction/handleConfirmation/DELETE_ORDER",confirmation)
+    }
 
+  }
+  const onConfirmationClose = (value: boolean,action: string) => {
+    setConfirmation((prev) => ({...prev, open: false}))
+    console.log("TransactionAction/onConfirmationClose",confirmation)
+    if(value){
+      if(action === "DELETE_ORDER")
+        handleDelete()
+    }
+  }
   const handleTransaction = async () => {
     console.log("TransactionAction/handleTransaction", id, params, transaction)
     setIsLoading(true);
@@ -56,6 +81,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
 
     const result: boolean = true;
     if (orderId !== undefined) {
+      
       setIsLoading(true);
       await deleteOrder(orderId).unwrap().then((data) => {
         console.log("TransactionAction/handleDelete/data", data)
@@ -87,6 +113,10 @@ export default function TransactionAction(props: ITransactionActionProps) {
 
   return (
     <Box  >
+      {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
+      open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
+      onClose={onConfirmationClose} />
+      ): null}
       {openError === true ? (<ErrorDialog setOpen={setOpenError} open={openError} validationAlert={validationAlert} />) : null}
       {
         params.row.status.toString() === OrderStatus.CLOSE &&
@@ -111,14 +141,14 @@ export default function TransactionAction(props: ITransactionActionProps) {
         (
           <>
             {orderId === undefined ? (<></>) : (
-              <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleDelete} >
+              <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={() => handleConfirmation("DELETE_ORDER")} >
                 <Tooltip title={"Delete Order"}>
                   <Delete />
                 </Tooltip>
               </Fab>
             )}
 
-            <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={handleTransaction} >
+            <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={() => handleConfirmation("ADD_TRANSACTION")} >
               <Tooltip title={"Place Transaction"}>
                 <PaymentIcon />
               </Tooltip>

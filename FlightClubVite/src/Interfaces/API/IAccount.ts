@@ -16,16 +16,14 @@ export enum OT_REF {
   OTHER = "Other"
 }
 export enum OrderStatus {
-  "CREATED"= "Created",
-  "CLOSE" = "Close"
+  "CREATED"= "CREATED",
+  "CLOSE" = "CLOSE"
 }
 export interface IOrderType {
   operation: OT_OPERATION, 
   referance: OT_REF
 }
-export interface IOrderStatus {
 
-}
 export interface IProductBase {
 
 }

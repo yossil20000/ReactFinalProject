@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
 import TransactionAction from './Accounts/TransactionAction';
-import { IOrder, OT_REF } from '../Interfaces/API/IAccount';
+import { IOrder, OrderStatus, OT_REF } from '../Interfaces/API/IAccount';
 import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 
@@ -48,13 +48,33 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   },[selectedClubAccount] )
 
   const orderRows = useMemo(() => {
+    console.log("OrderTable/orderRows/filter/member", selectedMember)
+    console.log("OrderTable/orderRows/filter/filter", filter)
     const rows = orders?.data.filter((item) => {
-      console.log("OrderTable/orderRows/filter/item", item,selectedMember)
+      console.log("OrderTable/orderRows/filter/item", item)
+
+      /* console.log("OrderTable/orderRows/filter/item.status.toString() == filter.orderStatus.toString()",item.status.toString() , (filter.orderStatus as OrderStatus)) */
+      let doFilter = false;
+      if(item.status.toString() == filter.orderStatus.toString())
+         {
+          doFilter = true;
+          console.log("OrderTable/orderRows/filter/dofilter_1", doFilter)
+        }
+      if((!selectedMember  || selectedMember?.lable == "") )
+        {
+          doFilter = doFilter && true;
+          console.log("OrderTable/orderRows/filter/dofilter_2", doFilter)
+        }
       
-      if(!selectedMember  || selectedMember?.lable == "") return true;
-      if(selectedMember?._id == item.member?._id)
-        return true ;
-      return false;
+      else if((selectedMember?._id == item.member?._id) && item.status == filter.orderStatus)
+         { 
+          doFilter = doFilter && true
+          console.log("OrderTable/orderRows/filter/dofilter_3", doFilter)
+         }
+      else
+         { doFilter = false}
+      console.log("OrderTable/orderRows/filter/dofilter_4", doFilter)
+      return doFilter;
     }).map((row : IOrder) => ({
       id: row._id, date: new Date(row.order_date).toLocaleDateString(),
       amount: row.amount,
@@ -68,13 +88,13 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       ,
     }))
     if (rows !== undefined) {
-      console.log("OrderTable/orders",rows,orders);
+      console.log("OrderTable/orderRows/orders",rows,orders);
       return rows
     }
     return []
 
 
-  }, [orders,selectedMember,selectedClubAccount])
+  }, [orders,selectedMember,selectedClubAccount,filter.orderStatus])
 
   
 

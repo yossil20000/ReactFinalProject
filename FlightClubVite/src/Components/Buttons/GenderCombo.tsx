@@ -8,7 +8,7 @@ function GenderCombo(props : StateComboProps) {
   const {onChanged,selectedItem} = props 
   const items = useRef(new Enum2ComboItem(Gender).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    console.log("GenderCombo/ DeviceItem", item)
+    console.log("GenderCombo/item", item)
     onChanged(item)
   }
   return (

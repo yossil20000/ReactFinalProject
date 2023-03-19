@@ -2,7 +2,7 @@
 import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
 import { useState } from 'react';
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
-import { InputComboItem } from '../../Components/Buttons/ControledCombo';
+import { InputComboItem, newInputComboItem } from '../../Components/Buttons/ControledCombo';
 import OrderTable from '../../Components/OrderTable';
 
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -16,14 +16,16 @@ import { from_to_Filter, IOrderTableFilter } from '../../Utils/filtering';
 import MembersCombo from '../../Components/Members/MembersCombo';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import CreateQuarterDialoq, { ICreateQuarterExpense } from './CreateQuarterDialoq';
+import OrderStatusCombo from '../../Components/Buttons/OrderStatusCombo';
+import { OrderStatus } from '../../Interfaces/API/IAccount';
 
 function AccountOrdersTab() {
   const [openFilter, setOpenFilter] = useState(false)
   const [openAddQuarter, setOpenAddQuarter] = useState(false)
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
   const [selectedMember, setSelectedMember] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedMember", null)
-  const [filter, setFilter] = useState<IOrderTableFilter>(from_to_Filter(new Date()));
- 
+  const [filter, setFilter] = useState<IOrderTableFilter>({...from_to_Filter(new Date()),orderStatus: OrderStatus.CREATED});
+
   const OnSelectedClubAccount = (item: InputComboItem): void => {
     console.log("AccountOrdersTab/OnSelectedClubAccount/item", item)
     setSelectedClubAccount(item);
@@ -52,6 +54,10 @@ function AccountOrdersTab() {
   }
   function handleAddOnSave(item : ICreateQuarterExpense) {
 console.log("AccountOrdersTab/item", item)
+  }
+  const onOrderStatusChanged = (item : InputComboItem) => {
+    console.log("AccountOrdersTab/item", item)
+    setFilter((prev) => ({...prev,orderStatus: item.lable as OrderStatus}))
   }
   return (
     <ContainerPage>
@@ -95,7 +101,10 @@ console.log("AccountOrdersTab/item", item)
                   </ListItemButton>
                 </ListItem>
                 <ListItem>
-                <MembersCombo onChanged={OnselectedMember} source={'_accountOrder'}/>
+                  <OrderStatusCombo onChanged={onOrderStatusChanged} source={'_accountOrder/orderStatus'} selectedItem={{...newInputComboItem, lable: filter.orderStatus === undefined ? OrderStatus.CREATED : filter.orderStatus}}/>
+                </ListItem>
+                <ListItem>
+                <MembersCombo onChanged={OnselectedMember} source={'_accountOrder/member'}/>
                 </ListItem>
               </List>
             </GeneralDrawer>
