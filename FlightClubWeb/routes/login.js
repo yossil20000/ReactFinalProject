@@ -34,4 +34,7 @@ router.get('/hidden/:token', [authJWT.authenticate], function(req,res,next) {
 })
 router.put('/change_password',authJWT.authenticate,loginController.change_password)
 router.post('/register', [authJWT.authenticate, authorize.authorize([ROLES[4],ROLES[5]])], loginController.register,memberController.member_create);
+router.put('/refresh', [authJWT.authenticate, authorize.authorize([ROLES[1],ROLES[2],ROLES[3],ROLES[4],ROLES[5]])],loginController.refresh_token);
+router.put('/refresh_not', loginController.refresh_token);
+
 module.exports = router;

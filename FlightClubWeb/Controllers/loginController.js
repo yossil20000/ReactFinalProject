@@ -41,7 +41,7 @@ exports.signin = function (req, res, next) {
                     res.cookie("token",token, {
                         path: '/',
                         httpOnly : true,
-                        maxAge: 360000,
+                        maxAge: 5,
                         secure: true
                     })
                     return res.status(201).json({
@@ -260,3 +260,57 @@ exports.register = function (req, res, next) {
 
 }
 
+exports.refresh_token = function (req,res,next) {
+    const member_id = req.body.member_id;
+    const username = req.body.username;
+    log.info(`login: ${member_id} ${username} `);
+
+    Member.findOne({ "username": username, "member_id": member_id }, (err, member) => {
+        if (err) {
+            console.info(`${email} Access Denied ${err}`)
+        }
+        if (member) {
+            const payLoad = authJWT.payload;
+            payLoad.email = member.member_id;
+            payLoad.userId = member._id.toString();
+            payLoad.roles = member.role.roles;
+            //payLoad.id = member._id;
+            console.log("refresh payload", payLoad);
+            const token = authJWT.signToken(payLoad);
+            const decodeJWT = jwtService.decodeJWT(token);
+            console.log("tokenExp", decodeJWT.exp);
+            res.cookie("token",token, {
+                path: '/',
+                httpOnly : true,
+                maxAge: 5,
+                secure: true
+            })
+            return res.status(201).json({
+                success: true,
+                errors: [],
+                data: {
+                    access_token: token,
+                    exp: decodeJWT.exp,
+                    iat: new Date(decodeJWT.iat * 1000),
+                    expDate: new Date(decodeJWT.exp * 1000),
+                    message: "Access Permited",
+                    member: {
+                        _id: member._id,
+                        member_id: member.member_id,
+                        family_name: member.family_name,
+                        first_name: member.first_name,
+                        roles: member.role.roles,
+                        username: member.username,
+                        image: member.image,
+                        gender: member.gender
+                    },
+
+                }
+            });
+        }
+        else {
+            return res.status(400).json({ success: false, errors: ["Access Denied"], message: "Access Denied" });
+        }
+
+    })
+}

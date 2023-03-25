@@ -10,7 +10,7 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logOut } from '../../features/Auth/authSlice';
@@ -18,11 +18,25 @@ import RollIcon from '../../Components/Buttons/RollIcon';
 import UserIcon from '../../Components/Buttons/UserIcon';
 import { useEffect } from 'react';
 import { Avatar } from '@mui/material';
-
+import useGetExpiredLogin from '../../hooks/useGetExpiredLogin'
+import RefreshTokenDialog from '../../Components/RefreshTokenDialog';
 type page = {
   name: string,
   route: string
 }
+
+const settings = ['Profile', 'MyAccount','Notification', 'Dashboard', 'change_password', 'Logout'];
+const remainLoginDialog : number = 30;
+const ResponsiveAppBar = () => {
+  const [openRefreshDialog,setOpenRefrwshDialog] = React.useState(false);
+  const [enableRefreshDialog,setEnableRefrwshDialog] = React.useState(true);
+ const [needLogin,setNeedLogin] = React.useState(false);
+  const  remainLogin = useGetExpiredLogin()
+  const navigate = useNavigate();
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const login = useAppSelector((state) => state.authSlice);
+  const dispatch = useAppDispatch();
 const pages: page[] = [
   { name: 'Home', route: ROUTES.HOME },
   { name: 'Reservations', route: ROUTES.RESERVATION },
@@ -31,18 +45,9 @@ const pages: page[] = [
   { name: 'Gallery', route: 'gallery'},
   { name: 'Admin', route: 'admin' },
   { name: "Account", route: "account" },
-  { name: "Login", route: "login" },
+  { name: `Login ${remainLogin}`, route: "login" },
   
   ];
-const settings = ['Profile', 'MyAccount','Notification', 'Dashboard', 'change_password', 'Logout'];
-
-const ResponsiveAppBar = () => {
-  const navigate = useNavigate();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const login = useAppSelector((state) => state.authSlice);
-  const dispatch = useAppDispatch();
-
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -57,11 +62,18 @@ const ResponsiveAppBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  if(needLogin && remainLogin > 0){
+    setNeedLogin(false);
+  }
+  if(!needLogin && remainLogin <0){
+    console.log("navigate")
+      setNeedLogin(true);    
+      navigate("/login"); 
+  }
   const handleSettingNavMenu = (event: React.MouseEvent<HTMLElement>, setting: string) => {
     event.preventDefault();
-    console.log("handleSettingMenu:Setting", setting)
-    console.log("handleSettingMenu", event.target)
+    console.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
+    console.log("ResponsiveAppBar/handleSettingMenu", event.target)
     navigate(`${setting}`)
     setAnchorElNav(null);
 
@@ -69,8 +81,8 @@ const ResponsiveAppBar = () => {
 
   const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement>, setting: string) => {
     event.preventDefault();
-    console.log("handleSettingMenu:Setting", setting)
-    console.log("handleSettingMenu", event.target)
+    console.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
+    console.log("ResponsiveAppBar/handleSettingMenu", event.target)
     if (setting == "Logout") {
       console.log("Logout")
       /* setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "") */
@@ -85,18 +97,30 @@ const ResponsiveAppBar = () => {
   useEffect(() => {
 
   }, [login])
+  const onCloseRefreshDialog = () : void => {
+    console.log("ResponsiveAppBar/onCloseRefreshDialog")
+    setOpenRefrwshDialog(false);
+    setEnableRefrwshDialog(true);
+    
+  }
+  if((remainLogin - remainLoginDialog) <= 0 && enableRefreshDialog && remainLogin >0 ){
+    
+    setOpenRefrwshDialog(true);
+    setEnableRefrwshDialog(false);
+  }
+ 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
+        {openRefreshDialog == true ? 
+        (<RefreshTokenDialog open={openRefreshDialog} expired={remainLogin} onClose={onCloseRefreshDialog}/>)
+        : (null)}
+        
         <Toolbar disableGutters>
-
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
+          <Typography variant="h6" noWrap component="a"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
+              display: { xs: 'none', lg: 'flex' },
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
@@ -106,8 +130,7 @@ const ResponsiveAppBar = () => {
           >
             {login?.member.first_name == "" ? "Hello, Please login" : `Hello ${login?.member.first_name}`}
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', lg: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -146,12 +169,12 @@ const ResponsiveAppBar = () => {
 
           <Typography
             variant="h5"
-            noWrap
+          
             component="a"
             href=""
             sx={{
               mr: 2,
-              display: { xs: 'flex', md: 'none' },
+              display: { xs: 'flex', lg: 'none' },
               flexGrow: 1,
               fontFamily: 'monospace',
               fontWeight: 700,
@@ -160,10 +183,10 @@ const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name}`}
+            {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name} Expired:${remainLogin}`}
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
             {pages.map((page, index) => (
               <Button
                 key={index}
@@ -176,6 +199,7 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
+            
             <RollIcon roles={login?.member?.roles} />
             <Tooltip title={`Open settings ${login?.member?.roles.join("/")}`}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

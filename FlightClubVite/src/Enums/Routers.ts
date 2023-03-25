@@ -11,6 +11,7 @@ export  enum URLS{
     LOGIN = "api/login",
     CHANGE_PASSWORD = "api/change_password",
     RESET = 'api/reset_password',
+    REFRESH = 'api/refresh',
     RESERVATION = 'api/reservation',
     RESERVATION_SEARCH = 'api/reservation/search/date',
     RESERVATION_DELETE = 'api/reservation/delete',

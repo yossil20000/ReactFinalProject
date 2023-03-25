@@ -1,4 +1,3 @@
-import IMemberInfo from "../IMemberInfo";
 import { Role } from "./IMember";
 
 export default interface ILogin{
@@ -6,6 +5,10 @@ export default interface ILogin{
     password: string | undefined,
     username: string | undefined,
 } 
+export  interface IRefreshToken {
+    member_id: string | undefined,
+    username: string | undefined,
+}
 
 export interface ILoginResult {
     "access_token": string;
