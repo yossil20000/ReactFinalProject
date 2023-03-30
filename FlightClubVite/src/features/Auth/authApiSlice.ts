@@ -17,6 +17,7 @@ export const authApiSlice = createApi({
             }
             return headers
           },
+          /* credentials: "include" */
     }),
     endpoints(builder) {
         return {

@@ -40,9 +40,9 @@ exports.signin = function (req, res, next) {
                     console.log("tokenExp", decodeJWT.exp);
                     res.cookie("token",token, {
                         path: '/',
-                        httpOnly : true,
+                        httpOnly : false,
                         maxAge: 5,
-                        secure: true
+                        secure: false
                     })
                     return res.status(201).json({
                         success: true,
@@ -281,9 +281,9 @@ exports.refresh_token = function (req,res,next) {
             console.log("tokenExp", decodeJWT.exp);
             res.cookie("token",token, {
                 path: '/',
-                httpOnly : true,
+                httpOnly : false,
                 maxAge: 5,
-                secure: true
+                secure: false
             })
             return res.status(201).json({
                 success: true,

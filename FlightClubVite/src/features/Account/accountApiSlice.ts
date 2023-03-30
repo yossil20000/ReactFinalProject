@@ -23,6 +23,7 @@ export const accountApiSlice = createApi({
       }
       return headers
     },
+    /* credentials: "same-origin", */
   }),
   tagTypes: ["Accounts","Orders","ClubAccount","Expense","Transaction"],
   endpoints(builder) {

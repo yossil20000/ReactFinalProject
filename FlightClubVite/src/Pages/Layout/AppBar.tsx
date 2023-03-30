@@ -26,7 +26,7 @@ type page = {
 }
 
 const settings = ['Profile', 'MyAccount','Notification', 'Dashboard', 'change_password', 'Logout'];
-const remainLoginDialog : number = 30;
+const remainLoginDialog : number = 40;
 const ResponsiveAppBar = () => {
   const [openRefreshDialog,setOpenRefrwshDialog] = React.useState(false);
   const [enableRefreshDialog,setEnableRefrwshDialog] = React.useState(true);
@@ -78,11 +78,11 @@ const pages: page[] = [
     setAnchorElNav(null);
 
   };
-
-  const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement>, setting: string) => {
-    event.preventDefault();
+  
+  const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement> | undefined, setting: string) => {
+    event !== undefined ?  event.preventDefault() : null;
     console.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
-    console.log("ResponsiveAppBar/handleSettingMenu", event.target)
+    
     if (setting == "Logout") {
       console.log("Logout")
       /* setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "") */
@@ -94,17 +94,21 @@ const pages: page[] = [
     }
     setAnchorElUser(null);
   };
-  useEffect(() => {
 
-  }, [login])
-  const onCloseRefreshDialog = () : void => {
+  const onCloseRefreshDialog = (action : boolean) : void => {
     console.log("ResponsiveAppBar/onCloseRefreshDialog")
+    
     setOpenRefrwshDialog(false);
     setEnableRefrwshDialog(true);
+    if(!action)
+     handleSettingUserMenu(undefined, "Logout");
     
   }
   if((remainLogin - remainLoginDialog) <= 0 && enableRefreshDialog && remainLogin >0 ){
-    
+    if(remainLogin <= 0){
+      console.log("ResponsiveAppBar/remainLogin",remainLogin)
+    }
+    console.log("ResponsiveAppBar/remainLogin",remainLogin)
     setOpenRefrwshDialog(true);
     setEnableRefrwshDialog(false);
   }

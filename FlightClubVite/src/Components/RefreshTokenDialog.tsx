@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { LOCAL_STORAGE } from '../Enums/localStroage'
-import { useRefreshMutation } from '../features/Auth/authApiSlice'
+import { useRefreshMutation, } from '../features/Auth/authApiSlice'
 import { setCredentials } from '../features/Auth/authSlice'
 import { ILoginResult, IRefreshToken } from '../Interfaces/API/ILogin'
 import { getValidationFromError } from '../Utils/apiValidation.Parser'
@@ -11,10 +11,11 @@ import { getFromLocalStorage } from '../Utils/localStorage'
 import { IValidationAlertProps, ValidationAlert } from './Buttons/TransitionAlert'
 import Item from './Item'
 
+import { logOut } from '../features/Auth/authSlice';
 export  interface IRefreshDialogProps {
   open: boolean,
   expired: number,
-  onClose: () => void
+  onClose: (action: boolean) => void
 }
 function RefreshTokenDialog({open,expired,onClose} : IRefreshDialogProps) {
   const dispatch = useAppDispatch();
@@ -31,12 +32,16 @@ function RefreshTokenDialog({open,expired,onClose} : IRefreshDialogProps) {
 /*     if(isSaved)
       onSave(value)
     else */
-      onClose()
+      onClose(false)
   }
   const handleOnValidatiobClose = useCallback(() => {
     setValidationAlert([])
 
   }, [])
+  if(expired < 0){
+    console.log("RefreshTokenDialog/expired/", expired);
+    onClose(true);
+  }
   const handleOnSave = async () => {
     
     let refreshProps: IRefreshToken = {
@@ -60,9 +65,8 @@ function RefreshTokenDialog({open,expired,onClose} : IRefreshDialogProps) {
 
       console.log("RefreshTokenDialog/localStorage", loging_info);
       /* navigate(`/${ROUTES.HOME}`); */
-      setIsSaved(true)
-      onClose();
-      onClose();
+      
+   onClose(true);
       
     })
     .catch((err) => {
