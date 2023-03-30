@@ -105,8 +105,8 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     { field: 'date',hide: false, headerName: 'Date', minWidth: 100, sortable: true,
     filterable: false,flex:1},
     { field: 'orderBy', headerName: 'Order By', minWidth: 100,flex:2 },
-    { field: 'product', headerName: 'Product', minWidth: 100,flex:1 },
-    { field: 'units', headerName: 'Units', type: 'number', minWidth: 80 , flex: 1 },
+    { field: 'product', headerName: 'Product', minWidth: 80,flex:1 },
+    { field: 'units', headerName: 'Units', type: 'number', minWidth: 70 , flex: 1 },
 
     {
       field: 'unitPrice',
@@ -115,7 +115,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       minWidth: 80,flex:1
     },
     { field: 'amount', headerName: 'Total', type: 'number', minWidth: 80,flex:1 },
-    { field: 'status', headerName: 'Status' ,flex:1},
+    { field: 'status', headerName: 'Status' ,minWidth: 80, flex:1},
     {
       field: 'actions',
       flex:1,
