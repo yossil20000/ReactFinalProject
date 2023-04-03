@@ -30,25 +30,22 @@ function SubmitRegistration({ numPage, page, setPage, formData, setFormData}: IP
     const navigate = useNavigate();
     const onSaveRegisterHandler = async () => {
 
-        console.log("onSaveRegisterHandler/formData", formData);
+        CustomLogger.log("onSaveRegisterHandler/formData", formData);
         const payload = await createMember(formData);
-        console.log("useCreateMemberMutation/paylod", payload);
+        CustomLogger.info("useCreateMemberMutation/paylod", payload);
     }
     const onValidationAlertClose = () => {
         setValidationAlert([]);
     }
     useEffect(() => {
-        
         if (isError) {
-            console.log("SubmitRegistration/error", error);
+            CustomLogger.error("SubmitRegistration/error", error);
             let validation = getValidationFromError(error, onValidationAlertClose);
             setValidationAlert(validation);
             return;
-            
         }
-
         if (isSuccess) {
-            console.log("SubmitRegistration/succeed");
+            CustomLogger.info("SubmitRegistration/succeed");
         }
     }, [isLoading])
     const buttonSx = {

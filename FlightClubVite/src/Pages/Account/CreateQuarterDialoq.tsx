@@ -37,10 +37,10 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
     setSelectedMembers(prev => ({ ...prev, all: false, device_Id: item._id }))
   }
   const onMemberChanged = (item: InputComboItem) => {
-    console.log("CreateQuarterDialoq/item", item)
+    CustomLogger.log("CreateQuarterDialoq/item", item)
     let members = new Array();
     members.push(item._id)
-    console.log("CreateQuarterDialoq/members", members, selectedMembers)
+    CustomLogger.info("CreateQuarterDialoq/members", members, selectedMembers)
     setSelectedMembers(prev => ({ ...prev, all: false, members_Id: members }))
   }
   const handleOnCancel = () => {
@@ -50,16 +50,16 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
       onClose()
   }
   const handleOnSave = async () => {
-    console.log("CreateQuarterDialoq/handleOnSave", selectedMembers)
+    CustomLogger.log("CreateQuarterDialoq/handleOnSave", selectedMembers)
     try {
       setValidationAlert([])
       const results = await CreateQuarterOrder(selectedMembers).unwrap()
-      console.log("CreateQuarterDialoq/handleOnSave/result", results)
+      CustomLogger.info("CreateQuarterDialoq/handleOnSave/result", results)
     }
     catch (error) {
       const validation = getValidationFromError(error, handleOnValidatiobClose);
       setValidationAlert(validation);
-      console.log("CreateQuarterDialoq/handleOnSave/error", error)
+      CustomLogger.error("CreateQuarterDialoq/handleOnSave/error", error)
     }
   }
   const handleOnValidatiobClose = useCallback(() => {
@@ -68,25 +68,25 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
   }, [])
   const getAllMembers = (items: InputComboItem[]) => {
 
-    console.log("CreateQuarterDialoq/getAllMembers", items,selectedMembers)
+    CustomLogger.log("CreateQuarterDialoq/getAllMembers", items, selectedMembers)
     const members = items.map((item) => item._id)
     setSelectedMembers(prev => ({ ...prev, all: true, members_Id: members }))
   }
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("CreateQuarterDialoq/handleBoolainChange", event.target.name, event.target.checked)
+    CustomLogger.log("CreateQuarterDialoq/handleBoolainChange", event.target.name, event.target.checked)
     setRequestAllItems(event.target.checked)
 
   };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("CreateQuarterDialoq/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("CreateQuarterDialoq/handleChange", event.target.name, event.target.value)
     setSelectedMembers(prev => ({
       ...prev,
-      [event.target.name]:event.target.value
+      [event.target.name]: event.target.value
     }));
   };
   const handleDateChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    newDate.setSeconds(0,0);
+    newDate.setSeconds(0, 0);
     setSelectedMembers(prev => ({ ...prev, date: newDate }))
   };
   return (
@@ -113,21 +113,21 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
                 <Divider light />
               </Grid>
               <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
-            <Item sx={{ marginLeft: "0px" }}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
-                <ThemeProvider theme={theme}>
-                  <DatePicker
-                    disableMaskedInput
-                    label="Date"
-                    mask=''
-                    value={selectedMembers.date}
-                    onChange={handleDateChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
-                  />
-                </ThemeProvider>
-              </LocalizationProvider>
-            </Item>
-          </Grid>
+                <Item sx={{ marginLeft: "0px" }}>
+                  <LocalizationProvider dateAdapter={AdapterLuxon}>
+                    <ThemeProvider theme={theme}>
+                      <DatePicker
+                        disableMaskedInput
+                        label="Date"
+                        mask=''
+                        value={selectedMembers.date}
+                        onChange={handleDateChange}
+                        renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
+                      />
+                    </ThemeProvider>
+                  </LocalizationProvider>
+                </Item>
+              </Grid>
               <Grid item xs={12}>
 
                 <TextField

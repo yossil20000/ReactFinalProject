@@ -41,7 +41,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFlightDialogProps) {
 
-  console.log("CreateFlightDialog/value", value)
+  CustomLogger.info("CreateFlightDialog/value", value)
 
   const [CreateFlight, { isError, isLoading, error, isSuccess }] = useCreateFlightMutation();
   const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
@@ -50,7 +50,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
   
   useEffect(() => {
-    console.log("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Flight Create", alertMessage: "Flight Create Successfully", open: true, onClose: onClose, severity: "success" }))
     }
@@ -68,7 +68,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   };
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleFligtChange", event.target.name, event.target.value)
+    CustomLogger.info("handleFligtChange", event.target.name, event.target.value)
     setFlightCreate(prev => ({
       ...prev,
       [event.target.name]: event.target.value,
@@ -83,17 +83,17 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     
   },[])
   const handleOnSave = async () => {
-    console.log("CreateFlightDialog/onSave", flightCreate)
+    CustomLogger.info("CreateFlightDialog/onSave", flightCreate)
     let flight = new CFlightCreate();
     flight.copy(flightCreate);
-    console.log("CreateFlightDialog/onSave/flight", flight)
-    console.log("CreateFlightDialog/onSave/date", flightCreate.date?.toUTCString())
+    CustomLogger.info("CreateFlightDialog/onSave/flight", flight)
+    CustomLogger.info("CreateFlightDialog/onSave/date", flightCreate.date?.toUTCString())
 
     await CreateFlight(flightCreate as IFlightCreateApi).unwrap().then((data) => {
-      console.log("CreateFlightDialoq/onSave/", data);
+      CustomLogger.info("CreateFlightDialoq/onSave/", data);
       onSave(flightCreate);
     }).catch((err) => {
-      console.log("CreateFlightDialoq/onSave/error", err.data.errors);
+      CustomLogger.info("CreateFlightDialoq/onSave/error", err.data.errors);
     });
 
 

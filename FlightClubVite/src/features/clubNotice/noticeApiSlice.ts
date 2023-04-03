@@ -30,13 +30,13 @@ export const noticeApiSlice = createApi({
         providesTags: ["ClubNotice"],
          
         transformResponse: (response : IResultBase<IClubNotice>) => {
-          console.log("fetchAllNotices/response", response);
+          CustomLogger.info("fetchAllNotices/response", response);
           response.data = response.data.map((item) => {
             item.due_date = new Date(item.due_date);
             item.issue_date = new Date(item.issue_date); 
             return item;
           } )
-          console.log("fetchAllNotices/data", response.data);
+          CustomLogger.info("fetchAllNotices/data", response.data);
           return response;
         }
       }),

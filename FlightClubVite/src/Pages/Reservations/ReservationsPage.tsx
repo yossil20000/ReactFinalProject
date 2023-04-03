@@ -35,30 +35,16 @@ function ReservationPage() {
   const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dateFilter.from) */
   const [dateTo, setDateTo] = useState(dateFilter.to)
   const [dateFrom, setDateFrom] = useState(dateFilter.from)
-  const [dateRef,setDateRef] = useState(new Date())
+  const [dateRef, setDateRef] = useState(new Date())
   const [filter, setFilter] = useState<ITransactionTableFilter>({ dateFilter: dateFilter } as ITransactionTableFilter);
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
 
-
-  const onFilterChanged = (key: string, value: any): void => {
-    console.log("onFilterChanged/key,value,filter", key, value, filter)
-    const newKey = key == 'fromDate' ? "from" : key == 'toDate' ? 'to' : "";
-    if (newKey == "") { console.log("onFilterChanged/ value not set", key); return }
-
-    const newObj = SetProperty(filter, `dateFilter.${newKey}`, new Date(value));
-    setFilter(newObj);
-
-  }
-  const getItems = (): IFilterItems[] => {
-    return [{ key: "toDate", value: dateTo, setValue: setDateTo }, { key: "fromDate", value: dateFrom, setValue: setDateFrom }] as IFilterItems[]
-  }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         setOpenReservationAdd(true);
-
         break;
     }
   }
@@ -74,48 +60,47 @@ function ReservationPage() {
 
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    console.log("AccountOrdersTab/onDateChanged", key, value)
+    CustomLogger.log("AccountOrdersTab/onDateChanged", key, value)
     if (value === null) return;
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
-    console.log("AccountOrdersTab/onDateChanged/newFilter", newFilter)
+    CustomLogger.info("AccountOrdersTab/onDateChanged/newFilter", newFilter)
   }
-  const onTodayChanged = () =>{
+  const onTodayChanged = () => {
     const todayFilter = getTodayFilter();
     setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
-    
   }
-  const onWeekChanged = () =>{
+  const onWeekChanged = () => {
     setDateRef(new Date())
     const todayFilter = getWeekFilter(new Date());
     setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
-    
+
   }
-  const onPrevWeek = () =>{
+  const onPrevWeek = () => {
     const newRefDate = dateRef.addDays(-7)
     setDateRef(newRefDate)
     const todayFilter = getWeekFilter(newRefDate);
     setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
   }
-  const onNextWeek = () =>{
+  const onNextWeek = () => {
     const newRefDate = dateRef.addDays(7)
     setDateRef(newRefDate)
     const todayFilter = getWeekFilter(newRefDate);
     setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
   }
-  const onMonthChanged = () =>{
+  const onMonthChanged = () => {
     setDateRef(new Date())
     const todayFilter = getMonthFilter(new Date());
     setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
-    
+
   }
-  const onPrevMonth = () =>{
+  const onPrevMonth = () => {
     const newRefDate = dateRef.addDays(-30)
     setDateRef(newRefDate)
     const todayFilter = getMonthFilter(newRefDate);
     setFilter({ dateFilter: todayFilter } as ITransactionTableFilter);
   }
-  const onNextMonth = () =>{
+  const onNextMonth = () => {
     const newRefDate = dateRef.addDays(30)
     setDateRef(newRefDate)
     const todayFilter = getMonthFilter(newRefDate);
@@ -129,122 +114,122 @@ function ReservationPage() {
   }
   return (
     <>
-        <ContainerPage>
-          <>
-            <ContainerPageHeader>
-              <Box marginTop={2} display={'flex'} flexDirection={'row'}>
+      <ContainerPage>
+        <>
+          <ContainerPageHeader>
+            <Box marginTop={2} display={'flex'} flexDirection={'row'}>
 
-                <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
-                  <Grid item xs={12}>
+              <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
+                <Grid item xs={12}>
                   <Typography variant="h6" align="center">Reservation Page</Typography>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
-                      <FilterListIcon fontSize="inherit" />
-                    </IconButton>
-                  </Grid>
-                  <Grid item xs={11}>
-                    <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
-                  </Grid>
-
-
                 </Grid>
-              </Box>
-            </ContainerPageHeader>
-            <ContainerPageMain>
-              <>
-                {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
-                <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
-                  <List sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <ListItem key={"fromDate"} disablePadding>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <DateRangeIcon />
-                        </ListItemIcon>
-                        <DatePickerDate value={filter.dateFilter.from === undefined ? new Date() : filter.dateFilter.from} param="dateFilter.from" lable='From Date' onChange={onDateChanged} />
-
-                      </ListItemButton>
-
-                    </ListItem>
-                    <ListItem key={"toDate"} disablePadding>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <DateRangeIcon />
-                        </ListItemIcon>
-                        <DatePickerDate value={filter.dateFilter.to === undefined ? new Date() : filter.dateFilter.to} param={"dateFilter.to"} lable='To Date' onChange={onDateChanged} />
-
-                      </ListItemButton>
-
-                    </ListItem>
-                    <ListItem key={'today'} disablePadding>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <TodayIcon />
-                        </ListItemIcon>
-                        <Button onClick={onTodayChanged}>Today</Button>
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem key={'week'} disablePadding>
-                      <ListItemButton onClick={onWeekChanged}>
-                        <ListItemIcon>
-                          <CalendarViewWeekIcon />
-                        </ListItemIcon>
-                      </ListItemButton>
-                      <ListItemButton onClick={onPrevWeek}>
-                        <ListItemIcon>
-                          <NavigateBeforeIcon />
-                        </ListItemIcon>
-                        </ListItemButton>
-
-                       <ListItemButton onClick={onWeekChanged} sx={{textAlign:'center'}}>Week</ListItemButton>
-                       <ListItemButton>
-                       <ListItemIcon onClick={onNextWeek}>
-                          <NavigateNextIcon />
-                        </ListItemIcon>
-                       </ListItemButton>
-
-                      
-                    </ListItem>
-                    <ListItem key={'month'} disablePadding>
-                      <ListItemButton onClick={onMonthChanged}>
-                        <ListItemIcon>
-                          <CalendarMonthIcon />
-                        </ListItemIcon>
-                      </ListItemButton>
-                      <ListItemButton onClick={onPrevMonth}>
-                        <ListItemIcon>
-                          <NavigateBeforeIcon />
-                        </ListItemIcon>
-                        </ListItemButton>
-
-                       <ListItemButton onClick={onMonthChanged} sx={{textAlign:'center'}}>Month</ListItemButton>
-                       <ListItemButton onClick={onNextMonth}>
-                       <ListItemIcon>
-                          <NavigateNextIcon />
-                        </ListItemIcon>
-                       </ListItemButton>
-
-                      
-                    </ListItem>
-
-                  </List>
+                <Grid item xs={1}>
+                  <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+                    <FilterListIcon fontSize="inherit" />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={11}>
+                  <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
+                </Grid>
 
 
-                </GeneralDrawer>
+              </Grid>
+            </Box>
+          </ContainerPageHeader>
+          <ContainerPageMain>
+            <>
+              {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
+              <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
+                <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <ListItem key={"fromDate"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <DateRangeIcon />
+                      </ListItemIcon>
+                      <DatePickerDate value={filter.dateFilter.from === undefined ? new Date() : filter.dateFilter.from} param="dateFilter.from" lable='From Date' onChange={onDateChanged} />
 
-                <ReservationTable filter={filter as IReservationTableFilter} />
+                    </ListItemButton>
 
-              </>
+                  </ListItem>
+                  <ListItem key={"toDate"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <DateRangeIcon />
+                      </ListItemIcon>
+                      <DatePickerDate value={filter.dateFilter.to === undefined ? new Date() : filter.dateFilter.to} param={"dateFilter.to"} lable='To Date' onChange={onDateChanged} />
 
-            </ContainerPageMain>
-            <ContainerPageFooter>
-              <>
-                reservation 
-              </>
-            </ContainerPageFooter>
-          </>
+                    </ListItemButton>
 
-        </ContainerPage>
+                  </ListItem>
+                  <ListItem key={'today'} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <TodayIcon />
+                      </ListItemIcon>
+                      <Button onClick={onTodayChanged}>Today</Button>
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem key={'week'} disablePadding>
+                    <ListItemButton onClick={onWeekChanged}>
+                      <ListItemIcon>
+                        <CalendarViewWeekIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+                    <ListItemButton onClick={onPrevWeek}>
+                      <ListItemIcon>
+                        <NavigateBeforeIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+                    <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
+                    <ListItemButton>
+                      <ListItemIcon onClick={onNextWeek}>
+                        <NavigateNextIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+
+                  </ListItem>
+                  <ListItem key={'month'} disablePadding>
+                    <ListItemButton onClick={onMonthChanged}>
+                      <ListItemIcon>
+                        <CalendarMonthIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+                    <ListItemButton onClick={onPrevMonth}>
+                      <ListItemIcon>
+                        <NavigateBeforeIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+                    <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
+                    <ListItemButton onClick={onNextMonth}>
+                      <ListItemIcon>
+                        <NavigateNextIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+
+
+                  </ListItem>
+
+                </List>
+
+
+              </GeneralDrawer>
+
+              <ReservationTable filter={filter as IReservationTableFilter} />
+
+            </>
+
+          </ContainerPageMain>
+          <ContainerPageFooter>
+            <>
+              reservation
+            </>
+          </ContainerPageFooter>
+        </>
+
+      </ContainerPage>
     </>
 
 

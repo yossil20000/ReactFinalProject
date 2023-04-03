@@ -13,7 +13,7 @@ function MUISelect<T extends string>({ data, label, value, handlerChange ,proper
 
  
   function handleOnChange(event : React.ChangeEvent<HTMLInputElement>) {
-    console.log("handleOnChange", event.target.value as string);
+    CustomLogger.log("handleOnChange", event.target.value as string);
     setItem(event.target.value as T)
     handlerChange(event.target.value as T,property)
   }

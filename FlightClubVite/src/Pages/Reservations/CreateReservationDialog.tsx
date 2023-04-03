@@ -42,7 +42,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 
 function CreateReservationDialog({ value, onClose, onSave, open, ...other }: CreateReservationDialogProps) {
 
-  console.log("CreateReservationDialog/value", value)
+  CustomLogger.log("CreateReservationDialog/value", value)
   const [CreateReservation, { isError, isLoading, error, isSuccess }] = useCreateReservationMutation();
   const [reservationCreate, setReservationCreate] = useState<IReservationCreateApi>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
@@ -51,7 +51,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
   
   useEffect(() => {
-    console.log("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Reservation Create", alertMessage: "Reserva Create Successfully", open: true, onClose: onClose, severity: "success" }))
     }
@@ -68,12 +68,12 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     setReservationCreate(prev => ({ ...prev, date_from: newDate }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
-    console.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
+    CustomLogger.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0,0)
-    console.log("CreateFlightDialoq/handleToDateFilterChange/", newDate);
+    CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", newDate);
     setReservationCreate(prev => ({ ...prev, date_to: newDate }))
-    console.log("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
+    CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
   };
 
   
@@ -86,17 +86,15 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   }
   const handleOnSave = async () => {
     setValidationAlert([])
-    console.log("CreateReservationDialog/onSave", reservationCreate)
-    console.log("CreateReservationDialog/onSave/date_from", reservationCreate.date_from?.toUTCString())
+    CustomLogger.log("CreateReservationDialog/onSave", reservationCreate)
+    CustomLogger.log("CreateReservationDialog/onSave/date_from", reservationCreate.date_from?.toUTCString())
 
     await CreateReservation(reservationCreate as IReservationCreateApi).unwrap().then((data) => {
-      console.log("CreateFlightDialoq/onSave/", data);
+      CustomLogger.info("CreateFlightDialoq/onSave/", data);
       onSave(reservationCreate);
     }).catch((err) => {
-      console.log("CreateFlightDialoq/onSave/error", err.data.errors);
+      CustomLogger.error("CreateFlightDialoq/onSave/error", err.data.errors);
     });
-
-
   }
 
   const onDeviceChanged = (item: InputComboItem) => {

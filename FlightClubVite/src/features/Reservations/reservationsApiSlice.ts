@@ -31,8 +31,8 @@ export const reservationApiSlice = createApi({
                 }),
                 providesTags: ["Reservation"],
                 transformResponse: (response : IResultBase<IReservation>) => {
-                    console.log("fetchAllReservations/response", response);
-                    console.log("fetchAllReservations/clientOffset",new Date().getTimezoneOffset() );
+                    CustomLogger.info("fetchAllReservations/response", response);
+                    CustomLogger.info("fetchAllReservations/clientOffset",new Date().getTimezoneOffset() );
                     return response;
                   }
             }),

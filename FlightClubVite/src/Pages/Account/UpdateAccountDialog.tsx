@@ -45,7 +45,7 @@ function UpdateAccountDialog({ value, onClose, onSave, open, ...other }: UpdateA
   const [isSaved, setIsSaved] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<IAccount>(value)
   useEffect(() => {
-    console.log("UpdateAccountDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("UpdateAccountDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Account Update", alertMessage: "Account Update Successfully", open: true, onClose: onClose, severity: "success" }))
     }
@@ -69,12 +69,12 @@ function UpdateAccountDialog({ value, onClose, onSave, open, ...other }: UpdateA
 
   }, [])
   const handleOnSave = async () => {
-    console.log("UpdateAccountDialog/onSave", selectedAccount)
+    CustomLogger.log("UpdateAccountDialog/onSave", selectedAccount)
     setValidationAlert([]);
     
     if (selectedAccount !== undefined) {
       await UpdateAccount(selectedAccount).unwrap().then((data) => {
-        console.log("UpdateAccountDialog/onSave/", data);
+        CustomLogger.info("UpdateAccountDialog/onSave/", data);
         if (data.data._id !== undefined) {
           setIsSaved(true)
         }
@@ -82,7 +82,7 @@ function UpdateAccountDialog({ value, onClose, onSave, open, ...other }: UpdateA
 
 
       }).catch((err) => {
-        console.log("UpdateAccountDialog/onSave/error", err.data.errors);
+        CustomLogger.error("UpdateAccountDialog/onSave/error", err.data.errors);
       });
     }
 
@@ -90,7 +90,7 @@ function UpdateAccountDialog({ value, onClose, onSave, open, ...other }: UpdateA
 
   }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("UpdateAccountDialog/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("UpdateAccountDialog/handleChange", event.target.name, event.target.value)
     const newObj: IAccount = SetProperty(selectedAccount, event.target.name, event.target.value) as IAccount;
 
     setSelectedAccount(newObj)
@@ -98,11 +98,11 @@ function UpdateAccountDialog({ value, onClose, onSave, open, ...other }: UpdateA
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("UpdateAccountDialog/SetProperty/newobj", newObj)
+    CustomLogger.info("UpdateAccountDialog/SetProperty/newobj", newObj)
     return newObj;
   }
   const onComboChanged = (item: InputComboItem, prop:string): void => {
-    console.log("UpdateAccountDialog/onComboChanged/item", item, prop,selectedAccount);
+    CustomLogger.log("UpdateAccountDialog/onComboChanged/item", item, prop,selectedAccount);
     const newObj: IAccount = SetProperty(selectedAccount, prop, item.lable) as IAccount;
     setSelectedAccount(newObj)
   }

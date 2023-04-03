@@ -74,7 +74,7 @@ function AdminPage() {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
-    console.log("AdminPage/newValue", newValue)
+    CustomLogger.log("AdminPage/newValue", newValue)
   }
 
   const colorMode = useMemo(

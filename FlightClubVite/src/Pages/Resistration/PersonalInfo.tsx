@@ -24,46 +24,37 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData}: IPageNav
 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";
-    console.log("PersonalInfo/handleImageChange/file", file);
+    CustomLogger.info("PersonalInfo/handleImageChange/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
       await resizeFileTobase64(file, 300).then((result) => {
-        console.log("PersonalInfo/handleImageChange/result", result);
+        CustomLogger.info("PersonalInfo/handleImageChange/result", result);
         setFormData({ ...formData, image: result as string });
-
       }
-
       ).catch((error) => {
-        console.log("PersonalInfo/handleImageChange/error", error);
+        CustomLogger.error("PersonalInfo/handleImageChange/error", error);
       }
-
       )
-      /* console.log("PersonalInfo/handleImageChange/base64", base64) */
     }
-
   }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-
     setFormData({ ...formData, [prop]: item.lable });
-    console.log("formData", formData)
+    CustomLogger.info("formData", formData)
   }
   const handlePersonChange = (prop: any) => (event: any) => {
     setFormData({ ...formData, [prop]: event.target.value });
-    console.log("formData", formData)
+    CustomLogger.info("formData", formData)
   };
-  const handleContactChange = (prop: any) => (event: any) => {
-    setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
-    console.log("formData", formData)
-  };
+
   const handleTimeChange = (newValue: Date | null) => {
     if (newValue === null)
       return;
     setFormData({ ...formData, date_of_birth: newValue });
-    console.log("formData", formData)
+    CustomLogger.info("formData", formData)
   };
   const handleemailChange = (prop: any) => (event: any) => {
     setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
-    console.log("formData", formData)
+    CustomLogger.info("formData", formData)
   };
 
   return (

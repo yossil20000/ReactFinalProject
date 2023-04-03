@@ -35,8 +35,8 @@ function CheckSelect({ items, label, selectedItems, onSelected, property }: Chec
     const { value } = event.target;
 
     const selected = items.filter((i) => value.includes(i.name) );
-    console.log("handleProperyChange/selected", value,items,selected)
-    console.log("handleProperyChange/selected", selected)
+    CustomLogger.log("handleProperyChange/selected", value,items,selected)
+    CustomLogger.log("handleProperyChange/selected", selected)
     onSelected(selected, property)
     setSelectedOptions(value);
   };

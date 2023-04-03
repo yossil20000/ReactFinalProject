@@ -32,30 +32,30 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-function AddAccountToBankDialog({ value, onClose, onSave, open, bank,...other }: AddAccountToBankDialogProps) {
+function AddAccountToBankDialog({ value, onClose, onSave, open, bank, ...other }: AddAccountToBankDialogProps) {
   const theme = useTheme();
 
 
   const [AddAccount, { isError, isLoading, error, isSuccess }] = useClubAddAccountMutation();
-  
-  
+
+
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<IAccount>(value)
   useEffect(() => {
-    console.log("AddAccountToBankDialog/useEffect/isError, isSuccess, isLoading", isError, isSuccess, isLoading)
+    CustomLogger.info("AddAccountToBankDialog/useEffect/isError, isSuccess, isLoading", isError, isSuccess, isLoading)
 
     if (isError) {
       const validation = getValidationFromError(error, handleOnValidatiobClose);
       setValidationAlert(validation);
       return;
     }
-    
+
   }, [isLoading])
 
 
   const handleOnCancel = () => {
-    
+
     setValidationAlert([])
     if (isSaved)
       onSave(selectedAccount)
@@ -67,48 +67,28 @@ function AddAccountToBankDialog({ value, onClose, onSave, open, bank,...other }:
 
   }, [])
   const handleOnSave = async () => {
-    console.log("AddAccountToBankDialog/onSave", selectedAccount)
+    CustomLogger.log("AddAccountToBankDialog/onSave", selectedAccount)
     setValidationAlert([]);
-    
+
     if (selectedAccount !== undefined) {
-      const accountToBank : IClubAddAccount = {
+      const accountToBank: IClubAddAccount = {
         _id: bank._id,
         account_id: value._id
       }
       await AddAccount(accountToBank).unwrap().then((data) => {
-        console.log("AddAccountToBankDialog/onSave/", data);
+        CustomLogger.info("AddAccountToBankDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
-        /* onSave(value); */
-
-
       }).catch((err) => {
-        console.log("AddAccountToBankDialog/onSave/error", err.data.errors);
+        CustomLogger.error("AddAccountToBankDialog/onSave/error", err.data.errors);
       });
     }
 
 
 
   }
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("AddAccountToBankDialog/handleChange", event.target.name, event.target.value)
-    const newObj: IAccount = SetProperty(selectedAccount, event.target.name, event.target.value) as IAccount;
-
-    setSelectedAccount(newObj)
-  };
-  const SetProperty = (obj: any, path: string, value: any): any => {
-    let newObj = { ...obj };
-    newObj = setProperty(newObj, path, value);
-    console.log("AddAccountToBankDialog/SetProperty/newobj", newObj)
-    return newObj;
-  }
-  const onComboChanged = (item: InputComboItem, prop:string): void => {
-    console.log("AddAccountToBankDialog/onComboChanged/item", item, prop,selectedAccount);
-    const newObj: IAccount = SetProperty(selectedAccount, prop, item.lable) as IAccount;
-    setSelectedAccount(newObj)
-  }
-
+ 
   return (
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
@@ -122,75 +102,75 @@ function AddAccountToBankDialog({ value, onClose, onSave, open, bank,...other }:
         <Card variant="outlined">
           <CardContent>
             <Grid container>
-            <Grid item xs={3}> 
-               
-               </Grid>
-               <Grid item xs={3}> 
+              <Grid item xs={3}>
+
+              </Grid>
+              <Grid item xs={3}>
                 <Typography>
-                Brand
+                  Brand
                 </Typography>
-               </Grid>
-               <Grid item xs={3}> 
+              </Grid>
+              <Grid item xs={3}>
                 <Typography>
-                Branch
+                  Branch
                 </Typography>
-               </Grid>
-               <Grid item xs={3}> 
+              </Grid>
+              <Grid item xs={3}>
                 <Typography>
-                Account
+                  Account
                 </Typography>
-               </Grid>
-              <Grid item xs={12}> 
-               <Typography>
-               Bank:
-               </Typography>
               </Grid>
-              
-              <Grid item xs={3}> 
-               
-               </Grid>
-              <Grid item xs={3}> 
-               <Typography>
-               {bank.club.brand}
-               </Typography>
+              <Grid item xs={12}>
+                <Typography>
+                  Bank:
+                </Typography>
               </Grid>
-              <Grid item xs={3}> 
-               <Typography>
-               {bank.club.branch}
-               </Typography>
+
+              <Grid item xs={3}>
+
               </Grid>
-              <Grid item xs={3}> 
-               <Typography>
-               {bank.club.account_id}
-               </Typography>
+              <Grid item xs={3}>
+                <Typography>
+                  {bank.club.brand}
+                </Typography>
               </Grid>
-              <Grid item xs={12}> 
-               <Typography>
-                Add Account:
-               </Typography>
+              <Grid item xs={3}>
+                <Typography>
+                  {bank.club.branch}
+                </Typography>
               </Grid>
-              <Grid item xs={12}> 
-               <Typography color={value.member !== null ? "primary.main" : "secondary"}>
-                {value.member !== null ? `${value?.member?.family_name} / ${value?.member?.member_id}` : "Account Detailed UnSet"}
-               </Typography>
+              <Grid item xs={3}>
+                <Typography>
+                  {bank.club.account_id}
+                </Typography>
               </Grid>
-              <Grid item xs={3}> 
-               
-               </Grid>
-              <Grid item xs={3}> 
-               <Typography>
-               {bank.club.brand}
-               </Typography>
+              <Grid item xs={12}>
+                <Typography>
+                  Add Account:
+                </Typography>
               </Grid>
-              <Grid item xs={3}> 
-               <Typography>
-               {bank.club.branch}
-               </Typography>
+              <Grid item xs={12}>
+                <Typography color={value.member !== null ? "primary.main" : "secondary"}>
+                  {value.member !== null ? `${value?.member?.family_name} / ${value?.member?.member_id}` : "Account Detailed UnSet"}
+                </Typography>
               </Grid>
-              <Grid item xs={3}> 
-               <Typography>
-               {value?.account_id}
-               </Typography>
+              <Grid item xs={3}>
+
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>
+                  {bank.club.brand}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>
+                  {bank.club.branch}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>
+                  {value?.account_id}
+                </Typography>
               </Grid>
             </Grid>
 

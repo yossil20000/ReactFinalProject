@@ -35,9 +35,9 @@ function AccountTransactionsTab() {
 
 
   const onFilterChanged = (key: string, value: any): void => {
-    console.log("onFilterChanged/key,value,filter", key, value, filter)
+    CustomLogger.log("onFilterChanged/key,value,filter", key, value, filter)
     const newKey = key == 'fromDate' ? "from" : key == 'toDate' ? 'to' : "";
-    if (newKey == "") { console.log("onFilterChanged/ value not set", key); return }
+    if (newKey == "") { CustomLogger.log("onFilterChanged/ value not set", key); return }
 
     const newObj = SetProperty(filter, `dateFilter.${newKey}`, new Date(value));
     setFilter(newObj);
@@ -48,24 +48,19 @@ function AccountTransactionsTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
-
         setOpenAddTransaction(true)
         break;
     }
   }
   const handleAddOnClose = () => {
     setOpenAddTransaction(false);
-
   }
+
   const handleAddOnSave = () => {
-
-
     setOpenAddTransaction(false);
-
-
   }
   return (
     <ContainerPage>
@@ -81,7 +76,7 @@ function AccountTransactionsTab() {
               <Grid item xs={10} sm={4}>
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Transaction" }]} />
               </Grid>
-              <Grid item xs={12}  sm={6}>
+              <Grid item xs={12} sm={6}>
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
 
               </Grid >
@@ -93,17 +88,17 @@ function AccountTransactionsTab() {
           <>
             {(openAddTransaction == true) ? (<NewTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
             <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
-            <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
-            
+              <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
+
             </FilterDrawer>
-            
+
             <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter} />
           </>
 
         </ContainerPageMain>
         <ContainerPageFooter>
           <>
-            
+
           </>
         </ContainerPageFooter>
       </>

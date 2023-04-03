@@ -119,7 +119,7 @@ function AccountsTab() {
       bankFound = bankAccounts?.data.find((bank) => (bank.club.brand === "BAZ" && bank.club.branch === "HAIFA"))
       setBank(bankFound)
     }
-    console.log("getData/bankAccounts,bank", bankAccounts, bank);
+    CustomLogger.log("getData/bankAccounts,bank", bankAccounts, bank);
 
     const rows = data?.data.map((row) => {
       let bankRow: React.ReactNode = <><ActionButtons OnAction={onBankAction} show={[EAction.ADD]} item={row.account_id} /></>;
@@ -127,15 +127,15 @@ function AccountsTab() {
       let foundAccount: IAccount | undefined = undefined
 
       if (bankFound !== undefined) {
-        console.log("getData/bank,row", bankFound.accounts, row.account_id);
+        CustomLogger.info("getData/bank,row", bankFound.accounts, row.account_id);
         foundAccount = bankFound.accounts.find((account) => account.account_id == row.account_id)
-        console.log("getData/foundAccount", foundAccount);
+        CustomLogger.info("getData/foundAccount", foundAccount);
         if (foundAccount)
           bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
       return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
     })
-    console.log("Account/getData", rows)
+    CustomLogger.info("Account/getData", rows)
     return rows === undefined ? [] : rows;
   }, [data, bankAccounts, bank])
 
@@ -158,18 +158,10 @@ function AccountsTab() {
 
     setSelectedAccount(found);
   }
-  const OnSelectedClubAccount = (item: InputComboItem): void => {
-    let bankFound: IClubAccount | undefined = undefined;
-    if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
-      bankFound = bankAccounts?.data.find((bank) => (bank._id === item._id))
-      console.log("Account/OnSelectedClubAccount/item,bank", item, bankFound)
-      setBank(bankFound)
-    }
 
-  }
   function onBankAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("Account/ActionButtons/onBankAction", event?.target, action, item)
+    CustomLogger.info("Account/ActionButtons/onBankAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         if (item !== undefined) {
@@ -181,7 +173,7 @@ function AccountsTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("Account/ActionButtons/onAction", event?.target, action, item)
+    CustomLogger.info("Account/ActionButtons/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
 
@@ -201,19 +193,13 @@ function AccountsTab() {
   const onAccountChange = (item: InputComboItem) => {
     const filter: IAccountFilter = filterData;
     filter.account_id = item._id;
-    console.log("Account/onAccountChange/filter", filter)
+    CustomLogger.log("Account/onAccountChange/filter", filter)
     setFilterData((prev) => ({ ...prev, account_id: item._id }));
 
   }
-  const onBankAccountChange = (item: InputComboItem) => {
-    const filter: IAccountFilter = filterData;
-    filter.account_id = item._id;
-    console.log("Account/onAccountChange/filter", filter)
-    setFilterData((prev) => ({ ...prev, account_id: item._id }));
 
-  }
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Account/handleBoolainChange", event.target.name, event.target.checked)
+    CustomLogger.log("Account/handleBoolainChange", event.target.name, event.target.checked)
 
     setFilterData((prev: any) => ({
       ...prev,
@@ -230,8 +216,7 @@ function AccountsTab() {
     setOpenAccountAdd(false);
     setOpenAccountEdit(false);
     setOpenAddToBank(false)
-    console.log("Account/handleAddOnSave/value", value);
-
+    CustomLogger.log("Account/handleAddOnSave/value", value);
   }
   const RenderClubAccount = useMemo(() => {
 
@@ -279,7 +264,7 @@ function AccountsTab() {
             <Grid container>
               <Grid item xs={12}>
                 <TablePagination
-                  rowsPerPageOptions={[1,5, 10, 25, 100]}
+                  rowsPerPageOptions={[1, 5, 10, 25, 100]}
                   component="div"
                   count={getData.filter(filterAccont).length}
                   rowsPerPage={rowsPerPage}

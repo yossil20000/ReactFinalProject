@@ -27,38 +27,19 @@ export default function ReservationAction(props: IReservationActionProps) {
   const [updateReservation, { isError: isUpdateError, isLoading: updateLoading, error: updateError, isSuccess: updateSccuess }] = useUpdateReservationMutation();
   const [deleteReservation, { isError: isDeleteError, isLoading: deleteLoading, error: deleteError, isSuccess: deleteSccuess }] = useDeleteReservationMutation();
   
-  /*  console.log("ReservationAction/params",id,_idMember,rowId) */
+  /*  CustomLogger.info("ReservationAction/params",id,_idMember,rowId) */
 
   const handleReservation = async () => {
-    console.log("ReservationAction/handleReservation", id, params,reservation)
+    CustomLogger.log("ReservationAction/handleReservation", id, params,reservation)
     setIsLoading(true);
     const result: boolean = true;
-  /*   await AddTransaction(reservation).unwrap().then((data) => {
-      console.log("ReservationAction/handleReservation/data", data)
-      if (data.success === false) {
-        const validation = getValidationFromError(data.errors, () : void =>{});
-        setValidationAlert(validation);
-        setOpenError(true);
-        return;
-      }
-    }).catch((err) => {
-      const validation = getValidationFromError(err, () : void =>{});
-      setValidationAlert(validation);
-      setOpenError(true);
-      return;
-    });
-   */  
     setInterval(() => {
       if (result) {
-        
         setIsSuccess(true);
         setRowId(null);
-
       }
       setIsLoading(false)
     }, 2000)
-
-    /* setIsLoading(false) */
   }
 
   useEffect(() => {

@@ -12,7 +12,7 @@ const getInputItems= () => {
       lable: name
     }
   })
-  console.log("ActionCombo/items",items)
+  CustomLogger.info("ActionCombo/items",items)
   return items;
 }
 function ActionCombo(props : ComboProps) {
@@ -21,7 +21,7 @@ function ActionCombo(props : ComboProps) {
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
-    console.log("ActionCombo/ DeviceItem", item)
+    CustomLogger.info("ActionCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (

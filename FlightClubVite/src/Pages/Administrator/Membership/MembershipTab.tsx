@@ -4,7 +4,7 @@ import ActionButtons, { EAction } from '../../../Components/Buttons/ActionButton
 import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert'
 import MembershipCombo from '../../../Components/Membership/MembershipCombo';
-import {  useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
+import { useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
 import useLocalStorage from '../../../hooks/useLocalStorage';
 import IMembership, { NewMembership } from '../../../Interfaces/API/IMembership';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
@@ -13,22 +13,22 @@ const source = "MembershipTab/status"
 function MembershipTab() {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [selectedItem, setSelectedItem] = useLocalStorage<IMembership>("MembershipTab/selectedItem", NewMembership);
-  const {data,isError,error} = useFetchAllMembershipQuery();
+  const { data, isError, error } = useFetchAllMembershipQuery();
 
   const [updateMembership] = useUpdateMembershipMutation();
   const { refetch } = useFetchAllMembershipQuery();
 
   useEffect(() => {
-    if(error){
-      console.log("MembershipTab/errors",error);
+    if (error) {
+      CustomLogger.error("MembershipTab/errors", error);
     }
-  },[isError])
+  }, [isError])
   useEffect(() => {
-    if(data){
-      console.log("MembershipTab/data",data);
+    if (data) {
+      CustomLogger.info("MembershipTab/data", data);
       setSelectedItem(data.data[0])
     }
-  },[data])
+  }, [data])
   const onValidationAlertClose = () => {
     setValidationAlert([]);
   }
@@ -38,7 +38,7 @@ function MembershipTab() {
       setValidationAlert([]);
       if (selectedItem !== undefined && selectedItem?._id !== "") {
         payLoad = await updateMembership(selectedItem as unknown as IMembership).unwrap();
-        console.log("MembershipTab/OnSave/payload", payLoad);
+        CustomLogger.info("MembershipTab/OnSave/payload", payLoad);
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
@@ -60,7 +60,7 @@ function MembershipTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event?.defaultPrevented
-    console.log("ActionButtons/onAction", event?.target, action)
+    CustomLogger.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
         setSelectedItem(NewMembership);
@@ -72,28 +72,22 @@ function MembershipTab() {
   }
 
   const onMemberTypeChanged = (item: IMembership) => {
-    console.log("onMemberTypeChanged/Item", item)
-
+    CustomLogger.log("onMemberTypeChanged/Item", item)
     setSelectedItem(item);
   }
 
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("SetProperty/newobj", newObj)
+    CustomLogger.info("SetProperty/newobj", newObj)
     return newObj;
   }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
     const newObj: IMembership = SetProperty(selectedItem, event.target.name, event.target.value) as IMembership;
-
     setSelectedItem(newObj)
   };
-  const onComboChanged = useCallback((item: InputComboItem, prop: string): void => {
-    console.log("onComboChanged/item", item, prop);
-    const newObj: IMembership = SetProperty(selectedItem, prop, item.lable) as IMembership;
-    setSelectedItem(newObj)
-  },[selectedItem])
+
   return (
     <div className='yl__container' style={{ height: "100%", position: "relative" }}>
       <div className='header'>
@@ -109,23 +103,23 @@ function MembershipTab() {
         <Box marginTop={3} >
           <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} margin={0}>
             <Grid item xs={12} sm={12} >
-              <TextField type={"text"} fullWidth onChange={handleChange} name="name" label="Name" placeholder="Name" variant="standard" value={selectedItem?.name} InputLabelProps={{ shrink: true }}/>
+              <TextField type={"text"} fullWidth onChange={handleChange} name="name" label="Name" placeholder="Name" variant="standard" value={selectedItem?.name} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="entry_price" label="Entry Price" placeholder="Intitial Entry Price" variant="standard" value={selectedItem?.entry_price} InputLabelProps={{ shrink: true }}/>
+              <TextField type={"number"} fullWidth onChange={handleChange} name="entry_price" label="Entry Price" placeholder="Intitial Entry Price" variant="standard" value={selectedItem?.entry_price} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="montly_price" label="Montly Price" placeholder="Montly Price" variant="standard" value={selectedItem?.montly_price} InputLabelProps={{ shrink: true }}/>
+              <TextField type={"number"} fullWidth onChange={handleChange} name="montly_price" label="Montly Price" placeholder="Montly Price" variant="standard" value={selectedItem?.montly_price} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={12}>
-              <TextField type={"number"} fullWidth onChange={handleChange} name="hour_disc_percet" label="Discount" placeholder="Discount %" variant="standard" value={selectedItem?.hour_disc_percet} InputLabelProps={{ shrink: true }}/>
+              <TextField type={"number"} fullWidth onChange={handleChange} name="hour_disc_percet" label="Discount" placeholder="Discount %" variant="standard" value={selectedItem?.hour_disc_percet} InputLabelProps={{ shrink: true }} />
             </Grid>
           </Grid>
 
         </Box>
       </div>
       <div className='footer'>
-      <Grid container>
+        <Grid container>
           {validationAlert.map((item) => (
             <Grid item xs={12}>
               <ValidationAlert {...item} />

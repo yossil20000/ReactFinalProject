@@ -9,7 +9,7 @@ export function getTodayFilter(): IDateFilter {
     to: (new Date()).getEndDayDate(),
     currentOffset: 0
   };
-  console.log("getTodayFilter", filter)
+  CustomLogger.info("getTodayFilter", filter)
   return filter;
 }
 export function getDayFilter(today: Date): IDateFilter {
@@ -19,7 +19,7 @@ export function getDayFilter(today: Date): IDateFilter {
     to: today.getEndDayDate(),
     currentOffset: 0
   };
-  console.log("getTodayFilter", filter)
+  CustomLogger.info("getTodayFilter", filter)
   return filter;
 }
 export function getWeekFilter(today: Date): IDateFilter {

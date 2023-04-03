@@ -121,7 +121,7 @@ export const getValue = (val: number | undefined) : string => {
 function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
   
   const getAccountSign = () : string => {
-    console.log("MobileTransaction/item",item,item.type,Transaction_Type.CREDIT)
+    CustomLogger.log("MobileTransaction/item",item,item.type,Transaction_Type.CREDIT)
     if(item.type === Transaction_Type.TRANSFER){
       return 'gray';
     }

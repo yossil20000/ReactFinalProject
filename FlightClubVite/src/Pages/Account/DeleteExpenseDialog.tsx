@@ -40,12 +40,12 @@ function DeleteExpenseDialog({ onClose, onSave, open, value, ...other }: DeleteE
 
   }, [])
   const handleOnSave = async () => {
-    console.log("DeleteExspenseDialog/onSave", selectedExpense)
+    CustomLogger.log("DeleteExspenseDialog/onSave", selectedExpense)
     setValidationAlert([]);
 
     if (selectedExpense) {
       await DeleteExpense(selectedExpense._id).unwrap().then((data) => {
-        console.log("UpdateExspenseDialog/onSave/", data);
+        CustomLogger.info("UpdateExspenseDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
@@ -54,7 +54,7 @@ function DeleteExpenseDialog({ onClose, onSave, open, value, ...other }: DeleteE
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
-        console.log("UpdateExspenseDialog/onSave/error", err.data.errors);
+        CustomLogger.error("UpdateExspenseDialog/onSave/error", err.data.errors);
       });
     }
 

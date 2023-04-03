@@ -1,5 +1,3 @@
-import { ErrorSharp } from "@mui/icons-material";
-import { json } from "react-router-dom";
 import { IValidationAlertProps } from "../Components/Buttons/TransitionAlert";
 import { IValidation } from "../Interfaces/IValidation";
 
@@ -7,19 +5,18 @@ export function apiValidationParse(validation: IValidation): string {
   return `${validation.param} (${validation.value}) : ${validation.msg} `;
 }
 
-
 export function getValidationFromError(error: any, onclose: () => void): IValidationAlertProps[] {
-  console.log("getValidationFromError", error)
+  CustomLogger.error("getValidationFromError", error)
   let validation: IValidationAlertProps[] = [];
 
-  try{
+  try {
     const keys = Object.keys(error)
-    console.log("getValidationFromError/errorKeys/", keys)
-    console.log("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data'))
-    console.log("getValidationFromError/object.hasOwnProperty/", error.data?.hasOwnProperty('errors'))
-    console.log("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data.success'))
+    CustomLogger.error("getValidationFromError/errorKeys/", keys)
+    CustomLogger.error("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data'))
+    CustomLogger.error("getValidationFromError/object.hasOwnProperty/", error.data?.hasOwnProperty('errors'))
+    CustomLogger.error("getValidationFromError/object.hasOwnProperty/", error.hasOwnProperty('data.success'))
     if ((error as any).data?.errorType !== "VALIDATION" && (error as any).data?.errorType !== undefined) {
-      console.log("getValidationFromError/1", (error as any).data?.errorType)
+      CustomLogger.error("getValidationFromError/1", (error as any).data?.errorType)
       validation = (error as any).data?.errors.map((item: string) => {
         const alert: IValidationAlertProps = {
           location: '',
@@ -33,18 +30,18 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
       })
     }
     /* 2 */
-    if ((error as any).data?.errorType !== undefined && (error as any).data?.errorType === "VALIDATION" ) {
-      console.log("getValidationFromError/2", (error as any).data?.errorType)
+    if ((error as any).data?.errorType !== undefined && (error as any).data?.errorType === "VALIDATION") {
+      CustomLogger.error("getValidationFromError/2", (error as any).data?.errorType)
       validation = (error as any).data?.errors.map((item: IValidation) => {
         const alert: IValidationAlertProps = { ...(item as IValidationAlertProps) };
         alert.onClose = onclose;
         alert.open = true;
         return alert;
       })
-      console.log("getValidationFromError/2/validation/", validation)
+      CustomLogger.error("getValidationFromError/2/validation/", validation)
     }
-    if( validation === undefined || validation.length == 0){
-      if(error.error){
+    if (validation === undefined || validation.length == 0) {
+      if (error.error) {
         const alert: IValidationAlertProps = {
           location: '',
           msg: error.error,
@@ -54,9 +51,9 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
           onClose: onclose
         };
         validation = [alert]
-        console.log("getValidationFromError/3/validation/", validation)
+        CustomLogger.error("getValidationFromError/3/validation/", validation)
       }
-      else if(Array.isArray(error)){
+      else if (Array.isArray(error)) {
         validation = (error as any).map((item: any) => {
           let alert: IValidationAlertProps = {
             location: '',
@@ -66,19 +63,19 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
             open: true,
             onClose: onclose
           };
-          if(item instanceof Error){
+          if (item instanceof Error) {
             alert.msg = item.message;
           }
-          else{
+          else {
             alert.msg = JSON.stringify(item);
           }
-          
+
           return alert;
         })
-        console.log("getValidationFromError/4/validation/", validation)
+        CustomLogger.error("getValidationFromError/4/validation/", validation)
       }
       else {
-     
+
         let alert: IValidationAlertProps = {
           location: '',
           msg: "UnDefined Error",
@@ -87,18 +84,18 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
           open: true,
           onClose: onclose
         };
-        if(error instanceof Error){
+        if (error instanceof Error) {
           alert.msg = error.message;
         }
         validation = [alert]
-        console.log("getValidationFromError/5/validation/", validation)
+        CustomLogger.error("getValidationFromError/5/validation/", validation)
       }
     }
-    console.log("getValidationFromError/isError/validation/", validation)
+    CustomLogger.error("getValidationFromError/isError/validation/", validation)
     validation = validation === undefined ? [] : validation;
   }
-  catch(err : any){
-    console.log("getValidationFromError/err/", err)
+  catch (err: any) {
+    CustomLogger.error("getValidationFromError/err/", err)
     let alert: IValidationAlertProps = {
       location: '',
       msg: err.message,
@@ -109,9 +106,8 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
     };
     validation.push(alert);
   }
-  finally{
-    console.log("getValidationFromError/finanly/validation", validation)
+  finally {
+    CustomLogger.error("getValidationFromError/finanly/validation", validation)
     return validation;
   }
-
 }

@@ -11,7 +11,7 @@ export class Enum2ComboItem<T extends {[name: string]: any}> {
         lable: name
       }
     })
-    console.log("Enum2ComboItem/items",items)
+    CustomLogger.info("Enum2ComboItem/items",items)
     return items;
   }
 }

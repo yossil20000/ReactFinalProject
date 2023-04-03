@@ -15,11 +15,11 @@ function RequireAuth(allowedRoles : IRequireAuthProps) {
     const currentDate = DateTime.now();
     const dateExpired = DateTime.fromJSDate(new Date(login?.expDate))
     const remain = dateExpired.toUnixInteger() - currentDate.toUnixInteger();
-    console.log("RenderAuth/expiredin", currentDate,dateExpired, remain)
+    CustomLogger.log("RenderAuth/expiredin", currentDate,dateExpired, remain)
     
     if(login?.member !== undefined && login?.member._id !== "" && login.access_token !="") {
       if(remain  <= 0 ){
-        console.log("RenderAuth/expireded/remain", remain)
+        CustomLogger.info("RenderAuth/expireded/remain", remain)
         return (<Navigate to={`/${ROUTES.LOGIN}`} state={{from: location}} replace />)
       }
       const role = login.member.roles.find(role => allowedRoles?.roles.includes(role));

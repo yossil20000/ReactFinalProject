@@ -68,7 +68,7 @@ function DeviceTab() {
     const foundItem = devices?.find((i) => item._id === i._id);
     if (foundItem && foundItem !== null) {
       setSelectedDevice(foundItem);
-      console.log("onDeviceChange/foundItem", foundItem)
+      CustomLogger.info("onDeviceChange/foundItem", foundItem)
 
     }
     else{
@@ -107,13 +107,13 @@ function DeviceTab() {
       if (selectedDevice?._id.length == 0) {
         let newDevice: IDeviceCreate;
         newDevice = { ...selectedDevice };
-        console.log("DeviceTab/OnCreate/newDevice", newDevice);
+        CustomLogger.info("DeviceTab/OnCreate/newDevice", newDevice);
         payLoad = await createDevice(newDevice).unwrap();
-        console.log("DeviceTab/OnCreate/payload", payLoad);
+        CustomLogger.info("DeviceTab/OnCreate/payload", payLoad);
       }
       else if (selectedDevice) {
         payLoad = await updateDevice(selectedDevice).unwrap();
-        console.log("DeviceTab/OnUpdate/payload", payLoad);
+        CustomLogger.info("DeviceTab/OnUpdate/payload", payLoad);
       }
       if(payLoad.error){
         setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
@@ -128,7 +128,7 @@ function DeviceTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event?.defaultPrevented
-    console.log("ActionButtons/onAction", event?.target, action)
+    CustomLogger.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
         setSelectedDevice(newDevice());

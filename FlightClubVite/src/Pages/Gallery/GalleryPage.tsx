@@ -23,7 +23,7 @@ function GalleryPage() {
     setOpenPhotoAdd(false);
   }
   const handleAddImage = (event: React.MouseEvent<HTMLElement>) => {
-    console.log("GalleryPage/addimage")
+    CustomLogger.log("GalleryPage/addimage")
     setSelectedAction(EAction.ADD)
     setSelectedImage(newImage)
     setOpenPhotoAdd(true);
@@ -31,26 +31,22 @@ function GalleryPage() {
   const handleAddOnSave = (value: IImageBase) => {
     //refetch();
     setOpenPhotoAdd(false);
-    console.log("FlightPage/handleAddOnSave/value", value);
+    CustomLogger.log("FlightPage/handleAddOnSave/value", value);
 
   }
   const onEdit = (image: IImageBase) => {
-    console.log("GalleryPage/onedit/image", image)
+    CustomLogger.log("GalleryPage/onedit/image", image)
     setSelectedAction(EAction.SAVE)
     setSelectedImage(image)
     setOpenPhotoAdd(true);
   }
   const onDelete = (image: IImageBase) => {
-    console.log("GalleryPage/onDelete/image", image)
+    CustomLogger.log("GalleryPage/onDelete/image", image)
     setSelectedAction(EAction.DELETE)
     setSelectedImage(image)
     setOpenPhotoAdd(true);
   }
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("GalleryPage/handleBoolainChange", event.target.name, event.target.checked)
 
-
-  };
   const onMemberChanged = (item: InputComboItem) => {
       setSelectedMember(item)
   }
@@ -58,7 +54,7 @@ function GalleryPage() {
     if(filter && selectedMember !== undefined)
     {
       const filtered =  data?.data.filter((image) => image.author == selectedMember?.lable )
-      console.log("GalleryPage/filterImage/filtered",filtered)
+      CustomLogger.info("GalleryPage/filterImage/filtered",filtered)
       return filtered !== undefined ? filtered : []
     }
     return data?.data === undefined ? [] : data?.data

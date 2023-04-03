@@ -12,17 +12,10 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-
 function ShippingAddress({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberUpdate>) {
   const handleContactChange = (prop: any) => (event: any) => {
     setFormData(prev => ({ ...prev, contact: { ...prev.contact, shipping_address: { ...prev.contact.shipping_address, [prop]: event.target.value } } }));
-    console.log("formData", formData)
-  };
-  const handleTimeChange = (newValue: Date | null) => {
-    if (newValue === null)
-      return;
-    setFormData({ ...formData, date_of_birth: newValue });
-    console.log("formData", formData)
+    CustomLogger.info("formData", formData)
   };
 
   return (

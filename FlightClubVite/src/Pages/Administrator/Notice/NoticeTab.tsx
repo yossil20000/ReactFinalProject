@@ -25,11 +25,10 @@ function NoticeTab() {
   const noticeDispatch = useAppDispatch();
 
   const filter = useCallback(() => {
-    console.log("NoticeTab/callback/notice")
-    const now = new Date();
+    CustomLogger.log("NoticeTab/callback/notice")
     const filtered = notices?.data?.filter((notice) => {
-      console.log("Filter/notice.due_date < new Date(): ", new Date(notice.due_date).getTime(), new Date().getTime(), new Date(notice.due_date).getTime() < new Date().getTime())
-      if(noticeFilter.all) return true;
+      CustomLogger.info("Filter/notice.due_date < new Date(): ", new Date(notice.due_date).getTime(), new Date().getTime(), new Date(notice.due_date).getTime() < new Date().getTime())
+      if (noticeFilter.all) return true;
       if (noticeFilter.public && !notice.isPublic) return false;
       if (noticeFilter.expired && !notice.isExpired) return false;
       if (noticeFilter.isValid && notice.isExpired) {
@@ -43,7 +42,7 @@ function NoticeTab() {
       }
       return true;
     })
-    console.log("NoticeTab/callback/filteed", filtered)
+    CustomLogger.info("NoticeTab/callback/filteed", filtered)
     return filtered?.sort((left, right) => {
       if (noticeFilter.isValid)
         return new Date(left.issue_date).getTime() - new Date(right.issue_date).getTime();
@@ -60,7 +59,7 @@ function NoticeTab() {
       setValidationAlert([]);
       if (notice !== undefined && notice?._id !== "") {
         payLoad = await updateNotice(notice as unknown as IClubNotice).unwrap();
-        console.log("NoticeTab/updateNotice/payload", payLoad);
+        CustomLogger.info("NoticeTab/updateNotice/payload", payLoad);
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
@@ -68,17 +67,16 @@ function NoticeTab() {
       }
       else {
         payLoad = await createNotice(notice as unknown as IClubNotice).unwrap();
-        console.log("NoticeTab/createNotice/payload", payLoad);
+        CustomLogger.info("NoticeTab/createNotice/payload", payLoad);
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
 
       }
     }
-    catch (error:any) {
-      console.error("DeviceTab/OnSave/error", error);
+    catch (error: any) {
+      CustomLogger.error("DeviceTab/OnSave/error", error);
       setValidationAlert(getValidationFromError(error, onValidationAlertClose));
-
     }
     finally {
       refetch();
@@ -91,7 +89,7 @@ function NoticeTab() {
       setValidationAlert([]);
       if (notice !== undefined && notice?._id !== "") {
         payLoad = await deleteNotice(notice._id).unwrap();
-        console.log("NoticeTab/OnDelete/payload", payLoad);
+        CustomLogger.info("NoticeTab/OnDelete/payload", payLoad);
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
@@ -111,7 +109,7 @@ function NoticeTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event?.defaultPrevented
-    console.log("ActionButtons/onAction", event?.target, action)
+    CustomLogger.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
         noticeDispatch(setNotice(NewNotice));
@@ -121,7 +119,7 @@ function NoticeTab() {
         }));
         break;
       case EAction.SAVE:
-         onSave()
+        onSave()
         break;
       case EAction.DELETE:
         onDelete();
@@ -132,27 +130,26 @@ function NoticeTab() {
 
   const onStepChange = (step: number) => {
     const notice = filter()?.at(step);
-    console.log("NoticeTab/OnStepChanged/notice/step", notice, step)
+    CustomLogger.log("NoticeTab/OnStepChanged/notice/step", notice, step)
     if (notice === undefined) {
-      console.log("NoticeTab/OnStepChanged/empty")
+      CustomLogger.warn("NoticeTab/OnStepChanged/empty")
       return;
     };
-    console.log("NoticeTab/OnStepChanged/Set")
+    CustomLogger.log("NoticeTab/OnStepChanged/Set")
     noticeDispatch(setNotice(notice));
     if (filter()?.at(step) === undefined || filter()?.at(step) === null) {
-      console.log("NoticeTab/OnStepChanged/empty")
+      CustomLogger.info("NoticeTab/OnStepChanged/empty")
       noticeDispatch(setNotice(NewNotice));
     }
     else {
-      console.log("NoticeTab/OnStepChanged/notice", notice)
+      CustomLogger.info("NoticeTab/OnStepChanged/notice", notice)
       noticeDispatch(setNotice(notice));
     }
 
 
   }
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("NoticeEdit/handleBoolainChange", event.target.name, event.target.checked)
-
+    CustomLogger.log("NoticeEdit/handleBoolainChange", event.target.name, event.target.checked)
     setNoticeFilter((prev: any) => ({
       ...prev,
       [event.target.name]: event.target.checked,
@@ -198,7 +195,7 @@ function NoticeTab() {
                     <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"public"} checked={noticeFilter?.public} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Public" />
                   </Grid>
                 </>
-              ) : null 
+              ) : null
           }
 
 
@@ -209,22 +206,23 @@ function NoticeTab() {
         <Box marginTop={2}>
           {getMaxSteps() === 0 ? <NoticeEdit /> : <NoticeEdit />}
           <Grid container>
-          
-          {validationAlert.length > 0 ? (<>{validationAlert}</>): (<>validationAlert Empty{validationAlert}</>) }
-         {validationAlert.map((item) => {
-          console.log("validationAlert.map")
-          return (
-          
-           <Grid item xs={12}>
-             <ValidationAlert {...item} />
-           </Grid>
-         )})}
-       </Grid>
+
+            {validationAlert.length > 0 ? (<>{validationAlert}</>) : (<>validationAlert Empty{validationAlert}</>)}
+            {validationAlert.map((item) => {
+              CustomLogger.error("validationAlert.map")
+              return (
+
+                <Grid item xs={12}>
+                  <ValidationAlert {...item} />
+                </Grid>
+              )
+            })}
+          </Grid>
         </Box>
       </div>
       <div className='footer'>
         <Box className='yl__action_button'>
-          <ActionButtons OnAction={onAction} show={[EAction.SAVE, EAction.ADD, EAction.DELETE]} item={""}/>
+          <ActionButtons OnAction={onAction} show={[EAction.SAVE, EAction.ADD, EAction.DELETE]} item={""} />
         </Box>
 
       </div>

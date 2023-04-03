@@ -2,11 +2,11 @@
 import IDevice, { IDeviceCombo } from "./IDevice"
 import IMember, { IMemberCombo } from "./IMember"
 
-export default interface IReservation{
-    _id:string
+export default interface IReservation {
+    _id: string
     date_from: Date
-    date_to:Date
-    notification:{
+    date_to: Date
+    notification: {
         type: string
         notify: boolean
     }
@@ -14,23 +14,23 @@ export default interface IReservation{
     device: IDevice
     timeOffset: number
 }
-export interface IReservationDelete{
+export interface IReservationDelete {
 
-    _id:string;
+    _id: string;
 }
-export interface IReservationUpdateApi{
+export interface IReservationUpdateApi {
     date_from: Date;
     date_to: Date;
     _id: string;
 }
-export interface IReservationUpdate{
-    
+export interface IReservationUpdate {
+
     date_from: Date;
     date_to: Date;
     _id: string;
     member_name: string;
     device_name: string;
-    
+
 
 }
 export class ReservationUpdate implements IReservationUpdate {
@@ -39,30 +39,29 @@ export class ReservationUpdate implements IReservationUpdate {
     _id: string;
     member_name: string;
     device_name: string;
-    constructor(){
+    constructor() {
         this.date_from = new Date();
         this.date_to = new Date();
         this.member_name = "";
         this.device_name = "";
-        this._id =""
+        this._id = ""
     }
     IsValid(): boolean {
-        if(this.date_to > this.date_from)
-            {
-                console.log("IsValid", true)
-                return true;
-            }
-            console.log("IsValid", false)
+        if (this.date_to > this.date_from) {
+            CustomLogger.info("IsValid", true)
+            return true;
+        }
+        CustomLogger.warn("IsValid", false)
         return false;
     }
-    copy(i : IReservationUpdate) :void {
+    copy(i: IReservationUpdate): void {
         this._id = i._id;
         this.date_from = new Date(i.date_from);
         this.date_to = new Date(i.date_to);
         this.member_name = i.member_name;
         this.device_name = i.device_name;
     }
-    copyReservation(i : IReservation) :void {
+    copyReservation(i: IReservation): void {
         this._id = i._id;
         this.date_from = new Date(i.date_from);
         this.date_to = new Date(i.date_to);
@@ -72,28 +71,28 @@ export class ReservationUpdate implements IReservationUpdate {
 }
 
 
-export interface IReservationCreate{
+export interface IReservationCreate {
     date_from: Date | undefined;
-    date_to:Date;
+    date_to: Date;
     member: IMemberCombo | undefined;
-    device:IDeviceCombo | undefined;
+    device: IDeviceCombo | undefined;
 }
 
-export interface IReservationCreateApi{
+export interface IReservationCreateApi {
     date_from: Date | undefined;
     date_to: Date;
     _id_member: string;
-    _id_device:string;
+    _id_device: string;
 }
 
-export function CreateReservationToApi (reservation : IReservationCreate) : IReservationCreateApi  {
- let reservationApi : IReservationCreateApi = {
-     date_from: reservation.date_from,
-     date_to: reservation.date_to,
-     _id_member: reservation.member?._id ?? "",
-     _id_device: reservation.device?._id ?? ""
- };
- 
- return reservationApi;
+export function CreateReservationToApi(reservation: IReservationCreate): IReservationCreateApi {
+    let reservationApi: IReservationCreateApi = {
+        date_from: reservation.date_from,
+        date_to: reservation.date_to,
+        _id_member: reservation.member?._id ?? "",
+        _id_device: reservation.device?._id ?? ""
+    };
+
+    return reservationApi;
 }
 

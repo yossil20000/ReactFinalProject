@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useResetMutation } from '../../features/Auth/authApiSlice'
 import { IReset } from '../../Interfaces/API/ILogin';
 import { ROUTES } from '../../Types/Urls';
-import {  useState } from 'react';
+import { useState } from 'react';
 const theme = createTheme();
 export default function ResetPage() {
 
@@ -28,7 +28,7 @@ export default function ResetPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    CustomLogger.log({
       email: data.get('email'),
       username: data.get('username')
     });
@@ -39,15 +39,15 @@ export default function ResetPage() {
 
 
       if (paload.success) {
-        console.log("Unwrap", paload.data.newPassword);
-        console.log("resetProps", resetProps.email)
+        CustomLogger.info("Unwrap", paload.data.newPassword);
+        CustomLogger.info("resetProps", resetProps.email)
         setIsReset(true);
       }
     }
     catch (err) {
-      console.log("submitForm/reset: err", err);
+      CustomLogger.error("submitForm/reset: err", err);
     }
-    console.log("ResetPageResult", result)
+    CustomLogger.info("ResetPageResult", result)
   };
 
 

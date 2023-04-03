@@ -17,37 +17,37 @@ const source = "admin/member/general"
 const SetProperty = (obj: any, path: string, value: any): any => {
   let newObj = { ...obj };
   newObj = setProperty(newObj, path, value);
-  console.log("SetProperty/newobj", newObj)
+  CustomLogger.info("SetProperty/newobj", newObj)
   return newObj;
 }
 function PermissionsTab() {
 
   const { setSelectedItem: setSelectedMember, selectedItem : selectedMember, members } = useContext(MembersContext) as MembersContextType;
   const getSelectedMemberMemberShip = useMemo(() : InputComboItem => {
-    console.log("PermissionsTab/getSelectedMemberMemberShip",selectedMember)  
+    CustomLogger.log("PermissionsTab/getSelectedMemberMemberShip",selectedMember)  
     let initialMembership : InputComboItem = {
         _id: selectedMember?.membership ?  selectedMember?.membership._id : "",
         lable: selectedMember?.membership ?  selectedMember?.membership.rank.toString() : "",
         description: ""
       }
-      console.log("PermissionsTab/getSelectedMemberMemberShip/initial",initialMembership) 
+      CustomLogger.info("PermissionsTab/getSelectedMemberMemberShip/initial",initialMembership) 
       return initialMembership;
   },[selectedMember])
   const handleTimeChange = useCallback((newValue: Date | null | undefined, name: string) => {
-    console.log(`handleTimeChange/newValue , key`, newValue, name);
+    CustomLogger.log(`handleTimeChange/newValue , key`, newValue, name);
     if (newValue === null || newValue === undefined)
       return;
     const newObj: IMemberAdmin = SetProperty(selectedMember, name, newValue) as IMemberAdmin;
     setSelectedMember(newObj)
   },[selectedMember]);
   const onComboChanged = useCallback((item: InputComboItem, prop: string): void => {
-    console.log("/item", item, prop);
+    CustomLogger.log("/item", item, prop);
     const newObj: IMemberAdmin = SetProperty(selectedMember, prop, item.lable) as IMemberAdmin;
     setSelectedMember(newObj)
   },[selectedMember])
 
   const onRoleChanged = useCallback((item: LabelType[], prop: string): void => {
-    console.log("onComboChanged/item", item, prop);
+    CustomLogger.log("onComboChanged/item", item, prop);
     const newObj: IMemberAdmin = SetProperty(selectedMember, prop, item.map((i) => i.name)) as IMemberAdmin;
     setSelectedMember(newObj)
   },[selectedMember]);
@@ -79,10 +79,10 @@ function PermissionsTab() {
   },[labelsFromRole,selectedMember?.role])
  
   const onMemberShipChanged = useCallback((item: IMembership) => {
-    console.log("onMemberShipChanged/selectedMember",selectedMember)
+    CustomLogger.log("onMemberShipChanged/selectedMember",selectedMember)
     const newObj: IMemberAdmin = SetProperty(selectedMember, "membership", item) as IMemberAdmin;
     setSelectedMember(newObj)
-    console.log("onMemberShipChanged/newObj",newObj)
+    CustomLogger.info("onMemberShipChanged/newObj",newObj)
   },[selectedMember])
   return (
     <>

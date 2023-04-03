@@ -8,7 +8,7 @@ function OrderStatusCombo(props : StateComboProps) {
   const {onChanged,selectedItem} = props 
   const items = useRef(new Enum2ComboItem(OrderStatus).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    console.log("OrderStatusCombo/item", item)
+    CustomLogger.log("OrderStatusCombo/item", item)
     onChanged(item)
   }
   return (

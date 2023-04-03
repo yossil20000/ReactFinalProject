@@ -47,7 +47,7 @@ export default function ControledCombo(props: InputComboProps) {
   const [value, setValue] = useState<InputComboItem | null>(null);
   const [inputValue, setInputValue] = useState('');
   useEffect(()=> {
-    console.log("ControledCombo/useEffect", selectedItem)
+    CustomLogger.log("ControledCombo/useEffect", selectedItem)
     if(selectedItem !== undefined )
     setValue((selectedItem as InputComboItem))
   },[selectedItem])
@@ -56,7 +56,7 @@ export default function ControledCombo(props: InputComboProps) {
       fullWidth={true}
       value={value}
       onChange={(event: any, newValue: InputComboItem | null) => {
-        console.log("ControledCombo/onChange", newValue)
+        CustomLogger.info("ControledCombo/onChange", newValue)
 
         setValue(newValue);
         

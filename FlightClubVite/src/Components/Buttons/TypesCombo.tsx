@@ -28,38 +28,37 @@ function TypesCombo(props: SelectComboProps) {
 
   useEffect(() => {
     refetch()
-    console.log(`TypesCombo/useeffect/${title}/find`, selectedValue,items,selectedKey)
+    CustomLogger.log(`TypesCombo/useeffect/${title}/find`, selectedValue, items, selectedKey)
     if (items.length > 0) {
-      const item = items.find((i) => i.lable === selectedValue  );
+      const item = items.find((i) => i.lable === selectedValue);
       if (item !== undefined) {
         setSelectedItem(item)
-        console.log(`TypesCombo/useeffect/${title}/found`, item)
+        CustomLogger.info(`TypesCombo/useeffect/${title}/found`, item)
       }
-      else{
+      else {
         setSelectedItem(newInputComboItem)
       }
     }
   }, [selectedValue, items])
 
   useEffect(() => {
-    console.log(`TypesCombo/useeffect/${title}/data`, data?.data)
+    CustomLogger.log(`TypesCombo/useeffect/${title}/data`, data?.data)
     const key = data?.data.key
     if (key === undefined) return;
     let items = data?.data.values.map((value: string) => TypesToItemCombo(key, value));
-    console.log("TypesCombo/ Item", items)
+    CustomLogger.info("TypesCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
-  }, [data?.data,selectedKey])
+  }, [data?.data, selectedKey])
   useEffect(() => {
-refetch()
-console.log(`TypesCombo/useeffect/${title}/selectedKey`, selectedKey)
-  },[selectedKey])
+    refetch()
+    CustomLogger.info(`TypesCombo/useeffect/${title}/selectedKey`, selectedKey)
+  }, [selectedKey])
 
   const onSelectedItem = (item: InputComboItem) => {
     setSelectedItem(item);
     onChanged(item);
   }
-
 
   return (
     <ControledCombo onSelectedItem={onSelectedItem} selectedItem={selectedItem === undefined ? null : selectedItem} items={items} title={title === undefined ? "" : title} />

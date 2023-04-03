@@ -29,62 +29,38 @@ export default function TransactionAction(props: ITransactionActionProps) {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([])
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddOrderTransactionMutation();
   const [deleteOrder, { isError: deleteIsError, isLoading: deleteIsLoading, error: deleteError, isSuccess: deleteSccuess }] = useDeleteOrderMutation();
-  /*  console.log("TransactionAction/params",id,_idMember,rowId) */
+  CustomLogger.log("TransactionAction/params",id,_idMember,rowId)
   const handleConfirmation = (action: string) => {
-    console.log("TransactionAction/handleConfirmation/",action)
+    CustomLogger.log("TransactionAction/handleConfirmation/",action)
     if(action == "ADD_TRANSACTION"){
       setConfirmation((prev) => ({...prev,
         open: true,action: "ADD_TRASACTION",content:"Please confirm \n Add Transaction operation", title: "Confirmation",
         onClose: onConfirmationClose }))
-      console.log("TransactionAction/handleConfirmation/ADD_TRASACTION",confirmation)
+      CustomLogger.info("TransactionAction/handleConfirmation/ADD_TRASACTION",confirmation)
     }
     else if(action === "DELETE_ORDER"){
       setConfirmation((prev) => ({...prev,
         open: true,action: "DELETE_ORDER",content:"Please, press Confirm to Delete item", title: "Confirmation",
         onClose: onConfirmationClose }))
-      console.log("TransactionAction/handleConfirmation/DELETE_ORDER",confirmation)
+      CustomLogger.info("TransactionAction/handleConfirmation/DELETE_ORDER",confirmation)
     }
 
   }
   const onConfirmationClose = (value: boolean,action: string) => {
     setConfirmation((prev) => ({...prev, open: false}))
-    console.log("TransactionAction/onConfirmationClose",confirmation)
+    CustomLogger.log("TransactionAction/onConfirmationClose",confirmation)
     if(value){
       if(action === "DELETE_ORDER")
         handleDelete()
     }
   }
-  const handleTransaction = async () => {
-    console.log("TransactionAction/handleTransaction", id, params, transaction)
-    setIsLoading(true);
-    const result: boolean = true;
-    await AddTransaction(transaction).unwrap().then((data) => {
-      console.log("TransactionAction/handleTransaction/data", data)
-      if (data.success === false) {
-        const validation = getValidationFromError(data.errors, (): void => { });
-        setValidationAlert(validation);
-        setOpenError(true);
-        return;
-      }
-      setIsSuccess(true);
-      setIsLoading(false)
-    }).catch((err) => {
-      const validation = getValidationFromError(err, (): void => { });
-      setValidationAlert(validation);
-      setOpenError(true);
-      setIsLoading(false)
-      return;
-    });
-  }
-  const handleDelete = async () => {
-    console.log("TransactionAction/handleDelete", id, params, transaction)
 
-    const result: boolean = true;
+  const handleDelete = async () => {
+    CustomLogger.log("TransactionAction/handleDelete", id, params, transaction)
     if (orderId !== undefined) {
-      
       setIsLoading(true);
       await deleteOrder(orderId).unwrap().then((data) => {
-        console.log("TransactionAction/handleDelete/data", data)
+        CustomLogger.info("TransactionAction/handleDelete/data", data)
         if (data.success === false) {
           setIsSuccess(false);
           const validation = getValidationFromError(data.errors, (): void => { });

@@ -52,7 +52,7 @@ function DeviceTypeTab() {
     const foundItem = items?.data.find((i) => item._id === i._id);
     if (foundItem && foundItem !== null) {
       setSelectedItem(foundItem);
-      console.log("onDeviceTypeChanged/foundItem", foundItem)
+      CustomLogger.info("onDeviceTypeChanged/foundItem", foundItem)
     }
   }
   async function onSave(): Promise<void> {
@@ -62,13 +62,13 @@ function DeviceTypeTab() {
       if (selectedItem?._id.length == 0) {
         let newDevice: IDeviceType;
         newDevice = { ...selectedItem };
-        console.log("DeviceTypeTab/OnCreate/newDevice", newDevice);
+        CustomLogger.info("DeviceTypeTab/OnCreate/newDevice", newDevice);
         payLoad = await createDeviceType(newDevice).unwrap();
-        console.log("DeviceTypeTab/OnCreate/payload", payLoad);
+        CustomLogger.info("DeviceTypeTab/OnCreate/payload", payLoad);
       }
       else if (selectedItem) {
         payLoad = await updateDeviceType(selectedItem).unwrap();
-        console.log("DeviceTypeTab/OnUpdate/payload", payLoad);
+        CustomLogger.info("DeviceTypeTab/OnUpdate/payload", payLoad);
       }
       if(payLoad.error){
         setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
@@ -108,7 +108,7 @@ function DeviceTypeTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event?.defaultPrevented
-    console.log("ActionButtons/onAction", event?.target, action)
+    CustomLogger.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
         setSelectedItem(newDeviceType);

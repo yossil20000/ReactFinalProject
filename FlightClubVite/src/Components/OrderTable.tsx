@@ -7,6 +7,7 @@ import { IOrder, OrderStatus, OT_REF } from '../Interfaces/API/IAccount';
 import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 
+
 interface IOrderTableProps {
   hideAction?: boolean;
   filter?: any;
@@ -17,10 +18,10 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
   const { data: orders } = useGetOrderSearchQuery(filter);
-  console.log("OrderTable/selectedClubAccount/",selectedClubAccount)
+  CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
   const getTransaction = useMemo (() => (sourseId: string,destinationId: string , id: string ,amount: number,description: string) : IAddTransaction => {
-    console.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
+    CustomLogger.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     let addTransaction : IAddTransaction = {
       source: {
         _id: sourseId,
@@ -43,37 +44,37 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       description: description,
       date: new Date()
     }
-    console.log("OrderTable/getTransaction/addTransaction",addTransaction,orders)
+    CustomLogger.info("OrderTable/getTransaction/addTransaction",addTransaction,orders)
     return addTransaction;
   },[selectedClubAccount] )
 
   const orderRows = useMemo(() => {
-    console.log("OrderTable/orderRows/filter/member", selectedMember)
-    console.log("OrderTable/orderRows/filter/filter", filter)
+    CustomLogger.log("OrderTable/orderRows/filter/member", selectedMember)
+    CustomLogger.log("OrderTable/orderRows/filter/filter", filter)
     const rows = orders?.data.filter((item) => {
-      console.log("OrderTable/orderRows/filter/item", item)
+      CustomLogger.info("OrderTable/orderRows/filter/item", item)
 
-      /* console.log("OrderTable/orderRows/filter/item.status.toString() == filter.orderStatus.toString()",item.status.toString() , (filter.orderStatus as OrderStatus)) */
+      /* CustomLogger.info("OrderTable/orderRows/filter/item.status.toString() == filter.orderStatus.toString()",item.status.toString() , (filter.orderStatus as OrderStatus)) */
       let doFilter = false;
       if(item.status.toString() == filter.orderStatus.toString())
          {
           doFilter = true;
-          console.log("OrderTable/orderRows/filter/dofilter_1", doFilter)
+          CustomLogger.info("OrderTable/orderRows/filter/dofilter_1", doFilter)
         }
       if((!selectedMember  || selectedMember?.lable == "") )
         {
           doFilter = doFilter && true;
-          console.log("OrderTable/orderRows/filter/dofilter_2", doFilter)
+          CustomLogger.info("OrderTable/orderRows/filter/dofilter_2", doFilter)
         }
       
       else if((selectedMember?._id == item.member?._id) && item.status == filter.orderStatus)
          { 
           doFilter = doFilter && true
-          console.log("OrderTable/orderRows/filter/dofilter_3", doFilter)
+          CustomLogger.info("OrderTable/orderRows/filter/dofilter_3", doFilter)
          }
       else
          { doFilter = false}
-      console.log("OrderTable/orderRows/filter/dofilter_4", doFilter)
+      CustomLogger.info("OrderTable/orderRows/filter/dofilter_4", doFilter)
       return doFilter;
     }).map((row : IOrder) => ({
       id: row._id, date: new Date(row.order_date).toLocaleDateString(),
@@ -88,7 +89,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       ,
     }))
     if (rows !== undefined) {
-      console.log("OrderTable/orderRows/orders",rows,orders);
+      CustomLogger.info("OrderTable/orderRows/orders",rows,orders);
       return rows
     }
     return []
@@ -134,7 +135,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     },
 
   ], [rowId,hideAction,selectedClubAccount]);
-
+ 
   return (
     <div style={{ height: "100%", width: '100%' }}>
       <DataGrid

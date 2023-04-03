@@ -44,7 +44,7 @@ function CreateAccountDialog({ onClose, onSave, open, ...other }: CreateAccountD
   const [selectedMember, setSelectedMember] = useState<InputComboItem>()
   const [isSupplier, setIsSupplier] = useState(false);
   useEffect(() => {
-    console.log("CreateAccountDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("CreateAccountDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Account Create", alertMessage: "Account Create Successfully", open: true, onClose: onClose, severity: "success" }))
     }
@@ -69,24 +69,21 @@ function CreateAccountDialog({ onClose, onSave, open, ...other }: CreateAccountD
   }, [])
   
   const handleOnSave = async () => {
-    console.log("CreateAccountDialog/onSave", accountCreate)
+    CustomLogger.log("CreateAccountDialog/onSave", accountCreate)
     setValidationAlert([]);
     let account = newAccount;
     /* account.copy(accountCreate); */
-    console.log("CreateAccountDialog/onSave/account", account)
+    CustomLogger.log("CreateAccountDialog/onSave/account", account)
     if (selectedMember !== undefined) {
       await createAccount(selectedMember?._id).unwrap().then((data) => {
-        console.log("CreateAccountDialog/onSave/", data);
+        CustomLogger.info("CreateAccountDialog/onSave/", data);
         if (data.data._id !== undefined) {
           setIsSaved(true)
         }
-        /* onSave(value); */
-
-
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
       setValidationAlert(validation);
-        console.log("CreateAccountDialog/onSave/error", err.data.errors);
+        CustomLogger.error("CreateAccountDialog/onSave/error", err.data.errors);
       });
     }
 

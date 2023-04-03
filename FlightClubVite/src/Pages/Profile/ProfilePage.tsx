@@ -55,7 +55,7 @@ function ProfilePage() {
 
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberUpdate>(initialForm);
-  console.log("formData", login.member)
+  CustomLogger.log("formData", login.member)
   const numPage = 4;
   const componentList = [
     <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
@@ -65,10 +65,10 @@ function ProfilePage() {
   ]
 
   useEffect(() => {
-    console.log('UseEffect/ProfilePage', member?.data,isSuccess);
+    CustomLogger.info('UseEffect/ProfilePage', member?.data,isSuccess);
     if (member?.data) {
       setFormData(member.data as IMemberUpdate);
-      console.log('UseEffect/ProfilePage', member.data);
+      CustomLogger.info('UseEffect/ProfilePage', member.data);
     }
   }, [isSuccess]);
   

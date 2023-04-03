@@ -23,22 +23,8 @@ export default function TransactionTable({ hideAction = false, filter = {} as IT
   const [pageSize, setPageSize] = useState(5);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
 useEffect(()=>{
-  console.log("TransactionTable/filter", filter)
+  CustomLogger.info("TransactionTable/filter", filter)
 },[filter])
-
-  const getData = useMemo(() => {
-
-    console.log("TransactionTable/getData", dataTransaction)
-    if (dataTransaction?.success) {
-      if (selectedClubAccount?.lable !== "") {
-        const filterAccount = dataTransaction.data.filter((item) => (item.source == selectedClubAccount?.lable) || (item.destination == selectedClubAccount?.lable))
-        setTransactions(filterAccount);
-      }
-      else {
-        setTransactions(dataTransaction.data)
-      }
-    }
-  }, [dataTransaction, selectedClubAccount])
 
   const transactionRows = useMemo(() => {
 
@@ -55,7 +41,7 @@ useEffect(()=>{
       description: row.description
     }))
     if (rows !== undefined) {
-      console.log("TransactionTable/orders", rows, transactions);
+      CustomLogger.info("TransactionTable/orders", rows, transactions);
       return rows
     }
     return []

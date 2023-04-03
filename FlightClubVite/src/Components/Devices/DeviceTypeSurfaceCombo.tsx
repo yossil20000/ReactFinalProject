@@ -8,7 +8,7 @@ function DeviceTypeSurfaceCombo(props : StateComboProps) {
   const {onChanged,source, selectedItem} = props
   const items = useRef(new Enum2ComboItem(SurfaceType).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    console.log("DeviceTypeSurfaceCombo/DeviceItem", item)
+    CustomLogger.log("DeviceTypeSurfaceCombo/DeviceItem", item)
     onChanged(item)
   }
   return (

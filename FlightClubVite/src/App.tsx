@@ -58,14 +58,14 @@ function App() {
     const [selectedNotice,setSelectedNotice] = useLocalStorage<IClubNotice | null| undefined>("_Notice/selected",NewNotice)
   
      useEffect(() => {
-      console.log("HomePage/isLoading", isLoading)
+      CustomLogger.log("HomePage/isLoading", isLoading)
     },[isLoading]) 
   
     useEffect(() => {
-      console.log("HomePage/data", data)
+      CustomLogger.info("HomePage/data", data)
       if(data?.data !== undefined && data?.data !== null){
         setNotices(data.data)
-        console.log("HomePage/setNotices", data.data)
+        CustomLogger.info("HomePage/setNotices", data.data)
       }
           },[data])
   

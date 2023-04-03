@@ -34,7 +34,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: UpdateReservationDialogProps) {
 
-  console.log("UpdateReserationDialog/value", value)
+  CustomLogger.log("UpdateReserationDialog/value", value)
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [updateReservation, { isError, isLoading, error, isSuccess }] = useUpdateReservationMutation();
   const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(value);
@@ -46,20 +46,20 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
     setValidationAlert([])
   }
   useEffect(() => {
-    console.log("UpdateReservationDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("UpdateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setdateErrorAlert((prev) => ({ ...prev, alertTitle: "Reservation Update", alertMessage: "Reservation Update Successfully", open: true, onClose: onClose, severity: "success" }))
     }
     if (isError) {
       if (Array.isArray((error as any).data.errors)) {
         (error as any).data.errors.forEach((element: any) => {
-          console.log("Error", element);
+          CustomLogger.error("Error", element);
         });
         const validation = getValidationFromError((error as any).data.errors, handleCloseValidarion);
         setValidationAlert(validation);
       }
       else {
-        console.log("Error/single", (error as any).data.errors.message)
+        CustomLogger.error("Error/single", (error as any).data.errors.message)
       }
     }
   }, [isLoading])
@@ -81,20 +81,20 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
   }
 
   const handleOnSave = async () => {
-    console.log("UpdateReserationDialog/onSave", reservationUpdate)
+    CustomLogger.log("UpdateReserationDialog/onSave", reservationUpdate)
     let reservation = new ReservationUpdate();
     reservation.copy(reservationUpdate);
-    console.log("UpdateReserationDialog/onSave/reservation", reservation)
+    CustomLogger.info("UpdateReserationDialog/onSave/reservation", reservation)
     if (!reservation.IsValid()) {
       setdateErrorAlert((prev) => ({ ...prev, alertTitle: "Date Input Error", alertMessage: "Date_to must be greater then date_from", open: true, onClose: onCloseDateError }))
       return;
     }
     try {
       const result = await updateReservation(reservationUpdate);
-      console.log("UpdateReserationDialog/onSave/result", result, reservationUpdate)
+      CustomLogger.info("UpdateReserationDialog/onSave/result", result, reservationUpdate)
     }
     catch (error) {
-      console.log("UpdateReserationDialog/onSave/error", error)
+      CustomLogger.error("UpdateReserationDialog/onSave/error", error)
     }
   }
 

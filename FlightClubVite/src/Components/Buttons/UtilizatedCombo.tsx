@@ -8,7 +8,7 @@ function UtilizatedCombo(props : StateComboProps) {
   const {onChanged,selectedItem} = props 
   const items = useRef(new Enum2ComboItem(Utilizated).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    console.log("UtilizatedCombo/ DeviceItem", item)
+    CustomLogger.log("UtilizatedCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (

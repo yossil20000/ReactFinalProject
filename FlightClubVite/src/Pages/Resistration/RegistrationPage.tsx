@@ -60,7 +60,7 @@ function RegistrationPage() {
   ];
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberCreate>(initialForm);
-  console.log("formData", login.member)
+  CustomLogger.log("formData", login.member)
   const numPage = 5;
   const componentList = [
     <Register numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
@@ -70,11 +70,11 @@ function RegistrationPage() {
     <SubmitRegistration numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />
   ]
   return (
-    <div className='main' style={{ width: "99%", margin: "1% auto" ,overflow:"auto"}}>
+    <div className='main' style={{ width: "99%", margin: "1% auto", overflow: "auto" }}>
       <Grid container spacing={2}>
         <Grid item xs={12} >
-          <Box sx={{ width: '100%'}}>
-            <Stepper  activeStep={page} alternativeLabel>
+          <Box sx={{ width: '100%' }}>
+            <Stepper activeStep={page} alternativeLabel>
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -83,15 +83,15 @@ function RegistrationPage() {
             </Stepper>
           </Box>
         </Grid>
-{/*         <Grid item xs={12} md={12}>
+        {/*         <Grid item xs={12} md={12}>
         <div style={{ width: `${(page + 1) / numPage * 100}%`, backgroundColor: "red", height: "10px" }}></div>
         </Grid> */}
         <Grid item xs={12} md={12} lg={12}>
-        <div>{componentList[page]}</div>
+          <div>{componentList[page]}</div>
         </Grid>
-        
 
-        
+
+
       </Grid>
     </div>
   )

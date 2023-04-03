@@ -8,7 +8,7 @@ function MemberTypeCombo(props : StateComboProps) {
 const {onChanged,source, selectedItem} = props
   const items = useRef(new Enum2ComboItem(MemberType).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    console.log("MemberTypeCombo/DeviceItem", item)
+    CustomLogger.log("MemberTypeCombo/DeviceItem", item)
     onChanged(item)
   }
   return (

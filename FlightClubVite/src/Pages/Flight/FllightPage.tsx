@@ -77,7 +77,7 @@ function getComparator<Key extends keyof any>(
 
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  /* console.log("descendingComparator", a, b, orderBy) */
+  /* CustomLogger.info("descendingComparator", a, b, orderBy) */
   if (b[orderBy] < a[orderBy]) { return -1 }
   if (b[orderBy] > a[orderBy]) { return 1 }
   return 0;
@@ -136,15 +136,15 @@ const FlightPage = () => {
   }
   useEffect(() => {
     if (isError) {
-      console.log("FlightPage/useEffect/error", (error as any)); flightsData
+      CustomLogger.error("FlightPage/useEffect/error", (error as any)); flightsData
     }
 
   }, [isLoading]);
   const getFilteredData = (): IFlightData[] => {
-    console.log("getFilteredData/flightData", flightsData)
+    CustomLogger.info("getFilteredData/flightData", flightsData)
     if (flightsData === undefined) return [];
     const filterdData: IFlightData[] = flightsData?.filter((flight) => {
-      console.log("flightdat/filter", flightsData);
+      CustomLogger.info("flightdat/filter", flightsData);
 
       if (!isFilterOwner) return true;
       if (isFilterOwner && flight.validOperation & CanDo.Owner) return true;
@@ -157,10 +157,10 @@ const FlightPage = () => {
   }
 
   useEffect(() => {
-    console.log("FlightPage/useEffect/flight.data", flights === undefined ? "Undefined" : flights)
+    CustomLogger.log("FlightPage/useEffect/flight.data", flights === undefined ? "Undefined" : flights)
     if (flights?.data !== undefined) {
       const flightData = getFlightData(flights?.data)
-      console.log('FlightPage/useEffect/flightData', flightData)
+      CustomLogger.info('FlightPage/useEffect/flightData', flightData)
       setFilghtData(flightData);
     }
 
@@ -192,17 +192,17 @@ const FlightPage = () => {
       _id: _id
     }
 
-    console.log("Flight/Delete /", _id);
+    CustomLogger.log("Flight/Delete /", _id);
     try {
       await DeleteFlight(flightDelete)
         .unwrap()
         .then((payload) => {
-          console.log("DeleteFlight Fullfill", payload)
+          CustomLogger.info("DeleteFlight Fullfill", payload)
           refetch();
         });
     }
     catch (err) {
-      console.log("DeleteFlight/err", err)
+      CustomLogger.error("DeleteFlight/err", err)
     }
   }
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -216,7 +216,7 @@ const FlightPage = () => {
   function fillFlightUpdate(id: string) {
     const flight = flightsData.filter(item => item._id === id)
     if (flight.length === 1) {
-      console.log("RenderFlightUpdate/filter", flight);
+      CustomLogger.info("RenderFlightUpdate/filter", flight);
       flightUpdateIntitial._id = flight[0]._id;
       flightUpdateIntitial.date = flight[0].date;
       flightUpdateIntitial.device_name = flight[0].device_id;
@@ -234,7 +234,7 @@ const FlightPage = () => {
   const handleUpdateOnSave = () => {
     refetch();
     setOpenFlightUpdate(false);
-    /* console.log("FlightPage/handleOnSave/value", value); */
+    /* CustomLogger.info("FlightPage/handleOnSave/value", value); */
   }
   const handleEditClick = async (event: React.MouseEvent<unknown>, _id: string) => {
     fillFlightUpdate(_id);
@@ -250,7 +250,7 @@ const FlightPage = () => {
   const handleAddOnSave = (value: IFlightCreate) => {
     refetch();
     setOpenFlightAdd(false);
-    console.log("FlightPage/handleAddOnSave/value", value);
+    CustomLogger.log("FlightPage/handleAddOnSave/value", value);
 
   }
 
@@ -313,7 +313,7 @@ const FlightPage = () => {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         setOpenFlightAdd(true);
@@ -322,7 +322,7 @@ const FlightPage = () => {
     }
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    console.log("AccountOrdersTab/onDateChanged", key, value)
+    CustomLogger.log("AccountOrdersTab/onDateChanged", key, value)
     const newFilter = SetProperty(filterDate, key, value);
     setFilterDate(newFilter)
     refetch()

@@ -25,7 +25,7 @@ function createdata(_id: string, member_id: string, family_name: string, first_n
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  console.log("descendingComparator", a, b, orderBy)
+  CustomLogger.info("descendingComparator", a, b, orderBy)
   if (b[orderBy] < a[orderBy]) { return -1 }
   if (b[orderBy] > a[orderBy]) { return 1 }
   return 0;
@@ -217,12 +217,12 @@ function MembersTablePage() {
     let rows = members?.data.map((item) => {
       return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`, GeneralCanDo(item._id, login.member._id, login.member.roles), item.status, item.image)
     })
-    console.log('UseEffect/rows/be', rows)
+    CustomLogger.info('UseEffect/rows/be', rows)
     if (rows === undefined) {
       rows = [];
     }
     setRows(rows);
-    console.log('UseEffect/rows', rows)
+    CustomLogger.info('UseEffect/rows', rows)
 
   }, [members?.data])
 
@@ -273,16 +273,16 @@ function MembersTablePage() {
 
   return (
     <>
-     <div className='header'>
-     <EnhancedTableToolbar numSelected={selected ? selected.length : 0} />
-     </div>
-      <div className='main' style={{ overflow: 'auto',height:'100%' }}>
+      <div className='header'>
+        <EnhancedTableToolbar numSelected={selected ? selected.length : 0} />
+      </div>
+      <div className='main' style={{ overflow: 'auto', height: '100%' }}>
 
         <MediaQuery minWidth={768}>
           {rows ? (
             <Box sx={{ width: '100%' }}>
               <Paper sx={{ width: '100%', mb: 2 }}>
-                
+
 
                 <TableContainer >
                   <Table
@@ -347,7 +347,7 @@ function MembersTablePage() {
         <MediaQuery maxWidth={767}>
           <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-              
+
               <TableContainer>
                 <Table
                   sx={{ maxWidth: 700 }}
@@ -402,15 +402,15 @@ function MembersTablePage() {
         </MediaQuery>
       </div>
       <div className='footer'>
-      <TablePagination style={{ overflowX: 'auto',height:'auto' }}
-                  rowsPerPageOptions={[1, 5, 10, 25]}
-                  component="div"
-                  count={rows ? rows.length : 0}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+        <TablePagination style={{ overflowX: 'auto', height: 'auto' }}
+          rowsPerPageOptions={[1, 5, 10, 25]}
+          component="div"
+          count={rows ? rows.length : 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
 
     </>

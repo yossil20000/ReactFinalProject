@@ -20,13 +20,13 @@ let rows: ItableData[] | null | undefined = [];
 
 function MembersPage() {
   const { data: members, isFetching } = useFetcAllMembersQuery();
-  console.log("Members", members)
+  CustomLogger.log("Members", members)
   useEffect(() => {
 
     rows = members?.data.map((item) => {
       return createdata(item._id, item.member_id, item.family_name, item.first_name, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`)
     })
-    console.log("rows", rows)
+    CustomLogger.info("rows", rows)
   }, [members?.data])
   return (
     <div className='main'>

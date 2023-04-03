@@ -36,26 +36,21 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFlightDialogProps) {
 
-  console.log("UpdateFlightDialog/value", value)
-
+  CustomLogger.log("UpdateFlightDialog/value", value)
   const [updateFlight, { isError, isLoading, error, isSuccess }] = useUpdateFlightMutation();
   const [flightUpdate, setFlightUpdate] = useState<IFlightUpdate>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
 
-  const onCloseDateError = () => {
-    setAlert((prev) => ({ ...prev, open: false }))
-  }
-
   useEffect(() => {
-    console.log("UpdateFlightDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("UpdateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
 
       setAlert((prev) => ({ ...prev, alertTitle: "Flight Update", alertMessage: "Flight Update Successfully", open: true, onClose: onClose, severity: "success" }))
 
     }
     if (isError) {
-      const validation = getValidationFromError(error,handleOnCancel);
+      const validation = getValidationFromError(error, handleOnCancel);
       setValidationAlert(validation);
       return;
 
@@ -68,7 +63,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
   };
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleFligtChange", event.target.name, event.target.value)
+    CustomLogger.log("handleFligtChange", event.target.name, event.target.value)
     setFlightUpdate(prev => ({
       ...prev,
       [event.target.name]: event.target.value,
@@ -79,26 +74,18 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
     onClose()
   }
   const handleOnSave = async () => {
-    console.log("UpdateFlightDialog/onSave", flightUpdate)
+    CustomLogger.log("UpdateFlightDialog/onSave", flightUpdate)
     let flight = new CFlightUpdate();
     flight.copy(flightUpdate);
-    console.log("UpdateFlightDialog/onSave/flight", flight)
-    /*     if(!flight.IsDateValid())
-        {
-          setdateErrorAlert((prev) => ({...prev,alertTitle:"Date Input Error",alertMessage:"Date_to must be greater then date_from",open:true,onClose:onCloseDateError}))
-          return;
-        } */
-
-    console.log("UpdateFlightDialog/onSave/date", flightUpdate.date?.toUTCString())
+    CustomLogger.info("UpdateFlightDialog/onSave/flight", flight)
+    CustomLogger.info("UpdateFlightDialog/onSave/date", flightUpdate.date?.toUTCString())
 
     await updateFlight(flightUpdate as IFlightUpdateApi).unwrap().then((data) => {
-      console.log("updateFlightDialoq/onSave/", data);
+      CustomLogger.info("updateFlightDialoq/onSave/", data);
       onSave(flightUpdate);
     }).catch((err) => {
-      console.log("updateFlightDialoq/onSave/error", err.data.errors);
+      CustomLogger.error("updateFlightDialoq/onSave/error", err.data.errors);
     });
-
-
   }
   return (
     <Dialog

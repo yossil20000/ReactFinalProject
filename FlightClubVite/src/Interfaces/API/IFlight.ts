@@ -3,7 +3,7 @@ import IDevice from "./IDevice"
 import IFlightReservation from "./IFlightReservation"
 import IMember from "./IMember"
 
-export interface IFlightFilterDate extends IDateFilter{
+export interface IFlightFilterDate extends IDateFilter {
 
 }
 export enum FlightStatus {
@@ -20,7 +20,7 @@ interface IFlightBase {
     engien_stop: number
     status: FlightStatus
     reuired_hobbs: boolean
-    duration:number
+    duration: number
     timeOffset: number
 }
 export default interface IFlight extends IFlightBase {
@@ -59,24 +59,26 @@ export class CFlightBase implements IFlightBase {
         this.hobbs_stop = 0;
         this.status = FlightStatus.CREATED;
         this.reuired_hobbs = false;
-        this.duration =0;
+        this.duration = 0;
         this.timeOffset = 0;
 
     }
 
-   
+
     ishobbsValid(): boolean {
         if (this.hobbs_start > 0 && this.hobbs_stop > 0 && this.hobbs_stop > this.hobbs_start) {
-            console.log("Hobbs Valid")
+            CustomLogger.log("Hobbs Valid")
             return true;
         }
+        CustomLogger.warn("Hobbs Not Valid")
         return false;
     }
     isengienValid(): boolean {
         if (this.engien_start > 0 && this.engien_stop > 0 && this.engien_stop > this.engien_start) {
-            console.log("Engien Valid")
+            CustomLogger.info("Engien Valid")
             return true;
         }
+        CustomLogger.warn("Engien Not Valid")
         return false;
     }
     copy(obj: IFlightBase): void {
@@ -104,10 +106,10 @@ export class CFlightCreate extends CFlightBase implements IFlightCreate {
         this.device_name = obj.device_name;
         this._id_device = obj._id_device;
         this._id_member = obj._id_member;
-        
+
     }
 }
-export interface IFlightUpdateApi extends IFlightBase{
+export interface IFlightUpdateApi extends IFlightBase {
     _id: string;
 }
 export interface IFlightUpdate extends IFlightBase {
@@ -132,7 +134,7 @@ export class CFlightUpdate extends CFlightBase implements IFlightUpdate {
         this.device_name = obj.device_name;
         this.status = obj.status;
     }
-    
+
 }
 
 export interface IFlightDeleteApi {

@@ -48,7 +48,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
 
   useEffect(() => {
-    console.log("CreateImageDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("CreateImageDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
 
       setAlert((prev) => ({ ...prev, alertTitle: "Image Create", alertMessage: "Image Create Successfully", open: true, onClose: onClose, severity: "success" }))
@@ -66,29 +66,26 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";
-    console.log("CreateImageDialog/handleImageUpload/file", file);
+    CustomLogger.log("CreateImageDialog/handleImageUpload/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
       await resizeFileTobase64(file, 500, 50).then((result) => {
-        console.log("CreateImageDialog/handleImageUpload/result.filelength", (result as string).length);
+        CustomLogger.info("CreateImageDialog/handleImageUpload/result.filelength", (result as string).length);
         setImageCreate({ ...ImageCreate, image: result as string });
 
       }
 
       ).catch((error) => {
-        console.log("CreateImageDialog/handleImageUpload/error", error);
+        CustomLogger.error("CreateImageDialog/handleImageUpload/error", error);
       }
-
       )
-      /* console.log("PersonalInfo/handleImageChange/base64", base64) */
     }
-
   }
   const handleIInputChange = (event: React.ChangeEvent<HTMLInputElement>, isBool: boolean = false) => {
-    console.log("CreateImageDialog/handleIInputChange", ImageCreate, event.target.name, event.target.checked, event.target.type, event.target.type == "checkbox" ? event.target.checked : event.target.value)
+    CustomLogger.log("CreateImageDialog/handleIInputChange", ImageCreate, event.target.name, event.target.checked, event.target.type, event.target.type == "checkbox" ? event.target.checked : event.target.value)
     let value: any;
     if (event.target.type == "checkbox") {
-      console.log("CreateImageDialog/handlePublicChange/ischeckbox")
+      CustomLogger.info("CreateImageDialog/handlePublicChange/ischeckbox")
       value = event.target.checked
     }
     else {
@@ -110,31 +107,31 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
   }, [])
   const handleOnSave = async () => {
     setValidationAlert([])
-    console.log("CreateImageDialog/onSave", ImageCreate)
+    CustomLogger.log("CreateImageDialog/onSave", ImageCreate)
 
-    console.log("CreateImageDialog/onSave/author", ImageCreate.author)
+    CustomLogger.info("CreateImageDialog/onSave/author", ImageCreate.author)
     if (action === EAction.ADD) {
       await CreateImage(ImageCreate as IImageBase).unwrap().then((data) => {
-        console.log("CreateImageDialoq/onSave/", data);
+        CustomLogger.info("CreateImageDialoq/onSave/", data);
         onSave(ImageCreate);
       }).catch((err) => {
-        console.log("CreateImageDialoq/onSave/error", err.data.errors);
+        CustomLogger.error("CreateImageDialoq/onSave/error", err.data.errors);
       });
     }
     else if (action === EAction.SAVE) {
       await UpdateImage(ImageCreate as IImage).unwrap().then((data) => {
-        console.log("CreateImageDialoq/onUpdate/", data);
+        CustomLogger.info("CreateImageDialoq/onUpdate/", data);
         onSave(ImageCreate);
       }).catch((err) => {
-        console.log("CreateImageDialoq/onUpdate/error", err.data.errors);
+        CustomLogger.error("CreateImageDialoq/onUpdate/error", err.data.errors);
       });
     }
     else if (action === EAction.DELETE) {
       await DeleteImage((ImageCreate as IImage)._id).unwrap().then((data) => {
-        console.log("CreateImageDialoq/onUpdate/", data);
+        CustomLogger.info("CreateImageDialoq/onUpdate/", data);
         onSave(ImageCreate);
       }).catch((err) => {
-        console.log("CreateImageDialoq/onUpdate/error", err.data.errors);
+        CustomLogger.error("CreateImageDialoq/onUpdate/error", err.data.errors);
       });
     }
 

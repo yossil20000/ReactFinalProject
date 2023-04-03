@@ -50,7 +50,7 @@ function createdata(_id_reservaion: string, _id_member: string, member_id: strin
   return { _id_reservaion, _id_member, member_id, name, device_name, date_from: new Date(date_from), date_to: new Date(date_to), validOperation } as ItableData
 }
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  /* console.log("descendingComparator", a, b, orderBy) */
+  /* CustomLogger.info("descendingComparator", a, b, orderBy) */
   if (b[orderBy] < a[orderBy]) { return -1 }
   if (b[orderBy] > a[orderBy]) { return 1 }
   return 0;
@@ -207,7 +207,7 @@ function ReservationsPageOld() {
   function SetReservationUpdate(id_reservation: string) {
     const reservation = rows.filter(item => item._id_reservaion === id_reservation)
     if (reservation.length === 1 && reservation[0].name) {
-      console.log("RenderReservationUpdate/filter", reservation);
+      CustomLogger.info("RenderReservationUpdate/filter", reservation);
       reservationUpdateIntitial._id = reservation[0]._id_reservaion;
       reservationUpdateIntitial.date_from = reservation[0].date_from;
       reservationUpdateIntitial.date_to = reservation[0].date_to;
@@ -225,12 +225,12 @@ function ReservationsPageOld() {
         return createdata(item._id, "_id", "member_id", `family_name .first_name`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo("_id", login.member._id, login.member.roles))
       })
     }
-    console.log('UseEffect/rows/be', rows)
+    CustomLogger.info('UseEffect/rows/be', rows)
     if (rows === undefined) {
       rows = [];
     }
     setRows(rows);
-    console.log('UseEffect/rows', rows)
+    CustomLogger.info('UseEffect/rows', rows)
 
   }, [reservations?.data])
 
@@ -271,17 +271,17 @@ function ReservationsPageOld() {
     const reservationDelete: IReservationDelete = {
       _id: _id
     }
-    console.log("Delete /", _id);
+    CustomLogger.log("Delete /", _id);
     try {
       const payload = await DeleteReservation(reservationDelete)
         .unwrap()
         .then((payload) => {
-          console.log("DeleteReservation Fullfill", payload)
+          CustomLogger.info("DeleteReservation Fullfill", payload)
           refetch();
         });
     }
     catch (err) {
-      console.log("DeleteReservation/err", err)
+      CustomLogger.error("DeleteReservation/err", err)
     }
   }
 
@@ -294,13 +294,13 @@ function ReservationsPageOld() {
   }
   const handleUpdateOnSave = (value: IReservationUpdate) => {
     setIsReservationUpdate(false);
-    console.log("UpdateReservationDialog/handleOnSave/value", value);
+    CustomLogger.log("UpdateReservationDialog/handleOnSave/value", value);
 
   }
   const handleAddOnSave = (value: IReservationCreateApi) => {
     refetch();
     setOpenReservationAdd(false);
-    console.log("ReservationPage/handleAddOnSave/value", value);
+    CustomLogger.info("ReservationPage/handleAddOnSave/value", value);
 
   }
   const handleAddOnClose = () => {
@@ -309,16 +309,15 @@ function ReservationsPageOld() {
 
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("ReservationPage/onAction", event?.target, action, item)
+    CustomLogger.log("ReservationPage/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         setOpenReservationAdd(true);
-
         break;
     }
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    console.log("ReservationPage/onDateChanged", key, value)
+    CustomLogger.log("ReservationPage/onDateChanged", key, value)
     const newFilter = SetProperty(filterDate, key, value);
     setFilterDate(newFilter)
     refetch()
@@ -381,16 +380,16 @@ function ReservationsPageOld() {
     event: React.MouseEvent<HTMLElement>,
     newView: EviewMode | null,
   ) => {
-    if(newView !== null)
-    setViewMode(newView);
+    if (newView !== null)
+      setViewMode(newView);
   };
 
-  const getViewDayReservations  = (): IReservation[] => {
-    console.log("ReservationPage/getViewDayReservations/dateRef",dateRef)
-     const viewDayReservation = reservations?.data.filter((element)=> new Date(element.date_from).isSameDate(dateRef))
-     if(viewDayReservation !== undefined)
+  const getViewDayReservations = (): IReservation[] => {
+    CustomLogger.log("ReservationPage/getViewDayReservations/dateRef", dateRef)
+    const viewDayReservation = reservations?.data.filter((element) => new Date(element.date_from).isSameDate(dateRef))
+    if (viewDayReservation !== undefined)
       return viewDayReservation;
-     return []
+    return []
   }
   return (
     <>
@@ -401,16 +400,16 @@ function ReservationsPageOld() {
           {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
           <Typography variant="h6" align="center">{`Reservations ${filterDate.from.toLocaleDateString()} : ${filterDate.to.toLocaleDateString()}`}</Typography>
           <Box display={'flex'} justifyContent={"space-between"}>
-          <Box display={'flex'} justifyContent={"space-between"}>
-          <Tooltip title="Filtering">
-            <IconButton aria-label="filter" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
-              <FilterListIcon fontSize="inherit" />
-            </IconButton>
-          </Tooltip>
-            <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
-            <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view"> <Tooltip title="Switch to day view"><TodayIcon /></Tooltip></ToggleButton>
-            <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view"> <TableViewIcon /></ToggleButton>
-            </ToggleButtonGroup>
+            <Box display={'flex'} justifyContent={"space-between"}>
+              <Tooltip title="Filtering">
+                <IconButton aria-label="filter" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+                  <FilterListIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+              <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
+                <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view"> <Tooltip title="Switch to day view"><TodayIcon /></Tooltip></ToggleButton>
+                <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view"> <TableViewIcon /></ToggleButton>
+              </ToggleButtonGroup>
             </Box>
             <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
               <List sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -513,7 +512,7 @@ function ReservationsPageOld() {
       <div className='main' style={{ overflow: 'auto', height: "100%" }}>
 
         <Box sx={{ width: '100%', height: '100%' }}>
-          <Paper sx={{ height: "100%" ,width: '100%', mb: 1 }}>
+          <Paper sx={{ height: "100%", width: '100%', mb: 1 }}>
             {viewMode === EviewMode.E_VM_NORMAL ? (
               <>
                 <TableContainer>
@@ -606,12 +605,12 @@ function ReservationsPageOld() {
                 </MediaQuery>
               </>)
               : (
-                <CalnanderViewDay title={`Reservation ${dateRef.toLocaleDateString()}`} reservations={getViewDayReservations()}/>
+                <CalnanderViewDay title={`Reservation ${dateRef.toLocaleDateString()}`} reservations={getViewDayReservations()} />
               )}
           </Paper>
         </Box>
       </div>
-      <div className='footer' style={{ overflow: 'hidden',height:'auto' }}>
+      <div className='footer' style={{ overflow: 'hidden', height: 'auto' }}>
         <TablePagination
           rowsPerPageOptions={[1, 5, 10, 25]}
           component="div"

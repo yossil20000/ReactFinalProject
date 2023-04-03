@@ -22,38 +22,36 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function SubmitProfile({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberUpdate>) {
+function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
     const navigate = useNavigate();
     const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-    
+
     const [updateMember, { isError, isLoading, isSuccess, error }] = useUpdateMemberMutation();
     const onSaveProfileHandler = async () => {
-        console.log("onSaveProfileHandler", formData);
-        try{
+        CustomLogger.log("onSaveProfileHandler", formData);
+        try {
             const payload = await updateMember(formData as IMemberInfo).unwrap();
-            console.log("onSaveProfileHandler/useUpdateMemberMutation/payload", payload)
+            CustomLogger.info("onSaveProfileHandler/useUpdateMemberMutation/payload", payload)
         }
-        catch(error){
-            console.log("onSaveProfileHandler/error", error)
+        catch (error) {
+            CustomLogger.error("onSaveProfileHandler/error", error)
             let validation = getValidationFromError(error, onValidationAlertClose);
             setValidationAlert(validation);
         }
-        
+
     }
     const onValidationAlertClose = () => {
         setValidationAlert([]);
     }
     useEffect(() => {
         if (isError) {
-            console.log("SubmitRegistration/error", error);
+            CustomLogger.error("SubmitRegistration/error", error);
             let validation = getValidationFromError(error, onValidationAlertClose);
             setValidationAlert(validation);
             return;
         }
         if (isSuccess) {
-            console.log("SubmitProfile/Success");
-            /* navigate(`/${ROUTES.MEMBERS}`) */
-
+            CustomLogger.log("SubmitProfile/Success");
         }
 
     }, [isLoading])
@@ -70,12 +68,12 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData}: IPageNa
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
-            <Grid item xs={12}>
-          <Typography variant="h5" component="div" align='center'>
-           Submit Profile
-          </Typography>
-        </Grid>
-            <Grid item xs={6}>
+                <Grid item xs={12}>
+                    <Typography variant="h5" component="div" align='center'>
+                        Submit Profile
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
                     <Item><button
                         onClick={() => {
                             setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
@@ -102,7 +100,7 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData}: IPageNa
                             >
                                 Back to Home
                             </Button>
-                            
+
                         </Box>
                     </Item>
                 </Grid>

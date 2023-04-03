@@ -36,7 +36,7 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
   const [isSaved, setIsSaved] = useState(false);
   const UpdateSourceAccountFields = (): IExpenseBase => {
     let newObj = selectedExpense;
-    console.log("CreateExspenseDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
+    CustomLogger.info("CreateExspenseDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
     newObj = setProperty(selectedExpense, "source.id", selectedSource?._id)
     newObj = setProperty(newObj, "source.type", selectedSource?.key)
     newObj = setProperty(newObj, "source.display", selectedSource?.lable)
@@ -46,7 +46,7 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
     newObj = setProperty(newObj, "destination.display", selectedDestination?.lable)
     newObj = setProperty(newObj, "destination.account_id", selectedDestination?.key2)
 
-    console.log("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
+    CustomLogger.info("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
     return newObj
   }
@@ -63,7 +63,7 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
 
   }, [])
   const handleOnSave = async () => {
-    console.log("UpdateExspenseDialog/onSave", selectedExpense)
+    CustomLogger.log("UpdateExspenseDialog/onSave", selectedExpense)
     setValidationAlert([]);
 
     if (selectedSource !== undefined) {
@@ -72,9 +72,9 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
       const filterData: IUpsertExpanse = {
         update: expanse
       }
-      console.log("UpdateExspenseDialog/onSave/filterData", filterData)
+      CustomLogger.info("UpdateExspenseDialog/onSave/filterData", filterData)
       await UpdateExpense(filterData).unwrap().then((data) => {
-        console.log("UpdateExspenseDialog/onSave/", data);
+        CustomLogger.info("UpdateExspenseDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
@@ -83,7 +83,7 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
-        console.log("UpdateExspenseDialog/onSave/error", err.data.errors);
+        CustomLogger.error("UpdateExspenseDialog/onSave/error", err.data.errors);
       });
     }
 
@@ -91,7 +91,7 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
 
   }
   const onSelectedSource = (item: InputComboItem) => {
-    console.log("onSelectedSource/item", item)
+    CustomLogger.log("onSelectedSource/item", item)
     setSelectedSource(item)
   }
 
@@ -112,14 +112,14 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
   const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(RenderDestination())
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("ExpenseDialog/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("ExpenseDialog/handleChange", event.target.name, event.target.value)
     const newObj: IExpense = SetProperty(selectedExpense, event.target.name, event.target.value) as IExpense;
 
     setSelectedExpense(newObj)
   };
   const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
-    console.log("ExpenseDialog/handleNumberChange", event.target.name, event.target.value)
+    CustomLogger.log("ExpenseDialog/handleNumberChange", event.target.name, event.target.value)
     const newObj: IExpense = SetProperty(selectedExpense, event.target.name, Number(event.target.value).setFix(2)) as IExpense;
     newObj.amount = Number((newObj.units * newObj.pricePeUnit).toFixed(2))
     setSelectedExpense(newObj)
@@ -128,18 +128,18 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("ExpenseDialog/SetProperty/newobj", newObj)
+    CustomLogger.info("ExpenseDialog/SetProperty/newobj", newObj)
     return newObj;
   }
   const onCategoryChanged = (item: InputComboItem) => {
-    console.log("ExpenseDialog/onCategoryChanged/item", item)
+    CustomLogger.log("ExpenseDialog/onCategoryChanged/item", item)
     setSelectedCategory(item)
    /*  setSelectedType(newInputComboItem) */
     setSelectedExpense(setProperty(selectedExpense, `expense.category`, item.lable))
    /*  setSelectedExpense(setProperty(selectedExpense, `expense.type`, "")) */
   }
   const onTypeChanged = (item: InputComboItem) => {
-    console.log("ExpenseDialog/onTypeChanged/item", item)
+    CustomLogger.log("ExpenseDialog/onTypeChanged/item", item)
     setSelectedType(item)
 
     setSelectedExpense(setProperty(selectedExpense, `expense.type`, item.lable))

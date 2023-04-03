@@ -23,21 +23,19 @@ export interface InputComboProps{
 }
 function InputComboObsulute(props: InputComboProps) {
 
-  console.log("InputCombo/props", props)
+  CustomLogger.log("InputCombo/props", props)
   const {items,title,selectedItem ,  onSelectedItem} = props;
   const [selected,setSelected] = useState<InputComboItem>()
   
   const handleSelectedItemChanged = (event: React.SyntheticEvent<Element, Event>, newValue: any) => {
     event.preventDefault;
     event.stopPropagation;
-    console.log("InputCombo/handleSelectedItemChanged", newValue)
+    CustomLogger.log("InputCombo/handleSelectedItemChanged", newValue)
     setSelected(newValue)
     onSelectedItem(newValue)
-    
-    /* handleComboChange(event,newValue); */
   }
   useEffect(()=> {
-    console.log("InputCombo/useEffect", selectedItem)
+    CustomLogger.log("InputCombo/useEffect", selectedItem)
     if(selectedItem !== undefined )
     setSelected(selectedItem as InputComboItem)
   },[selectedItem])

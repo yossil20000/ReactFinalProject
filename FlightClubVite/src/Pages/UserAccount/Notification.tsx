@@ -22,16 +22,16 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function NotificationPage() {
-  const [isSaved,setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  
+
 
   const login = useAppSelector((state) => state.authSlice);
   const [notification, setNotification] = useState<INotification>(getNewNotification(login.member._id));
-  const { data: dataNotification, isLoading: isNotifiesLoading ,refetch} = useFetchAllNotifiesQuery(login.member._id)
- const [createNotification,{isError: isCreateError}] = useCreateNotifyMutation();
- const [updateNotification,{isError: isUpdateError}] = useUpdateNotifyMutation();
- 
+  const { data: dataNotification, isLoading: isNotifiesLoading, refetch } = useFetchAllNotifiesQuery(login.member._id)
+  const [createNotification, { isError: isCreateError }] = useCreateNotifyMutation();
+  const [updateNotification, { isError: isUpdateError }] = useUpdateNotifyMutation();
+
   useEffect(() => {
     if (dataNotification && dataNotification.success) {
       if (dataNotification.data[0]) {
@@ -56,30 +56,26 @@ function NotificationPage() {
   const handleNotifyChange = (prop: string) => (event: any) => {
     let newObj = SetProperty(notification, prop, event.target.value)
     setNotification(newObj);
-    console.log("notifyForm", newObj, prop)
+    CustomLogger.info("notifyForm", newObj, prop)
   };
 
   const handleBoolainChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Notification/handleBoolainChange", event.target.name, event.target.checked)
+    CustomLogger.info("Notification/handleBoolainChange", event.target.name, event.target.checked)
     const newObj = SetProperty(notification, event.target.name, event.target.checked);
-
     setNotification(newObj)
-    console.log("Notification/handleBoolainChange/newObj", event.target.name, newObj)
+    CustomLogger.info("Notification/handleBoolainChange/newObj", event.target.name, newObj)
   };
 
   const onNotifyChanged = (newNotify: INotify): void => {
     if (notification === undefined) return;
     let notifyIndex = notification.notify.findIndex((item) => item.event === newNotify.event)
-    console.log("Notification/onNotifyChanged/foundindex/", notifyIndex, newNotify)
+    CustomLogger.info("Notification/onNotifyChanged/foundindex/", notifyIndex, newNotify)
     if (notifyIndex >= 0) {
-      /* newnotification.notify[1] = newNotify */
       const obj: INotification = { ...notification }
       obj.notify[notifyIndex] = newNotify
       setNotification(obj)
-      console.log("Notification/onNotifyChanged/SetNotification/", notifyIndex, obj)
-
+      CustomLogger.info("Notification/onNotifyChanged/SetNotification/", notifyIndex, obj)
     }
-
   }
   const handleOnValidatiobClose = () => {
     setValidationAlert([])
@@ -87,39 +83,37 @@ function NotificationPage() {
   const onSave = async () => {
     setValidationAlert([]);
     setIsSaved(false)
-        if(notification._id === ""){
-          createNotification(notification).unwrap().then((data) => {
-            console.log("Notification/onSavecreateNotification/", data);
-            if (data.success) {
-              setIsSaved(true)
-            }
-    
-          }).catch((err) => {
-            const validation = getValidationFromError(err, handleOnValidatiobClose);
-            setValidationAlert(validation);
-            console.log("Notification/onSave/error/createNotification", err.data.errors);
-          });
+    if (notification._id === "") {
+      createNotification(notification).unwrap().then((data) => {
+        CustomLogger.info("Notification/onSavecreateNotification/", data);
+        if (data.success) {
+          setIsSaved(true)
         }
-        else{
-          updateNotification(notification).unwrap().then((data) => {
-            console.log("Notification/onSave/updateNotification/", data);
-            if (data.success) {
-              setIsSaved(true)
-            }
-    
-          }).catch((err) => {
-            const validation = getValidationFromError(err, handleOnValidatiobClose);
-            setValidationAlert(validation);
-            console.log("Notification/onSave/error/updateNotification", err.data.errors);
-          });
-        }
-        refetch();
+
+      }).catch((err) => {
+        const validation = getValidationFromError(err, handleOnValidatiobClose);
+        setValidationAlert(validation);
+        CustomLogger.error("Notification/onSave/error/createNotification", err.data.errors);
+      });
     }
+    else {
+      updateNotification(notification).unwrap().then((data) => {
+        CustomLogger.info("Notification/onSave/updateNotification/", data);
+        if (data.success) {
+          setIsSaved(true)
+        }
+      }).catch((err) => {
+        const validation = getValidationFromError(err, handleOnValidatiobClose);
+        setValidationAlert(validation);
+        CustomLogger.error("Notification/onSave/error/updateNotification", err.data.errors);
+      });
+    }
+    refetch();
+  }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event?.defaultPrevented
-    console.log("ActionButtons/onAction", event?.target, action)
+    CustomLogger.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
-      
       case EAction.SAVE:
         onSave()
         break;
@@ -206,10 +200,10 @@ function NotificationPage() {
                 </Grid>
               ))}
               <Grid item xs={12}>
-              <Box className='yl__action_button' >
-            <ActionButtons OnAction={onAction} show={[ EAction.SAVE]} item={""}/>
+                <Box className='yl__action_button' >
+                  <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} />
 
-          </Box>
+                </Box>
               </Grid>
             </Grid></>
         </ContainerPageFooter>

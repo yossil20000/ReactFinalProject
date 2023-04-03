@@ -51,17 +51,17 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
   }, [])
   const handleOnSave = async () => {
-    console.log("CreateExspenseDialog/onSave", selectedExpense)
+    CustomLogger.info("CreateExspenseDialog/onSave", selectedExpense)
     setValidationAlert([]);
     let account = newAccount;
     /* account.copy(accountCreate); */
-    console.log("CreateExspenseDialog/onSave/Exspense", account)
+    CustomLogger.info("CreateExspenseDialog/onSave/Exspense", account)
     if (selectedMember !== undefined) {
       const filterData: IUpsertExpanse = {
         update: selectedExpense
       }
       await createExpense(filterData).unwrap().then((data) => {
-        console.log("CreateExspenseDialog/onSave/", data);
+        CustomLogger.info("CreateExspenseDialog/onSave/", data);
         if (data.data._id !== undefined) {
           setIsSaved(true)
         }
@@ -69,7 +69,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
 
       }).catch((err) => {
-        console.log("CreateExspenseDialog/onSave/error", err.data.errors);
+        CustomLogger.info("CreateExspenseDialog/onSave/error", err.data.errors);
       });
     }
 
@@ -80,13 +80,13 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     let bankFound: IClubAccount | undefined = undefined;
     if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
       bankFound = bankAccounts?.data.find((bank) => (bank._id === item._id))
-      console.log("ExpenseDialog/OnSelectedClubAccount/item,bank", item, bankFound)
+      CustomLogger.info("ExpenseDialog/OnSelectedClubAccount/item,bank", item, bankFound)
       setBank(bankFound)
     }
 
   }
   const onFipSource = () => {
-    console.log("ExpenseDialog/flipSource")
+    CustomLogger.info("ExpenseDialog/flipSource")
     setFlipSource(!flipSource);
   }
 

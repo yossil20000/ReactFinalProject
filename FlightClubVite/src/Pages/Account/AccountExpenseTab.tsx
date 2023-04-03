@@ -90,7 +90,7 @@ function AccountExpenseTab() {
     setPage(0);
   };
   const getData = useMemo(() => {
-    console.log("AccountExpenseTab/getData/expense/data", data);
+    CustomLogger.info("AccountExpenseTab/getData/expense/data", data);
     let rows = data?.data.map((row) => {
       return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
         <>{row.status == OrderStatus.CREATED ? (<>
@@ -102,7 +102,7 @@ function AccountExpenseTab() {
         </>) : (<></>)}
         </>)
     });
-    console.log("AccountExpenseTab/getData/rows", rows)
+    CustomLogger.info("AccountExpenseTab/getData/rows", rows)
     rows =  rows === undefined ? [] : rows;
     setCount(rows.length);
     return rows;
@@ -111,12 +111,12 @@ function AccountExpenseTab() {
   
   const OnSelectedAccount = (item: string): void => {
     const found = data?.data.find((expense) => expense._id === item);
-    console.log("AccountExpenseTab/OnSelectedAccount", found);
+    CustomLogger.log("AccountExpenseTab/OnSelectedAccount", found);
     setSelectedExpense(found);
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         setOpenExpenseAdd(true)

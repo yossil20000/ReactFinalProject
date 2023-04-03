@@ -69,34 +69,33 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
       onClose()
   }
   useEffect(() => {
-    console.log("CreateTransactionDialog/accounts", accounts)
+    CustomLogger.info("CreateTransactionDialog/accounts", accounts)
   }, [accounts])
 
   const handleOnValidatiobClose = useCallback(() => {
     setValidationAlert([])
-
   }, [])
 
   const handleOnSave = async () => {
-    console.log("CreateTransactionDialog/onSave", selectedTransaction)
+    CustomLogger.log("CreateTransactionDialog/onSave", selectedTransaction)
     setValidationAlert([]);
 
     if (selectedTransaction !== undefined) {
       await AddTransaction(selectedTransaction).unwrap().then((data) => {
-        console.log("CreateTransactionDialog/onSave/", data);
+        CustomLogger.info("CreateTransactionDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
-        console.log("CreateTransactionDialog/onSave/error", err.data.errors);
+        CustomLogger.error("CreateTransactionDialog/onSave/error", err.data.errors);
       });
     }
   }
   const getAccountType = (memberType: string): string => {
-    /* console.log("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
-    /* console.log("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
+    /* CustomLogger.info("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
+    /* CustomLogger.info("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
 
     switch (memberType) {
       case MemberType.Club:
@@ -117,11 +116,11 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
     if (value) {
       values.push(value.source.id)
       values.push(value.destination.id)
-      console.log("CreateTransactionDialog/filterAccount/values", values)
+      CustomLogger.info("CreateTransactionDialog/filterAccount/values", values)
       const valuesFilter: filter = {
         member: [value.source.id, value.destination.id]
       }
-      console.log("CreateTransactionDialog/filterAccount/valuesfilter", valuesFilter)
+      CustomLogger.info("CreateTransactionDialog/filterAccount/valuesfilter", valuesFilter)
       return valuesFilter;
     }
     return []
@@ -131,7 +130,7 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
   useEffect(() => {
     if (value !== undefined) {
       if (Object.keys(value).length > 0) {
-        console.log("CreateTransactionDialog/value", value)
+        CustomLogger.info("CreateTransactionDialog/value", value)
         const newTransaction: IAddTransaction = {
           source: {
             _id: value.source.account_id,
@@ -158,7 +157,7 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
         const filter = filterAccount;
         setAccountFilter(filter);
         refetch()
-        console.log("CreateTransactionDialog/transaction", newTransaction, filter)
+        CustomLogger.info("CreateTransactionDialog/transaction", newTransaction, filter)
       }
     }
 
@@ -166,19 +165,18 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("CreateTransactionDialog/SetProperty/newobj", newObj)
+    CustomLogger.log("CreateTransactionDialog/SetProperty/newobj", newObj)
     return newObj;
   }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("CreateTransactionDialog/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("CreateTransactionDialog/handleChange", event.target.name, event.target.value)
     const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
-
     setSelectedTransaction(newObj)
   };
+  
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
-
-    console.log("CreateTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
+    CustomLogger.log("CreateTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
   }
   return (
     <Dialog sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}

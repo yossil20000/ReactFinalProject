@@ -39,7 +39,7 @@ function MemberTab() {
   useEffect(() => {
 
     if (isError) {
-      console.log("MemberTab/useEffect/iserror", error)
+      CustomLogger.error("MemberTab/useEffect/iserror", error)
     }
   }, [isError])
 
@@ -48,13 +48,13 @@ function MemberTab() {
   }
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
-    console.log("MemberPage/newValue", newValue)
+    CustomLogger.log("MemberPage/newValue", newValue)
   }
 
   const handleMemberChange = (item: InputComboItem) => {
-    console.log("MemberTab/General/handleChange/item", item)
+    CustomLogger.log("MemberTab/General/handleChange/item", item)
     const member = members?.find((member) => item._id == member._id)
-    console.log("MemberTab/General/member", member)
+    CustomLogger.info("MemberTab/General/member", member)
     setSelectedItem(member === undefined ? null : member);
   };
 
@@ -132,7 +132,7 @@ function MemberTab() {
       setValidationAlert([]);
       if (selectedItem !== undefined && selectedItem?._id !== "") {
         payLoad = await updateMember(selectedItem as unknown as IMemberUpdate).unwrap();
-        console.log("General/OnUpdate/payload", payLoad);
+        CustomLogger.info("General/OnUpdate/payload", payLoad);
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
@@ -154,7 +154,7 @@ function MemberTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event?.defaultPrevented
-    console.log("ActionButtons/onAction", event?.target, action)
+    CustomLogger.log("ActionButtons/onAction", event?.target, action)
     switch (action) {
       case EAction.ADD:
         setSelectedItem(newMember());
@@ -172,11 +172,11 @@ function MemberTab() {
           <Box marginTop={1}>
             <Grid container columns={12}>
               <Grid item xs={12} md={6}>
-                <MembersCombo onChanged={handleMemberChange} source={"source"} filter={{}}/>
+                <MembersCombo onChanged={handleMemberChange} source={"source"} filter={{}} />
               </Grid>
 
               <Grid item xs={12} md={6}>
-              <TextField
+                <TextField
                   disabled
                   type={"text"}
                   sx={{ marginLeft: "0px", width: "100%", fontSize: 25 }}
@@ -184,10 +184,10 @@ function MemberTab() {
                   id="member_info"
                   variant="standard"
                   key={"member_info"}
-                  value={`${selectedItem?.family_name} ${selectedItem?.first_name} / ${selectedItem?.member_id} ${selectedItem?.member_type} ` }
+                  value={`${selectedItem?.family_name} ${selectedItem?.first_name} / ${selectedItem?.member_id} ${selectedItem?.member_type} `}
                   InputLabelProps={{ shrink: true }}
                   label="Member Info"
-                  
+
                 />
               </Grid>
               <Grid item xs={12}>
@@ -204,7 +204,7 @@ function MemberTab() {
           </Box>
         </div>
         <div className='footer'>
-        <Grid container>
+          <Grid container>
             {validationAlert.map((item) => (
               <Grid item xs={12}>
 
@@ -214,7 +214,7 @@ function MemberTab() {
             ))}
           </Grid>
           <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""}/>
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} />
           </Box>
 
         </div>

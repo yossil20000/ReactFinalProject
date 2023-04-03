@@ -29,7 +29,7 @@ function getComparator<Key extends keyof any>(
 
 export type Order = 'asc' | 'desc';
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  /* console.log("descendingComparator", a, b, orderBy) */
+  CustomLogger.log("descendingComparator", a, b, orderBy)
   if (b[orderBy] < a[orderBy]) { return -1 }
   if (b[orderBy] > a[orderBy]) { return 1 }
   return 0;

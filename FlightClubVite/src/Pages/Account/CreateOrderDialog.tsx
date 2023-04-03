@@ -30,8 +30,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetOrderDialogProps) {
 
-  console.log("CreatetOrderDialog/value", value)
-
+  CustomLogger.log("CreatetOrderDialog/value", value)
   const [CreateOrder, { isError, isLoading, error, isSuccess }] = useCreateOrderMutation();
   const [orderCreate, setOrderCreate] = useState<IOrderBase>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
@@ -39,7 +38,7 @@ function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetO
   const [isSaved,setIsSaved] = useState(false);
 
   useEffect(() => {
-    console.log("CreatetOrderDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("CreatetOrderDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Order Create", alertMessage: "Order Create Successfully", open: true, onClose: onClose, severity: "success" }))
     }
@@ -51,11 +50,11 @@ function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetO
   }, [isLoading])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleChange", event.target.name, event.target.value)
+    CustomLogger.log("handleChange", event.target.name, event.target.value)
     if(event.target.name === 'discount')
     {
       const newAmount = (orderCreate.units * orderCreate.pricePeUnit) -  Number(event.target.value);
-      console.log("handleChange/newAmount", event.target.name, event.target.value,newAmount)
+      CustomLogger.info("handleChange/newAmount", event.target.name, event.target.value,newAmount)
       setOrderCreate(prev => ({
         ...prev,
         [event.target.name]: Number(event.target.value),amount:  Number(newAmount.toFixed(2))
@@ -75,25 +74,20 @@ function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetO
 
   }, [])
   const handleOnSave = async () => {
-    console.log("CreatetOrderDialog/onSave", orderCreate)
+    CustomLogger.log("CreatetOrderDialog/onSave", orderCreate)
     let order = new COrderCreate();
     order.copy(orderCreate);
-    console.log("CreatetOrderDialog/onSave/order", order)
-    console.log("CreatetOrderDialog/onSave/date", orderCreate.order_date)
+    CustomLogger.info("CreatetOrderDialog/onSave/order", order)
+    CustomLogger.info("CreatetOrderDialog/onSave/date", orderCreate.order_date)
 
     await CreateOrder(orderCreate as IOrderBase).unwrap().then((data) => {
-      console.log("CreatetOrderDialog/onSave/", data);
+      CustomLogger.log("CreatetOrderDialog/onSave/", data);
       if(data.data._id !== undefined){
         setIsSaved(true)
       }
-        /* onSave(value); */
-        
-      
     }).catch((err) => {
-      console.log("CreatetOrderDialog/onSave/error", err.data.errors);
+      CustomLogger.error("CreatetOrderDialog/onSave/error", err.data.errors);
     });
-
-
   }
 
   return (

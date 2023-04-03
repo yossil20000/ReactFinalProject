@@ -23,7 +23,7 @@ function NoticeEdit() {
   const notice : IClubNotice = useAppSelector((state) => state.selectedNotice);
   const noticeDispatch = useAppDispatch();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Notice/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("Notice/handleChange", event.target.name, event.target.value)
     const newObj: IClubNotice = SetProperty(notice, event.target.name, event.target.value) as IClubNotice;
     noticeDispatch(setNotice(newObj));
   };
@@ -31,20 +31,18 @@ function NoticeEdit() {
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("SetProperty/newobj", newObj)
+    CustomLogger.info("SetProperty/newobj", newObj)
     return newObj;
   }
 
   const handleDateChange = (newValue: DateTime | null, property: string) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    console.log("Notice/handleDateChange", new Date(newDate))
-   
+    CustomLogger.log("Notice/handleDateChange", new Date(newDate))
     noticeDispatch(setNoticeValue({key: property,value: new Date(newDate)}));
   };
   const handleBoolainChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Notice/handleBoolainChange", event.target.name, event.target.checked)
+    CustomLogger.log("Notice/handleBoolainChange", event.target.name, event.target.checked)
     noticeDispatch(setNoticeValue({key: event.target.name,value: event.target.checked}));
- 
   };
 
   return (

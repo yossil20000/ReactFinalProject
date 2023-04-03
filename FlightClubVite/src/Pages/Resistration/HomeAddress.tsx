@@ -13,14 +13,12 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-
 function HomeAddress({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
   const handleContactChange = (prop: any) => (event: any) => {
     //setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
     setFormData(prev => ({ ...prev, contact: { ...prev.contact, billing_address: { ...prev.contact.billing_address, [prop]: event.target.value } } }));
-    console.log("formData", formData)
+    CustomLogger.info("formData", formData)
   };
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -43,7 +41,7 @@ function HomeAddress({ numPage, page, setPage, formData, setFormData }: IPageNav
         </Grid>
         <Grid item xs={6}>
           <Item>
-          <Button sx={{ m: 1, width: '90%', margin: "auto" }}
+            <Button sx={{ m: 1, width: '90%', margin: "auto" }}
               variant={'outlined'}
               onClick={() => {
                 setPage(page + 1 == numPage ? 0 : page + 1);

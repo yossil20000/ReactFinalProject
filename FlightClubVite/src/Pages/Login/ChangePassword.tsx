@@ -29,27 +29,26 @@ function ChangePassword() {
   const [changePassword,setChangePassword] = useState<IChangePassword>(initChangePassword)
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log("handleSubmit/",changePassword);
+    CustomLogger.log("handleSubmit/",changePassword);
     const result = await changePasswordApi(changePassword).unwrap();
-    console.log("handleSubmit/result", result);
+    CustomLogger.info("handleSubmit/result", result);
   };
 
   const handleVerifyPassword =  (prop: any) => (event: any) => {
     event.preventDefault();
-    console.log("ChangePassword/handleVerifyPassword/props_event", prop,event)
+    CustomLogger.log("ChangePassword/handleVerifyPassword/props_event", prop,event)
     setVerifyPassword(event.target.value)
     
     return {}
   };
   const handleChange =  (prop: any) => (event: any) => {
     event.preventDefault();
-    console.log("ChangePassword/hadleChanged/props_event", prop,event)
+    CustomLogger.log("ChangePassword/hadleChanged/props_event", prop,event)
     setChangePassword((prev) => ({...prev,[prop]: event.target.value}))
     return {}
   };
   const RenderChangePassword = () => {
-    console.log("RenderChangePassword/login",login)
+    CustomLogger.log("RenderChangePassword/login",login)
     if (login.member.username)
       return (
         <ThemeProvider theme={theme}>

@@ -19,7 +19,7 @@ function DeviceDetailes(props: IDeviceDetails) {
   }
   if(data?.data )
   {
-    console.log("RenderDetailes/data",data.data,id_device)
+    CustomLogger.info("RenderDetailes/data",data.data,id_device)
     return (<>
     <Typography >Divice Detailes</Typography>:
     <Typography display="flex">Price : <Typography><b>{data?.data?.price.base} per 1 hour {data?.data?.price.meter}</b></Typography></Typography>

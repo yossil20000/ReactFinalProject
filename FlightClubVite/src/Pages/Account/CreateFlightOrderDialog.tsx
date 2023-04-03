@@ -30,7 +30,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 function CreateFlightOrderDialog({ value, onClose, onSave, open, ...other }: CreateFlightOrderDialogProps) {
 
-  console.log("CreateFlightOrderDialog/value", value)
+  CustomLogger.info("CreateFlightOrderDialog/value", value)
 
   const [CreateOrder, { isError, isLoading, error, isSuccess }] = useCreateOrderMutation();
   const [orderCreate, setOrderCreate] = useState<IOrderBase>(value);
@@ -39,28 +39,23 @@ function CreateFlightOrderDialog({ value, onClose, onSave, open, ...other }: Cre
   const [isSaved,setIsSaved] = useState(false);
 
   useEffect(() => {
-    console.log("CreateFlightOrderDialog/useEffect", isError, isSuccess, isLoading)
+    CustomLogger.info("CreateFlightOrderDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
-
       setAlert((prev) => ({ ...prev, alertTitle: "Order Create", alertMessage: "Order Create Successfully", open: true, onClose: onClose, severity: "success" }))
-
     }
     if (isError) {
-
       const validation = getValidationFromError(error, handleOnValidatiobClose);
       setValidationAlert(validation);
       return;
-
-
     }
   }, [isLoading])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleChange", event.target.name, event.target.value)
+    CustomLogger.log("handleChange", event.target.name, event.target.value)
     if(event.target.name === 'discount')
     {
       const newAmount = (orderCreate.units * orderCreate.pricePeUnit) -  Number(event.target.value);
-      console.log("handleChange/newAmount", event.target.name, event.target.value,newAmount)
+      CustomLogger.info("handleChange/newAmount", event.target.name, event.target.value,newAmount)
       setOrderCreate(prev => ({
         ...prev,
         [event.target.name]: Number(event.target.value),amount:  Number(newAmount.toFixed(2))
@@ -80,25 +75,19 @@ function CreateFlightOrderDialog({ value, onClose, onSave, open, ...other }: Cre
 
   }, [])
   const handleOnSave = async () => {
-    console.log("CreateFlightOrderDialog/onSave", orderCreate)
+    CustomLogger.log("CreateFlightOrderDialog/onSave", orderCreate)
     let order = new COrderCreate();
     order.copy(orderCreate);
-    console.log("CreateFlightOrderDialog/onSave/order", order)
-    console.log("CreateFlightOrderDialog/onSave/date", orderCreate.order_date)
-
+    CustomLogger.log("CreateFlightOrderDialog/onSave/order", order)
+    CustomLogger.log("CreateFlightOrderDialog/onSave/date", orderCreate.order_date)
     await CreateOrder(orderCreate as IOrderBase).unwrap().then((data) => {
-      console.log("CreateFlightOrderDialog/onSave/", data);
+      CustomLogger.info("CreateFlightOrderDialog/onSave/", data);
       if(data.data._id !== undefined){
         setIsSaved(true)
       }
-        /* onSave(value); */
-        
-      
     }).catch((err) => {
-      console.log("CreateFlightOrderDialog/onSave/error", err.data.errors);
+      CustomLogger.error("CreateFlightOrderDialog/onSave/error", err.data.errors);
     });
-
-
   }
 
   return (

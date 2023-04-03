@@ -43,9 +43,9 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items, ch
 
   })
   const onDateChanged = (key: string, value: Date | null) => {
-    console.log("FilterDrawer/onDateChanged", key, value)
+    CustomLogger.log("FilterDrawer/onDateChanged", key, value)
     const found = items.find((item) => item.key === key)
-    console.log("FilterDrawer/onDateChanged/found", found)
+    CustomLogger.info("FilterDrawer/onDateChanged/found", found)
     if (found) {
       found.setValue(value)
       onFilterChanged(found.key, value)
@@ -55,7 +55,7 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items, ch
   const getDate = (key: string): Date => {
     const found = items.find((item) => item.key === key)
     if (found) {
-      console.log("FilterDrawer/getDate", key, found.value)
+      CustomLogger.info("FilterDrawer/getDate", key, found.value)
       return new Date(found.value)
     }
     return new Date()

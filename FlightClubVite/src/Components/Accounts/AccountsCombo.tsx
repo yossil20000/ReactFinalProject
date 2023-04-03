@@ -26,10 +26,10 @@ function AccountsCombo(props : ComboProps) {
   }
   
   useEffect(() => {
-    console.log("AccountsCombo/ data", data?.data)
+    CustomLogger.log("AccountsCombo/ data", data?.data)
     
     let items  =   data?.data.map((item: IAccountsCombo) => accountsToItemCombo(item));
-    console.log("AccountsCombo/ Item", items)
+    CustomLogger.info("AccountsCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
   }, [data?.data])
@@ -37,7 +37,7 @@ function AccountsCombo(props : ComboProps) {
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);
     onChanged(item);
-    console.log("AccountsCombo/onSelectedItem", item)
+    CustomLogger.info("AccountsCombo/onSelectedItem", item)
   }
   useEffect(()=> {
     if(selectedItem)

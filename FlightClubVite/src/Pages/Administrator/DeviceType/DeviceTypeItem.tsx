@@ -28,13 +28,12 @@ function DeviceTypeItem() {
 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
     const newObj: IDeviceType = SetProperty(selectedItem, event.target.name, event.target.value) as IDeviceType;
-
     setSelectedItem(newObj)
   };
   const onComboChanged = (item: InputComboItem, prop:string): void => {
-    console.log("DeviceTypeItem/onComboChanged/item", item, prop,selectedItem);
+    CustomLogger.log("DeviceTypeItem/onComboChanged/item", item, prop,selectedItem);
     const newObj: IDeviceType = SetProperty(selectedItem, prop, item.lable) as IDeviceType;
     setSelectedItem(newObj)
   }
@@ -42,7 +41,7 @@ function DeviceTypeItem() {
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("DeviceTypeItem/SetProperty/newobj", newObj)
+    CustomLogger.info("DeviceTypeItem/SetProperty/newobj", newObj)
     return newObj;
   }
   return (

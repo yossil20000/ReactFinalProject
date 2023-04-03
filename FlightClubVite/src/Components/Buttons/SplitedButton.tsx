@@ -7,7 +7,7 @@ export interface ISplitButtonProps {
 }
 
 export default function SplitedButton(props: ISplitButtonProps) {
-  //console.log("SplitedButtonProps", props)
+  CustomLogger.log("SplitedButtonProps", props)
   let { options, handleClick } = props;
   //options = ['Create a merge commit', 'Squash and merge', 'Rebase and merge'];
   const [open, setOpen] = useState(false);

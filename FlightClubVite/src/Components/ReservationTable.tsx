@@ -43,11 +43,11 @@ export default function ReservationTable({ hideAction = false, filter = {} as IR
   const [pageSize, setPageSize] = useState(5);
   const [reservations, setReservations] = useState<IReservation[]>();
 useEffect(()=>{
-  console.log("ReservationTable/filter", filter)
+  CustomLogger.info("ReservationTable/filter", filter)
 },[filter])
 
 useEffect(() => {
-  console.log("ReservationTable/useEffect", dataReservations)
+  CustomLogger.info("ReservationTable/useEffect", dataReservations)
   if(dataReservations?.data)
    setReservations(dataReservations.data)
 },[isLoading])
@@ -64,7 +64,7 @@ useEffect(() => {
       validOperation : GeneralCanDo(row.member._id, login.member._id, login.member.roles)
     }))
     if (rows !== undefined) {
-      console.log("ReservationTable/rows", rows, reservations);
+      CustomLogger.info("ReservationTable/rows", rows, reservations);
       return rows
     }
     return []
@@ -72,14 +72,14 @@ useEffect(() => {
 
   }
   const getCanDoAction = (canDo : CanDo) : EAction[] => {
-    console.log("ReservationTable/getCanDoAction",canDo)
+    CustomLogger.log("ReservationTable/getCanDoAction",canDo)
     let actions : EAction[] = []
 
     if(canDo & CanDo.Edit)
        actions.push(EAction.EDIT)
     if(canDo & CanDo.Delete)
       actions.push(EAction.DELETE)
-    console.log("ReservationTable/getCanDoAction/actions",actions)
+    CustomLogger.info("ReservationTable/getCanDoAction/actions",actions)
     return actions;
   }
   const columns: GridColDef[] = useMemo(() => [
@@ -109,7 +109,7 @@ useEffect(() => {
   ], [rowId, hideAction,reservations]);
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("ReservationTable/onAction", event?.target, action, item)
+    CustomLogger.log("ReservationTable/onAction", event?.target, action, item)
     switch (action) {
 
       case EAction.EDIT:

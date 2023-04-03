@@ -44,8 +44,8 @@ let newTransaction : IAddTransaction={
   date: new Date()
 }
 const getAccountType = (memberType: string | undefined): string => {
-  /* console.log("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
-  /* console.log("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
+  /* CustomLogger.info("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
+  /* CustomLogger.info("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
  if(memberType === undefined){
   memberType = ""
 }
@@ -97,8 +97,8 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
       description: selectedTransaction.description,
       date: new Date()
     }
-    console.log("NewTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
-    console.log("NewTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
+    CustomLogger.log("NewTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
+    CustomLogger.log("NewTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
     setSelectedTransaction(newObj);
     return newObj
@@ -115,25 +115,25 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
   }, [])
 
   const handleOnSave = async () => {
-    console.log("NewTransactionDialog/onSave", selectedTransaction)
+    CustomLogger.log("NewTransactionDialog/onSave", selectedTransaction)
     setValidationAlert([]);
  const transaction = UpdateSourceAccountFields()
     if (transaction !== undefined) {
       await AddTransaction(transaction).unwrap().then((data) => {
-        console.log("NewTransactionDialog/onSave/", data);
+        CustomLogger.info("NewTransactionDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
-        console.log("NewTransactionDialog/onSave/error", err.data.errors);
+        CustomLogger.error("NewTransactionDialog/onSave/error", err.data.errors);
       });
     }
   }
   
   const onSelectedSource = (item: InputComboItem) => {
-    console.log("onSelectedSource/item", item)
+    CustomLogger.log("onSelectedSource/item", item)
     setSelectedSource(item)
   }
 
@@ -152,18 +152,9 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
 
   }
 
-  const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    
-    console.log("NewTransaction/handleNumberChange", event.target.name, event.target.value)
-    const number : number = Number(event.target.value)/10
-    if(isNaN(number)) return;
-    const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, number) as IAddTransaction;
-    
-    setSelectedTransaction(newObj)
-  };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
-    console.log("NewTransaction/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
     const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
 
     setSelectedTransaction(newObj)
@@ -171,14 +162,10 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
-    console.log("NewTransaction/SetProperty/newobj", newObj)
+    CustomLogger.log("NewTransaction/SetProperty/newobj", newObj)
     return newObj;
   }
-  const onComboChanged = (item: InputComboItem, prop: string): void => {
-    setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
 
-    console.log("CNewTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
-  }
   return (
 
     <Dialog

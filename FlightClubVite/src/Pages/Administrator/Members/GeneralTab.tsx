@@ -6,23 +6,23 @@ import { MembersContext, MembersContextType } from "../../../app/Context/MemberC
 import { InputComboItem } from "../../../Components/Buttons/ControledCombo"
 import GenderCombo from "../../../Components/Buttons/GenderCombo";
 import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
-import { IMemberAdmin,  Role } from "../../../Interfaces/API/IMember";
+import { IMemberAdmin, Role } from "../../../Interfaces/API/IMember";
 import { setProperty } from "../../../Utils/setProperty";
 const source = "admin/member/general"
 
 const SetProperty = (obj: any, path: string, value: any): any => {
   let newObj = { ...obj };
   newObj = setProperty(newObj, path, value);
-  console.log("SetProperty/newobj", newObj)
+  CustomLogger.info("SetProperty/newobj", newObj)
   return newObj;
 }
 function GeneralTab() {
-  
-  const { setSelectedItem, selectedItem} = useContext(MembersContext) as MembersContextType;
-   
+
+  const { setSelectedItem, selectedItem } = useContext(MembersContext) as MembersContextType;
+
 
   const handleTimeChange = (newValue: Date | null | undefined, name: string) => {
-    console.log(`handleTimeChange/newValue , key`, newValue, name);
+    CustomLogger.log(`handleTimeChange/newValue , key`, newValue, name);
     if (newValue === null || newValue === undefined)
       return;
 
@@ -31,15 +31,11 @@ function GeneralTab() {
     setSelectedItem(newObj)
   };
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    console.log("onComboChanged/item", item, prop);
+    CustomLogger.log("onComboChanged/item", item, prop);
     const newObj: IMemberAdmin = SetProperty(selectedItem, prop, item.lable) as IMemberAdmin;
     setSelectedItem(newObj)
   }
-  const onRoleChanged = (item: LabelType[], prop: string): void => {
-    console.log("onComboChanged/item", item, prop);
-    const newObj: IMemberAdmin = SetProperty(selectedItem, prop, item.map((i) => i.name)) as IMemberAdmin;
-    setSelectedItem(newObj)
-  }
+
   const labelsFromRole = (): LabelType[] => {
     const lables: LabelType[] = Object.keys(Role).filter((v) => isNaN(Number(v))).
       map((name, index) => {
@@ -67,41 +63,40 @@ function GeneralTab() {
     return [];
   }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
     const newObj: IMemberAdmin = SetProperty(selectedItem, event.target.name, event.target.value) as IMemberAdmin;
-
     setSelectedItem(newObj)
   };
   return (
     <>
       <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} alignContent={'start'}>
         <Grid item xs={12} sm={6}>
-          <TextField  onChange={handleChange} name="first_name" fullWidth value={selectedItem?.first_name} variant={"standard"}  label={"First Name"} InputLabelProps={{ shrink: true }}/>
+          <TextField onChange={handleChange} name="first_name" fullWidth value={selectedItem?.first_name} variant={"standard"} label={"First Name"} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="family_name" fullWidth value={selectedItem?.family_name} variant={"standard"}  label={"Famaily Name"} InputLabelProps={{ shrink: true }}/>
+          <TextField onChange={handleChange} name="family_name" fullWidth value={selectedItem?.family_name} variant={"standard"} label={"Famaily Name"} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} sm={6}>
-        <Grid item xs={12}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
-                <MobileDatePicker
-                  label="Date Of Birth"
-                  value={selectedItem?.date_of_birth === null ? new Date() : selectedItem?.date_of_birth}
-                  onChange={(newValue) => handleTimeChange(newValue, "date_of_birth")}
-                  renderInput={(params) => <TextField {...params} fullWidth={true} />}
-                />
-              </LocalizationProvider>
-            </Grid>
+          <Grid item xs={12}>
+            <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <MobileDatePicker
+                label="Date Of Birth"
+                value={selectedItem?.date_of_birth === null ? new Date() : selectedItem?.date_of_birth}
+                onChange={(newValue) => handleTimeChange(newValue, "date_of_birth")}
+                renderInput={(params) => <TextField {...params} fullWidth={true} />}
+              />
+            </LocalizationProvider>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"}  label={"Member Id"} InputLabelProps={{ shrink: true }}/>
+          <TextField onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"} label={"Member Id"} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact?.email} variant={"standard"}  label={"email"} InputLabelProps={{ shrink: true }}/> 
+          <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact?.email} variant={"standard"} label={"email"} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} >
-          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={source} 
-          selectedItem={{lable: selectedItem?.gender === undefined ? "" : selectedItem?.gender.toString() ,_id: "",description: ""}}/>
+          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={source}
+            selectedItem={{ lable: selectedItem?.gender === undefined ? "" : selectedItem?.gender.toString(), _id: "", description: "" }} />
         </Grid>
         <Grid item xs={12}>
 

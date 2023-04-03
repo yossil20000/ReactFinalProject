@@ -8,7 +8,7 @@ function PaymentMethodCombo(props : StateComboProps) {
   const {onChanged,selectedItem} = props 
   const items = useRef(new Enum2ComboItem(PaymentMethod).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    console.log("PaymentMethodCombo/ DeviceItem", item)
+    CustomLogger.log("PaymentMethodCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (

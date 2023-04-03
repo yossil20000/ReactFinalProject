@@ -8,13 +8,11 @@ function DeviceMTCombo(props : StateComboProps) {
   const {onChanged,selectedItem} = props
   const items = useRef(new Enum2ComboItem(DEVICE_MT).getItems())
   const onSelectedItem = (item : InputComboItem) => {
-    
-    console.log("DeviceMTCombo/ DeviceItem", item)
+    CustomLogger.log("DeviceMTCombo/ DeviceItem", item)
     onChanged(item)
   }
   return (
     <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem}  items={items.current}  title={`Service Type`} />
-    
   )
 }
 

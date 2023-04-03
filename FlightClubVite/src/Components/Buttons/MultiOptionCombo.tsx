@@ -143,7 +143,7 @@ export default function MultiOptionCombo(comboProps: MultiOptionComboProps) {
   const id = open ? 'github-label' : undefined;
   React.useEffect(() => {
     setValue(selectedItems)
-    console.log("MultiOptionCombo/useEffect/selectedItems",selectedItems)
+    CustomLogger.log("MultiOptionCombo/useEffect/selectedItems",selectedItems)
   }, [selectedItems])
   return (
     <React.Fragment>

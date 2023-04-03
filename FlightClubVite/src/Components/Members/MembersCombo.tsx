@@ -26,10 +26,10 @@ function MembersCombo(props : ComboProps) {
  
 
   useEffect(() => {
-    console.log("MembersCombo/ data", data?.data)
+    CustomLogger.info("MembersCombo/ data", data?.data)
     
     let items  =   data?.data.map((item: IMemberCombo) => membersToItemCombo(item));
-    console.log("MembersCombo/ Item", items)
+    CustomLogger.info("MembersCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
   }, [data?.data])

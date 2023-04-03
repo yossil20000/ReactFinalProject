@@ -22,7 +22,7 @@ function AccountPage() {
   const [value, setValue] = useLocalStorage<number>("_accountPage", 0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
-    console.log("AdminPage/newValue", newValue)
+    CustomLogger.log("AdminPage/newValue", newValue)
   }
   return (
     <>

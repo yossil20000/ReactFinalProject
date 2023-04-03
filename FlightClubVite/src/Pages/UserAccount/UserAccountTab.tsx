@@ -24,13 +24,13 @@ function UserAccountTab() {
   const { data, isLoading, isError } = useFetchAccountSearchQuery(accountFilter);
   const [filter, setFilter] = useState<IOrderTableFilter>(from_to_Filter(new Date()));
   const getTransaction = useMemo((): ITransaction[] | [] => {
-    console.log("UserAccountTab/getTransaction/data", data?.data)
+    CustomLogger.info("UserAccountTab/getTransaction/data", data?.data)
 
     if (data?.data !== null && data?.data !== undefined) {
-      console.log("UserAccountTab/getTransaction/dataok", data?.data, login.member._id)
+      CustomLogger.info("UserAccountTab/getTransaction/dataok", data?.data, login.member._id)
       const account: IAccount | undefined = data?.data.find((a) => a.member._id === login.member._id);
       if (account !== undefined) {
-        console.log("UserAccountTab/getTransaction/accountFound", account, account.transactions)
+        CustomLogger.info("UserAccountTab/getTransaction/accountFound", account, account.transactions)
         return account.transactions
       }
     }
@@ -38,7 +38,7 @@ function UserAccountTab() {
   }, [data])
   const getAccount = useMemo((): IAccount | undefined => {
     if (data?.data !== null && data?.data !== undefined) {
-      console.log("UserAccountTab/getAccount/data?.data", data?.data)
+      CustomLogger.info("UserAccountTab/getAccount/data?.data", data?.data)
       const account: IAccount | undefined = data.data.find((account) => account.member._id === login.member._id);
       if (account !== undefined) {
         return account
@@ -48,7 +48,7 @@ function UserAccountTab() {
   }, [data])
 
   const onDateChanged = (key: string, value: Date | null) => {
-    console.log("UserAccountTab/onDateChanged", key, value)
+    CustomLogger.log("UserAccountTab/onDateChanged", key, value)
     const newFilter = SetProperty(filter, key, value);
     setFilter(newFilter)
   }

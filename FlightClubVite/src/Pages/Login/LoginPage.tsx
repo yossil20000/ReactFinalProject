@@ -14,9 +14,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useLoginMutation } from '../../features/Auth/authApiSlice'
 import ILogin, { ILoginResult } from '../../Interfaces/API/ILogin';
-import { setCredentials,  selectCurrentId } from "../../features/Auth/authSlice"
+import { setCredentials, selectCurrentId } from "../../features/Auth/authSlice"
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { useNavigate , useLocation} from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getFromLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
 
@@ -36,7 +36,7 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function LoginPage() {
-  
+
   const [loging] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -45,13 +45,13 @@ export default function LoginPage() {
 
   const [loginError, setLoginError] = React.useState<string[]>([]);
   const id = useAppSelector((state) => state.authSlice.member._id);
-  console.log("id", id)
-  console.log("id", selectCurrentId)
+  CustomLogger.log("id", id)
+  CustomLogger.log("id", selectCurrentId)
   const handleSubmit1 = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setLoginError([]);
-    console.log({
+    CustomLogger.info({
       email: data.get('email'),
       password: data.get('password'),
     });
@@ -64,37 +64,29 @@ export default function LoginPage() {
       const payload = await loging(loginProps)
         .unwrap()
         .then((payload) => {
-          console.log('fullfil', payload);
+          CustomLogger.info('fullfil', payload);
           let loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
-          console.log("localStorage:before", loging_info);
+          CustomLogger.info("localStorage:before", loging_info);
           dispatch(setCredentials(payload.data));
           /* setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO, payload.data); */
           loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
 
-          console.log("localStorage", loging_info);
+          CustomLogger.info("localStorage", loging_info);
           /* navigate(`/${ROUTES.HOME}`); */
-          navigate(from,{replace:true})
+          navigate(from, { replace: true })
         })
         .catch((err) => {
-          console.log("rejected", err);
+          CustomLogger.error("rejected", err);
           setLoginError(err.data.errors);
-          console.log("loginerr", loginError);
+          CustomLogger.error("loginerr", loginError);
 
         });
-      //dispatch(setCredentials(payload));
-
-      //console.log("Unwrap", payload.data);
-
     }
     catch (err) {
-      console.log("submitForm/login: err");
-
+      CustomLogger.error("submitForm/login: err");
     }
-    //console.log("LogingPageResult" , result)
   };
   function renderError() {
-    const reptiles = ["alligator", "snake", "lizard"];
-
     return (
       <ol>
         {loginError.map((err) => (
@@ -141,7 +133,7 @@ export default function LoginPage() {
                 id="username"
                 label="Username"
                 name="username"
-                
+
               />
               <TextField
                 margin="normal"

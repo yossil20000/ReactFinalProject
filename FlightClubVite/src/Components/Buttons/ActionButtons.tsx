@@ -23,10 +23,10 @@ export interface IActionButtonsProps {
 function ActionButtons({ OnAction, show, item = "", display }: IActionButtonsProps) {
 
   const getName = (findKey: EAction,defaultName: string): string => {
-    console.log("ActionButtons/getName/",findKey,display)
+    CustomLogger.log("ActionButtons/getName/",findKey,display)
     if (display !== undefined) {
       let newName = display.find((key) => key.key === findKey)?.value
-      console.log("ActionButtons/getName/newName",newName)
+      CustomLogger.info("ActionButtons/getName/newName",newName)
       newName =  newName === undefined ? defaultName : newName
       return newName
     }

@@ -38,8 +38,8 @@ export const authSlice = createSlice({
             state.exp = action.payload.exp;
             state.expDate = action.payload.expDate;
             state.iat = action.payload.iat;
-            console.log("setCredentials/action.payload", action.payload);
-            console.log("setCredentials/state", state);
+            CustomLogger.info("setCredentials/action.payload", action.payload);
+            CustomLogger.info("setCredentials/state", state);
             setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO, state);
         },
         logOut: (state) => {
@@ -50,7 +50,7 @@ export const authSlice = createSlice({
             state.exp = 0;
             state.expDate = "";
             state.iat = ""; 
-            console.log("logOut", state);
+            CustomLogger.info("logOut", state);
             setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "")
         }
     },

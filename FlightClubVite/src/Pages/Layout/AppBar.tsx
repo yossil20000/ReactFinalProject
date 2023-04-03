@@ -10,43 +10,43 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logOut } from '../../features/Auth/authSlice';
 import RollIcon from '../../Components/Buttons/RollIcon';
 import UserIcon from '../../Components/Buttons/UserIcon';
-import { useEffect } from 'react';
 import { Avatar } from '@mui/material';
 import useGetExpiredLogin from '../../hooks/useGetExpiredLogin'
 import RefreshTokenDialog from '../../Components/RefreshTokenDialog';
+import { customLogger } from '../../customLogging';
 type page = {
   name: string,
   route: string
 }
 
-const settings = ['Profile', 'MyAccount','Notification', 'Dashboard', 'change_password', 'Logout'];
-const remainLoginDialog : number = 40;
+const settings = ['Profile', 'MyAccount', 'Notification', 'Dashboard', 'change_password', 'Logout'];
+const remainLoginDialog: number = 200;
 const ResponsiveAppBar = () => {
-  const [openRefreshDialog,setOpenRefrwshDialog] = React.useState(false);
-  const [enableRefreshDialog,setEnableRefrwshDialog] = React.useState(true);
- const [needLogin,setNeedLogin] = React.useState(false);
-  const  remainLogin = useGetExpiredLogin()
+  const [openRefreshDialog, setOpenRefrwshDialog] = React.useState(false);
+  const [enableRefreshDialog, setEnableRefrwshDialog] = React.useState(true);
+  const [needLogin, setNeedLogin] = React.useState(false);
+  const remainLogin = useGetExpiredLogin()
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const login = useAppSelector((state) => state.authSlice);
   const dispatch = useAppDispatch();
-const pages: page[] = [
-  { name: 'Home', route: ROUTES.HOME },
-  { name: 'Reservations', route: ROUTES.RESERVATION },
-  { name: 'Flight', route: ROUTES.Flight },
-  { name: 'Members', route: 'members' },
-  { name: 'Gallery', route: 'gallery'},
-  { name: 'Admin', route: 'admin' },
-  { name: "Account", route: "account" },
-  { name: `Login ${remainLogin}`, route: "login" },
-  
+  const pages: page[] = [
+    { name: 'Home', route: ROUTES.HOME },
+    { name: 'Reservations', route: ROUTES.RESERVATION },
+    { name: 'Flight', route: ROUTES.Flight },
+    { name: 'Members', route: 'members' },
+    { name: 'Gallery', route: 'gallery' },
+    { name: 'Admin', route: 'admin' },
+    { name: "Account", route: "account" },
+    { name: `Login ${remainLogin}`, route: "login" },
+
   ];
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -62,29 +62,29 @@ const pages: page[] = [
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  if(needLogin && remainLogin > 0){
+  if (needLogin && remainLogin > 0) {
     setNeedLogin(false);
   }
-  if(!needLogin && remainLogin <0){
-    console.log("navigate")
-      setNeedLogin(true);    
-      navigate("/login"); 
+  if (!needLogin && remainLogin < 0) {
+    CustomLogger.info("navigate")
+    setNeedLogin(true);
+    navigate("/login");
   }
   const handleSettingNavMenu = (event: React.MouseEvent<HTMLElement>, setting: string) => {
     event.preventDefault();
-    console.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
-    console.log("ResponsiveAppBar/handleSettingMenu", event.target)
+    CustomLogger.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
+    CustomLogger.log("ResponsiveAppBar/handleSettingMenu", event.target)
     navigate(`${setting}`)
     setAnchorElNav(null);
 
   };
-  
+
   const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement> | undefined, setting: string) => {
-    event !== undefined ?  event.preventDefault() : null;
-    console.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
-    
+    event !== undefined ? event.preventDefault() : null;
+    CustomLogger.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
+
     if (setting == "Logout") {
-      console.log("Logout")
+      CustomLogger.info("Logout")
       /* setLocalStorage<string>(LOCAL_STORAGE.LOGIN_INFO, "") */
       dispatch(logOut());
       /* navigate("/login"); */
@@ -95,31 +95,31 @@ const pages: page[] = [
     setAnchorElUser(null);
   };
 
-  const onCloseRefreshDialog = (action : boolean) : void => {
-    console.log("ResponsiveAppBar/onCloseRefreshDialog")
-    
+  const onCloseRefreshDialog = (action: boolean): void => {
+    CustomLogger.log("ResponsiveAppBar/onCloseRefreshDialog")
+    if (!action)
+      handleSettingUserMenu(undefined, "Logout");
     setOpenRefrwshDialog(false);
     setEnableRefrwshDialog(true);
-    if(!action)
-     handleSettingUserMenu(undefined, "Logout");
-    
+
+
   }
-  if((remainLogin - remainLoginDialog) <= 0 && enableRefreshDialog && remainLogin >0 ){
-    if(remainLogin <= 0){
-      console.log("ResponsiveAppBar/remainLogin",remainLogin)
+  if ((remainLogin - remainLoginDialog) <= 0 && enableRefreshDialog && remainLogin > 0) {
+    if (remainLogin <= 0) {
+      CustomLogger.info("ResponsiveAppBar/remainLogin", remainLogin)
     }
-    console.log("ResponsiveAppBar/remainLogin",remainLogin)
+    CustomLogger.log("ResponsiveAppBar/remainLogin", remainLogin)
     setOpenRefrwshDialog(true);
     setEnableRefrwshDialog(false);
   }
- 
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        {openRefreshDialog == true ? 
-        (<RefreshTokenDialog open={openRefreshDialog} expired={remainLogin} onClose={onCloseRefreshDialog}/>)
-        : (null)}
-        
+        {openRefreshDialog == true ?
+          (<RefreshTokenDialog open={openRefreshDialog} expired={remainLogin} onClose={onCloseRefreshDialog} />)
+          : (null)}
+
         <Toolbar disableGutters>
           <Typography variant="h6" noWrap component="a"
             sx={{
@@ -173,7 +173,7 @@ const pages: page[] = [
 
           <Typography
             variant="h5"
-          
+
             component="a"
             href=""
             sx={{
@@ -203,12 +203,12 @@ const pages: page[] = [
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            
+
             <RollIcon roles={login?.member?.roles} />
             <Tooltip title={`Open settings ${login?.member?.roles.join("/")}`}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {login?.member?.image !== "" ? (<Avatar alt="Remy Sharp" src={login?.member?.image} /> ) : 
-                (<UserIcon roles={login?.member?.roles} />)
+                {login?.member?.image !== "" ? (<Avatar alt="Remy Sharp" src={login?.member?.image} />) :
+                  (<UserIcon roles={login?.member?.roles} />)
                 }
               </IconButton>
             </Tooltip>

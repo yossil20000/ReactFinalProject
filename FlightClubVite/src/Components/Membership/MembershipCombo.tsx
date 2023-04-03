@@ -23,10 +23,10 @@ function MembershipCombo(props: MembershipCombo) {
   }
 
   useEffect(() => {
-    console.log("MembershipCombo/ data:initeialMemberShip", data?.data , initeialMemberShip)
+    CustomLogger.info("MembershipCombo/ data:initeialMemberShip", data?.data , initeialMemberShip)
 
     let items = data?.data.map((item) => MemberShipToItemCombo(item));
-    console.log("MembershipCombo/ Item", items)
+    CustomLogger.info("MembershipCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
     setSelectedItem(initeialMemberShip === undefined ? { _id: "", lable: "", description: "" } : initeialMemberShip)
@@ -54,7 +54,7 @@ function MembershipCombo(props: MembershipCombo) {
   }
   const getSelected: InputComboItem = useMemo(() => {
     let itemFound = items?.find((i) => i._id == initeialMemberShip?._id)
-    console.log("MembershipCombo/getSelected", initeialMemberShip, itemFound)
+    CustomLogger.info("MembershipCombo/getSelected", initeialMemberShip, itemFound)
 
     itemFound = itemFound === undefined ? { _id: "", lable: "", description: "" } : itemFound
     setSelectedItem(itemFound)

@@ -12,34 +12,13 @@ const source = "admin/member/general"
 const SetProperty = (obj: any, path: string, value: any): any => {
   let newObj = { ...obj };
   newObj = setProperty(newObj, path, value);
-  console.log("SetProperty/newobj", newObj)
+  CustomLogger.info("SetProperty/newobj", newObj)
   return newObj;
 }
 function AddresesTab() {
 
   const { setSelectedItem, selectedItem, members } = useContext(MembersContext) as MembersContextType;
-  const { membersCombo } = useContext(DevicesContext) as DevicesContextType;
-
-
-  const handleTimeChange = (newValue: Date | null | undefined, name: string) => {
-    console.log(`handleTimeChange/newValue , key`, newValue, name);
-    if (newValue === null || newValue === undefined)
-      return;
-
-    const newObj: IMemberAdmin = SetProperty(selectedItem, name, newValue) as IMemberAdmin;
-
-    setSelectedItem(newObj)
-  };
-  const onComboChanged = (item: InputComboItem, prop: string): void => {
-    console.log("onComboChanged/item", item, prop);
-    const newObj: IMemberAdmin = SetProperty(selectedItem, prop, item.lable) as IMemberAdmin;
-    setSelectedItem(newObj)
-  }
-  const onRoleChanged = (item: LabelType[], prop: string): void => {
-    console.log("onComboChanged/item", item, prop);
-    const newObj: IMemberAdmin = SetProperty(selectedItem, prop, item.map((i) => i.name)) as IMemberAdmin;
-    setSelectedItem(newObj)
-  }
+  
   const labelsFromRole = (): LabelType[] => {
     const lables: LabelType[] = Object.keys(Role).filter((v) => isNaN(Number(v))).
       map((name, index) => {
@@ -53,21 +32,8 @@ function AddresesTab() {
     return lables;
   }
 
-  const navLableItems = labelsFromRole();
-  const getSelectedRoles = (): LabelType[] => {
-
-    if (selectedItem !== undefined && selectedItem && selectedItem.role !== undefined) {
-      const initial = selectedItem.role.roles.map((item) => {
-        return item.toString();
-      });
-      const result = navLableItems.filter((item) => (initial.includes(item.name)))
-      return result;
-
-    }
-    return [];
-  }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
     const newObj: IMemberAdmin = SetProperty(selectedItem, event.target.name, event.target.value) as IMemberAdmin;
 
     setSelectedItem(newObj)
@@ -92,35 +58,35 @@ function AddresesTab() {
               <TextField fullWidth={true} onChange={handleChange} id="billing_line1" name="contact.billing_address.line1"
                 label="Line 1" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact?.billing_address.line1} required
-                helperText="" error={false} InputLabelProps={{ shrink: true }}/>
+                helperText="" error={false} InputLabelProps={{ shrink: true }} />
             </Grid>
 
             <Grid item xs={2} md={2}>
               <TextField fullWidth={true} onChange={handleChange} id="billing_line2" name="contact.billing_address.line2"
                 label="Description" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact?.billing_address.line2} required
-                helperText="" error={false} multiline InputLabelProps={{ shrink: true }}/>
+                helperText="" error={false} multiline InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
 
               <TextField fullWidth onChange={handleChange} id="billing_city" label="City"
                 name="contact.billing_address.city" placeholder="City" variant="standard"
-                value={selectedItem?.contact?.billing_address.city} InputLabelProps={{ shrink: true }}/>
+                value={selectedItem?.contact?.billing_address.city} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="billing_postcode" label="Postcode"
                 name="contact.billing_address.postcode" placeholder="Postcode" variant="standard"
-                value={selectedItem?.contact?.billing_address.postcode} InputLabelProps={{ shrink: true }}/>
+                value={selectedItem?.contact?.billing_address.postcode} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="billing_province" label="Province"
                 name="contact.billing_address.province" placeholder="Province" variant="standard"
-                value={selectedItem?.contact?.billing_address.province} InputLabelProps={{ shrink: true }}/>
+                value={selectedItem?.contact?.billing_address.province} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="billing_state" label="State"
                 name="contact.billing_address.state" placeholder="State" variant="standard"
-                value={selectedItem?.contact?.billing_address.state} InputLabelProps={{ shrink: true }}/>
+                value={selectedItem?.contact?.billing_address.state} InputLabelProps={{ shrink: true }} />
             </Grid>
 
           </Grid>
@@ -143,14 +109,14 @@ function AddresesTab() {
               <TextField fullWidth={true} onChange={handleChange} id="shipping_line1" name="contact.shipping_address.line1"
                 label="Line 1" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact?.shipping_address.line1} required
-                helperText="" error={false} InputLabelProps={{ shrink: true }}/>
+                helperText="" error={false} InputLabelProps={{ shrink: true }} />
             </Grid>
 
             <Grid item xs={2} md={2}>
               <TextField fullWidth={true} onChange={handleChange} id="shipping_line2" name="contact.shipping_address.line2"
                 label="Description" placeholder="Line 1" variant="standard"
                 value={selectedItem?.contact?.shipping_address.line2} required
-                helperText="" error={false} multiline InputLabelProps={{ shrink: true }}/>
+                helperText="" error={false} multiline InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
 
@@ -161,17 +127,17 @@ function AddresesTab() {
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="shipping_postcode" label="Postcode"
                 name="contact.shipping_address.postcode" placeholder="Postcode" variant="standard"
-                value={selectedItem?.contact?.shipping_address.postcode} InputLabelProps={{ shrink: true }}/>
+                value={selectedItem?.contact?.shipping_address.postcode} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="shipping_province" label="Province"
                 name="contact.shipping_address.province" placeholder="Province" variant="standard"
-                value={selectedItem?.contact?.shipping_address.province} InputLabelProps={{ shrink: true }}/>
+                value={selectedItem?.contact?.shipping_address.province} InputLabelProps={{ shrink: true }} />
             </Grid>
             <Grid item xs={1}>
               <TextField fullWidth onChange={handleChange} id="shipping_state" label="State"
                 name="contact.shipping_address.state" placeholder="State" variant="standard"
-                value={selectedItem?.contact?.shipping_address.state} InputLabelProps={{ shrink: true }}/>
+                value={selectedItem?.contact?.shipping_address.state} InputLabelProps={{ shrink: true }} />
             </Grid>
 
           </Grid>
@@ -184,17 +150,17 @@ function AddresesTab() {
         <Grid item xs={1}>
           <TextField fullWidth onChange={handleChange} id="country" label="Country"
             name="contact.phone.country" placeholder="Country Code" variant="standard"
-            value={selectedItem?.contact?.phone.country} InputLabelProps={{ shrink: true }}/>
+            value={selectedItem?.contact?.phone.country} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={1}>
-        <TextField fullWidth onChange={handleChange} id="area" label="Area"
-                name="contact.phone.area" placeholder="Area code" variant="standard"
-                value={selectedItem?.contact?.phone.area} InputLabelProps={{ shrink: true }}/>
+          <TextField fullWidth onChange={handleChange} id="area" label="Area"
+            name="contact.phone.area" placeholder="Area code" variant="standard"
+            value={selectedItem?.contact?.phone.area} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={2}>
-        <TextField fullWidth onChange={handleChange} id="number" label="Number"
-                name="contact.phone.number" placeholder="Phone Number" variant="standard"
-                value={selectedItem?.contact?.phone.number} InputLabelProps={{ shrink: true }}/>
+          <TextField fullWidth onChange={handleChange} id="number" label="Number"
+            name="contact.phone.number" placeholder="Phone Number" variant="standard"
+            value={selectedItem?.contact?.phone.number} InputLabelProps={{ shrink: true }} />
         </Grid>
       </Grid>
     </>

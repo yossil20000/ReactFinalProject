@@ -120,7 +120,7 @@ function AccountFlightsTab() {
     if (item._id != "") {
       filter.device = item._id;
     }
-    console.log("AccountFlight/onDeviceChange/filter", filter)
+    CustomLogger.log("AccountFlight/onDeviceChange/filter", filter)
     setaccountFlightFilter(filter)
   }
   const sort = (a: IData, b: IData): number => {
@@ -128,7 +128,7 @@ function AccountFlightsTab() {
   }
   const getData = useMemo(() => {
     let rows = data?.data.map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
-    console.log("AccountFlight/Flight/getData", rows)
+    CustomLogger.info("AccountFlight/Flight/getData", rows)
     rows = rows === undefined ? [] : rows;
     setCount(rows.length)
     return rows;
@@ -174,12 +174,12 @@ function AccountFlightsTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("AccountFlight/ActionButtons/onAction", event?.target, action, item)
+    CustomLogger.log("AccountFlight/ActionButtons/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ORDER:
         if (item !== undefined) {
           const order = CreateOrder(item);
-          console.log("AccountFlight/CreateOrder", order)
+          CustomLogger.info("AccountFlight/CreateOrder", order)
           if (order !== undefined) {
             setOrder(order);
             setOpenOrderAdd(true)
@@ -192,10 +192,9 @@ function AccountFlightsTab() {
   const handleAddOnSave = (value: IOrderBase) => {
     refetch();
     setOpenOrderAdd(false);
-    console.log("AccountFlightPage/handleAddOnSave/value", value);
-
-
+    CustomLogger.log("AccountFlightPage/handleAddOnSave/value", value);
   }
+  
   const handleAddOnClose = () => {
     setOpenOrderAdd(false);
   }

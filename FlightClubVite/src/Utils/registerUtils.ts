@@ -25,7 +25,7 @@ export default function checkPassword(password:string | undefined,verifiedPasswo
   else{
     check.validation.push(passwordRequirement);
   }
-  console.log("checkPassword",check,password,verifiedPassword)
+  CustomLogger.info("checkPassword",check,password,verifiedPassword)
   return check;
 }
 
@@ -53,6 +53,6 @@ export  function checkUsername(username:string ) : IValidation {
   else{
     check.validation.push(passwordRequirement);
   }
-  console.log("checkUsername",check,username)
+  CustomLogger.info("checkUsername",check,username)
   return check;
 }

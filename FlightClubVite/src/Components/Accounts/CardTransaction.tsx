@@ -98,7 +98,7 @@ export const getSign = (val: number | undefined): string => {
   return (val !== undefined && val > 0) ? "green" : 'red'
 }
 function CardTransaction({ item }: CardTransactionProps) {
-  console.log("CardTransaction/item", item)
+  CustomLogger.log("CardTransaction/item", item)
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader />

@@ -24,24 +24,24 @@ function AccountOrdersTab() {
   const [openAddQuarter, setOpenAddQuarter] = useState(false)
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
   const [selectedMember, setSelectedMember] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedMember", null)
-  const [filter, setFilter] = useState<IOrderTableFilter>({...from_to_Filter(new Date()),orderStatus: OrderStatus.CREATED});
+  const [filter, setFilter] = useState<IOrderTableFilter>({ ...from_to_Filter(new Date()), orderStatus: OrderStatus.CREATED });
 
   const OnSelectedClubAccount = (item: InputComboItem): void => {
-    console.log("AccountOrdersTab/OnSelectedClubAccount/item", item)
+    CustomLogger.log("AccountOrdersTab/OnSelectedClubAccount/item", item)
     setSelectedClubAccount(item);
   }
   const OnselectedMember = (item: InputComboItem): void => {
-    console.log("AccountOrdersTab/OnselectedMember/item", item)
+    CustomLogger.log("AccountOrdersTab/OnselectedMember/item", item)
     setSelectedMember(item);
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    console.log("AccountOrdersTab/onDateChanged", key, value)
-    const newFilter = SetProperty(filter,key,value);
+    CustomLogger.log("AccountOrdersTab/onDateChanged", key, value)
+    const newFilter = SetProperty(filter, key, value);
     setFilter(newFilter)
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    console.log("AccountOrdersTab/onAction", event?.target, action, item)
+    CustomLogger.log("AccountOrdersTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         //setOpenFlightAdd(true);
@@ -49,15 +49,15 @@ function AccountOrdersTab() {
         break;
     }
   }
-  function handleAddOnClose(){
+  function handleAddOnClose() {
     setOpenAddQuarter(false);
   }
-  function handleAddOnSave(item : ICreateQuarterExpense) {
-console.log("AccountOrdersTab/item", item)
+  function handleAddOnSave(item: ICreateQuarterExpense) {
+    CustomLogger.log("AccountOrdersTab/item", item)
   }
-  const onOrderStatusChanged = (item : InputComboItem) => {
-    console.log("AccountOrdersTab/item", item)
-    setFilter((prev) => ({...prev,orderStatus: item.lable as OrderStatus}))
+  const onOrderStatusChanged = (item: InputComboItem) => {
+    CustomLogger.log("AccountOrdersTab/item", item)
+    setFilter((prev) => ({ ...prev, orderStatus: item.lable as OrderStatus }))
   }
   return (
     <ContainerPage>
@@ -74,14 +74,14 @@ console.log("AccountOrdersTab/item", item)
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} />
               </Grid >
               <Grid item xs={3}>
-              <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} />
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} />
               </Grid>
             </Grid>
           </Box>
         </ContainerPageHeader>
         <ContainerPageMain>
           <>
-          {openAddQuarter && <CreateQuarterDialoq onClose={handleAddOnClose}  open={openAddQuarter} onSave={handleAddOnSave} />}
+            {openAddQuarter && <CreateQuarterDialoq onClose={handleAddOnClose} open={openAddQuarter} onSave={handleAddOnSave} />}
             <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
               <List sx={{ display: 'flex', flexDirection: 'column' }}>
                 <ListItem key={"fromDate"} disablePadding>
@@ -101,10 +101,10 @@ console.log("AccountOrdersTab/item", item)
                   </ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <OrderStatusCombo onChanged={onOrderStatusChanged} source={'_accountOrder/orderStatus'} selectedItem={{...newInputComboItem, lable: filter.orderStatus === undefined ? OrderStatus.CREATED : filter.orderStatus}}/>
+                  <OrderStatusCombo onChanged={onOrderStatusChanged} source={'_accountOrder/orderStatus'} selectedItem={{ ...newInputComboItem, lable: filter.orderStatus === undefined ? OrderStatus.CREATED : filter.orderStatus }} />
                 </ListItem>
                 <ListItem>
-                <MembersCombo onChanged={OnselectedMember} source={'_accountOrder/member'}/>
+                  <MembersCombo onChanged={OnselectedMember} source={'_accountOrder/member'} />
                 </ListItem>
               </List>
             </GeneralDrawer>

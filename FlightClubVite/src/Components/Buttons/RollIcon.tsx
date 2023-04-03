@@ -11,19 +11,11 @@ export interface IRollIcon {
   roles: Role[] | null
 }
 function RollIcon(props: IRollIcon) {
-  console.log("RollIcon/props", props)
+  globalThis.CustomLogger.log("RollIcon/props")
   function GetIcon():any {
-   /*  const icons = props?.roles?.map(element => {
-      console.log("RollIcon/element", element)
-      if (element == Role.admin.toString()) return <AdminPanelSettingsIcon/>;
-      if (element == Role.account) return (<ManageAccountsIcon/>);
-      if (element == Role.desk) return (<BusinessIcon/>)
-      return (<></>)
-
-    }); */
     const iconsArray : JSX.Element[] = [];
     props?.roles?.forEach((element) => {
-    console.log("RollIcon/element", element)
+    globalThis.CustomLogger.info("RollIcon/element", element)
     if (element == Role.admin.toString()) iconsArray.push(<AdminPanelSettingsIcon key="admin"/>) ;
     if (element == Role.account) iconsArray.push(<ManageAccountsIcon key="account"/>);
     if (element == Role.desk) iconsArray.push(<BusinessIcon/>)
