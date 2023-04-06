@@ -1,6 +1,6 @@
 /* import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
-import "../../Types/date.extensions.js"
+import "../../Types/date.extensions"
 
 import { Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react'
@@ -318,7 +318,10 @@ function ReservationsPageOld() {
   }
   const onDateChanged = (key: string, value: Date | null) => {
     CustomLogger.log("ReservationPage/onDateChanged", key, value)
-    const newFilter = SetProperty(filterDate, key, value);
+    if(value == null)
+      return;
+    
+    const newFilter = SetProperty(filterDate, key, new Date(value));
     setFilterDate(newFilter)
     refetch()
   }
@@ -418,7 +421,7 @@ function ReservationsPageOld() {
                     <ListItemIcon>
                       <DateRangeIcon />
                     </ListItemIcon>
-                    <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="dateFilter.from" lable='From Date' onChange={onDateChanged} />
+                    <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="from" lable='From Date' onChange={onDateChanged} />
 
                   </ListItemButton>
 
@@ -428,7 +431,7 @@ function ReservationsPageOld() {
                     <ListItemIcon>
                       <DateRangeIcon />
                     </ListItemIcon>
-                    <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"dateFilter.to"} lable='To Date' onChange={onDateChanged} />
+                    <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"to"} lable='To Date' onChange={onDateChanged} />
 
                   </ListItemButton>
 

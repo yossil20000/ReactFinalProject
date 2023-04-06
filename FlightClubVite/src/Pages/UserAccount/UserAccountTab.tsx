@@ -49,7 +49,8 @@ function UserAccountTab() {
 
   const onDateChanged = (key: string, value: Date | null) => {
     CustomLogger.log("UserAccountTab/onDateChanged", key, value)
-    const newFilter = SetProperty(filter, key, value);
+    if (value === null) return;
+    const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
   }
   return (

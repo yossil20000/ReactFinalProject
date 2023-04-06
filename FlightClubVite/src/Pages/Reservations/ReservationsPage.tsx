@@ -31,17 +31,13 @@ const dateFilter: IDateFilter = newDateFilter;
 
 function ReservationPage() {
   const [openFilter, setOpenFilter] = useState(false)
-  /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dateFilter.to)
-  const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dateFilter.from) */
-  const [dateTo, setDateTo] = useState(dateFilter.to)
-  const [dateFrom, setDateFrom] = useState(dateFilter.from)
   const [dateRef, setDateRef] = useState(new Date())
   const [filter, setFilter] = useState<ITransactionTableFilter>({ dateFilter: dateFilter } as ITransactionTableFilter);
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
 
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.log("ReservationPage/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         setOpenReservationAdd(true);
@@ -60,11 +56,11 @@ function ReservationPage() {
 
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.log("AccountOrdersTab/onDateChanged", key, value)
+    CustomLogger.log("ReservationPage/onDateChanged", key, value)
     if (value === null) return;
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
-    CustomLogger.info("AccountOrdersTab/onDateChanged/newFilter", newFilter)
+    CustomLogger.info("ReservationPage/onDateChanged/newFilter", newFilter)
   }
   const onTodayChanged = () => {
     const todayFilter = getTodayFilter();
@@ -146,7 +142,7 @@ function ReservationPage() {
                       <ListItemIcon>
                         <DateRangeIcon />
                       </ListItemIcon>
-                      <DatePickerDate value={filter.dateFilter.from === undefined ? new Date() : filter.dateFilter.from} param="dateFilter.from" lable='From Date' onChange={onDateChanged} />
+                      <DatePickerDate value={filter.dateFilter.from === undefined ? new Date() : filter.dateFilter.from} param="from" lable='From Date' onChange={onDateChanged} />
 
                     </ListItemButton>
 
