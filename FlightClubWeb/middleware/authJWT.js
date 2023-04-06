@@ -11,14 +11,15 @@ const payload = {
     _id: ""
 };
 // SIGNING OPTIONS
-const signOptions = {
+let signOptions = {
     issuer: "FlightClubWeb",
     subject: process.env.SITE_MAIL,
     audience: "",
     expiresIn: process.env.JWT_TIMEOUT,
     algorithm: "HS256"
 };
-const signToken = function (payLoad) {
+const signToken = function (payLoad,timeOut) {
+    signOptions.expiresIn = timeOut
     const token = JWT.sign(payLoad, process.env.JWT_SECRET, signOptions);
     //const verify = JWT.verify(token, process.env.JWT_SECRET);
     //console.log("token_then_verify" , verify);

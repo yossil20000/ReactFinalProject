@@ -65,7 +65,8 @@ var MemberSchema = new Schema({
     flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}],
     membership: {type: Schema.ObjectId,ref: 'Membership'},
     image: {type: String},
-    gender: {type: String, enum:["male","female","other"], default: "other"}
+    gender: {type: String, enum:["male","female","other"], default: "other"},
+    token_expiresIn: {type: String, default: "3000s"}
 },{timestamps: true});
 
 MemberSchema.pre('save', function(next) { 
