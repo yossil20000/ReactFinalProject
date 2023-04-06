@@ -35,7 +35,7 @@ exports.signin = function (req, res, next) {
                     payLoad.roles = member.role.roles;
                     //payLoad.id = member._id;
                     console.log("signein payload", payLoad);
-                    const token = authJWT.signToken(payLoad);
+                    const token = authJWT.signToken(payLoad,member.token_expiresIn);
                     const decodeJWT = jwtService.decodeJWT(token);
                     console.log("tokenExp", decodeJWT.exp);
                     res.cookie("token",token, {
@@ -276,7 +276,8 @@ exports.refresh_token = function (req,res,next) {
             payLoad.roles = member.role.roles;
             //payLoad.id = member._id;
             console.log("refresh payload", payLoad);
-            const token = authJWT.signToken(payLoad);
+            
+            const token = authJWT.signToken(payLoad,member.token_expiresIn);
             const decodeJWT = jwtService.decodeJWT(token);
             console.log("tokenExp", decodeJWT.exp);
             res.cookie("token",token, {
