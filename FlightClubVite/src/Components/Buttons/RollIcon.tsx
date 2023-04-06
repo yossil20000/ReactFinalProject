@@ -15,7 +15,7 @@ function RollIcon(props: IRollIcon) {
   function GetIcon():any {
     const iconsArray : JSX.Element[] = [];
     props?.roles?.forEach((element) => {
-    globalThis.CustomLogger.info("RollIcon/element", element)
+    globalThis.CustomLogger.log("RollIcon/element", element)
     if (element == Role.admin.toString()) iconsArray.push(<AdminPanelSettingsIcon key="admin"/>) ;
     if (element == Role.account) iconsArray.push(<ManageAccountsIcon key="account"/>);
     if (element == Role.desk) iconsArray.push(<BusinessIcon/>)

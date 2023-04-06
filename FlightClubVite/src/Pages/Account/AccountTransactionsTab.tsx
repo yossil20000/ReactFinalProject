@@ -15,7 +15,6 @@ import { IDateFilter, IFilterItems, newDateFilter } from '../../Interfaces/IDate
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import NewTransactionDialog from './NewTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import ReservationTable from '../../Components/ReservationTable';
 
 const dateFilter: IDateFilter = newDateFilter;
 
@@ -76,10 +75,10 @@ function AccountTransactionsTab() {
               <Grid item xs={10} sm={4}>
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Transaction" }]} />
               </Grid>
-              <Grid item xs={12} sm={6}>
+{/*               <Grid item xs={12} sm={6}>
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
 
-              </Grid >
+              </Grid > */}
 
             </Grid>
           </Box>

@@ -10,7 +10,6 @@ import { getValidationFromError } from '../Utils/apiValidation.Parser'
 import { getFromLocalStorage } from '../Utils/localStorage'
 import { IValidationAlertProps, ValidationAlert } from './Buttons/TransitionAlert'
 import Item from './Item'
-import { customLogger } from '../customLogging'
 /* import wLogger from '../wLogger' */
 
 export  interface IRefreshDialogProps {

@@ -25,6 +25,19 @@ export default function TransactionTable({ hideAction = false, filter = {} as IT
 useEffect(()=>{
   CustomLogger.info("TransactionTable/filter", filter)
 },[filter])
+const getData = useMemo(() => {
+
+  console.log("TransactionTable/getData", dataTransaction)
+  if (dataTransaction?.success) {
+    if (selectedClubAccount?.lable !== "") {
+      const filterAccount = dataTransaction.data.filter((item) => (item.source == selectedClubAccount?.lable) || (item.destination == selectedClubAccount?.lable))
+      setTransactions(filterAccount);
+    }
+    else {
+      setTransactions(dataTransaction.data)
+    }
+  }
+}, [dataTransaction, selectedClubAccount])
 
   const transactionRows = useMemo(() => {
 

@@ -144,8 +144,7 @@ const FlightPage = () => {
     CustomLogger.info("getFilteredData/flightData", flightsData)
     if (flightsData === undefined) return [];
     const filterdData: IFlightData[] = flightsData?.filter((flight) => {
-      CustomLogger.info("flightdat/filter", flightsData);
-
+      CustomLogger.log("getFilteredData/filter", flight);
       if (!isFilterOwner) return true;
       if (isFilterOwner && flight.validOperation & CanDo.Owner) return true;
       return true;
@@ -244,9 +243,6 @@ const FlightPage = () => {
     setOpenFlightUpdate(false);
   }
 
-  const handleAddClick = async () => {
-    setOpenFlightAdd(true);
-  }
   const handleAddOnSave = (value: IFlightCreate) => {
     refetch();
     setOpenFlightAdd(false);
@@ -313,7 +309,7 @@ const FlightPage = () => {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.log("FlightPage/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         setOpenFlightAdd(true);
@@ -322,8 +318,10 @@ const FlightPage = () => {
     }
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.log("AccountOrdersTab/onDateChanged", key, value)
-    const newFilter = SetProperty(filterDate, key, value);
+    CustomLogger.info("FlightPage/onDateChanged", key, value)
+    if(value == null)
+    return;
+    const newFilter = SetProperty(filterDate, key, new Date(value));
     setFilterDate(newFilter)
     refetch()
   }
@@ -333,7 +331,7 @@ const FlightPage = () => {
         <>
           <ContainerPageHeader>
             <Box marginTop={2} display={'flex'} flexDirection={'column'}>
-              <Typography variant="h6" align="center">{`Flights ${dateFilter.from.toLocaleDateString()} - ${dateFilter.to.toLocaleDateString()}`}</Typography>
+              <Typography variant="h6" align="center">{`Flights ${filterDate.from.toLocaleDateString()} - ${filterDate.to.toLocaleDateString()}`}</Typography>
               <Paper sx={{ width: '100%', mb: 1 }}>
 
                 <Box display={'flex'} justifyContent={"space-between"}>
