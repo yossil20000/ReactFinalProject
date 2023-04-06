@@ -26,7 +26,7 @@ type page = {
 }
 
 const settings = ['Profile', 'MyAccount', 'Notification', 'Dashboard', 'change_password', 'Logout'];
-const remainLoginDialog: number = 200;
+const remainLoginDialog: number = 30;
 const ResponsiveAppBar = () => {
   const [openRefreshDialog, setOpenRefrwshDialog] = React.useState(false);
   const [enableRefreshDialog, setEnableRefrwshDialog] = React.useState(true);
