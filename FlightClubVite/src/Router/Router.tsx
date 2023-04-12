@@ -21,6 +21,8 @@ import NotificationPage from '../Pages/UserAccount/Notification'
 import MyAccount from '../Pages/UserAccount/UserAccount'
 import CalnanderViewDay from '../Components/Calander/CalnanderViewDay'
 import AccountReport from '../Pages/Report/AccountReport.jsx'
+import Invoice from '../Pages/Report/InvoiceReport'
+import InvoicePage from '../Pages/Report/InvoicePage'
 
 
 export function PagesRouter() {
@@ -51,6 +53,7 @@ export function PagesRouter() {
       <Route path='/' element={<Layout />}>
       <Route path="/calander" element={<CalnanderViewDay title='Yossi'/>} />
       <Route path="/report" element={<AccountReport/>} />
+      <Route path='/invoice' element={<InvoicePage/>}/>
         <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
           <Route path="/home" element={<HomePage></HomePage>} />
         </Route>
