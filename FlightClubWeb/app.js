@@ -1,6 +1,7 @@
 require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
+const helmet = require('helmet')
 var cors = require("cors");
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -27,7 +28,7 @@ const typeRouter = require('./routes/type');
 const notificationRouter = require('./routes/notification');
 
 var app = express();
-
+app.use(helmet());
 //Import the mongoose module
 var db = require('./database/database');
 /* var mongoose = require('mongoose');
