@@ -17,10 +17,10 @@ const sendNotification =  async (event,notifyWhen,message) => {
       results.forEach((item) => {
         mail.SendMail(item.member.email,`Notification: ${event} ${notifyWhen}` ,`Hello ${item.member.fullName} \n ${message}` )
         .then(() => {
-            console.log("Send Mail to:", item.member.email);
+          log.info("Send Mail to:", item.member.email);
            
         }).catch((err => {
-          console.log("Send Mail to: error",err, item.member.email);
+          log.error("Send Mail to: error",err, item.member.email);
         }));
       })
       return results;

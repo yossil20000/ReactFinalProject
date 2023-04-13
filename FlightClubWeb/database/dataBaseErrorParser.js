@@ -1,4 +1,4 @@
-
+var log = require('debug-level').log('dataBaseErrorParser');
 const parseValidationError = (error) => {
   let err = {}
   let errors = []
@@ -10,14 +10,14 @@ const parseValidationError = (error) => {
 
     const obj = JSON.parse(JSON.stringify(errortoParse))
     const [keys] = Object.entries(obj)
-    console.log("parseValidationError/key", keys, keys[1].name)
+    log.error("parseValidationError/key", keys, keys[1].name)
     for (const [key, value] of Object.entries(obj)) {
-      console.log(`${key}: `, value.name);
+      log.error(`${key}: `, value.name);
       errors.push({ value: value.value, msg: value.message, param: value.path, location: "Body" })
 
     }
 
-    console.log("parseValidationError/obj", errors)
+    log.error("parseValidationError/obj", errors)
     /*     const allError = error.message.substring(error.message.indexOf(':') + 1).trim()
         const errorArray = allError.split(",").map((e) => e.trim());
         errorArray.forEach(error => {
@@ -62,7 +62,7 @@ const parseExpressValidator = (error) => {
 const parseApplicationError = (error) => {
   let { name, errors } = error;
   name = name == "" ? errors.name : name;
-  console.log("parseApplicationError/error", error)
+  log.error("parseApplicationError/error", error)
   switch (name) {
     case "ValidationError":
       return { errorType: "VALIDATION", errors: parseValidationError(errors) };

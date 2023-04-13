@@ -76,7 +76,7 @@ app.use('/api/type',typeRouter);
 app.use('/api/notification',notificationRouter);
 
 app.use((err, req, res, next) => {
-  console.error('\x1b[31m',err);
+  log.error('\x1b[31m',err);
   next(err);
 });
 // catch 404 and forward to error handler
@@ -105,18 +105,18 @@ app.use(function (err, req, res, next) {
   return
 });
 var userArgs = process.argv.slice(2);
-console.log(userArgs);
+log.log(userArgs);
 const loadApi = require("./loadApi");
 const { dbs } = require('./database/database');
 const { ApplicationError } = require("./middleware/baseErrors");
 if (userArgs[0] == "yossi") {
-  console.log(userArgs[0]);
+  log.info(userArgs[0]);
   loadApi(process.env.LOAD_API_ADDRESS).then(function (res) {
-    console.log('Sync result:', res);
+    log.info('Sync result:', res);
 
     res.forEach((element, index) => {
-      console.log(`${index}`);
-      console.log(element);
+      log.info(`${index}`);
+      log.info(element);
       db.collection("cripto").insertOne(element);
     });
 

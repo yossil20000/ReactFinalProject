@@ -1,5 +1,5 @@
 const passwordRequirement = "Checks that a input has a minimum of 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number , and 1 @ or $ with no spaces."
-
+var log = require('debug-level').log('passwordGenerator');
  function getNewPassword(nChar){
     let password="";
     let counter=0;
@@ -14,7 +14,7 @@ function passwordGenerator(nChar){
     var password ="";
     const string_length = nChar
  password = [...Array(string_length)].map(i=>(~~(Math.random()*36)).toString(36)).join('')
-console.log(password);
+log.log(password);
 return password;
 }
  function IsPasswordValid(password){

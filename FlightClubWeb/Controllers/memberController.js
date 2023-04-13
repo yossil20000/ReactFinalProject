@@ -215,17 +215,17 @@ exports.member_create = [
                                 role: user.role,
 
                             });
-                        console.log("membertosave", member);
+                            log.info("membertosave", member);
                         member.save((err, result) => {
                             if (err) {
                                 return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: member })
                             }
                             if (result) {
-                                console.log("membertosave/Result", result);
-                                console.log("member.contact.email", member.contact.email)
+                                log.info("membertosave/Result", result);
+                                log.info("member.contact.email", member.contact.email)
                                 mail.SendMail(user.contact.email, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
                                     .then(() => {
-                                        console.log("Send Mail to:", user.contact.email);
+                                        log.info("Send Mail to:", user.contact.email);
                                         res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail", data: member })
                                     }).catch((err => {
                                         res.status(400).json({ success: false, errors: [err], message: "Failed To send Initial passwors to your mail", data: member })
@@ -259,7 +259,7 @@ exports.members_flights_reserv = function (req, res, next) {
                 log.info("list_members", list_members);
 
                 let data = list_members[0].flights;
-                console.log(data);
+                log.info(data);
                 FlightReservation.find().where('_id').in(data).exec((err, records) => {
                     log.info(records);
                     res.status(202).json({ success: true, errors: [], data: records });

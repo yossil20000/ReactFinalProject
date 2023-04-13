@@ -3,7 +3,7 @@ const Member = require('../Models/member');
 const jwtService = require('../Services/jwtService');
 const { ApplicationError } = require('../middleware/baseErrors');
 const { CValidationError } = require('../Utils/CValidationError');
-
+var log = require('debug-level').log('authJWT');
 const payload = {
     email: "",
     userId: "",
@@ -29,28 +29,28 @@ const authenticate = (req, res, next) => {
     try{
         if (req.headers && req.headers.authorization) {
             const cookie = req.cookies
-            console.log(cookie, 'authenticate/cookies');
+            log.log(cookie, 'authenticate/cookies');
             const token = req.headers.authorization.replace('Bearer ', '');
-            console.log(req.headers.authorization, 'req.headers.authorization');
-            console.log(token, 'authenticate token');
+            log.info(req.headers.authorization, 'req.headers.authorization');
+            log.info(token, 'authenticate token');
             JWT.verify(token, process.env.JWT_SECRET, function (err, decode) {
-                console.log("decode", decode);
+                log.info("decode", decode);
                 if (err) {
-                    console.log("authenticate verify", err);
+                    log.error("authenticate verify", err);
                     return next(new ApplicationError("authenticate", 403, "AUTHENTICATE.TOKEN.VALIDATION", { name: "Validator", errors: (new CValidationError("token", `TOKEN EXPIRED OR UNVALID`, 'VERIFY_1', "DB.Account")).validationResult.errors }));
                     /* res.status(403).json({ success: false, errors: [err], message: "In Valid Authorization" , data: [] }); */
                 }
                 else {
-                    console.log(decode);
+                    log.info(decode);
                     Member.findById(decode.userId)
                         .exec((err, user) => {
                             if (err) {
-                                console.log("authenticate findOne error:", err);
+                                log.error("authenticate findOne error:", err);
                                 return next(new ApplicationError("authenticate", 403, "AUTHENTICATE.TOKEN.VALIDATION", { name: "Validator", errors: (new CValidationError("token", `TOKEN EXPIRED OR UNVALID`, 'VERIFY_2', "DB.Account")).validationResult.errors }));
                             
                             }
                             else {
-                                console.log("findOne:", user);
+                                log.info("findOne:", user);
                                 req.user = decode;
                                 next();
                             }
@@ -59,7 +59,7 @@ const authenticate = (req, res, next) => {
             })
         }
         else {
-            console.log("authenticate Verify not enter")
+            log.info("authenticate Verify not enter")
             req.user = undefined;
             return next(new ApplicationError("authenticate", 403, "AUTHENTICATE.TOKEN.VALIDATION", { name: "Validator", errors: (new CValidationError("TOKEN", `TOKEN EXPIRED OR UNVALID`, 'VERIFY_3', "DB.Account")).validationResult.errors }));
             

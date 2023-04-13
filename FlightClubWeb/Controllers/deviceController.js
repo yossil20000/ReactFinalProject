@@ -99,7 +99,7 @@ exports.device_reservation = function (req, res, next) {
                     return;
                 }
                 let data = results[0].flight_reservs;
-                console.log(data);
+                log.info(data);
                 res.status(201).json({ success: true, errors: [],data: data });
                 return;
             })

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var log = require('debug-level').log('db');
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URL ?? '', {
@@ -7,9 +7,9 @@ const connectDB = async () => {
       useNewUrlParser: true
     })
 
-    console.log(`MongoDB Connected: ${conn.connection.host}`)
+    log.log(`MongoDB Connected: ${conn.connection.host}`)
   } catch (error) {
-    console.error(`Error: ${error.message}`)
+    log.error(`Error: ${error.message}`)
     process.exit(1)
   }
 }

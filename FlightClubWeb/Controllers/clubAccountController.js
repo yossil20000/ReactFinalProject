@@ -266,7 +266,7 @@ exports.add_order_transaction = [
 
         await session.commitTransaction();
         const savedCA = await ClubAccount.find().populate('transactions')
-        console.log("savedCA", savedCA)
+        log.info("savedCA", savedCA)
         /*  }, transactionOptions); */
         /*         if (transactionResult) {
                   log.info("trananctionResult/add_transaction update succefully", trananctionResult);
@@ -401,7 +401,7 @@ exports.add_transaction = [
          */
         await session.commitTransaction();
         const savedCA = await ClubAccount.find().populate('transactions')
-        console.log("savedCA", savedCA)
+        log.info("savedCA", savedCA)
         /*  }, transactionOptions); */
         /*         if (transactionResult) {
                   log.info("trananctionResult/add_transaction update succefully", trananctionResult);

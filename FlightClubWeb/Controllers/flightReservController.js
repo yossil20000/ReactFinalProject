@@ -47,7 +47,7 @@ exports.reservation_list = function (req, res, next) {
 			.exec((err, results) => {
 				if (err) { log.critical('err'); return next(err); }
 				else {
-					console.log("reservation", results)
+					log.info("reservation", results)
 					res.status(201).json({ success: true, errors: [], data: results });
 					return;
 				}
@@ -99,7 +99,7 @@ exports.reservation_delete_m2m = async function (req, res, next) {
 		if (!errors.isEmpty()) {
 			return next(new ApplicationError("reservation_delete_m2m", 400, "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 		};
-		console.log("reservation_delete/id", req.body);
+		log.info("reservation_delete/id", req.body);
 
 		const flight2delete = await FlightReservation.findById(req.body._id)
 
@@ -123,15 +123,15 @@ exports.reservation_delete = function (req, res, next) {
 		if (!errors.isEmpty()) {
 			return next(new ApplicationError("reservation_delete", 400, "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 		};
-		console.log("reservation_delete/id", req.body);
+		log.log("reservation_delete/id", req.body);
 		const flight2delete = FlightReservation.findById(req.body._id, (err, doc) => {
 			if (err) {
-				console.log("FlightReservation.findById/err", err);
+				log.error("FlightReservation.findById/err", err);
 				res.status(400).json({ success: false, errors: [err], data: results });
 				return;
 			}
 			if (doc) {
-				console.log("FlightReservation.findById/doc", doc)
+				log.info("FlightReservation.findById/doc", doc)
 				async.parallel({
 					member_delete_flight: function (callback) {
 						Member.findOneAndUpdate(doc.member._id, { $pull: { flight_reservs: doc._id } }).exec(callback);
@@ -163,7 +163,7 @@ exports.reservation_delete = function (req, res, next) {
 				});
 			}
 		});
-		console.log("FlightReservation.flight2delete", flight2delete)
+		log.info("FlightReservation.flight2delete", flight2delete)
 
 
 

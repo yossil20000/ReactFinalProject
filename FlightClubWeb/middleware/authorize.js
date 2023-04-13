@@ -1,5 +1,5 @@
 const role = require("../Models/role");
-
+var log = require('debug-level').log('authorize');
 
 
 function authorize(roles = []){
@@ -9,11 +9,11 @@ function authorize(roles = []){
     }
     return [
         (req,res,next) => {
-            console.log("Authorize: req.user", req.user)
+            log.info("Authorize: req.user", req.user)
             if(roles.length  &&  req.user.roles.length )
             {
                 const found =  roles.some(role =>  req.user.roles.includes(role));
-                console.log("Roles found: " ,found);
+                log.info("Roles found: " ,found);
                 if(found)
                 {return next();}
                 else{

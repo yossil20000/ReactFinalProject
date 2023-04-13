@@ -1,4 +1,5 @@
 const parseApplicationError = require('../database/dataBaseErrorParser')
+var log = require('debug-level').log('baseError');
 class CError {
   constructor(message,property){
     this.message = message;
@@ -21,7 +22,7 @@ class ApplicationError extends Error {
   serializeError() {
 
     const parse = parseApplicationError(this.errors)
-    console.log("serializeError/result", this.errorSource,parse.errors)
+    log.error("serializeError/result", this.errorSource,parse.errors)
     return {errorSource:this.errorSource ,...parse};
   }
 }

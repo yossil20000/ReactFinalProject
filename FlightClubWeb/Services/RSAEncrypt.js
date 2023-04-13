@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+var log = require('debug-level').log('RSAEncrypt');
 //const creyptoKeys = getcreyptoKeys();
 //console.log("creyptedKeys", creyptoKeys);
 const getcreyptoKeys = function () {
@@ -42,7 +43,7 @@ const encryptedData = function (publicKey, data) {
       
       // The encrypted data is in the form of bytes, so we print it in base64 format
       // so that it's displayed in a more readable form
-      console.log("encypted data: ", encrypted.toString("base64"));
+      log.log("encypted data: ", encrypted.toString("base64"));
     return encrypted;
 }
 
@@ -62,7 +63,7 @@ const decryptedData = function (privateKey, encryptedData) {
       
       // The decrypted data is of the Buffer type, which we can convert to a
       // string to reveal the original data
-      console.log("decrypted data: ", decrypted.toString());
+      log.log("decrypted data: ", decrypted.toString());
     return decrypted.toString();
 }
 module.exports = {

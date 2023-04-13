@@ -17,16 +17,16 @@ exports.signin = function (req, res, next) {
 
     Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
         if (err) {
-            console.info(`${email} Access Denied ${err}`)
+            log.error(`${email} Access Denied ${err}`)
         }
         if (member) {
             member.comparePassword(password, (err, isMatch) => {
                 if (err) {
-                    console.info(`${email} Access Denied comp`)
+                    log.error(`${email} Access Denied comp`)
                 }
                 else if (isMatch) {
 
-                    console.info(`${email} ${username} Access Pemitted`)
+                    log.info(`${email} ${username} Access Pemitted`)
                     log.info(`${member.date_of_birth_formatted}`)
 
                     const payLoad = authJWT.payload;
@@ -34,10 +34,10 @@ exports.signin = function (req, res, next) {
                     payLoad.userId = member._id.toString();
                     payLoad.roles = member.role.roles;
                     //payLoad.id = member._id;
-                    console.log("signein payload", payLoad);
+                    log.info("signein payload", payLoad);
                     const token = authJWT.signToken(payLoad,member.token_expiresIn);
                     const decodeJWT = jwtService.decodeJWT(token);
-                    console.log("tokenExp", decodeJWT.exp);
+                    log.info("tokenExp", decodeJWT.exp);
                     res.cookie("token",token, {
                         path: '/',
                         httpOnly : false,
@@ -69,7 +69,7 @@ exports.signin = function (req, res, next) {
 
                 }
                 else {
-                    console.info(`${email}  Access Denied ElseIf`)
+                    log.info(`${email}  Access Denied ElseIf`)
                     log.info(member);
                     return res.status(400).json({
                         success: false,
@@ -102,14 +102,14 @@ exports.logout = function(req,res,next) {
     }
 }
 exports.reset = function (req, res, next) {
-    console.log("reset.body", req.body);
+    log.info("reset.body", req.body);
     const email = req.body.email;
     const username = req.body.username;
 
-    console.log("reset", email);
+    log.info("reset", email);
     Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
         if (err) {
-            console.info(`${email} Not Found ${err}`)
+            log.error(`${email} Not Found ${err}`)
             return res.status(400).json({ success: false, errors: [err], message: `${email} Not Found` });
         }
         if (member) {
@@ -118,13 +118,13 @@ exports.reset = function (req, res, next) {
             member.password = member.hash(password);
             member.updateOne({ password: member.password }).exec((err, result) => {
                 if (err) {
-                    console.log("Update Mail Failed", err);
+                    log.error("Update Mail Failed", err);
                     return res.status(400).json({ success: false, errors: err, message: password, data: { newPassword: "" } });
                 }
                 else if (result) {
-                    console.log("result", result)
+                    log.info("result", result)
                     mail.SendMail(member.contact.email, "Test", `Your temporary paassword is ${password}`).then((result) => {
-                        console.log("Send Mail to:", member.contact.email);
+                        log.info("Send Mail to:", member.contact.email);
                         return res.status(201).json(
                             {
                                 success: true,
@@ -135,7 +135,7 @@ exports.reset = function (req, res, next) {
                     }
 
                     ).catch((err => {
-                        console.log("Send Mail");
+                        log.error("Send Mail");
                         return res.status(201).json({ success: false, errors: [err], message: "password renew", data: { newPassword: password } });
                     })
 
@@ -153,13 +153,13 @@ exports.reset = function (req, res, next) {
     })
 }
 exports.change_password = function (req, res, next) {
-    console.log("change_password", req.body);
+    log.log("change_password", req.body);
     
     const username = req.body.username;
     const password = req.body.password;
     const newPassword = req.body.newPassword;
     const user = req.user;
-    console.log("change_password", newPassword);
+    log.info("change_password", newPassword);
     try{
         if (!IsPasswordValid(newPassword)) {
             return res.status(400).json(
@@ -172,7 +172,7 @@ exports.change_password = function (req, res, next) {
         }
         Member.findOne({ username: username }, (err, member) => {
             if (err) {
-                console.info(`${email} Not Found ${err}`)
+                log.error(`${email} Not Found ${err}`)
                 return res.status(400).json({ success: false, errors: [err], message: `${email} Not Found` });
             }
     
@@ -183,13 +183,13 @@ exports.change_password = function (req, res, next) {
                         member.password = member.hash(newPassword);
                         member.updateOne({ password: member.password }).exec((err, result) => {
                             if (err) {
-                                console.log("Update Mail Failed", err);
+                                log.error("Update Mail Failed", err);
                                 return res.status(400).json({ success: false, errors: err, message: [err], data: { newPassword: "" } });
                             }
                             else if (result) {
-                                console.log("result", result)
+                                log.info("result", result)
                                 mail.SendMail(member.contact.email, "Test", `Your temporary paassword is ${newPassword}`).then((result) => {
-                                    console.log("Send Mail to:", member.contact.email);
+                                    log.info("Send Mail to:", member.contact.email);
                                     return res.status(201).json(
                                         {
                                             success: true,
@@ -200,7 +200,7 @@ exports.change_password = function (req, res, next) {
                                 }
     
                                 ).catch((err => {
-                                    console.log("Send Mail");
+                                    log.error("Send Mail");
                                     return res.status(201).json({ success: false, errors: [err], message: "password renew", data: { newPassword: newPassword } });
                                 })
     
@@ -235,7 +235,7 @@ exports.register = function (req, res, next) {
     try {
         const user = req.body;
         if (user) {
-            console.log("register", req.body);
+            log.info("register", req.body);
             Member.findOne({ "contact.email": user.contact.email }, (err, member) => {
 
                 if (err) {
@@ -267,7 +267,7 @@ exports.refresh_token = function (req,res,next) {
 
     Member.findOne({ "username": username, "member_id": member_id }, (err, member) => {
         if (err) {
-            console.info(`${email} Access Denied ${err}`)
+            log.error(`${email} Access Denied ${err}`)
         }
         if (member) {
             const payLoad = authJWT.payload;
@@ -275,11 +275,11 @@ exports.refresh_token = function (req,res,next) {
             payLoad.userId = member._id.toString();
             payLoad.roles = member.role.roles;
             //payLoad.id = member._id;
-            console.log("refresh payload", payLoad);
+            log.info("refresh payload", payLoad);
             
             const token = authJWT.signToken(payLoad,member.token_expiresIn);
             const decodeJWT = jwtService.decodeJWT(token);
-            console.log("tokenExp", decodeJWT.exp);
+            log.info("tokenExp", decodeJWT.exp);
             res.cookie("token",token, {
                 path: '/',
                 httpOnly : false,

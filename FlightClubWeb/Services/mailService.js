@@ -1,4 +1,5 @@
 require('dotenv').config();
+const log = require('debug-level').log('mailService');
 var express = require('express');
 const nodemailer = require('nodemailer');
 const Q = require('q');
@@ -31,14 +32,14 @@ function SendMail(to,subject,text){
         mailOption.subject = subject;
         mailOption.text = text;
         transporter.sendMail(mailOption, function(err,success) {
-            console.log(sender);
+            log.info(sender);
             if(err){
-                console.log(err);
+                log.error(err);
                 reject(err);
             }
             else
             {
-                console.log(success);
+                log.info(success);
                 resolve(success);
             }
         });
@@ -52,12 +53,12 @@ function SendMailQ(to, subject,text, callback){
     mailOption.text = text;
     transporter.sendMail(mailOption, function(err,success) {
     if(err){
-        console.log(err);
+        log.error(err);
         deferred.reject(err);
     }
     else
     {
-        console.log(success);
+        log.log(success);
         deferred.resolve(success);
     }
     deferred.promise.nodeify(callback);
@@ -69,4 +70,4 @@ module.exports = {
     SendMail: SendMail,
     SendMailQ : SendMailQ
 } ;
-transporter.verify().then(e => console.log(e)).catch(err => console.log(err));
+transporter.verify().then(e => log.log(e)).catch(err => log.error(err));
