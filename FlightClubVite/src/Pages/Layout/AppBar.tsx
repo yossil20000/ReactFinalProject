@@ -19,7 +19,6 @@ import UserIcon from '../../Components/Buttons/UserIcon';
 import { Avatar } from '@mui/material';
 import useGetExpiredLogin from '../../hooks/useGetExpiredLogin'
 import RefreshTokenDialog from '../../Components/RefreshTokenDialog';
-import { customLogger } from '../../customLogging';
 type page = {
   name: string,
   route: string
@@ -49,6 +48,7 @@ const ResponsiveAppBar = () => {
 
   ];
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    CustomLogger.info("ResponsiveAppBar/handleOpenNavMenu:event", event.currentTarget)
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -72,8 +72,8 @@ const ResponsiveAppBar = () => {
   }
   const handleSettingNavMenu = (event: React.MouseEvent<HTMLElement>, setting: string) => {
     event.preventDefault();
-    CustomLogger.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
-    CustomLogger.log("ResponsiveAppBar/handleSettingMenu", event.target)
+    CustomLogger.info("ResponsiveAppBar/handleSettingMenu:Setting", setting)
+    CustomLogger.info("ResponsiveAppBar/handleSettingMenu", event.target)
     navigate(`${setting}`)
     setAnchorElNav(null);
 
@@ -81,7 +81,7 @@ const ResponsiveAppBar = () => {
 
   const handleSettingUserMenu = (event: React.MouseEvent<HTMLElement> | undefined, setting: string) => {
     event !== undefined ? event.preventDefault() : null;
-    CustomLogger.log("ResponsiveAppBar/handleSettingMenu:Setting", setting)
+    CustomLogger.info("ResponsiveAppBar/handleSettingMenu:Setting", setting)
 
     if (setting == "Logout") {
       CustomLogger.info("Logout")
