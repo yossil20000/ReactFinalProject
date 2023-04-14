@@ -34,7 +34,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
     CustomLogger.log("TransactionAction/handleConfirmation/",action)
     if(action == "ADD_TRANSACTION"){
       setConfirmation((prev) => ({...prev,
-        open: true,action: "ADD_TRASACTION",content:"Please confirm \n Add Transaction operation", title: "Confirmation",
+        open: true,action: "ADD_TRANSACTION",content:"Please confirm \n Add Transaction operation", title: "Confirmation",
         onClose: onConfirmationClose }))
       CustomLogger.info("TransactionAction/handleConfirmation/ADD_TRASACTION",confirmation)
     }
@@ -52,9 +52,34 @@ export default function TransactionAction(props: ITransactionActionProps) {
     if(value){
       if(action === "DELETE_ORDER")
         handleDelete()
+      if(action == "ADD_TRANSACTION")
+      {
+        handleTransaction()
+      }
     }
   }
-
+  const handleTransaction = async () => {
+    console.log("TransactionAction/handleTransaction", id, params, transaction)
+    setIsLoading(true);
+    const result: boolean = true;
+    await AddTransaction(transaction).unwrap().then((data) => {
+      console.log("TransactionAction/handleTransaction/data", data)
+      if (data.success === false) {
+        const validation = getValidationFromError(data.errors, (): void => { });
+        setValidationAlert(validation);
+        setOpenError(true);
+        return;
+      }
+      setIsSuccess(true);
+      setIsLoading(false)
+    }).catch((err) => {
+      const validation = getValidationFromError(err, (): void => { });
+      setValidationAlert(validation);
+      setOpenError(true);
+      setIsLoading(false)
+      return;
+    });
+  }
   const handleDelete = async () => {
     CustomLogger.log("TransactionAction/handleDelete", id, params, transaction)
     if (orderId !== undefined) {

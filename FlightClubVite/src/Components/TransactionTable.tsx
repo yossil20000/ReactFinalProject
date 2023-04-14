@@ -5,6 +5,7 @@ import { useFetchTransactionQuery } from '../features/Account/accountApiSlice';
 import { ITransaction } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 import { IDateFilter } from '../Interfaces/IDateFilter';
+import { COrderDescription } from "../Interfaces/API/IAccount";
 
 
 export interface ITransactionTableFilter {
@@ -51,7 +52,7 @@ const getData = useMemo(() => {
       paymentMethod : row.payment.method,
       paymentReferance: row.payment.referance,
       order: row.order.type,
-      description: row.description
+      description: COrderDescription.displayTransaction(row.description) 
     }))
     if (rows !== undefined) {
       CustomLogger.info("TransactionTable/orders", rows, transactions);
