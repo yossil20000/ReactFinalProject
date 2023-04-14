@@ -5,7 +5,7 @@ import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable';
 import DevicesFlightCombo from '../../Components/Devices/DeviceFlightCombo';
 import { useGetAllFlightsSearchQuery } from '../../features/Flight/flightApi';
-import { COrderCreate, IOrderBase, OrderStatus, OT_OPERATION, OT_REF } from '../../Interfaces/API/IAccount';
+import { COrderCreate, IOrderBase, orderDescription, OrderStatus, OT_OPERATION, OT_REF } from '../../Interfaces/API/IAccount';
 import { DEVICE_MET } from '../../Interfaces/API/IDevice';
 import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
 
@@ -20,6 +20,7 @@ interface IData {
   engien_stop: number
   order_by: string
 }
+
 function createData(
   _id: string,
   date: Date,
@@ -155,6 +156,14 @@ function AccountFlightsTab() {
 
     if (flightFound !== undefined) {
       const [units, pricePeUnit, amount, discount] = getPrice(flightFound);
+      const description : orderDescription = {
+        operation: 'FLIGHT',
+        date: new Date(flightFound.date).toLocaleDateString(),
+        engien_start: flightFound.engien_start,
+        engien_stop: flightFound.engien_stop,
+        total: Number((flightFound.engien_stop - flightFound.engien_start).toFixed(2)) ,
+        description: flightFound.description
+      }
       let order: IOrderBase = {
         order_date: flightFound.date,
         product: flightFound._id,
@@ -163,7 +172,7 @@ function AccountFlightsTab() {
         discount: Number(discount.toFixed(2)),
         amount: Number(amount.toFixed(2)),
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
-        description: `Flight: {date: ${new Date(flightFound.date).toDateString()} ,engien_start: ${flightFound.engien_start}, engien_start: ${flightFound.engien_start}: ${flightFound.engien_stop} , description: ${flightFound.description}}`,
+        description: JSON.stringify(description) ,
         status: OrderStatus.CREATED,
         member: flightFound.member,
         orderBy: `${flightFound.member.family_name} / ${flightFound.member.member_id}`

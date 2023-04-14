@@ -14,11 +14,29 @@ function RollIcon(props: IRollIcon) {
   globalThis.CustomLogger.log("RollIcon/props")
   function GetIcon():any {
     const iconsArray : JSX.Element[] = [];
+    if(props.roles?.includes(Role.admin)){
+      globalThis.CustomLogger.info("RollIcon/containe")
+      iconsArray.push(<AdminPanelSettingsIcon key="admin"/>) ; 
+    }
+    else if(props.roles?.includes(Role.account)){
+      iconsArray.push(<ManageAccountsIcon key="account"/>);
+    }
+    else if(props.roles?.includes(Role.desk)){
+      iconsArray.push(<BusinessIcon/>)
+    }
+    return (iconsArray)
     props?.roles?.forEach((element) => {
     globalThis.CustomLogger.log("RollIcon/element", element)
-    if (element == Role.admin.toString()) iconsArray.push(<AdminPanelSettingsIcon key="admin"/>) ;
-    if (element == Role.account) iconsArray.push(<ManageAccountsIcon key="account"/>);
-    if (element == Role.desk) iconsArray.push(<BusinessIcon/>)
+    if(iconsArray.length > 0 ) return;
+    if (element == Role.admin.toString()) 
+    {
+      
+      iconsArray.push(<>Yossi</>) ;
+      return  
+    }
+    else if (element == Role.account) 
+    {iconsArray.push(<ManageAccountsIcon key="account"/>);}
+    else if (element == Role.desk) iconsArray.push(<BusinessIcon/>)
     
 
   });

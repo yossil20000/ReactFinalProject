@@ -82,6 +82,37 @@ export class COrderCreate  implements IOrderBase {
     this.orderBy = obj.orderBy
   }
 }
+export type orderDescription = {
+  operation: string,
+  date: string,
+  engien_start: number,
+  engien_stop : number,
+  total: number,
+  description: string
+}
+export class COrderDescription {
+  description: orderDescription = {
+    operation: "",
+    date: "",
+    engien_start: 0,
+    engien_stop: 0,
+    total: 0,
+    description: ""
+  }
+  constructor(orderDescription: orderDescription){
+    this.description= orderDescription
+  }
+  setOrderDescription(orderDescription: string){
+    this.description = JSON.parse(orderDescription)
+  }
+  static parseDescription(orderDescription: string) : orderDescription{
+   return JSON.parse(orderDescription)
+  }
+  static displayTransaction(orderDescription: string) : string {
+    const description = this.parseDescription(orderDescription)
+    return `${description.operation} on ${description.date} Start: ${description.engien_start} Stop: ${description.engien_stop} Total: ${description.total}`
+  }
+}
 
 export interface IOrder extends IOrderBase {
   _id: string
