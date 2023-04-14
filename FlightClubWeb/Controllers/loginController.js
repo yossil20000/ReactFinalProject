@@ -123,7 +123,7 @@ exports.reset = function (req, res, next) {
                 }
                 else if (result) {
                     log.info("result", result)
-                    mail.SendMail(member.contact.email, "Test", `Your temporary paassword is ${password}`).then((result) => {
+                    mail.SendMail(member.contact.email, "Baz renew password", `Your temporary paassword is ${password}`).then((result) => {
                         log.info("Send Mail to:", member.contact.email);
                         return res.status(201).json(
                             {
@@ -188,7 +188,7 @@ exports.change_password = function (req, res, next) {
                             }
                             else if (result) {
                                 log.info("result", result)
-                                mail.SendMail(member.contact.email, "Test", `Your temporary paassword is ${newPassword}`).then((result) => {
+                                mail.SendMail(member.contact.email, "Password Changed", `Your paassword is ${newPassword}`).then((result) => {
                                     log.info("Send Mail to:", member.contact.email);
                                     return res.status(201).json(
                                         {
