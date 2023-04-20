@@ -187,7 +187,7 @@ const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name} Expired:${remainLogin}`}
+            {login.member.first_name == "" ? "Hello, Please login" : `Hello ${login.member.first_name} ${isNaN(remainLogin) ? "" :  `Expired: ${remainLogin}`}`}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
