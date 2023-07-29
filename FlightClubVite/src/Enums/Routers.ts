@@ -1,4 +1,14 @@
+export const isHttps : boolean = true;
 export function getServerAddress () {
+ const deploy: boolean = true;
+
+  if(deploy)
+  {
+    return  URLS.BACKEND_ADDRESS_DEPLOY;
+  }
+  else{
+    return URLS.BACKEND_URL;
+  }
   if(false)
     return `https://${URLS.BACKEND_ADDRESS}`
   else
@@ -6,8 +16,11 @@ export function getServerAddress () {
 } 
 
 export  enum URLS{
+
     BACKEND_ADDRESS = "localhost:3002",
-    BACKEND_URL = "https://localhost:3002",
+    BACKEND_URL = "http://localhost:3002",
+    BACKEND_URL_DEPLOY = "https://bazhaifaapi.onrender.com",
+    BACKEND_ADDRESS_DEPLOY = "https://bazhaifaapi.onrender.com",
     LOGIN = "api/login",
     CHANGE_PASSWORD = "api/change_password",
     RESET = 'api/reset_password',

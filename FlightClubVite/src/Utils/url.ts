@@ -1,9 +1,14 @@
+import { isHttps } from "../Enums/Routers";
+let httpPefix = "https://"
 export function getUrlWithParams (url: string,params: {[key: string]: string}) : string  {
   let added: boolean = false;
+ 
+  if(isHttps == false)
+    httpPefix ="http://"
   if(url.search("/[//]/") == -1)
   {
     added = true;
-    url= `http://${url}`
+    url= `${httpPefix}${url}`
   }
   const urlParams : URL = new URL(url);
   
@@ -12,7 +17,7 @@ export function getUrlWithParams (url: string,params: {[key: string]: string}) :
     CustomLogger.info("url/getUrlWithParams",urlParams.href)
   }
   if(added){
-    return urlParams.href.replace("http://","");
+    return urlParams.href.replace(httpPefix,"");
   }
   return urlParams.href;
 }
@@ -23,7 +28,7 @@ export function getUrlWithParamsArray (url: string,params: {[key: string]: strin
   if(url.search("/[//]/") == -1)
   {
     added = true;
-    url= `http://${url}`
+    url= `${httpPefix}${url}`
   }
   const urlParams : URL = new URL(url);
   const keys = Object(params).keys;
@@ -35,7 +40,7 @@ export function getUrlWithParamsArray (url: string,params: {[key: string]: strin
     CustomLogger.info("url/getUrlWithParams",urlParams.href)
   }
   if(added){
-    return urlParams.href.replace("http://","");
+    return urlParams.href.replace(httpPefix,"");
   }
   return urlParams.href;
 }
