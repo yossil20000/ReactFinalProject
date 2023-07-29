@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "//": "npm run devstart",
-    "start": "node bin/www.js",
+    "start": "node www",
     "loadApi": "node loadApi",
     "devstart": "nodemon ./bin/www",
     "serverstart": "SET DEBUG_LEVEL=TRACE DEBUG=server:* &  npm run devstart"
