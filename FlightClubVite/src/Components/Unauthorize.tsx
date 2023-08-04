@@ -1,8 +1,5 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Paper, Typography } from '@mui/material'
-import { red } from '@mui/material/colors'
-import { height, margin } from '@mui/system'
-import React from 'react'
-import image from '../Asset/TileBar/IMG-20190715-WA0002.jpg'
+import { Card, CardContent, CardHeader, CardMedia, Paper, Typography } from '@mui/material'
+import Unauthorized from '../Asset/Unauthorized.png'
 function Unauthorize() {
   return (
     <div className='main'>
@@ -21,7 +18,7 @@ function Unauthorize() {
         height="100%"
         width="100%"
         alt="green iguana"
-        src="../src/Asset/Unauthorized.png"
+        src= {Unauthorized}
       />
       <CardContent>
 

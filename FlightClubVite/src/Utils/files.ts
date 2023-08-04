@@ -1,4 +1,5 @@
-import Resizer from "react-image-file-resizer";
+
+import { createResizedImage } from "./react_image_file_resizer";
 
 export function convertFileTobase64(file: any)  {
   return new Promise((resolve,reject) => {
@@ -16,7 +17,7 @@ export function convertFileTobase64(file: any)  {
 
 export const resizeFileTobase64 = (file: any,maxWidth: number,quality: number = 100) =>
   new Promise((resolve) => {
-    Resizer.imageFileResizer(
+    createResizedImage(
       file,
       maxWidth,
       maxWidth,

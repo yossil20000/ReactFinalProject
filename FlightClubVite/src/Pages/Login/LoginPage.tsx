@@ -53,12 +53,14 @@ export default function LoginPage() {
     setLoginError([]);
     CustomLogger.info({
       email: data.get('email'),
-      password: data.get('password'),
+      password: data.get('password')/* ,
+      resend: data.get('resend') */
     });
     const loginProps: ILogin = {
       password: data.get('password')?.toString() === undefined ? "" : data.get('password')?.toString(),
       email: data.get('email')?.toString() === undefined ? "" : data.get('email')?.toString(),
-      username: data.get('username')?.toString() === undefined ? "" : data.get('username')?.toString()
+      username: data.get('username')?.toString() === undefined ? "" : data.get('username')?.toString(),
+      /* resend: data.get('resend')?.toString()  === undefined ? false : true */
     }
     try {
       const payload = await loging(loginProps)
@@ -145,10 +147,10 @@ export default function LoginPage() {
                 id="password"
               />
               {renderError()}
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+{/*               <FormControlLabel
+                control={<Checkbox value={true} color="primary" name='resend' />}
+                label="Resend"
+              /> */}
 
               <Button
                 type="submit"
@@ -165,9 +167,9 @@ export default function LoginPage() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/registration" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
+{/*                   <Link href="#" variant="body2">
+                    {"Resend"}
+                  </Link> */}
                 </Grid>
               </Grid>
             </Box>

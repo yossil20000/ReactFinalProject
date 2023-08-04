@@ -65,7 +65,7 @@ const ResponsiveAppBar = () => {
   if (needLogin && remainLogin > 0) {
     setNeedLogin(false);
   }
-  if (!needLogin && remainLogin < 0) {
+  if (!needLogin && remainLogin < 0 && remainLogin >  -10) {
     CustomLogger.info("navigate")
     setNeedLogin(true);
     navigate("/login");

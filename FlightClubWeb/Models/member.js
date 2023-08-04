@@ -69,7 +69,7 @@ var MemberSchema = new Schema({
     token_expiresIn: {type: String, default: "3000s"}
 },{timestamps: true});
 
-MemberSchema.pre('save', function(next) { 
+/* MemberSchema.pre('save', function(next) { 
     var user = this;
 
   // if(!user.isModified('passwors')) return next();
@@ -81,7 +81,7 @@ MemberSchema.pre('save', function(next) {
             next();
         });
     });
-});
+}); */
 
 MemberSchema.methods.hash = function(password){
     return bcrypt.hashSync(password,SALT_WORK_FACTOR);
