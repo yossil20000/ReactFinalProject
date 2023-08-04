@@ -71,7 +71,7 @@ function App() {
   
     return (
         <ThemeProvider theme={theme}>
-        <BrowserRouter basename='/ReactFinalProject'>
+        <BrowserRouter>
         <NoticeContext.Provider value={{notices:notices ,selectedItem: selectedNotice ?? NewNotice, setSelectedItem:setSelectedNotice}}>
 
         
