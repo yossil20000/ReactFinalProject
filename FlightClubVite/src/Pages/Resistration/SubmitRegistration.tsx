@@ -1,19 +1,14 @@
-import { Box, Button, Container, CssBaseline, FormControl, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, Paper, Typography } from '@mui/material';
 import { useEffect, useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import IMember from '../../Interfaces/API/IMember';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
 import { useCreateMemberMutation } from '../../features/Users/userSlice';
 import { green } from '@mui/material/colors';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
-import { IValidation } from '../../Interfaces/IValidation';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../Types/Urls';
-import { INotification } from '../../Interfaces/API/INotification';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -21,6 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+    boxShadow: 'none'
 }));
 
 

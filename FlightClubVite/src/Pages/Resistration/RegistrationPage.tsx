@@ -5,7 +5,6 @@ import Register from './Register';
 import SubmitRegistration from './SubmitRegistration';
 import HomeAddress from './HomeAddress';
 import ShippingAddress from './ShippingAddress';
-import Notification from '../UserAccount/Notification';
 import { useAppSelector } from '../../app/hooks';
 import { Gender, Role } from '../../Interfaces/API/IMember';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
@@ -89,9 +88,6 @@ function RegistrationPage() {
         <Grid item xs={12} md={12} lg={12}>
           <div>{componentList[page]}</div>
         </Grid>
-
-
-
       </Grid>
     </div>
   )

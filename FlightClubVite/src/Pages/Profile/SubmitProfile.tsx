@@ -10,8 +10,6 @@ import IMemberUpdate from '../../Interfaces/IMemberInfo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { ROUTES } from '../../Types/Urls';
-import { INotification } from '../../Interfaces/API/INotification';
-import { useCreateNotifyMutation, useUpdateNotifyMutation } from '../../features/Notification/notificationApiSlice';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -19,6 +17,7 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+    boxShadow: 'none'
 }));
 
 
@@ -74,20 +73,25 @@ function SubmitProfile({ numPage, page, setPage, formData, setFormData }: IPageN
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Item><button
+                <Item >
+                <Button
+                    variant='outlined'
                         onClick={() => {
                             setPage((page) => { return page <= 0 ? numPage - 1 : page - 1 });
                         }}>
                         Previous
-                    </button></Item>
+                    </Button>
+                </Item>
+                    
                 </Grid>
                 <Grid item xs={6}>
-                    <Item><button
+                    <Item><Button
+                    variant='outlined'
                         onClick={() => {
                             setPage(page + 1 == numPage ? 0 : page + 1);
                         }}>
                         Next
-                    </button></Item>
+                    </Button></Item>
                 </Grid>
                 <Grid item xs={6}>
                     <Item>

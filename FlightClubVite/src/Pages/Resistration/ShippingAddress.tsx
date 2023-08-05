@@ -3,13 +3,14 @@ import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
-import { INotification } from '../../Interfaces/API/INotification';
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  boxShadow: 'none'
 }));
 
 function ShippingAddress({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberUpdate>) {

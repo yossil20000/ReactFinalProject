@@ -6,7 +6,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
 import checkPassword, { checkUsername, IValidation } from '../../Utils/registerUtils';
-import { INotification } from '../../Interfaces/API/INotification';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -14,6 +13,7 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+    boxShadow: 'none'
 }));
 
 const defaultCheckPassword: IValidation = {

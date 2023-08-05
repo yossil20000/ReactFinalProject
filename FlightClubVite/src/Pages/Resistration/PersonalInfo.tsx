@@ -1,13 +1,11 @@
 /* https://www.youtube.com/watch?v=pfxd7L1kzio */
-import { Box, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
-import { Gender } from '../../Interfaces/API/IMember';
-import FemaleIcon from '@mui/icons-material/Female';
 import { resizeFileTobase64 } from '../../Utils/files';
 import GenderCombo from '../../Components/Buttons/GenderCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
@@ -17,6 +15,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  boxShadow: 'none'
 }));
 
 
