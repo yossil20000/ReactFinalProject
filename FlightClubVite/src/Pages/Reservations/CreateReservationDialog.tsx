@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
@@ -48,15 +48,15 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [deviceDescription, setDeviceDescription] = useState("");
-  const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-  
+  const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
+
   useEffect(() => {
     CustomLogger.info("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Reservation Create", alertMessage: "Reserva Create Successfully", open: true, onClose: onClose, severity: "success" }))
     }
     if (isError) {
-      const validation = getValidationFromError(error,handleCloseValidarion);
+      const validation = getValidationFromError(error, handleCloseValidarion);
       setValidationAlert(validation);
       return;
     }
@@ -64,19 +64,19 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    newDate.setSeconds(0,0)
+    newDate.setSeconds(0, 0)
     setReservationCreate(prev => ({ ...prev, date_from: newDate }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     CustomLogger.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    newDate.setSeconds(0,0)
+    newDate.setSeconds(0, 0)
     CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", newDate);
     setReservationCreate(prev => ({ ...prev, date_to: newDate }))
     CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
   };
 
-  
+
   const handleOnCancel = () => {
     setValidationAlert([])
     onClose()
@@ -114,7 +114,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
-            <Item sx={{ marginLeft: "0px" }}>
+            <Box sx={{ marginLeft: "0px", marginTop: '01ch' }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <DateTimePicker
@@ -127,10 +127,10 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                   />
                 </ThemeProvider>
               </LocalizationProvider>
-            </Item>
+            </Box>
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item >
+          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
+            <Box >
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <DateTimePicker
@@ -143,7 +143,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                   />
                 </ThemeProvider>
               </LocalizationProvider>
-            </Item>
+            </Box>
           </Grid>
           {/*     <Grid item xs={12}>
       <Item>
@@ -152,25 +152,18 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       </Item>
     </Grid> */}
           {validationAlert.map((item) => (
-            <Grid item xs={12}>
-              <Item>
-                <ValidationAlert {...item} />
-              </Item>
+            <Grid item xs={12} sx={{marginTop: '2ch'}}>
+              <ValidationAlert {...item} />
             </Grid>
           ))}
 
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true}/>
-            </Item>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop:'2ch' }}>
+              <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item>
-              <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice}/>
-            </Item>
+          <Grid item xs={12} md={6} xl={6} sx={{marginTop: '2ch'}}>
+              <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
           </Grid>
-          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
-            <Item>
+          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" ,marginTop:'2ch'}}>
               <TextField
                 disabled
                 sx={{ marginLeft: "0px", width: "100%" }}
@@ -180,24 +173,21 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                 value={deviceDescription}
                 multiline
               />
-            </Item>
           </Grid>
-          <Grid item xs={12} sx={{ marginLeft: "0px", width: "100%" }}>
-            <Item>
-              <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id }/>
-            </Item>
+          <Grid item xs={12} sx={{ marginLeft: "0px", width: "100%", marginTop:'2ch' }}>
+              <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id} />
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
+          <Grid item xs={12} md={6} xl={6} sx={{marginTop:'2ch'}}>
+            <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
               Cancle
-            </Button></Item>
+            </Button>
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
+          <Grid item xs={12} md={6} xl={6} sx={{marginTop:'2ch'}}>
+            <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnSave}>
               Save
-            </Button></Item>
+            </Button>
           </Grid>
         </Grid>
       </DialogContent>
