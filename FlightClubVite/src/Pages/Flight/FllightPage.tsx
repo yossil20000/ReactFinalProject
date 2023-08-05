@@ -1,5 +1,5 @@
 import "../../Types/date.extensions"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, styled, TablePagination, Tooltip, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, styled, TablePagination, ToggleButton, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
@@ -18,7 +18,6 @@ import { getDayFilter, getMonthFilter, getTodayFilter, getWeekFilter } from "../
 import GeneralDrawer from "../../Components/GeneralDrawer.js";
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { SetProperty } from "../../Utils/setProperty.js";
-import FilterListIcon from '@mui/icons-material/FilterList';
 import TodayIcon from '@mui/icons-material/Today';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -28,6 +27,9 @@ import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons.j
 import DatePickerDate from "../../Components/Buttons/DatePickerDate";
 import { Container } from "@mui/system";
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from "../Layout/Container";
+import { EfilterMode } from "../../Utils/enums";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { BorderClear } from "@mui/icons-material";
 
 const dateFilter: IDateFilter = newDateFilter;
 const StyledAccordion = styled(Box)(({ theme }) => ({
@@ -131,6 +133,8 @@ const FlightPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({ from: filterDate.from, to: filterDate.to } as IFlightFilterDate);
+  const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH);
+
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login.member._id, login.member.roles)))
   }
@@ -257,12 +261,14 @@ const FlightPage = () => {
   const onTodayChanged = () => {
     const filter = getTodayFilter();
     setFilterDate(filter);
+    setFilterMode(EfilterMode.E_FM_DAY)
 
   }
   const onWeekChanged = () => {
     setDateRef(new Date())
     const filter = getWeekFilter(new Date());
     setFilterDate(filter);
+    setFilterMode(EfilterMode.E_FM_WEEK)
 
   }
   const onPrevDay = () => {
@@ -293,6 +299,7 @@ const FlightPage = () => {
     setDateRef(new Date())
     const filter = getMonthFilter(new Date());
     setFilterDate(filter);
+    setFilterMode(EfilterMode.E_FM_MONTH)
 
   }
   const onPrevMonth = () => {
@@ -319,25 +326,53 @@ const FlightPage = () => {
   }
   const onDateChanged = (key: string, value: Date | null) => {
     CustomLogger.info("FlightPage/onDateChanged", key, value)
-    if(value == null)
-    return;
+    if (value == null)
+      return;
     const newFilter = SetProperty(filterDate, key, new Date(value));
     setFilterDate(newFilter)
     refetch()
+  }
+  const onFilterModeNext = () => {
+    switch (filterMode) {
+      case EfilterMode.E_FM_DAY:
+        onNextDay();
+        break;
+      case EfilterMode.E_FM_MONTH:
+        onNextMonth();
+        break;
+      case EfilterMode.E_FM_WEEK:
+        onNextWeek()
+        break;
+
+    }
+  }
+  const onFilterModePrev = () => {
+    switch (filterMode) {
+      case EfilterMode.E_FM_DAY:
+        onPrevDay();
+        break;
+      case EfilterMode.E_FM_MONTH:
+        onPrevMonth();
+        break;
+      case EfilterMode.E_FM_WEEK:
+        onPrevWeek()
+        break;
+
+    }
   }
   return (
     <>
       <ContainerPage>
         <>
           <ContainerPageHeader>
-            <Box marginTop={2} display={'flex'} flexDirection={'column'}>
+            <Box marginTop={0} display={'flex'} flexDirection={'column'}>
               <Typography variant="h6" align="center">{`Flights ${filterDate.from.toLocaleDateString()} - ${filterDate.to.toLocaleDateString()}`}</Typography>
-              <Paper sx={{ width: '100%', mb: 1 }}>
+              <Box sx={{ width: '100%', mb: 1, display: "flex", justifyContent: "space-between" }} >
 
-                <Box display={'flex'} justifyContent={"space-between"}>
-                  <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
-                    <FilterListIcon fontSize="inherit" />
-                  </IconButton>
+                <Box display={'flex'} justifyContent={"flex-start"}>
+                  <ToggleButton value={""} aria-label="close" size="medium" onClick={() => setOpenFilter(true)}>
+                    <FilterAltIcon fontSize="inherit" />
+                  </ToggleButton>
                   <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
                     <List sx={{ display: 'flex', flexDirection: 'column' }}>
                       <ListItem key={"fromDate"} disablePadding>
@@ -422,16 +457,20 @@ const FlightPage = () => {
                       </ListItem>
 
                     </List>
-
-
                   </GeneralDrawer>
+                  <ToggleButton value={""} aria-lable="prev-selection" size="medium" onClick={onFilterModePrev}>
+                    <Tooltip title="Switch to day view"><NavigateBeforeIcon fontSize="inherit" /></Tooltip>
+                  </ToggleButton>
+                  <ToggleButton value={""} aria-lable="next-selection" size="medium" onClick={onFilterModeNext}> <NavigateNextIcon fontSize="inherit" /></ToggleButton>
+
+                </Box>
+                <Box display={'flex'} justifyContent={"flex-end"}>
                   <Tooltip title="Add Flight">
                     <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "flight" }]} />
                   </Tooltip>
                 </Box>
-              </Paper>
+              </Box>
             </Box>
-
           </ContainerPageHeader>
           <ContainerPageMain>
             <>

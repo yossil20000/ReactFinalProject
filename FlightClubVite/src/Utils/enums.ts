@@ -15,3 +15,14 @@ export class Enum2ComboItem<T extends {[name: string]: any}> {
     return items;
   }
 }
+
+export enum EviewMode {
+  E_VM_DAY,
+  E_VM_NORMAL
+}
+export enum EfilterMode {
+  E_FM_DATE,
+  E_FM_DAY,
+  E_FM_WEEK,
+  E_FM_MONTH
+}
