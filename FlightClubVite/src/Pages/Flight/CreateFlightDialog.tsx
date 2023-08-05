@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
@@ -47,15 +47,15 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [flightCreate, setFlightCreate] = useState<IFlightCreate>(value);
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [selectedDevice,setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-  
+  const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
+
   useEffect(() => {
     CustomLogger.info("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Flight Create", alertMessage: "Flight Create Successfully", open: true, onClose: onClose, severity: "success" }))
     }
     if (isError) {
-      const validation = getValidationFromError(error,handleOnValidatiobClose);
+      const validation = getValidationFromError(error, handleOnValidatiobClose);
       setValidationAlert(validation);
       return;
     }
@@ -63,7 +63,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    newDate.setSeconds(0,0)
+    newDate.setSeconds(0, 0)
     setFlightCreate(prev => ({ ...prev, date: newDate }))
   };
 
@@ -80,8 +80,8 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   }
   const handleOnValidatiobClose = useCallback(() => {
     setValidationAlert([])
-    
-  },[])
+
+  }, [])
   const handleOnSave = async () => {
     CustomLogger.info("CreateFlightDialog/onSave", flightCreate)
     let flight = new CFlightCreate();
@@ -98,9 +98,9 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
 
   }
-  const onDeviceChanged = (item: InputComboItem,has_hobbs:boolean) => {
-    
-    setFlightCreate(prev => ({ ...prev, _id_device: item._id ,reuired_hobbs: has_hobbs}))
+  const onDeviceChanged = (item: InputComboItem, has_hobbs: boolean) => {
+
+    setFlightCreate(prev => ({ ...prev, _id_device: item._id, reuired_hobbs: has_hobbs }))
     setSelectedDevice(item)
   }
   const onMemberChanged = (item: InputComboItem) => {
@@ -114,18 +114,14 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       <DialogTitle>Flight Create</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
-        <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <DevicesFlightCombo onChanged={onDeviceChanged} source={source} filter={true}/>
-            </Item>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+            <DevicesFlightCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
-            <Item>
-            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice}/>
-            </Item>
+            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
           </Grid>
           <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
-            <Item sx={{ marginLeft: "0px" }}>
+            <Box sx={{ marginLeft: "0px", marginTop: '2ch' }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <DateTimePicker
@@ -138,10 +134,8 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                   />
                 </ThemeProvider>
               </LocalizationProvider>
-            </Item>
-
+            </Box>
           </Grid>
-          
           {/*     <Grid item xs={12}>
       <Item>
       {isLoading && <CircularProgress size='1rem' color='primary' />}
@@ -149,92 +143,81 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       </Item>
     </Grid> */}
 
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                type={"number"}
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="engien_start"
-                label="Engien start"
-                value={flightCreate.engien_start}
-                onChange={handleFligtChange}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Item>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <TextField
+              type={"number"}
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="engien_start"
+              label="Engien start"
+              value={flightCreate.engien_start}
+              onChange={handleFligtChange}
+              InputLabelProps={{ shrink: true }}
+            />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                type={"number"}
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="engien_stop"
-                label="Engien stop"
-                value={flightCreate.engien_stop}
-                onChange={handleFligtChange}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Item>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <TextField
+              type={"number"}
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="engien_stop"
+              label="Engien stop"
+              value={flightCreate.engien_stop}
+              onChange={handleFligtChange}
+              InputLabelProps={{ shrink: true }}
+            />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                type={"number"}
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="hobbs_start"
-                id="hobbs_start"
-                label="hobbs_start"
-                key={"hobbs_start"}
-                value={flightCreate.hobbs_start}
-                onChange={handleFligtChange}
-                InputLabelProps={{ shrink: true }}
-                helperText={flightCreate.reuired_hobbs ? "" : "Hobbs is optional"}
-                error={!flightCreate.reuired_hobbs}
-              />
-            </Item>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <TextField
+              type={"number"}
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="hobbs_start"
+              id="hobbs_start"
+              label="hobbs_start"
+              key={"hobbs_start"}
+              value={flightCreate.hobbs_start}
+              onChange={handleFligtChange}
+              InputLabelProps={{ shrink: true }}
+              helperText={flightCreate.reuired_hobbs ? "" : "Hobbs is optional"}
+              error={!flightCreate.reuired_hobbs}
+            />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
-            <Item>
-              <TextField
-                type={"number"}
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="hobbs_stop"
-                id="hobbs_stop"
-                label="hobbs_stop"
-                key={"hobbs_stop"}
-                value={flightCreate.hobbs_stop}
-                onChange={handleFligtChange}
-                InputLabelProps={{ shrink: true }}
-                helperText={flightCreate.reuired_hobbs ? "" : "Hobbs is optional"}
-                error={!flightCreate.reuired_hobbs}
-              />
-            </Item>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <TextField
+              type={"number"}
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="hobbs_stop"
+              id="hobbs_stop"
+              label="hobbs_stop"
+              key={"hobbs_stop"}
+              value={flightCreate.hobbs_stop}
+              onChange={handleFligtChange}
+              InputLabelProps={{ shrink: true }}
+              helperText={flightCreate.reuired_hobbs ? "" : "Hobbs is optional"}
+              error={!flightCreate.reuired_hobbs}
+            />
           </Grid>
-          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" }}>
-            <Item>
-              <TextField
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="description"
-                id="outlined-disabled"
-                label="Description"
-                onChange={handleFligtChange}
-                value={flightCreate.description}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Item>
+          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
+            <TextField
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="description"
+              id="outlined-disabled"
+              label="Description"
+              onChange={handleFligtChange}
+              value={flightCreate.description}
+              InputLabelProps={{ shrink: true }}
+            />
           </Grid>
 
-          <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
+          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
+            <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
-
               Cancle
-            </Button></Item>
+            </Button>
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
+          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
+            <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnSave}>
               Save
-            </Button></Item>
+            </Button>
           </Grid>
           {validationAlert.map((item) => (
             <Grid item xs={12}>
