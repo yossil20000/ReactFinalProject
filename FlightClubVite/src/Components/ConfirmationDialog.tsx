@@ -28,8 +28,9 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
   };
 
   return (
+    
     <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 'auto' } }}
+      sx={{ '& .MuiDialog-paper': { width: '80%',backgroundColor:'white'} ,'& .MuiBackdrop-root': {backgroundColor: 'rgba(255, 255, 255, 0.1)'}}}
       maxWidth="xs"
       open={open}
       {...other}
@@ -52,6 +53,7 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
         <Button onClick={handleOk}>Confirm</Button>
       </DialogActions>
     </Dialog>
+
   );
 }
 
