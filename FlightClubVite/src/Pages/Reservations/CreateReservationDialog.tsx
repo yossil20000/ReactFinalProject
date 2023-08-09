@@ -177,6 +177,11 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           <Grid item xs={12} sx={{ marginLeft: "0px", width: "100%", marginTop:'2ch' }}>
               <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id} />
           </Grid>
+          {validationAlert.map((item) => (
+            <Grid item xs={12} sx={{marginTop: '2ch'}}>
+              <ValidationAlert {...item} />
+            </Grid>
+          ))}
           <Grid item xs={12} md={6} xl={6} sx={{marginTop:'2ch'}}>
             <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
