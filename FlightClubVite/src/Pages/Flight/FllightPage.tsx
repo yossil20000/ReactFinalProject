@@ -30,6 +30,8 @@ import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageM
 import { EfilterMode } from "../../Utils/enums";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { BorderClear } from "@mui/icons-material";
+import { Role } from "../../Interfaces/API/IMember";
+import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
 
 const dateFilter: IDateFilter = newDateFilter;
 const StyledAccordion = styled(Box)(({ theme }) => ({
@@ -131,12 +133,12 @@ const FlightPage = () => {
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>(dateFilter as IReservationFilterDate);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
+  const login: ILoginResult | undefined = useAppSelector<ILoginResult>((state) => state.authSlice);
   const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({ from: filterDate.from, to: filterDate.to } as IFlightFilterDate);
   const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH);
-
+  const [confirmation,setConfirmation] =useState<ConfirmationDialogProps>({open: false} as ConfirmationDialogProps);
   function getFlightData(flights: IFlight[]): IFlightData[] {
-    return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login.member._id, login.member.roles)))
+    return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login === undefined ? "" : login.member._id, login === undefined ? [Role.guest] : login?.member.roles)))
   }
   useEffect(() => {
     if (isError) {
@@ -190,7 +192,7 @@ const FlightPage = () => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
+  const handleDelete = async ( _id: string) => {
     const flightDelete: IFlightDeleteApi = {
       _id: _id
     }
@@ -360,6 +362,27 @@ const FlightPage = () => {
 
     }
   }
+  const onConfirmationClose = (value: boolean,action: string) => {
+    CustomLogger.info("FlightPage/onConfirmationClose",confirmation,value)
+    setConfirmation((prev) => ({...prev, open: false}))
+    
+    if(value){
+      if(action === "DELETE_FLIGHT")
+        handleDelete(confirmation.key === undefined ? "" : confirmation.key)
+        CustomLogger.info("FlightPage/OnDeleteFlight/key",confirmation.key)
+    }
+   
+  }
+  const handleConfirmation = (action: string, id: string) => {
+    CustomLogger.info("FlightPage/handleConfirmation/",action)
+    if(action === "DELETE_FLIGHT"){
+      setConfirmation((prev) => ({...prev,
+        open: true,action: action,content:"Please, press Confirm to Delete Flight", title: "Confirmation",key: id,
+        onClose: onConfirmationClose} ))
+      CustomLogger.info("FlightPage/handleConfirmation/DELETE_FLIGHT",confirmation)
+    }
+
+  }
   return (
     <>
       <ContainerPage>
@@ -486,6 +509,7 @@ const FlightPage = () => {
 
                       getFilteredDataMemo.map((row: IFlightData, index: number) => {
                         return (
+
                           <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
                           >
                             <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
@@ -525,6 +549,7 @@ const FlightPage = () => {
                                   row.status !== FlightStatus.CREATED ? (null) :
                                     (
                                       <>
+
                                         <Grid item xs={6} >
                                           <Typography>
                                             {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}
@@ -532,7 +557,11 @@ const FlightPage = () => {
                                         </Grid>
                                         <Grid item xs={6} >
                                           <Typography>
-                                            {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id)}>Delete</Button> : null}
+                                            {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
+                                              open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
+                                              onClose={onConfirmationClose} />
+                                            ) : null}
+                                            {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleConfirmation("DELETE_FLIGHT", row._id)}>Delete</Button> : null}
                                           </Typography>
                                         </Grid>
                                       </>

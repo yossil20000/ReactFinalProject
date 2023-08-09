@@ -12,10 +12,11 @@ export interface ConfirmationDialogProps {
   onClose: (value: boolean,action:string) => void;
   title: string;
   content: string;
+  key?:string;
 }
 
 export default function ConfirmationDialog(props: ConfirmationDialogProps) {
-  const { onClose, title="Yossi", content, open,action, ...other } = props;
+  const { onClose, title="Yossi", content, open,action,key, ...other } = props;
   
 
   const handleCancel = () => {
