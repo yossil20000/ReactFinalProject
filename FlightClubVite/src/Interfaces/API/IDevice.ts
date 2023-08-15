@@ -97,6 +97,7 @@ export interface IDeviceCombo {
     _id:string;
     device_id: string;
     engien_meter: number;
+    available: boolean;
     maintanance: {
         type : DEVICE_MT
         next_meter: number

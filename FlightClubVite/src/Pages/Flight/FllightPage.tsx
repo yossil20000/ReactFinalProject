@@ -133,7 +133,7 @@ const FlightPage = () => {
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>(dateFilter as IReservationFilterDate);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const login: ILoginResult | undefined = useAppSelector<ILoginResult>((state) => state.authSlice);
+  const login: ILoginResult | undefined = useAppSelector<ILoginResult | undefined>((state) => state.authSlice);
   const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({ from: filterDate.from, to: filterDate.to } as IFlightFilterDate);
   const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH);
   const [confirmation,setConfirmation] =useState<ConfirmationDialogProps>({open: false} as ConfirmationDialogProps);

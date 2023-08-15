@@ -1,9 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Grid, TextField, Typography } from "@mui/material"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useContext } from "react";
-import { DevicesContext, DevicesContextType } from "../../../app/Context/DevicesContext";
 import { MembersContext, MembersContextType } from "../../../app/Context/MemberContext";
-import { InputComboItem } from "../../../Components/Buttons/ControledCombo"
 import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
 import { IMemberAdmin, Role } from "../../../Interfaces/API/IMember";
 import { setProperty } from "../../../Utils/setProperty";

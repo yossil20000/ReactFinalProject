@@ -34,8 +34,10 @@ function DevicesCombo(props: ComboProps) {
   useEffect(() => {
     CustomLogger.info("DevicesCombo/ Devices.data", data?.data)
 
-    let items = data?.data.map((item) => {
+    let items = data?.data.filter(i => i.available).map((item) => {
+      
       CustomLogger.info("DevicesCombo/ DeviceItemMap", item)
+      
       return devicesToItemCombo(item)
     });
     CustomLogger.log("DevicesCombo/ DeviceItem", items)

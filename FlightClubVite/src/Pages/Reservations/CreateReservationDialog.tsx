@@ -112,9 +112,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       open={open} {...other}>
       <DialogTitle>Reservation Create</DialogTitle>
       <DialogContent>
-        <Grid container sx={{ width: "100%" }} justifyContent="center">
+        <Grid container sx={{ width: "100%" }} justifyContent="center" >
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
-            <Box sx={{ marginLeft: "0px", marginTop: '01ch' }}>
+            <Box sx={{ marginLeft: "0px", marginTop: '1ch' }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <DateTimePicker
@@ -129,7 +129,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               </LocalizationProvider>
             </Box>
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '1ch' }}>
             <Box >
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
@@ -139,7 +139,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                     label="To Date"
                     value={reservationCreate.date_to}
                     onChange={handleToDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
+                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0"}} />}
                   />
                 </ThemeProvider>
               </LocalizationProvider>

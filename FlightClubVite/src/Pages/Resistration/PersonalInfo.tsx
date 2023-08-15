@@ -56,6 +56,11 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData}: IPageNav
     CustomLogger.info("formData", formData)
   };
 
+
+  const handlePhoneChange = (prop: any) => (event: any) => {
+    setFormData(prev => ({ ...prev, contact: { ...prev.contact, phone: { ...prev.contact.phone, [prop]: event.target.value } } }));
+    CustomLogger.info("formData", formData)
+  };
   return (
     <div className='main' style={{ width: "99%", margin: "1% auto", overflow: "auto" }}>
       <Grid container spacing={2}>
@@ -143,6 +148,28 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData}: IPageNav
               />
             </LocalizationProvider>
           </Item>
+        </Grid>
+        <Grid item xs={12}>
+        <Grid container spacing={0.5} padding={1} columns={{ xs: 4 }}>
+        <Grid item xs={4}>
+          <Typography sx={{ width: "100%", flexShrink: 0 }}>Phone: {`+${formData?.contact?.phone.country}${formData?.contact?.phone.area.replace(/^0+/, '')}${formData?.contact?.phone.number}`}</Typography>
+        </Grid>
+        <Grid item xs={1}>
+          <TextField fullWidth onChange={handlePhoneChange("country")} id="country" label="Country"
+            name="contact.phone.country" placeholder="Country Code" variant="standard"
+            value={formData?.contact?.phone.country} InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid item xs={1}>
+          <TextField fullWidth onChange={handlePhoneChange("area")} id="area" label="Area"
+            name="contact.phone.area" placeholder="Area code" variant="standard"
+            value={formData?.contact?.phone.area} InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField fullWidth onChange={handlePhoneChange("number")} id="number" label="Number"
+            name="contact.phone.number" placeholder="Phone Number" variant="standard"
+            value={formData?.contact?.phone.number} InputLabelProps={{ shrink: true }} />
+        </Grid>
+      </Grid>
         </Grid>
         <Grid item xs={12}>
           <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={"gender"} selectedItem={{ lable: formData?.gender === undefined ? "" : formData?.gender.toString(), _id: "", description: "" }} />
