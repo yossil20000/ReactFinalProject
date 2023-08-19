@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import React, { useCallback, useMemo, useState } from 'react'
 import CheckSelect from '../../Components/Buttons/CheckSelect'
 import { LabelType } from '../../Components/Buttons/MultiOptionCombo'
@@ -53,33 +53,33 @@ function Notify({ notify, onChanged }: INotifyProps) {
   return (
     <Grid container columns={4} sx={{ '&.MuiPaper-root': { height: "100%" } }} style={{ height: 'inherit' }} alignContent={'space-between'}>
       <Grid item xs={4}>
-        <Item>
+        <Box>
           <TextField sx={{ width: "100%", margin: "auto" }}
             disabled
             id="event"
             label="Event"
             value={notify.event}
           />
-        </Item>
+        </Box>
       </Grid>
       <Grid item xs={4} >
         <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"enabled"} checked={notify?.enabled === undefined ? false : notify?.enabled} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Enabled" />
       </Grid>
       <Grid item xs={4}>
-        <Item>
+        <Box marginBottom={2}>
           <CheckSelect selectedItems={getSelectedItems()} items={labelsFromNotifyOn()} onSelected={onNotifyOnChanged} label={'Notify on'} property={"notifyWhen"} />
-        </Item>
+        </Box>
 
       </Grid>
       <Grid item xs={4}>
-        <Item>
+        <Box>
           <TextField sx={{ width: "100%", margin: "auto" }}
             disabled
             id="notifyBy"
             label="NotifyBy"
             value={notify.notifyBy}
           />
-        </Item>
+        </Box>
 
       </Grid>
     </Grid>

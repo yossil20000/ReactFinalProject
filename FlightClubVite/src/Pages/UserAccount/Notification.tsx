@@ -1,11 +1,9 @@
 import { Box, Checkbox, FormControlLabel, Grid, Paper, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-import { getNewNotification, INotification, INotify, newNotification, NotifyBy, NotifyEvent, NotifyOn } from '../../Interfaces/API/INotification';
+import { getNewNotification, INotification, INotify } from '../../Interfaces/API/INotification';
 import { SetProperty } from '../../Utils/setProperty';
-import CheckSelect from '../../Components/Buttons/CheckSelect';
-import { useCallback, useEffect, useState } from 'react';
-import { LabelType } from '../../Components/Buttons/MultiOptionCombo';
+import { useEffect, useState } from 'react';
 import { useCreateNotifyMutation, useFetchAllNotifiesQuery, useUpdateNotifyMutation } from '../../features/Notification/notificationApiSlice';
 import { useAppSelector } from '../../app/hooks';
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container';
@@ -13,7 +11,7 @@ import Notify from './Notify';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
-const Item = styled(Paper)(({ theme }) => ({
+const Item = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
   padding: theme.spacing(1),
@@ -174,7 +172,6 @@ function NotificationPage() {
                 </Item>
               </Grid>
               {
-
                 notification?.notify.map((i, index) => (
                   <Grid item xs={6} key={`${i.event}${index}`}>
                     <Item>
@@ -190,26 +187,21 @@ function NotificationPage() {
         </ContainerPageMain>
         <ContainerPageFooter>
           <>
-
             <Grid container>
               {validationAlert.map((item) => (
                 <Grid item xs={12}>
-
                   <ValidationAlert {...item} />
-
                 </Grid>
               ))}
               <Grid item xs={12}>
                 <Box className='yl__action_button' >
                   <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} />
-
                 </Box>
               </Grid>
             </Grid></>
         </ContainerPageFooter>
       </>
     </ContainerPage>
-
 
   )
 }
