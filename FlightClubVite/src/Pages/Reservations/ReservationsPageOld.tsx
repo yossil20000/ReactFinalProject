@@ -534,13 +534,13 @@ function ReservationsPageOld() {
 
               </GeneralDrawer>
             </Box>
-            <Box display={'flex'} justifyContent={"flex-e"}>
+            <Box display={'flex'} justifyContent={"flex-end"}>
             <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
                 <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view" size="small"> <Tooltip title="Switch to day view"><TodayIcon /></Tooltip></ToggleButton>
                 <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view" size="small"> <Tooltip title="Switch to table view"><TableViewIcon /></Tooltip></ToggleButton>
               </ToggleButtonGroup>
             </Box>
-            <Box display={'flex'} justifyContent={"flex-e"}>
+            <Box display={'flex'} justifyContent={"flex-end"}>
               <Tooltip title="Add Flight">
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
               </Tooltip>

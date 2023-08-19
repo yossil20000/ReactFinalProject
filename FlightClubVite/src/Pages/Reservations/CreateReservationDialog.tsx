@@ -151,12 +151,6 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
         <TransitionAlert {...dateErrorAlert}/>
       </Item>
     </Grid> */}
-          {validationAlert.map((item) => (
-            <Grid item xs={12} sx={{marginTop: '2ch'}}>
-              <ValidationAlert {...item} />
-            </Grid>
-          ))}
-
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop:'2ch' }}>
               <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
