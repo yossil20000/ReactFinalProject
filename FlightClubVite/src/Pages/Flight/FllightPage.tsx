@@ -1,6 +1,7 @@
 import "../../Types/date.extensions"
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, styled, TablePagination, ToggleButton, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
 import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, FlightStatus } from "../../Interfaces/API/IFlight";
@@ -174,11 +175,29 @@ const FlightPage = () => {
 
 
   if (isLoading) {
+    CustomLogger.info('FlightPage/isLoading', isLoading)
     return (
       <div className='main' style={{ overflow: 'auto' }}>
         <FullScreenLoader />
       </div>
     )
+  }
+
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+      CustomLogger.error('FlightPage/error', errMsg)
+      return (
+        <div>
+          <div>An error has occurred:</div>
+          <div>{errMsg}</div>
+        </div>
+      )
+    } else {
+      // you can access all properties of `SerializedError` here
+      return <div>{error.message}</div>
+    }
   }
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof IFlightData) => {
