@@ -2,8 +2,8 @@
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 import "../../Types/date.extensions"
 
-import { Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react'
+import { Box, Button, Grid, List, ListItem, ListItemButton, ListItemIcon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
+import React, { useEffect, useState } from 'react'
 import { visuallyHidden } from '@mui/utils';
 import MediaQuery from "react-responsive";
 import { styled } from '@mui/material/styles';
@@ -28,7 +28,6 @@ import DatePickerDate from "../../Components/Buttons/DatePickerDate.js";
 import GeneralDrawer from "../../Components/GeneralDrawer.js";
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { SetProperty } from "../../Utils/setProperty.js";
-import FilterListIcon from '@mui/icons-material/FilterList';
 import TodayIcon from '@mui/icons-material/Today';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -39,6 +38,8 @@ import TableViewIcon from '@mui/icons-material/TableView';
 import CalnanderViewDay from "../../Components/Calander/CalnanderViewDay.js";
 import { EfilterMode, EviewMode } from "../../Utils/enums";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FullScreenLoader from "../../Components/FullScreenLoader";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 
 const dateFilter: IDateFilter = newDateFilter;
 interface ItableData {
@@ -420,6 +421,30 @@ function ReservationsPageOld() {
     if (viewDayReservation !== undefined)
       return viewDayReservation;
     return []
+  }
+  if (isLoading) {
+    CustomLogger.info('ReservationPage/isLoading', isLoading)
+    return (
+      <div className='main' style={{ overflow: 'auto' }}>
+        <FullScreenLoader />
+      </div>
+    )
+  }
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+      CustomLogger.error('ReservationPage/error', errMsg)
+      return (
+        <div>
+          <div>An error has occurred:</div>
+          <div>{errMsg}</div>
+        </div>
+      )
+    } else {
+      // you can access all properties of `SerializedError` here
+      return <div>{error.message}</div>
+    }
   }
   return (
     <>
