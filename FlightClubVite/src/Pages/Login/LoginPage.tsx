@@ -19,6 +19,9 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getFromLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
+import PasswordButton from '../../Components/Buttons/PasswordButton';
+import { IconButton, InputAdornment } from '@mui/material';
+import { VisibilityOff, Visibility } from '@mui/icons-material';
 
 
 function Copyright(props: any) {
@@ -44,10 +47,11 @@ export default function LoginPage() {
   let { from } = location.state || { from: { pathname: "/home" } };
 
   const [loginError, setLoginError] = React.useState<string[]>([]);
+  const [showPassword, setShowPassword] = React.useState(false);
   const id = useAppSelector((state) => state.authSlice.member._id);
   CustomLogger.log("id", id)
   CustomLogger.log("id", selectCurrentId)
-  const handleSubmit1 = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setLoginError([]);
@@ -97,6 +101,10 @@ export default function LoginPage() {
       </ol>
     );
   }
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
   return (
     <div className='main'>
 
@@ -117,7 +125,7 @@ export default function LoginPage() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" onSubmit={handleSubmit1} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleLoginSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -143,9 +151,22 @@ export default function LoginPage() {
                 fullWidth
                 name="password"
                 label="Password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
+                InputProps={{
+                  endAdornment: <InputAdornment position="start">
+                                    <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                  </InputAdornment>,
+                }}
               />
+              
               {renderError()}
 {/*               <FormControlLabel
                 control={<Checkbox value={true} color="primary" name='resend' />}
