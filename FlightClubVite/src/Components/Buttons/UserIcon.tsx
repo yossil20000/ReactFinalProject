@@ -14,12 +14,12 @@ function UserIcon(props: IRollIcon) {
 
     const iconsArray: JSX.Element[] = [];
     props?.roles?.forEach(element => {
-      CustomLogger.info("RollIcon/element", element)
+      CustomLogger.info("UserIcon/element", element)
       if (element == Role.user) iconsArray.push(<AccountCircleTwoToneIcon key="account" />);
       if (element == Role.guest) iconsArray.push(<NoAccountsIcon key="no-account" />);
     });
 
-    if (iconsArray === undefined)
+    if (iconsArray.length == 0)
       return (<><AdbIcon /> <BusinessIcon /></>)
     return (iconsArray);
   }

@@ -71,9 +71,9 @@ const getData = useMemo(() => {
     { field: 'order', headerName: 'Order', minWidth: 70, flex: 1 },
     { field: 'amount', headerName: 'Amount', type: 'number', minWidth: 70, flex: 1 },
     { field: 'transactionType', headerName: 'Type', type: 'number', minWidth: 70, flex: 1 },
-    { field: 'paymentMethod', headerName: 'PayMethod', type: 'text', minWidth: 80, flex: 1 },
+    { field: 'paymentMethod', headerName: 'PayMethod', type: 'text', minWidth: 90, flex: 1 },
     { field: 'paymentReferance', headerName: 'PayRef', type: 'text', minWidth: 80, flex: 1 },
-    { field: 'description', headerName: 'Description', minWidth: 300, flex: 2 },
+    { field: 'description', headerName: 'Description', minWidth: 200, flex: 2 },
 
 
   ], [rowId, hideAction]);
@@ -81,6 +81,7 @@ const getData = useMemo(() => {
   return (
     <div style={{ height: "100%", width: '100%' }}>
       <DataGrid
+       sx={{"& .MuiDataGrid-cellContent": {whiteSpace: "break-spaces"}}}
         rows={transactionRows}
         columns={columns}
         pageSize={pageSize}

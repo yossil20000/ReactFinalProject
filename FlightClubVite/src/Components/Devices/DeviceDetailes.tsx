@@ -21,13 +21,13 @@ function DeviceDetailes(props: IDeviceDetails) {
   {
     CustomLogger.info("RenderDetailes/data",data.data,id_device)
     return (<>
-    <Typography >Divice Detailes</Typography>:
+    <Typography >Device Detailes:</Typography>
     <Typography display="flex">Price : <Typography><b>{data?.data?.price.base} per 1 hour {data?.data?.price.meter}</b></Typography></Typography>
     <Typography display="flex">Seats : <Typography><b>{data?.data?.details.seats}</b></Typography></Typography>
     <Typography display="flex">Color : <Typography><b>{data?.data?.details.color}</b></Typography></Typography>
     <Typography display="flex">Fuel Quantity : <Typography><b>{data?.data?.details.fuel.quantity} [<b>{data?.data?.details.fuel.units}</b>]</b></Typography></Typography>
     <Typography display="flex">Instruments : <Typography><b>{data?.data?.details.instruments.join(",")}</b></Typography></Typography>
-    <Typography display="flex">Image : <Typography> {data?.data?.details.image === "" 
+    <Typography display="flex">Image : <Typography> {data?.data?.details === undefined || data?.data?.details.image === ""
     ? (<FlightIcon/>)
     :
      (<img src={data?.data?.details.image === "" ? "": data?.data?.details.image} alt='No Image'></img>)

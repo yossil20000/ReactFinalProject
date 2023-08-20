@@ -1,4 +1,4 @@
-import '../Types/date.extensions.ts';
+import '../Types/date.extensions';
 import '../index.css'
 import * as React from 'react';
 import Box from '@mui/material/Box';

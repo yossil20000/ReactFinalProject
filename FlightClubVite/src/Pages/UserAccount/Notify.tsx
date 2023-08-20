@@ -62,7 +62,7 @@ function Notify({ notify, onChanged }: INotifyProps) {
           />
         </Box>
       </Grid>
-      <Grid item xs={4} >
+      <Grid item xs={4} >Device Detailes:
         <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"enabled"} checked={notify?.enabled === undefined ? false : notify?.enabled} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Enabled" />
       </Grid>
       <Grid item xs={4}>
