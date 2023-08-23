@@ -1,19 +1,18 @@
 
-import { Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Typography } from '@mui/material';
 import { useState } from 'react';
 import { ITransactionTableFilter } from '../../Components/TransactionTable';
 
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 
 import React from 'react';
-import { IDateFilter, IFilterItems, newDateFilter } from '../../Interfaces/IDateFilter';
+import { IDateFilter, newDateFilter } from '../../Interfaces/IDateFilter';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 
 
 import ReservationTable, { IReservationTableFilter } from '../../Components/ReservationTable';
 import DatePickerDate from '../../Components/Buttons/DatePickerDate';
 import GeneralDrawer from '../../Components/GeneralDrawer';
-import { IReservationFilterDate } from '../../Interfaces/API/IFlightReservation';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { SetProperty } from "../../Utils/setProperty.js";
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -114,7 +113,6 @@ function ReservationPage() {
         <>
           <ContainerPageHeader>
             <Box marginTop={2} display={'flex'} flexDirection={'row'}>
-
               <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
                 <Grid item xs={12}>
                   <Typography variant="h6" align="center">Reservation Page</Typography>
@@ -127,8 +125,6 @@ function ReservationPage() {
                 <Grid item xs={11}>
                   <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
                 </Grid>
-
-
               </Grid>
             </Box>
           </ContainerPageHeader>
@@ -143,9 +139,7 @@ function ReservationPage() {
                         <DateRangeIcon />
                       </ListItemIcon>
                       <DatePickerDate value={filter.dateFilter.from === undefined ? new Date() : filter.dateFilter.from} param="from" lable='From Date' onChange={onDateChanged} />
-
                     </ListItemButton>
-
                   </ListItem>
                   <ListItem key={"toDate"} disablePadding>
                     <ListItemButton>
@@ -153,9 +147,7 @@ function ReservationPage() {
                         <DateRangeIcon />
                       </ListItemIcon>
                       <DatePickerDate value={filter.dateFilter.to === undefined ? new Date() : filter.dateFilter.to} param={"dateFilter.to"} lable='To Date' onChange={onDateChanged} />
-
                     </ListItemButton>
-
                   </ListItem>
                   <ListItem key={'today'} disablePadding>
                     <ListItemButton>
@@ -176,15 +168,12 @@ function ReservationPage() {
                         <NavigateBeforeIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
                     <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
                     <ListItemButton>
                       <ListItemIcon onClick={onNextWeek}>
                         <NavigateNextIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
-
                   </ListItem>
                   <ListItem key={'month'} disablePadding>
                     <ListItemButton onClick={onMonthChanged}>
@@ -197,26 +186,17 @@ function ReservationPage() {
                         <NavigateBeforeIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
                     <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
                     <ListItemButton onClick={onNextMonth}>
                       <ListItemIcon>
                         <NavigateNextIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
-
                   </ListItem>
-
                 </List>
-
-
               </GeneralDrawer>
-
               <ReservationTable filter={filter as IReservationTableFilter} />
-
             </>
-
           </ContainerPageMain>
           <ContainerPageFooter>
             <>
@@ -224,11 +204,8 @@ function ReservationPage() {
             </>
           </ContainerPageFooter>
         </>
-
       </ContainerPage>
     </>
-
-
   )
 }
 
