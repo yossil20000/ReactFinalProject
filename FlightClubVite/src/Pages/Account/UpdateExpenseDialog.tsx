@@ -158,7 +158,6 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
       ) : (
         <>
           <DialogContent>
-
             <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
               <Grid item xs={12} sm={6}  >
                 {sourceCombo}
@@ -205,9 +204,7 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
           </DialogContent>
         </>
       )}
-
       <DialogActions>
-
         <Grid container sx={{ width: "100%" }} justifyContent="center">
           {true ? (<><LinearProgress /></>) : null}
           {validationAlert.map((item) => (
@@ -227,22 +224,17 @@ function UpdateExpenseDialog({ onClose, onSave, open, value, ...other }: UpdateE
               <Grid item xs={12} md={6} xl={6}>
                 <Item><Button variant="outlined" sx={{ width: "100%" }}
                   onClick={handleOnCancel}>
-
                   {isSaved === true ? "Close " : "Cancle"}
                 </Button></Item>
               </Grid>
               <Grid item xs={12} md={6} xl={6}>
-
                 <Item><Button variant="outlined" sx={{ width: "100%" }}
-
                   disabled={isSaved === true ? true : false}
                   onClick={handleOnSave}>
                   {isSaved === true ? "Updated" : "Update"}
                 </Button></Item>
               </Grid></>
           )}
-
-
         </Grid>
       </DialogActions>
     </Dialog>

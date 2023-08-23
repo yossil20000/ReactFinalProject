@@ -8,9 +8,9 @@ import { useGetAllFlightsSearchQuery } from '../../features/Flight/flightApi';
 import { COrderCreate, IOrderBase, orderDescription, OrderStatus, OT_OPERATION, OT_REF } from '../../Interfaces/API/IAccount';
 import { DEVICE_MET } from '../../Interfaces/API/IDevice';
 import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
-
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 import CreateFlightOrderDialog from './CreateFlightOrderDialog';
+import FullScreenLoader from '../../Components/FullScreenLoader';
 interface IData {
   _id: string;
   date: Date;
@@ -33,7 +33,6 @@ function createData(
 
   return { _id, date, hobbs_start, hobbs_stop, engien_start, engien_stop, order_by };
 }
-
 
 const columns: Column[] = [
   {
@@ -101,7 +100,7 @@ function AccountFlightsTab() {
   const [openOrderAdd, setOpenOrderAdd] = useState(false);
   const [order, setOrder] = useState<IOrderBase>(new COrderCreate());
   const [accountFlightFilter, setaccountFlightFilter] = useState({ status: FlightStatus.CREATED })
-  const { data, refetch } = useGetAllFlightsSearchQuery(accountFlightFilter);
+  const { data, isError,error,isLoading,refetch } = useGetAllFlightsSearchQuery(accountFlightFilter);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
@@ -206,6 +205,31 @@ function AccountFlightsTab() {
   
   const handleAddOnClose = () => {
     setOpenOrderAdd(false);
+  }
+  if (isLoading) {
+    CustomLogger.info('AccountFlightPage/isLoading', isLoading)
+    return (
+      <div className='main' style={{ overflow: 'auto' }}>
+        <FullScreenLoader />
+      </div>
+    )
+  }
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+      CustomLogger.error('AccountFlightPage/error', errMsg)
+      return (
+        <div>
+          <div>AccountFlightPage</div>
+          <div>An error has occurred:</div>
+          <div>{errMsg}</div>
+        </div>
+      )
+    } else {
+      // you can access all properties of `SerializedError` here
+      return <div>{error.message}</div>
+    }
   }
   return (
     <ContainerPage>

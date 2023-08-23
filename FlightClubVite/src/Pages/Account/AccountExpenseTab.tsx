@@ -13,6 +13,7 @@ import CreateExpenseDialog from './CreateExpenseDialog'
 import CreateTransactionDialog from './CreateTransactionDialog'
 import DeleteExpenseDialog from './DeleteExpenseDialog'
 import UpdateExpenseDialog from './UpdateExpenseDialog'
+import FullScreenLoader from '../../Components/FullScreenLoader'
 
 interface Data {
   _id: string,
@@ -70,7 +71,7 @@ function AccountExpenseTab() {
   ];
 
 
-  const { data, refetch } = useFetchExpenseQuery({});
+  const { data, refetch ,isLoading,error} = useFetchExpenseQuery({});
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseEdit, setOpenExpenseEdit] = useState(false);
   const [openAddTransaction, setOpenAddTransaction] = useState(false);
@@ -153,6 +154,32 @@ function AccountExpenseTab() {
     setOpenAddTransaction(false);
     setOpenDeleteExpense(false);
 
+  }
+  if (isLoading) {
+    CustomLogger.info('AccountExpenseTab/isLoading', isLoading)
+    return (
+      <div className='main' style={{ overflow: 'auto' }}>
+        <FullScreenLoader />
+      </div>
+    )
+  }
+  
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+      CustomLogger.error('AccountExpenseTab/error', errMsg)
+      return (
+        <div>
+          <div>AccountExpenseTab</div>
+          <div>An error has occurred:</div>
+          <div>{errMsg}</div>
+        </div>
+      )
+    } else {
+      // you can access all properties of `SerializedError` here
+      return <div>{error.message}</div>
+    }
   }
   return (
     <Box fontSize={{ xs: "1rem", md: "1.2rem" }} height={'100%'}>

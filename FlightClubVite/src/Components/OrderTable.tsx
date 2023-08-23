@@ -6,6 +6,7 @@ import TransactionAction from './Accounts/TransactionAction';
 import { IOrder, OrderStatus, OT_REF } from '../Interfaces/API/IAccount';
 import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
+import FullScreenLoader from './FullScreenLoader';
 
 
 interface IOrderTableProps {
@@ -17,7 +18,7 @@ interface IOrderTableProps {
 export default function OrderTable({selectedMember, hideAction=false,filter={},selectedClubAccount}: IOrderTableProps) {
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
-  const { data: orders } = useGetOrderSearchQuery(filter);
+  const { data: orders ,isLoading,error} = useGetOrderSearchQuery(filter);
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
   const getTransaction = useMemo (() => (sourseId: string,destinationId: string , id: string ,amount: number,description: string) : IAddTransaction => {
@@ -97,8 +98,6 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
 
   }, [orders,selectedMember,selectedClubAccount,filter.orderStatus])
 
-  
-
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id', hide: true },
     { field: 'member', hide: true },
@@ -135,7 +134,32 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     },
 
   ], [rowId,hideAction,selectedClubAccount]);
- 
+  
+  if (isLoading) {
+    CustomLogger.info('OrderTable/isLoading', isLoading)
+    return (
+      <div className='main' style={{ overflow: 'auto' }}>
+        <FullScreenLoader />
+      </div>
+    )
+  }
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+      CustomLogger.error('OrderTable/error', errMsg)
+      return (
+        <div>
+          <div>OrderTable</div>
+          <div>An error has occurred:</div>
+          <div>{errMsg}</div>
+        </div>
+      )
+    } else {
+      // you can access all properties of `SerializedError` here
+      return <div>{error.message}</div>
+    }
+  }
   return (
     <div style={{ height: "100%", width: '100%' }}>
       <DataGrid

@@ -6,6 +6,7 @@ import { ITransaction } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 import { IDateFilter } from '../Interfaces/IDateFilter';
 import { COrderDescription } from "../Interfaces/API/IAccount";
+import FullScreenLoader from "./FullScreenLoader";
 
 
 export interface ITransactionTableFilter {
@@ -19,7 +20,7 @@ interface ITransactionTableProps {
 
 export default function TransactionTable({ hideAction = false, filter = {} as ITransactionTableFilter, selectedClubAccount }: ITransactionTableProps) {
   
-  const { data: dataTransaction } = useFetchTransactionQuery(filter.dateFilter)
+  const { data: dataTransaction , isLoading,error } = useFetchTransactionQuery(filter.dateFilter)
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
@@ -77,7 +78,32 @@ const getData = useMemo(() => {
 
 
   ], [rowId, hideAction]);
-
+  if (isLoading) {
+    CustomLogger.info('TransactionTable/isLoading', isLoading)
+    return (
+      <div className='main' style={{ overflow: 'auto' }}>
+        <FullScreenLoader />
+      </div>
+    )
+  }
+  
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+      CustomLogger.error('TransactionTable/error', errMsg)
+      return (
+        <div>
+          <div>AccountExpenseTab</div>
+          <div>An error has occurred:</div>
+          <div>{errMsg}</div>
+        </div>
+      )
+    } else {
+      // you can access all properties of `SerializedError` here
+      return <div>{error.message}</div>
+    }
+  }
   return (
     <div style={{ height: "100%", width: '100%' }}>
       <DataGrid
