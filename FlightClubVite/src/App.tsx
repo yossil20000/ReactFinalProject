@@ -73,8 +73,6 @@ function App() {
         <ThemeProvider theme={theme}>
         <BrowserRouter>
         <NoticeContext.Provider value={{notices:notices ,selectedItem: selectedNotice ?? NewNotice, setSelectedItem:setSelectedNotice}}>
-
-        
             <PagesRouter />
         </NoticeContext.Provider>
         </BrowserRouter>
