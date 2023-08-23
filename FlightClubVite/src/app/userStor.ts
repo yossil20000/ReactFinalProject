@@ -12,6 +12,7 @@ import noticeSliceReducer from "../features/clubNotice/noticeSlice";
 import { imageApiSlice } from "../features/image/imageApiSlice";
 import { accountApiSlice } from "../features/Account/accountApiSlice";
 import {notifyApiSlice} from '../features/Notification/notificationApiSlice';
+import adminPageSliceReducer from "../features/Admin/adminPageSlice";
 
 export const storeUser = configureStore({
     reducer:{
@@ -27,7 +28,8 @@ export const storeUser = configureStore({
         [accountApiSlice.reducerPath] : accountApiSlice.reducer,
         [notifyApiSlice.reducerPath] : notifyApiSlice.reducer,
         authSlice: authSliceReducer ,
-        selectedNotice: noticeSliceReducer
+        selectedNotice: noticeSliceReducer,
+        setDairty: adminPageSliceReducer
     },
     middleware: (getDefaultMiddleware) => {
         return getDefaultMiddleware({
