@@ -1,8 +1,8 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import IDevice, { DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { getSelectedItem, setProperty } from '../../../Utils/setProperty'
+import { setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
@@ -19,6 +19,9 @@ import IDeviceType from '../../../Interfaces/API/IDeviceType';
 import StatusCombo from '../../../Components/Buttons/StatusCombo';
 import { blue } from '@mui/material/colors';
 import { resizeFileTobase64 } from '../../../Utils/files';
+import { useAppDispatch } from '../../../app/hooks';
+import { setDirty } from '../../../features/Admin/adminPageSlice';
+
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
   const lables: LabelType[] = Object.keys(DEVICE_INS).filter((v) => isNaN(Number(v))).
@@ -34,23 +37,17 @@ const labelsFromDEVICE_INS = (): LabelType[] => {
 }
 const navLableItems = labelsFromDEVICE_INS();
 
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
 function DeviceTabItem() {
 
-
+  const setDirtyDispatch = useAppDispatch()
   const { setSelectedItem, selectedItem, membersCombo } = useContext(DevicesContext) as DevicesContextType;
   const { selectedItem: selectdDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
-
+  const SetDirtyFlage = () => {
+    CustomLogger.info("SetDirtyFlage/dirtyFlag", source, true);
+    setDirtyDispatch(setDirty({ key: source, value: true }))
+  }
   const memberCanReserve = useMemo((): (LabelType[]) => {
-    const labels: (LabelType[] | undefined) = membersCombo?.map((item, index) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
+    const labels: (LabelType[] | undefined) = membersCombo?.map((item) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
     CustomLogger.info("memberCanReserve/labels", labels)
     if (labels === undefined || labels === null)
       return []
@@ -59,16 +56,19 @@ function DeviceTabItem() {
 
 
   CustomLogger.info("DeviceTabItem/deviceItem.CanReserve", selectedItem?.can_reservs);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     CustomLogger.log("DeviceTabItem/handleChange", event.target.name, event.target.value)
     const newObj: IDevice = SetProperty(selectedItem, event.target.name, event.target.value) as IDevice;
 
     setSelectedItem(newObj)
+    SetDirtyFlage();
   };
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
     CustomLogger.info("SetProperty/newobj", newObj)
+    SetDirtyFlage();
     return newObj;
   }
   const handleBoolainChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +76,7 @@ function DeviceTabItem() {
     const newObj: IDevice = SetProperty(selectedItem, event.target.name, event.target.checked) as IDevice;
 
     setSelectedItem(newObj)
+    SetDirtyFlage();
   };
 
   const handleHasHobbsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,11 +87,13 @@ function DeviceTabItem() {
       newObj = SetProperty(newObj, "price.meter", DEVICE_MET.ENGIEN) as IDevice;
     }
     setSelectedItem(newObj)
+    SetDirtyFlage();
   };
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     CustomLogger.log("onComboChanged/item", item, prop);
     const newObj: IDevice = SetProperty(selectedItem, prop, item.lable) as IDevice;
     setSelectedItem(newObj)
+    SetDirtyFlage();
   }
   const onComboPriceMethodChanged = (item: InputComboItem, prop: string): void => {
     CustomLogger.log("onComboPriceMethodChanged/item", item, prop);
@@ -98,12 +101,13 @@ function DeviceTabItem() {
     if (!selectedItem?.has_hobbs && item.lable === DEVICE_MET.HOBBS) {
       const newObj: IDevice = SetProperty(selectedItem, prop, DEVICE_MET.HOBBS) as IDevice;
       setSelectedItem(newObj)
+
     }
     else {
       const newObj: IDevice = SetProperty(selectedItem, prop, item.lable) as IDevice;
       setSelectedItem(newObj)
     }
-
+    SetDirtyFlage();
   }
   const handleTimeChange = (newValue: Date | null | undefined, name: string) => {
     CustomLogger.log(`handleTimeChange/newValue , key`, newValue, name);
@@ -111,6 +115,7 @@ function DeviceTabItem() {
       return;
     const newObj: IDevice = SetProperty(selectedItem, name, newValue) as IDevice;
     setSelectedItem(newObj)
+    SetDirtyFlage();
   };
   const onSelecteAditionaSystem = (items: LabelType[], property: string) => {
     CustomLogger.log("onSelecteAditionaSystem/items", items);
@@ -121,6 +126,7 @@ function DeviceTabItem() {
     const newObj: IDevice = SetProperty(selectedItem, property, newValues) as IDevice;
 
     setSelectedItem(newObj)
+    SetDirtyFlage();
   }
   const onSelecteCanReserv = (items: LabelType[], property: string) => {
     CustomLogger.log("onSelecteCanReserv/CanReserve/property", property);
@@ -132,6 +138,7 @@ function DeviceTabItem() {
     const newObj: IDevice = SetProperty(selectedItem, property, newValues) as IDevice;
     CustomLogger.info("onSelecteCanReserv/CanReserve/newObj", newObj);
     setSelectedItem(newObj)
+    SetDirtyFlage();
   }
   const getSelectedInstrument = (): LabelType[] => {
 
@@ -146,7 +153,7 @@ function DeviceTabItem() {
     return [];
   }
   const getSelectedCanreserve = (): LabelType[] => {
-    
+
     CustomLogger.log("getSelectedCanreserve/CanReserve(); selected.canreserv", memberCanReserve, selectedItem?.can_reservs)
     if (selectedItem !== undefined && selectedItem && selectedItem.can_reservs !== undefined) {
       const initial = selectedItem?.can_reservs.map((item) => {
@@ -172,18 +179,11 @@ function DeviceTabItem() {
       const newObj: IDevice = SetProperty(selectedItem, "device_type", foundItem._id) as IDevice;
 
       setSelectedItem(newObj)
+      SetDirtyFlage();
     }
 
   }
 
-  /*   const getSelectedItem = (property: any) : InputComboItem => {
-      const prop : string = selectedItem?[property].toString() : "";
-      const selected : InputComboItem = {
-        lable: selectedItem?[property].toString() : "",
-        _id: "",
-        description: ""}
-        return selected;
-    } */
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";
     CustomLogger.log("PersonalInfo/handleImageChange/file", file);
@@ -193,6 +193,7 @@ function DeviceTabItem() {
         CustomLogger.info("PersonalInfo/handleImageChange/result", result);
         const newObj: IDevice = SetProperty(selectedItem, "details.image", result as string) as IDevice;
         setSelectedItem(newObj)
+        SetDirtyFlage();
       }
       ).catch((error) => {
         CustomLogger.error("PersonalInfo/handleImageChange/error", error);
