@@ -6,7 +6,7 @@ import IMember, { MemberType } from "./IMember"
 import { Status } from "./IStatus"
 
 export enum OT_OPERATION {
-  CREDIT =  "Credit",
+  CREDIT = "Credit",
   DEBIT = "Debit"
 }
 export enum OT_REF {
@@ -16,11 +16,11 @@ export enum OT_REF {
   OTHER = "Other"
 }
 export enum OrderStatus {
-  "CREATED"= "CREATED",
+  "CREATED" = "CREATED",
   "CLOSE" = "CLOSE"
 }
 export interface IOrderType {
-  operation: OT_OPERATION, 
+  operation: OT_OPERATION,
   referance: OT_REF
 }
 
@@ -30,9 +30,9 @@ export interface IProductBase {
 export interface IProduct extends IProductBase {
   _id: string
 }
-export interface IOrderBase { 
+export interface IOrderBase {
   order_date: Date,
-  product:  string,
+  product: string,
   units: number,
   pricePeUnit: number,
   discount: number,
@@ -43,7 +43,7 @@ export interface IOrderBase {
   member: IMember | undefined,
   orderBy: string
 }
-export class COrderCreate  implements IOrderBase {
+export class COrderCreate implements IOrderBase {
   order_date: Date;
   product: string;
   units: number;
@@ -53,20 +53,20 @@ export class COrderCreate  implements IOrderBase {
   orderType: IOrderType
   description: string
   status: OrderStatus
-  member:  IMember | undefined
+  member: IMember | undefined
   orderBy: string
-  constructor(){
-    this.order_date= new Date();
-   this.product= "";
-  this.units =  0;
-  this.pricePeUnit = 0;
-  this.discount = 0;
-  this.amount= 0;
-  this.orderType= {operation: OT_OPERATION.CREDIT,referance: OT_REF.FLIGHT};
-  this.description = "";
-  this.status= OrderStatus.CREATED;
-  this.member = undefined;
-  this.orderBy = ""
+  constructor() {
+    this.order_date = new Date();
+    this.product = "";
+    this.units = 0;
+    this.pricePeUnit = 0;
+    this.discount = 0;
+    this.amount = 0;
+    this.orderType = { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT };
+    this.description = "";
+    this.status = OrderStatus.CREATED;
+    this.member = undefined;
+    this.orderBy = ""
   }
   copy(obj: IOrderBase): void {
     this.order_date = obj.order_date
@@ -86,7 +86,7 @@ export type orderDescription = {
   operation: string,
   date: string,
   engien_start: number,
-  engien_stop : number,
+  engien_stop: number,
   total: number,
   description: string
 }
@@ -99,16 +99,37 @@ export class COrderDescription {
     total: 0,
     description: ""
   }
-  constructor(orderDescription: orderDescription){
-    this.description= orderDescription
+  constructor(orderDescription: orderDescription) {
+    this.description = orderDescription
   }
-  setOrderDescription(orderDescription: string){
-    this.description = JSON.parse(orderDescription)
+  setOrderDescription(orderDescription: string) {
+
+    try {
+      this.description = JSON.parse(orderDescription)
+    }
+    catch (error) {
+      this.description.description = orderDescription
+    }
   }
-  static parseDescription(orderDescription: string) : orderDescription{
-   return JSON.parse(orderDescription)
+  static parseDescription(orderDescription: string): orderDescription {
+
+    try {
+      const parsed = JSON.parse(orderDescription)
+      return parsed;
+    }
+    catch (error) {
+      const parsed : orderDescription = {
+        operation: "",
+        date: "",
+        engien_start: 0,
+        engien_stop: 0,
+        total: 0,
+        description: orderDescription
+      }
+      return parsed;
+    }
   }
-  static displayTransaction(orderDescription: string) : string {
+  static displayTransaction(orderDescription: string): string {
     const description = this.parseDescription(orderDescription)
     return `${description.operation} on ${description.date} Start: ${description.engien_start} Stop: ${description.engien_stop} Total: ${description.total}`
   }
@@ -137,15 +158,15 @@ export interface IAccountBase {
 export interface IAccount extends IAccountBase {
   _id: string
 }
-export const newAccount = ()  : IAccount => {
-  let account : IAccount = {
+export const newAccount = (): IAccount => {
+  let account: IAccount = {
     account_id: "",
     member: {
       _id: "",
-    member_id: "",
-    first_name: "",
-    family_name: "",
-    member_type: MemberType.Member
+      member_id: "",
+      first_name: "",
+      family_name: "",
+      member_type: MemberType.Member
     },
     transactions: [],
     balance: 0,
@@ -156,7 +177,7 @@ export const newAccount = ()  : IAccount => {
   return account;
 }
 export interface IAccountsCombo {
-  
+
   member: {
     _id: string,
     member_id: string,
@@ -165,19 +186,19 @@ export interface IAccountsCombo {
     member_type: string,
   }
 
-  account_id: string, 
-  _id:string
+  account_id: string,
+  _id: string
 
 }
-export interface IAccountsComboFilter extends IFilter{
-  filter?:{
-      status: Status
+export interface IAccountsComboFilter extends IFilter {
+  filter?: {
+    status: Status
   },
   select?: string,
   find_select?: {
-      _id: string;
-      device_id: number;
-      engien_meter: number;
-      maintanance: number;
+    _id: string;
+    device_id: number;
+    engien_meter: number;
+    maintanance: number;
   }
 }

@@ -45,7 +45,7 @@ function UserAccountTab() {
   }, [data])
 
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.log("UserAccountTab/onDateChanged", key, value)
+    CustomLogger.log("UserAccountTab/onDateChanged", key, value,filter)
     if (value === null) return;
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
@@ -86,7 +86,6 @@ function UserAccountTab() {
                     </GeneralDrawer>
                   </Box>
                   <Box>
-
                     <Typography sx={{ fontSize: { xs: "1.1rem", md: "1.3rem" }, marginLeft: "2.5%" }}>
                       Balance:
                     </Typography>
@@ -95,12 +94,9 @@ function UserAccountTab() {
                     <ShekelIcon sx={{ fontSize: "0.6rem" }} />
                   </Box>
                   <Box>
-
                     <Typography noWrap={false} style={{ color: getSign(getAccount?.balance) }}>{getAccount?.balance.toFixed(2)}</Typography>
                   </Box>
-
                 </Box>
-
                 <Typography sx={{ fontSize: { xs: "1.1rem", md: "1.3rem" }, marginLeft: "2.5%" }}>
                   AccountId:  {getAccount?.account_id}
                 </Typography>

@@ -140,8 +140,9 @@ function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
     return item.amount
     
   }
+
   return (
-    <Box>
+    <Box margin={'0.5ch'}>
       <Accordion>
         <AccordionSummary>
           <Grid container sx={{ width: "100%", height: "100%" }} gap={0} justifyContent="space-around" columns={12}>
@@ -177,7 +178,12 @@ function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
             <Grid item xs={4}>Payment referance</Grid>
             <Grid item xs={8}>{item.payment.referance}</Grid>
             <Grid item xs={4}>Description</Grid>
-            <Grid item xs={8}>{item.description}</Grid>
+            <Grid item xs={8}>
+            
+              <Typography sx={{ wordBreak: "break-word" }}>
+              {item.description}
+</Typography>
+            </Grid>
 
           </Grid>
          </AccordionDetails>

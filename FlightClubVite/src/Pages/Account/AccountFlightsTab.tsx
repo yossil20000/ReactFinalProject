@@ -1,5 +1,5 @@
 import { Box, Grid, TablePagination } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { EAction } from '../../Components/Buttons/ActionButtons';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable';
@@ -11,6 +11,8 @@ import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 import CreateFlightOrderDialog from './CreateFlightOrderDialog';
 import FullScreenLoader from '../../Components/FullScreenLoader';
+import DeviceMemberCombo from '../../Components/Devices/DeviceMemberCombo';
+import MembersCombo from '../../Components/Members/MembersCombo';
 interface IData {
   _id: string;
   date: Date;
@@ -104,15 +106,35 @@ function AccountFlightsTab() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
+  const [selectedMember,setSelectedMember] = useState<InputComboItem>()
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
+/*   const filterFlights = useCallback(() : IFlight[] => {
+    if(selectedMember || selectedMember != "")
+    {
+      const filtered =  data?.data.filter((flight) => flight.member._id == selectedMember?.lable )
+      CustomLogger.info("AccountFlight/filterFlights/filtered",filtered)
+      return filtered !== undefined ? filtered : []
+    }
+    return data?.data === undefined ? [] : data?.data
+    
+  },[data?.data,selectedMember]) */
+  const filterFlight = (flight : IFlight): boolean => {
+    if(selectedMember?.lable != ""){
+      return flight.member._id == selectedMember?._id
+    }
+    return true;
+  }
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
+  const onMemberChanged = (item: InputComboItem) => {
+    setSelectedMember(item)
+}
   const onDeviceChange = (item: InputComboItem, has_hobbs: boolean) => {
     const filter: any = JSON.parse(JSON.stringify(accountFlightFilter));
 
@@ -127,12 +149,12 @@ function AccountFlightsTab() {
     return a.engien_start >= b.engien_start ? 1 : -1;
   }
   const getData = useMemo(() => {
-    let rows = data?.data.map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
+    let rows = data?.data.filter(filterFlight).map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
     CustomLogger.info("AccountFlight/Flight/getData", rows)
     rows = rows === undefined ? [] : rows;
     setCount(rows.length)
     return rows;
-  }, [data])
+  }, [data,selectedMember])
 
   const getPrice = (flight: IFlight): [units: number, pricePeUnit: number, amount: number, discount: number] => {
     let units: number = 0, pricePeUnit: number = 0, discount: number = 0, amount: number = 0;
@@ -236,11 +258,14 @@ function AccountFlightsTab() {
       <>
         {openOrderAdd && <CreateFlightOrderDialog onClose={handleAddOnClose} value={order} open={openOrderAdd} onSave={handleAddOnSave} />}
         <ContainerPageHeader>
-          <Box marginTop={2}>
-            <Grid container width={"99%"} height={"100%"} gap={2} columns={12}>
-              <Grid item xs={6}>
+          <Box marginTop={2} display={'flex'}>
+            <Grid container width={"98%"} height={"100%"} gap={2} columns={12}>
+              <Grid item xs={12} md={5}>
                 <DevicesFlightCombo onChanged={onDeviceChange} source={"_accounts/devices"} />
               </Grid >
+              <Grid item xs={12} md={6}>
+                <MembersCombo onChanged={onMemberChanged} source={"_accounts/members"} />
+              </Grid> 
             </Grid>
           </Box>
         </ContainerPageHeader>
