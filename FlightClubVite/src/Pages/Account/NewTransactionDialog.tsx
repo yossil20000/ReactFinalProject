@@ -30,7 +30,7 @@ let newTransaction : IAddTransaction={
     _id:"" ,
     accountType: "" 
   },
-  amount: Number("-1"),
+  amount: Number("0"),
   type: Transaction_Type.TRANSFER,
   order: {
     type: Transaction_OT.TRANSFER,
@@ -152,11 +152,22 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
 
   }
 
+  const handleNumericChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    
+    CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
+    
+    if(event.target.name = "amount")
+    {
+      event.target.value = Math.abs(Number(event.target.value)).toString()
+    }
+    const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
+
+    setSelectedTransaction(newObj)
+  };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
     CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
     const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
-
     setSelectedTransaction(newObj)
   };
   const SetProperty = (obj: any, path: string, value: any): any => {
@@ -187,7 +198,7 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
                 {RenderDestination()}
               </Grid>
               <Grid item xs={6}>
-              <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
+              <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
               disabled
               label="Pay Method" placeholder="Payment Method" variant="standard"
               value={selectedTransaction?.payment.method} required
@@ -201,12 +212,13 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
               helperText="" error={false} InputLabelProps={{ shrink: true }} />
           </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleChange} id="amount" name="amount"
+                <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
                   
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"
                   value={selectedTransaction?.amount} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} 
+                  inputProps={{max: 1000 ,min:1}}/>
               </Grid>
               <Grid item xs={12}>
                 <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
