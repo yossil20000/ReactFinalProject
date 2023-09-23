@@ -30,6 +30,13 @@ const OrderStatus = {
     "CREATED": "CREATED",
     "CLOSE" : "CLOSE"
 }
+const OrderTypeReferance = {
+    "Flight": "Flight",
+    "Expense" : "Expense",
+    "Montly": "Montly",
+    "Other": "Other",
+    "Transfer": "Transfer"
+}
 const ERROR_TYPE = {
     DB : "DB",
     DB_RESULT: "DB_RESULT",
@@ -55,14 +62,15 @@ const NotifyBy = {
     EMAIL: "EMAIL"
 }
 const TransactionType = {
-    CREDIT: "Credit",
-  DEBIT: "Debit",
-  TRANSFER: "Transfer"
+    CREDIT: "CREDIT",
+  DEBIT: "DEBIT",
+  TRANSFER: "TRANSFER"
 }
 const PaymentMethod ={
     VISA: "VISA",
     CHECK: "CHECK",
-    TRANSFER: "TRANSFER"
+    TRANSFER: "TRANSFER",
+    NONE: "NONE"
 }
 const Utilizated = {
     HOURS_0000: "HOURS_0000",
@@ -92,3 +100,4 @@ module.exports.OrderStatus = OrderStatus;
 module.exports.EAccountType = EAccountType;
 module.exports.MemberType = MemberType;
 module.exports.NotifyOn = NotifyOn;
+module.exports.OrderTypeReferance = OrderTypeReferance;

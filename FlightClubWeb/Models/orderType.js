@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
-
+const constants = require('../Models/constants');
 var Schema = mongoose.Schema;
 
 const OrderTypeSchema = new Schema({
   operation: {type: String , enum: ["Credit","Debit"], required: true, default: "Credit" }, 
-  referance: {type: String , enum: ["Flight","Expense","Montly","Other","Transfer"], required: true, default: "Other" } 
+  referance: {type: String ,  enum: Object.values(constants.OrderTypeReferance) , required: true, default: constants.OrderTypeReferance.Other } 
 })
 const SelectionTypeSchema = new Schema({
   key: {type: String ,unique: true,  default: "Expense", set: setUpper},

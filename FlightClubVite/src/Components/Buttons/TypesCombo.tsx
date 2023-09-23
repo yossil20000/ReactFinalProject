@@ -1,12 +1,9 @@
 
 import { useEffect, useState } from 'react'
 import { useFetchTypesQuery } from '../../features/Account/accountApiSlice';
-import { useFetchMembersComboQuery } from '../../features/Users/userSlice';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import { IMemberCombo, IMemberComboFilter } from '../../Interfaces/API/IMember';
+import { IMemberComboFilter } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
-import { ITypes } from '../../Interfaces/API/ITypes';
-import ControledCombo, { ComboProps, InputComboItem, newInputComboItem, SelectComboProps } from './ControledCombo';
+import ControledCombo, { InputComboItem, newInputComboItem, SelectComboProps } from './ControledCombo';
 
 const filterCombo: IMemberComboFilter = {
   filter: {

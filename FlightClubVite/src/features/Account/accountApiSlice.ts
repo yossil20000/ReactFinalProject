@@ -172,6 +172,14 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" },{type: "Transaction"}]
       }),
+      clubAddTransactionType: builder.mutation<IResultBaseSingle<IClubAccount>,IAddTransaction >({
+        query: (addTransaction) => ({
+          url: `/${URLS.CLUB_ADD_TRANSACTION_TYPE}`,
+          method: 'PUT',
+          body: addTransaction
+        }),
+        invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" },{type: "Transaction"}]
+      }),
       fetchExpense: builder.query<IResultBase<IExpense>, IFilter>({
         query: (filter) => ({
           url: `/${URLS.CLUB_EXPENSE}`,
@@ -246,6 +254,7 @@ export const {
   useClubAccountComboQuery,
   useClubAddOrderTransactionMutation,
   useClubAddTransactionMutation,
+  useClubAddTransactionTypeMutation,
   useFetchExpenseQuery,
   useCreateExpenseMutation,
   useUpdateExpenseMutation,

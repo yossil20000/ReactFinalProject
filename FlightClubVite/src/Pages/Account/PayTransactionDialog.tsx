@@ -1,21 +1,19 @@
 import '../../Types/Number.extensions'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField } from '@mui/material';
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
-import TypesCombo from '../../Components/Buttons/TypesCombo';
 import Item from '../../Components/Item';
-import { useCreateExpenseMutation, useClubAccountQuery, useClubAddTransactionMutation } from '../../features/Account/accountApiSlice';
+import { useClubAccountQuery, useClubAddTransactionTypeMutation } from '../../features/Account/accountApiSlice';
 import { EAccountType, IAddTransaction, IClubAccount, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
-import { IExpenseBase, IUpsertExpanse, newExpense, Utilizated } from '../../Interfaces/API/IExpense';
+import { IExpenseBase } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
-import UtilizatedCombo from '../../Components/Buttons/UtilizatedCombo';
-import PaymentMethodCombo from '../../Components/Buttons/PaymentMethodCombo';
 import { MemberType } from '../../Interfaces/API/IMember';
-export interface NewTransactionDialogProps {
+
+export interface PayTransactionDialogProps {
 
   onClose: () => void;
   onSave: (value: IExpenseBase) => void;
@@ -62,9 +60,9 @@ const getAccountType = (memberType: string | undefined): string => {
   }
 }
 
-function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactionDialogProps) {
+function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactionDialogProps) {
   const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
-  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionMutation();
+  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionTypeMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
@@ -73,6 +71,7 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
   
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
+
   const UpdateSourceAccountFields = (): IAddTransaction => {
     let newObj : IAddTransaction = selectedTransaction
     newObj = {
@@ -87,18 +86,18 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
       type: selectedTransaction.type,
       amount: selectedTransaction.amount,
       order: {
-        type: Transaction_OT.TRANSFER,
+        type: selectedTransaction.order.type,
         _id: ''
       },
       payment: {
-        method: PaymentMethod.TRANSFER,
+        method: selectedTransaction.payment.method,
         referance: selectedTransaction.payment.referance
       },
       description: selectedTransaction.description,
       date: new Date()
     }
-    CustomLogger.log("NewTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
-    CustomLogger.log("NewTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
+    CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
+    CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
     setSelectedTransaction(newObj);
     return newObj
@@ -115,19 +114,19 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
   }, [])
 
   const handleOnSave = async () => {
-    CustomLogger.log("NewTransactionDialog/onSave", selectedTransaction)
+    CustomLogger.log("PayTransactionDialog/onSave", selectedTransaction)
     setValidationAlert([]);
  const transaction = UpdateSourceAccountFields()
     if (transaction !== undefined) {
       await AddTransaction(transaction).unwrap().then((data) => {
-        CustomLogger.info("NewTransactionDialog/onSave/", data);
+        CustomLogger.info("PayTransactionDialog/onSave/", data);
         if (data.success) {
           setIsSaved(true)
         }
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
-        CustomLogger.error("NewTransactionDialog/onSave/error", err.data.errors);
+        CustomLogger.error("PayTransactionDialog/onSave/error", err.data.errors);
       });
     }
   }
@@ -253,14 +252,11 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
               <Grid item xs={12} md={6} xl={6}>
                 <Item><Button variant="outlined" sx={{ width: "100%" }}
                   onClick={handleOnCancel}>
-
                   {isSaved === true ? "Close " : "Cancle"}
                 </Button></Item>
               </Grid>
               <Grid item xs={12} md={6} xl={6}>
-
                 <Item><Button variant="outlined" sx={{ width: "100%" }}
-
                   disabled={isSaved === true ? true : false}
                   onClick={handleOnSave}>
                   {isSaved === true ? "Created" : "Create"}
@@ -275,4 +271,4 @@ function NewTransactionDialog({ onClose, onSave, open, ...other }: NewTransactio
   )
 }
 
-export default NewTransactionDialog
+export default PayTransactionDialog

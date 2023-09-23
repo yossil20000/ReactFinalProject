@@ -13,8 +13,10 @@ import FilterDrawer from '../../Components/FilterDrawer';
 import { SetProperty } from '../../Utils/setProperty';
 import { IDateFilter, IFilterItems, newDateFilter } from '../../Interfaces/IDateFilter';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
-import NewTransactionDialog from './NewTransactionDialog';
+import PayTransactionDialog from './PayTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
+import GeneralTransactionDialog from './GeneralTransactionDialog';
 
 const dateFilter: IDateFilter = newDateFilter;
 
@@ -26,7 +28,10 @@ function AccountTransactionsTab() {
   const [dateTo, setDateTo] = useState(dateFilter.to)
   const [dateFrom, setDateFrom] = useState(dateFilter.from)
   const [filter, setFilter] = useState<ITransactionTableFilter>({ dateFilter: dateFilter } as ITransactionTableFilter);
+  const [openPayTransaction, setOpenPayTransaction] = useState(false);
   const [openAddTransaction, setOpenAddTransaction] = useState(false);
+/*   const [openAddCredit, setOpenAddCredit] = useState(false);
+  const [openAddDebit, setOpenAddDebit] = useState(false); */
   const OnSelectedClubAccount = (item: InputComboItem): void => {
     setSelectedClubAccount(item);
 
@@ -50,16 +55,24 @@ function AccountTransactionsTab() {
     CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
+      switch(item) {
+        case "PAY":    
+        setOpenPayTransaction(true)
+        break;
+        case "TRANSACTION":   
         setOpenAddTransaction(true)
         break;
+      }
     }
   }
   const handleAddOnClose = () => {
-    setOpenAddTransaction(false);
+    setOpenPayTransaction(false);
+    setOpenAddTransaction(false)
   }
 
   const handleAddOnSave = () => {
-    setOpenAddTransaction(false);
+    setOpenPayTransaction(false);
+    setOpenAddTransaction(false)
   }
   return (
     <ContainerPage>
@@ -72,36 +85,33 @@ function AccountTransactionsTab() {
                   <FilterListIcon fontSize="inherit" />
                 </IconButton>
               </Grid>
-              <Grid item xs={10} sm={4}>
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Transaction" }]} />
+              <Grid item xs={12} sm={3}>
+                <ActionButtons  OnAction={onAction} show={[EAction.ADD]} item="TRANSACTION" display={[{ key: EAction.ADD, value: "Transaction" }]} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="PAY" display={[{ key: EAction.ADD, value: "Payment" }]} />
               </Grid>
 {/*               <Grid item xs={12} sm={6}>
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
-
               </Grid > */}
-
             </Grid>
           </Box>
         </ContainerPageHeader>
         <ContainerPageMain>
           <>
-            {(openAddTransaction == true) ? (<NewTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
+            {(openPayTransaction == true) ? (<PayTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openPayTransaction} />) : (null)}
+            {(openAddTransaction == true) ? (<GeneralTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
             <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
               <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
-
             </FilterDrawer>
-
             <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter} />
           </>
-
         </ContainerPageMain>
         <ContainerPageFooter>
           <>
-
           </>
         </ContainerPageFooter>
       </>
-
     </ContainerPage>
   )
 }

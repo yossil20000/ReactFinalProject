@@ -111,7 +111,7 @@ export class COrderDescription {
       this.description.description = orderDescription
     }
   }
-  static parseDescription(orderDescription: string): orderDescription {
+  static parseDescription(orderDescription: string): orderDescription | null {
 
     try {
       const parsed = JSON.parse(orderDescription)
@@ -126,12 +126,15 @@ export class COrderDescription {
         total: 0,
         description: orderDescription
       }
-      return parsed;
+      return null;
     }
   }
   static displayTransaction(orderDescription: string): string {
     const description = this.parseDescription(orderDescription)
+    if(description)
     return `${description.operation} on ${description.date} Start: ${description.engien_start} Stop: ${description.engien_stop} Total: ${description.total}`
+   else
+    return orderDescription;
   }
 }
 

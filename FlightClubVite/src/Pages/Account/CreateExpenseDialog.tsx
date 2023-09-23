@@ -7,12 +7,13 @@ import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons
 import TypesCombo from '../../Components/Buttons/TypesCombo';
 import Item from '../../Components/Item';
 import { useCreateExpenseMutation, useClubAccountQuery } from '../../features/Account/accountApiSlice';
-import { IClubAccount } from '../../Interfaces/API/IClub';
+import { IClubAccount, PaymentMethod } from '../../Interfaces/API/IClub';
 import { IExpenseBase, IUpsertExpanse, newExpense, Utilizated } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import UtilizatedCombo from '../../Components/Buttons/UtilizatedCombo';
+import EnumTCombo from '../../Components/Buttons/EnumTCombo';
 export interface CreateExpenseDialogProps {
 
   onClose: () => void;
@@ -194,6 +195,10 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
                   value={selectedExpense?.description} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
+{/*               <Grid item xs={6}>
+            <EnumTCombo qw={PaymentMethod} />
+            
+          </Grid> */}
             </Grid>
           </DialogContent>
         </>

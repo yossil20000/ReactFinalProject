@@ -57,7 +57,8 @@ export enum PaymentMethod {
   
   VISA = "VISA",
   CHECK = "CHECK",
-  TRANSFER = "TRANSFER"
+  TRANSFER = "TRANSFER",
+  NONE = "NONE"
 }
 
 export interface IAddTransaction {
