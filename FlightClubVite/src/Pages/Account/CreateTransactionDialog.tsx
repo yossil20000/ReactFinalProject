@@ -12,6 +12,7 @@ import { MemberType } from '../../Interfaces/API/IMember';
 import PaymentMethodCombo from '../../Components/Buttons/PaymentMethodCombo';
 import { setProperty } from '../../Utils/setProperty';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
+import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo';
 interface filter {
   member: string[]
 }
@@ -245,6 +246,10 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
           <Grid item xs={12}>
             <Typography textAlign={'center'} >Payment method</Typography>
           </Grid>
+          <Grid item xs={6}>
+                <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
+                  selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
+              </Grid>
           <Grid item xs={6}>
             <PaymentMethodCombo onChanged={(item) => onComboChanged(item, "payment.method")} source={""}
               selectedItem={{ lable: selectedTransaction.payment.method === undefined ? "" : selectedTransaction.payment.method.toString(), _id: "", description: "" }} />

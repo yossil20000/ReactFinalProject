@@ -181,7 +181,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="lg" open={open} {...other}>
-      <DialogTitle>Create Transaction</DialogTitle>
+      <DialogTitle>Create Payment Transaction</DialogTitle>
       {(isQuery && isLoading) ? (
         <>
           <FullScreenLoader />

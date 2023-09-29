@@ -293,17 +293,18 @@ exports.add_transaction = [
 
   async (req, res, next) => {
     try { 
-      let { source, destination, amount, order, description, payment,type } = req.body;
+      let { source, destination, amount, order, description, payment,type ,date} = req.body;
+      type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
+        return next(new ApplicationError("add_expanse_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
       }
 
       /* Transaction */
       const session = await mongoose.startSession();
       try { 
         session.startTransaction();
-        if (type !== constants.TransactionType.TRANSFER) {
+        
           const expense = await Expense.findById(order._id).exec();
           if (expense) {
             expense.status = constants.OrderStatus.CLOSE;
@@ -311,27 +312,23 @@ exports.add_transaction = [
           }
           else {
             await session.abortTransaction();
-            return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(order._id, `Expense not found`, 'order._id', "DB.ClubAccount")).validationResult.errors }));
+            return next(new ApplicationError("add_expanse_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(order._id, `Expense not found`, 'order._id', "DB.ClubAccount")).validationResult.errors }));
           }
-        }
+        
         /* const transactionResult = await session.withTransaction(async () => { */
         var sourceTransaction;
         var destinationTransaction;
         if (source.accountType == constants.EAccountType.BANK)
           sourceTransaction = await ClubAccount.findOne({ account_id: source._id }).exec();
-        else if (source.accountType == constants.EAccountType.MEMBER || source.accountType == constants.EAccountType.SUPPLIERS)
-          sourceTransaction = await Account.findOne({ account_id: source._id }).populate('member');
         else {
           await session.abortTransaction();
-          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source._id, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
+          return next(new ApplicationError("add_expanse_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source._id, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
         }
-        if (destination.accountType === constants.EAccountType.BANK) {
-          destinationTransaction = await ClubAccount.findOne({ account_id: destination._id });
-        } else if (destination.accountType === constants.EAccountType.MEMBER || destination.accountType === constants.EAccountType.SUPPLIERS) {
+        if (destination.accountType === constants.EAccountType.MEMBER || destination.accountType === constants.EAccountType.SUPPLIERS) {
           destinationTransaction = await Account.findOne({ account_id: destination._id }).populate('member');
         } else {
           await session.abortTransaction();
-          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination._id, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
+          return next(new ApplicationError("add_expanse_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination._id, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
         }
         log.info("sourceTransaction", sourceTransaction);
         log.info("destinationTransaction", destinationTransaction)
@@ -339,12 +336,12 @@ exports.add_transaction = [
 
         if (!sourceTransaction) {
           await session.abortTransaction();
-          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
+          return next(new ApplicationError("add_expanse_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(source, `Account not found`, 'source', "DB.ClubAccount")).validationResult.errors }));
         }
 
         if (!destinationTransaction) {
           await session.abortTransaction();
-          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
+          return next(new ApplicationError("add_expanse_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination, `Account not found`, 'destination', "DB.ClubAccount")).validationResult.errors }));
         }
 
 
@@ -357,18 +354,11 @@ exports.add_transaction = [
           destination: tDestination,
           amount: amount,
           type: type,
-          date: source.date,
+          date: date,
           description: description,
           payment: payment,
           order: order
         });
-
-        if (type === constants.TransactionType.TRANSFER) {
-          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
-        }
-        else {
-          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) - Number(Number(amount).toFixed(2));
-        }
 
         if (isNaN(sourceTransaction.balance)) {
           throw new Error('Source: The new balance is not a number!');
@@ -381,10 +371,16 @@ exports.add_transaction = [
 
 
         destinationTransaction.transactions.push(newTransaction);
+        if(type == 'DEBIT')
         destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
+        else if(type == 'CREDIT')
+        destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) - Number(Number(amount).toFixed(2));
+        else
+        throw new Error('Invalid type operation!');
         if (isNaN(destinationTransaction.balance)) {
           throw new Error('Destination: The new balance is not a number!');
         }
+        destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) 
         await destinationTransaction.save({ session })
 
 
@@ -426,9 +422,10 @@ exports.add_transaction_Type = [
   body('order._id').isLength({ min: 0, max: 24 }).withMessage("order._id must be max 24 characters"),
   body('order.type').isLength({ min: 1 }).withMessage("order.type must valid"),
 
-  async (req, res, next) => {
+  async (req, res, next) => { 
     try { 
       let { source, destination, amount, order, description, payment,type } = req.body;
+      type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
@@ -503,7 +500,7 @@ exports.add_transaction_Type = [
         });
 
         if (type == constants.TransactionType.TRANSFER) {
-          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) - Number(Number(amount).toFixed(2));
+          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
         }
         else if(type == constants.TransactionType.CREDIT){
           if(isSourceAccount){
@@ -513,6 +510,7 @@ exports.add_transaction_Type = [
         else if(type == constants.TransactionType.DEBIT){
           if(isSourceAccount){
             sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
+            sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2))
           }
         }
         else{
@@ -541,6 +539,7 @@ exports.add_transaction_Type = [
         else if(type === constants.TransactionType.DEBIT){
           if(isDenstinationAccount){
             destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
+            destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2))
           }
         }
         else  {
