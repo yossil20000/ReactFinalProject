@@ -7,20 +7,21 @@ const jwtService = require('../Services/jwtService');
 const authJWT = require('../middleware/authJWT');
 const passGen = require('../Services/passwordGenerator');
 const cookieParser = require('cookie-parser');
+const { sendAdmniNotification } = require('../Services/notificationService');
 const { IsPasswordValid, passwordRequirement } = require('../Services/passwordGenerator');
 
 exports.signin = function (req, res, next) {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.username;
-    log.info(`login: ${email} ${password} ${username} `);
+    log.error(`login: ${email} ${password} ${username} ${req.body.resend}`);
 
     Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
         if (err) {
             log.error(`${email} Access Denied ${err}`)
         }
         if (member) {
-            member.comparePassword(password, (err, isMatch) => {
+            member.comparePassword(password,  (err, isMatch) => {
                 if (err) {
                     log.error(`${email} Access Denied comp`)
                 }
@@ -44,6 +45,7 @@ exports.signin = function (req, res, next) {
                         maxAge: 5,
                         secure: false
                     })
+                     sendAdmniNotification("User Login", `${username} has login`)
                     return res.status(201).json({
                         success: true,
                         errors: [],

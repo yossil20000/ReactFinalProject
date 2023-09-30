@@ -34,4 +34,14 @@ const sendNotification =  async (event,notifyWhen,message) => {
   }
 }
 
+const sendAdmniNotification = async (subject,message) => {
+  mail.SendMail(process.env.SITE_MAIL,`Notification:  ${subject}` ,`Hello ${process.env.SITE_MAIL} \n ${message}` )
+        .then(() => {
+          log.info("Send Mail to:",process.env.SITE_MAIL);
+           
+        }).catch((err => {
+          log.error("Send Mail to: error",err, process.env.SITE_MAIL);
+        }));
+}
 exports.sendNotification = sendNotification
+exports.sendAdmniNotification = sendAdmniNotification; 
