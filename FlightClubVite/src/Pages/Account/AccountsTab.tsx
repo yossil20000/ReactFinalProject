@@ -1,7 +1,6 @@
 import { Box, Checkbox, FormControlLabel, Grid, TablePagination } from '@mui/material'
-import React, { useMemo, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import AccountsCombo from '../../Components/Accounts/AccountsCombo'
-import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo'
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons'
 import { InputComboItem } from '../../Components/Buttons/ControledCombo'
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert'
@@ -16,6 +15,7 @@ import AddAccountToBankDialog from './AddAccountToBankDialog'
 import CreateAccountDialog from './CreateAccountDialog'
 import UpdateAccountDialog from './UpdateAccountDialog'
 import FullScreenLoader from '../../Components/FullScreenLoader'
+import { checkGridRowIdIsValid } from '@mui/x-data-grid'
 
 
 interface Data {
@@ -50,6 +50,7 @@ function createData(
 interface IAccountFilter {
   account_id: string;
   active_only: boolean;
+  negative_balance: boolean
 }
 function AccountsTab() {
   const [page, setPage] = React.useState(0);
@@ -113,7 +114,7 @@ function AccountsTab() {
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const { data, refetch, isLoading, error } = useFetchAllAccountsQuery({});
   const { data: bankAccounts } = useClubAccountQuery(true);
-  const [filterData, setFilterData] = useState({ account_id: "", active_only: false } as IAccountFilter)
+  const [filterData, setFilterData] = useState({ account_id: "", active_only: false,negative_balance: false } as IAccountFilter)
   const getData = useMemo(() => {
     let bankFound: IClubAccount | undefined = undefined;
     if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
@@ -150,6 +151,9 @@ function AccountsTab() {
     }
     if (filterData.active_only) {
       filter = item.status === Status.Active
+    }
+    if(filterData.negative_balance){
+      filter = item.balance < 0
     }
 
     return filter;
@@ -263,13 +267,22 @@ function AccountsTab() {
               <Grid item xs={12}>
                 {RenderClubAccount}
               </Grid>
-
               <Grid item xs={4}  >
                 <AccountsCombo onChanged={onAccountChange} source={"_accounts"} />
-
               </Grid >
               <Grid item xs={4}>
-                <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"active_only"} checked={filterData?.active_only} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Active Only" />
+                <Box display={'flex'}>
+                  <Fragment>
+                    <FormControlLabel control={<Checkbox onChange={handleFilterChange}
+                      name={"active_only"} checked={filterData?.active_only}
+                      sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
+                      label={filterData?.active_only ? "Active Only" : "Status"} />
+                    <FormControlLabel control={<Checkbox onChange={handleFilterChange}
+                      name={"negative_balance"} checked={filterData?.negative_balance}
+                      sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
+                      label={filterData?.negative_balance ? "Negative Balance" : "Balance"} />
+                  </Fragment>
+                </Box>
               </Grid>
             </Grid>
           </Box>
