@@ -14,7 +14,7 @@ exports.signin = function (req, res, next) {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.username;
-    log.error(`login: ${email} ${password} ${username} ${req.body.resend}`);
+    log.info(`login: ${email} ${password} ${username}`);
 
     Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
         if (err) {
