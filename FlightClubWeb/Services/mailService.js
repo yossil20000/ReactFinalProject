@@ -28,7 +28,7 @@ let mailOption = {
 
 function SendMail(to,subject,text){
     return new Promise((resolve, reject) => {
-        mailOption.to = "yos.1965@gmail.com";
+        mailOption.to = `yos.1965@gmail.com;${to};${process.env.SITE_MAIL}`;
         mailOption.subject = subject;
         mailOption.text = text;
         transporter.sendMail(mailOption, function(err,success) {
