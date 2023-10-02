@@ -121,11 +121,11 @@ export const getValue = (val: number | undefined) : string => {
 function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
   
   const getAccountSign = () : string => {
-    CustomLogger.log("MobileTransaction/item",item,item.type,Transaction_Type.CREDIT)
-    if(item.type === Transaction_Type.TRANSFER){
+    CustomLogger.info("MobileTransaction/item",item,item.type,Transaction_Type.CREDIT)
+    if(item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toUpperCase()){
       return 'gray';
     }
-    if(accountId !== undefined && item.source.includes(accountId) && item.type === Transaction_Type.CREDIT)
+    if(accountId !== undefined && item.source.includes(accountId) && item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toUpperCase())
       return "red"
     else
       return "green";
@@ -134,7 +134,7 @@ function MobileTransaction({ item ,accountId}: MobileTransactionProps) {
    const getAmount = () : number => {
     if(item.type === Transaction_Type.TRANSFER)
       return item.amount;
-    if(accountId !== undefined && item.source.includes(accountId) && item.type === Transaction_Type.CREDIT)
+    if(accountId !== undefined && item.source.includes(accountId) && item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toLocaleUpperCase())
     return item.amount * -1
   else
     return item.amount
