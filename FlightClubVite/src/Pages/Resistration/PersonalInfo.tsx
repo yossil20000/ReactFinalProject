@@ -106,6 +106,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData}: IPageNav
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
               required
+              disabled
               id="member_id"
               label="MemberID"
               value={formData.member_id}
@@ -117,6 +118,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData}: IPageNav
           <Item>
             <TextField sx={{ width: "100%", margin: "auto" }}
               required
+              disabled
               id="family_name"
               label="Family Name"
               value={formData.family_name}
