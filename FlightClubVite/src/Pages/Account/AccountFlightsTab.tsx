@@ -1,5 +1,5 @@
 import { Box, Grid, TablePagination } from '@mui/material';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { EAction } from '../../Components/Buttons/ActionButtons';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable';
@@ -13,6 +13,9 @@ import CreateFlightOrderDialog from './CreateFlightOrderDialog';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import DeviceMemberCombo from '../../Components/Devices/DeviceMemberCombo';
 import MembersCombo from '../../Components/Members/MembersCombo';
+import {UseIsAuthorized,IRequireAuthProps} from '../../Components/RequireAuth'
+import { Role } from '../../Interfaces/API/IMember';
+import { useAppSelector } from '../../app/hooks';
 interface IData {
   _id: string;
   date: Date;
@@ -22,6 +25,7 @@ interface IData {
   engien_stop: number
   order_by: string
 }
+
 
 function createData(
   _id: string,
@@ -98,7 +102,20 @@ const columns: Column[] = [
 
   },
 ];
+
+const allowedRoles: IRequireAuthProps= {
+  roles: [Role.desk, Role.admin, Role.account]
+}
 function AccountFlightsTab() {
+  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
+  const login = useAppSelector((state) => state.authSlice);
+  const [ref,setRef] = useState(false)
+  useEffect(()=> {
+    setRef(login.member.roles.find(role => allowedRoles?.roles?.includes(role)) ? false : true)
+  },[login.member.roles])
+  if(allowedRoles === undefined || allowedRoles.roles === undefined){
+    setRef(false);
+      }
   const [openOrderAdd, setOpenOrderAdd] = useState(false);
   const [order, setOrder] = useState<IOrderBase>(new COrderCreate());
   const [accountFlightFilter, setaccountFlightFilter] = useState({ status: FlightStatus.CREATED })
@@ -270,7 +287,8 @@ function AccountFlightsTab() {
           </Box>
         </ContainerPageHeader>
         <ContainerPageMain>
-          <><ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "" }} /></>
+        {/* <><ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "",disable:[{key: EAction.ORDER,value: !isAuthorized([Role.desk, Role.admin, Role.account] as unknown as IRequireAuthProps)}] }} /></> */}
+          <><ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "",disable:[{key: EAction.ORDER,value: isAuthorized}] }} /></>
         </ContainerPageMain>
         <ContainerPageFooter>
           <Grid container columns={1}>

@@ -44,7 +44,7 @@ function RefreshTokenDialog({open,expired,onClose} : IRefreshDialogProps) {
     CustomLogger.info("RefreshTokenDialog/expired/", expired);
     onClose(true);
   }
-
+  
   const handleOnSave = async (action: boolean) => {
     
     let refreshProps: IRefreshToken = {

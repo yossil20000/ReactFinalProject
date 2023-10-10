@@ -30,8 +30,9 @@ export interface IColumnGroupingTableProps<T> {
  rows: T[],
  action:IActionButtonsProps,
  rowsPerPage: number,
- page: number,
+ page: number
 }
+
 export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps<T>) {
   const keyId = React.useId();
 
@@ -92,7 +93,7 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                     { props.action.show.length> 0 ? (
                     <TableCell>
                       <Box display={'flex'} justifyContent={'space-around'}>
-                        <ActionButtons OnAction={props.action.OnAction} show={props.action.show} item={row["_id" as keyof   T] as unknown as string}/>
+                        <ActionButtons OnAction={props.action.OnAction} show={props.action.show} item={row["_id" as keyof   T] as unknown as string} disable={props.action.disable}/>
                       </Box>
                     </TableCell>) : (null)
               }

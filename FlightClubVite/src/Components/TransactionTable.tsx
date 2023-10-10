@@ -19,7 +19,7 @@ interface ITransactionTableProps {
 }
 
 export default function TransactionTable({ hideAction = false, filter = {} as ITransactionTableFilter, selectedClubAccount }: ITransactionTableProps) {
-  
+  console.log("TransactionTable/filter", filter)
   const { data: dataTransaction , isLoading,error } = useFetchTransactionQuery(filter.dateFilter)
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
@@ -32,7 +32,9 @@ const getData = useMemo(() => {
   console.log("TransactionTable/getData", dataTransaction)
   if (dataTransaction?.success) {
     if (selectedClubAccount?.lable !== "") {
+      console.log("TransactionTable/getData", dataTransaction.data,selectedClubAccount)
       const filterAccount = dataTransaction.data.filter((item) => (item.source == selectedClubAccount?.lable) || (item.destination == selectedClubAccount?.lable))
+      console.log("TransactionTable/filterAccount", filterAccount)
       setTransactions(filterAccount);
     }
     else {

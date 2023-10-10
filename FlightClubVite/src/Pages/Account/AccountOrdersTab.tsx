@@ -18,8 +18,12 @@ import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import CreateQuarterDialoq, { ICreateQuarterExpense } from './CreateQuarterDialoq';
 import OrderStatusCombo from '../../Components/Buttons/OrderStatusCombo';
 import { OrderStatus } from '../../Interfaces/API/IAccount';
+import { UseIsAuthorized } from '../../Components/RequireAuth';
+import { Role } from '../../Interfaces/API/IMember';
 
 function AccountOrdersTab() {
+  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
+  
   const [openFilter, setOpenFilter] = useState(false)
   const [openAddQuarter, setOpenAddQuarter] = useState(false)
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
@@ -76,7 +80,7 @@ function AccountOrdersTab() {
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} />
               </Grid >
               <Grid item xs={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} />
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{key: EAction.ADD,value: isAuthorized}]} />
               </Grid>
             </Grid>
           </Box>

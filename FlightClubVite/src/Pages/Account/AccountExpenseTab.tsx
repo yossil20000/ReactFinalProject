@@ -6,7 +6,7 @@ import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTabl
 import { useFetchExpenseQuery } from '../../features/Account/accountApiSlice'
 import { OrderStatus } from '../../Interfaces/API/IAccount'
 import { IExpense } from '../../Interfaces/API/IExpense'
-import IMember from '../../Interfaces/API/IMember'
+import IMember, { Role } from '../../Interfaces/API/IMember'
 import { Status } from '../../Interfaces/API/IStatus'
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container'
 import CreateExpenseDialog from './CreateExpenseDialog'
@@ -14,6 +14,7 @@ import CreateTransactionDialog from './CreateTransactionDialog'
 import DeleteExpenseDialog from './DeleteExpenseDialog'
 import UpdateExpenseDialog from './UpdateExpenseDialog'
 import FullScreenLoader from '../../Components/FullScreenLoader'
+import { UseIsAuthorized } from '../../Components/RequireAuth';
 
 interface Data {
   _id: string,
@@ -47,6 +48,7 @@ function createData(_id: string, date: Date,
 
 
 function AccountExpenseTab() {
+  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
   const columns: Column[] = [
     { id: '_id', label: 'id', minWidth: 50, isCell: false, align: 'left' },
     { id: 'date', label: 'Date', minWidth: 30, isCell: true, align: 'left', format: (value: Date) => new Date(value).toLocaleDateString() },
@@ -67,7 +69,7 @@ function AccountExpenseTab() {
     { id: 'status', label: 'Status', minWidth: 70, align: 'left', format: (value: Status) => value.toLocaleUpperCase(), isCell: true },
     { id: 'source', label: 'Source', minWidth: 170, align: 'left', isCell: true },
     { id: 'destination', label: 'Destination', minWidth: 170, align: 'left', isCell: true },
-    { id: 'render', label: '', minWidth: 70, align: 'center', render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} /></>), isCell: true }
+    { id: 'render', label: '', minWidth: 70, align: 'center', render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{key: EAction.ADD,value: isAuthorized}]} /></>), isCell: true }
   ];
 
 
@@ -96,9 +98,9 @@ function AccountExpenseTab() {
       return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
         <>{row.status == OrderStatus.CREATED ? (<>
           <Box display={'flex'} flexDirection={'column'} gap={1}>
-            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} />
-            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} />
-            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT,value:true}]}/>
+            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY,value:true}]}/>
+            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE,value:true}]}/>
           </Box>
         </>) : (<></>)}
         </>)
@@ -197,7 +199,7 @@ function AccountExpenseTab() {
               {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
               {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
               {(openDeleteExpense == true && selectedExpense !== undefined) ? (<DeleteExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openDeleteExpense} />) : (null)}
-              <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
+              <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "",disable:[] }} />
             </>
           </ContainerPageMain>
           <ContainerPageFooter>

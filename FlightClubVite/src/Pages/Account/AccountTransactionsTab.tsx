@@ -17,10 +17,13 @@ import PayTransactionDialog from './PayTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
 import GeneralTransactionDialog from './GeneralTransactionDialog';
+import { UseIsAuthorized } from '../../Components/RequireAuth';
+import { Role } from '../../Interfaces/API/IMember';
 
 const dateFilter: IDateFilter = newDateFilter;
 
 function AccountTransactionsTab() {
+  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
   /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dateFilter.to)
@@ -33,6 +36,7 @@ function AccountTransactionsTab() {
 /*   const [openAddCredit, setOpenAddCredit] = useState(false);
   const [openAddDebit, setOpenAddDebit] = useState(false); */
   const OnSelectedClubAccount = (item: InputComboItem): void => {
+    CustomLogger.info("OnSelectedClubAccount/item",item)
     setSelectedClubAccount(item);
 
   }
@@ -86,10 +90,10 @@ function AccountTransactionsTab() {
                 </IconButton>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <ActionButtons  OnAction={onAction} show={[EAction.ADD]} item="TRANSACTION" display={[{ key: EAction.ADD, value: "Transaction" }]} />
+                <ActionButtons  OnAction={onAction} show={[EAction.ADD]} item="TRANSACTION" display={[{ key: EAction.ADD, value: "Transaction" }]} disable={[{key: EAction.ADD,value: isAuthorized}]}/>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="PAY" display={[{ key: EAction.ADD, value: "Payment" }]} />
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="PAY" display={[{ key: EAction.ADD, value: "Payment" }]} disable={[{key: EAction.ADD,value: isAuthorized}]}/>
               </Grid>
 {/*               <Grid item xs={12} sm={6}>
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />

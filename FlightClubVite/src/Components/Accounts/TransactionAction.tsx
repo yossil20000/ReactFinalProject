@@ -12,6 +12,8 @@ import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import { IValidationAlertProps } from '../Buttons/TransitionAlert';
 import ErrorDialog from '../ErrorDialog';
 import ConfirmationDialog, { ConfirmationDialogProps } from '../ConfirmationDialog';
+import { Role } from '../../Interfaces/API/IMember';
+import { UseIsAuthorized } from '../RequireAuth';
 export interface ITransactionActionProps {
   params: any;
   rowId: string | null;
@@ -20,6 +22,7 @@ export interface ITransactionActionProps {
   orderId?: string
 }
 export default function TransactionAction(props: ITransactionActionProps) {
+  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
   const { rowId, setRowId, params, transaction, orderId } = props;
   const { id, _idMember, amount } = params.row;
   const [isloading, setIsLoading] = useState(false);
@@ -149,7 +152,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
               </Fab>
             )}
 
-            <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading} onClick={() => handleConfirmation("ADD_TRANSACTION")} >
+            <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading || isAuthorized} onClick={() => handleConfirmation("ADD_TRANSACTION")} >
               <Tooltip title={"Place Transaction"}>
                 <PaymentIcon />
               </Tooltip>

@@ -8,7 +8,7 @@ import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTabl
 import { useClubAccountQuery, useFetchAllAccountsQuery } from '../../features/Account/accountApiSlice'
 import { IAccount } from '../../Interfaces/API/IAccount'
 import { IClubAccount } from '../../Interfaces/API/IClub'
-import { MemberType } from '../../Interfaces/API/IMember'
+import { MemberType, Role } from '../../Interfaces/API/IMember'
 import { Status } from '../../Interfaces/API/IStatus'
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
 import AddAccountToBankDialog from './AddAccountToBankDialog'
@@ -16,6 +16,7 @@ import CreateAccountDialog from './CreateAccountDialog'
 import UpdateAccountDialog from './UpdateAccountDialog'
 import FullScreenLoader from '../../Components/FullScreenLoader'
 import { checkGridRowIdIsValid } from '@mui/x-data-grid'
+import { UseIsAuthorized } from '../../Components/RequireAuth'
 
 
 interface Data {
@@ -53,6 +54,8 @@ interface IAccountFilter {
   negative_balance: boolean
 }
 function AccountsTab() {
+  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
+  
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -102,7 +105,7 @@ function AccountsTab() {
       label: '',
       minWidth: 170,
       align: 'center',
-      render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} /></>),
+      render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{key: EAction.ADD,value: isAuthorized}]}/></>),
       isCell: true
     }
   ];
@@ -135,7 +138,7 @@ function AccountsTab() {
         if (foundAccount)
           bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
-      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
+      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id}  /></>)
     })
     CustomLogger.info("AccountsTab/getData", rows)
     return rows === undefined ? [] : rows;
