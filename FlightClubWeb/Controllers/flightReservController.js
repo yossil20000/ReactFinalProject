@@ -42,7 +42,7 @@ exports.reservation_list = function (req, res, next) {
 		}
 		FlightReservation.find(filter)
 			.populate('device')
-			.populate('member')
+			.populate({ path: "member", select: "-password" })
 			.sort({ date_from: -1, date_to: -1 })
 			.exec((err, results) => {
 				if (err) { log.critical('err'); return next(err); }
