@@ -40,6 +40,9 @@ import { EfilterMode, EviewMode } from "../../Utils/enums";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import MembersCombo from "../../Components/Members/MembersCombo";
+import { MemberType } from "../../Interfaces/API/IMember";
+import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 
 const dateFilter: IDateFilter = newDateFilter;
 interface ItableData {
@@ -202,6 +205,7 @@ function ReservationsPageOld() {
   const [isReservationUpdate, setIsReservationUpdate] = useState(false);
   const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
   const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH)
+  const [selectedMember, setSelectedMember] = useState<InputComboItem>();
 
   function SetReservationUpdate(id_reservation: string) {
     const reservation = rows.filter(item => item._id_reservaion === id_reservation)
@@ -218,20 +222,22 @@ function ReservationsPageOld() {
   useEffect(() => {
     let rows: ItableData[] = []
     if (reservations?.data) {
-      rows = reservations?.data.map((item) => {
+      const rows1 = reservations?.data.filter((item) => filterReservation(item))
+      /* CustomLogger.info('Reservation/UseEffect/rows/rows1',reservations?.data, rows1) */
+      rows = rows1.map((item) => {
         if (item.member)
           return createdata(item._id, item.member._id, item.member.member_id, `${item.member.family_name} ${item.member.first_name}`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo(item.member._id, login.member._id, login.member.roles))
         return createdata(item._id, "_id", "member_id", `family_name .first_name`, item.device.device_id, item.date_from, item.date_to, GeneralCanDo("_id", login.member._id, login.member.roles))
       })
     }
-    CustomLogger.info('UseEffect/rows/be', rows)
+    CustomLogger.info('Reservation/UseEffect/rows/be', rows)
     if (rows === undefined) {
       rows = [];
     }
     setRows(rows);
     CustomLogger.info('UseEffect/rows', rows)
 
-  }, [reservations?.data])
+  }, [reservations?.data,selectedMember])
 
   /* Table Section */
   const [order, setOrder] = useState<Order>('asc');
@@ -446,6 +452,20 @@ function ReservationsPageOld() {
       return <div>{error.message}</div>
     }
   }
+  const onMemberChanged = (item: InputComboItem) => {
+    setSelectedMember(item)
+  }
+  const filterReservation = function (reservation: IReservation): Boolean {
+    /* CustomLogger.log("FlightPage/filterMember/", flights === undefined ? "Undefined" : flight) */
+    if(selectedMember?._id.trim().length === 0) return true;
+    if (reservation.member._id == selectedMember?._id){
+      CustomLogger.log("Reservation/filterReservation/", selectedMember, reservation, true)
+      return true;
+    }
+    CustomLogger.log("Reservation/filterReservation/", selectedMember, reservation, false)
+    return false
+
+  }
   return (
     <>
 
@@ -490,6 +510,9 @@ function ReservationsPageOld() {
                     </ListItemButton>
 
                   </ListItem>
+                  <ListItem key={"member"}>
+                        <MembersCombo onChanged={onMemberChanged} source={"_ReservationPage/member"} filter={{ filter: { member_type: MemberType.Member } }} />
+                      </ListItem>
                   <ListItem key={'today'} disablePadding>
                     <ListItemButton onClick={onTodayChanged}>
                       <ListItemIcon>
@@ -522,15 +545,12 @@ function ReservationsPageOld() {
                         <NavigateBeforeIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
                     <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
                     <ListItemButton>
                       <ListItemIcon onClick={onNextWeek}>
                         <NavigateNextIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
-
                   </ListItem>
                   <ListItem key={'month'} disablePadding>
                     <ListItemButton onClick={onMonthChanged}>
@@ -543,20 +563,14 @@ function ReservationsPageOld() {
                         <NavigateBeforeIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
                     <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
                     <ListItemButton onClick={onNextMonth}>
                       <ListItemIcon>
                         <NavigateNextIcon />
                       </ListItemIcon>
                     </ListItemButton>
-
-
                   </ListItem>
-
                 </List>
-
-
               </GeneralDrawer>
             </Box>
             <Box display={'flex'} justifyContent={"flex-end"}>
@@ -570,13 +584,10 @@ function ReservationsPageOld() {
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
               </Tooltip>
             </Box>
-
           </Box>
-
         </Box>
       </div>
       <div className='main' style={{ overflow: 'auto', height: "100%" }}>
-
         <Box sx={{ width: '100%', height: '100%' }}>
           <Paper sx={{ height: "100%", width: '100%', mb: 1 }}>
             {viewMode === EviewMode.E_VM_NORMAL ? (
@@ -596,7 +607,6 @@ function ReservationsPageOld() {
                     <MediaQuery minWidth={768}>
                       <TableBody sx={{ "& tr:nth-of-type(2n+1)": { backgroundColor: theme.palette.grey[300], color: "white", "& .MuiTableCell-root": { color: "black" } }, "color": "red" }}>
                         {
-
                           rows.filter((r) => {
                             /* if (!isInDateRange(r)) return false; */
                             if (!isFilterOwner) return true

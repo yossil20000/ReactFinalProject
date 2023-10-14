@@ -31,8 +31,11 @@ import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageM
 import { EfilterMode } from "../../Utils/enums";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { BorderClear } from "@mui/icons-material";
-import { Role } from "../../Interfaces/API/IMember";
+import { MemberType, Role } from "../../Interfaces/API/IMember";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
+import MembersCombo from "../../Components/Members/MembersCombo";
+import { InputComboItem } from "../../Components/Buttons/ControledCombo";
+import { selectCurrentId } from "../../features/Auth/authSlice";
 
 const dateFilter: IDateFilter = newDateFilter;
 const StyledAccordion = styled(Box)(({ theme }) => ({
@@ -137,7 +140,9 @@ const FlightPage = () => {
   const login: ILoginResult | undefined = useAppSelector<ILoginResult | undefined>((state) => state.authSlice);
   const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({ from: filterDate.from, to: filterDate.to } as IFlightFilterDate);
   const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH);
-  const [confirmation,setConfirmation] =useState<ConfirmationDialogProps>({open: false} as ConfirmationDialogProps);
+  const [confirmation, setConfirmation] = useState<ConfirmationDialogProps>({ open: false } as ConfirmationDialogProps);
+  const [selectedMember, setSelectedMember] = useState<InputComboItem>()
+
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login === undefined ? "" : login.member._id, login === undefined ? [Role.guest] : login?.member.roles)))
   }
@@ -161,16 +166,26 @@ const FlightPage = () => {
 
     return filterdData;
   }
+  const filterMember = function (flight: IFlightData): Boolean {
+    /* CustomLogger.log("FlightPage/filterMember/", flights === undefined ? "Undefined" : flight) */
+    if(selectedMember?._id.trim().length === 0) return true;
+    if (flight._id_member == selectedMember?._id){
+      /* CustomLogger.log("FlightPage/filterMember/", selectedMember, flight, true) */
+      return true;
+    }
+    /* CustomLogger.log("FlightPage/filterMember/", selectedMember, flight, false) */
+    return false
 
+  }
   useEffect(() => {
     CustomLogger.log("FlightPage/useEffect/flight.data", flights === undefined ? "Undefined" : flights)
     if (flights?.data !== undefined) {
-      const flightData = getFlightData(flights?.data)
-      CustomLogger.info('FlightPage/useEffect/flightData', flightData)
+      let flightData = getFlightData(flights?.data).filter((filter) => filterMember(filter))
+      CustomLogger.info('FlightPage/useEffect/flightData', flightData, selectedMember, flightData?.length)
       setFilghtData(flightData);
     }
 
-  }, [flights?.data])
+  }, [flights?.data, selectedMember])
 
 
 
@@ -211,7 +226,7 @@ const FlightPage = () => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  const handleDelete = async ( _id: string) => {
+  const handleDelete = async (_id: string) => {
     const flightDelete: IFlightDeleteApi = {
       _id: _id
     }
@@ -381,26 +396,31 @@ const FlightPage = () => {
 
     }
   }
-  const onConfirmationClose = (value: boolean,action: string) => {
-    CustomLogger.info("FlightPage/onConfirmationClose",confirmation,value)
-    setConfirmation((prev) => ({...prev, open: false}))
-    
-    if(value){
-      if(action === "DELETE_FLIGHT")
+  const onConfirmationClose = (value: boolean, action: string) => {
+    CustomLogger.info("FlightPage/onConfirmationClose", confirmation, value)
+    setConfirmation((prev) => ({ ...prev, open: false }))
+
+    if (value) {
+      if (action === "DELETE_FLIGHT")
         handleDelete(confirmation.key === undefined ? "" : confirmation.key)
-        CustomLogger.info("FlightPage/OnDeleteFlight/key",confirmation.key)
-    }
-   
-  }
-  const handleConfirmation = (action: string, id: string) => {
-    CustomLogger.info("FlightPage/handleConfirmation/",action)
-    if(action === "DELETE_FLIGHT"){
-      setConfirmation((prev) => ({...prev,
-        open: true,action: action,content:"Please, press Confirm to Delete Flight", title: "Confirmation",key: id,
-        onClose: onConfirmationClose} ))
-      CustomLogger.info("FlightPage/handleConfirmation/DELETE_FLIGHT",confirmation)
+      CustomLogger.info("FlightPage/OnDeleteFlight/key", confirmation.key)
     }
 
+  }
+  const handleConfirmation = (action: string, id: string) => {
+    CustomLogger.info("FlightPage/handleConfirmation/", action)
+    if (action === "DELETE_FLIGHT") {
+      setConfirmation((prev) => ({
+        ...prev,
+        open: true, action: action, content: "Please, press Confirm to Delete Flight", title: "Confirmation", key: id,
+        onClose: onConfirmationClose
+      }))
+      CustomLogger.info("FlightPage/handleConfirmation/DELETE_FLIGHT", confirmation)
+    }
+
+  }
+  const onMemberChanged = (item: InputComboItem) => {
+    setSelectedMember(item)
   }
   return (
     <>
@@ -410,7 +430,6 @@ const FlightPage = () => {
             <Box marginTop={0} display={'flex'} flexDirection={'column'}>
               <Typography variant="h6" align="center">{`Flights ${filterDate.from.toLocaleDateString()} - ${filterDate.to.toLocaleDateString()}`}</Typography>
               <Box sx={{ width: '100%', mb: 1, display: "flex", justifyContent: "space-between" }} >
-
                 <Box display={'flex'} justifyContent={"flex-start"}>
                   <ToggleButton value={""} aria-label="close" size="medium" onClick={() => setOpenFilter(true)}>
                     <FilterAltIcon fontSize="inherit" />
@@ -423,9 +442,7 @@ const FlightPage = () => {
                             <DateRangeIcon />
                           </ListItemIcon>
                           <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="from" lable='From Date' onChange={onDateChanged} />
-
                         </ListItemButton>
-
                       </ListItem>
                       <ListItem key={"toDate"} disablePadding>
                         <ListItemButton>
@@ -433,9 +450,10 @@ const FlightPage = () => {
                             <DateRangeIcon />
                           </ListItemIcon>
                           <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"to"} lable='To Date' onChange={onDateChanged} />
-
                         </ListItemButton>
-
+                      </ListItem>
+                      <ListItem key={"member"}>
+                        <MembersCombo onChanged={onMemberChanged} source={"_FlightPage/member"} filter={{ filter: { member_type: MemberType.Member } }} />
                       </ListItem>
                       <ListItem key={'today'} disablePadding>
                         <ListItemButton onClick={onTodayChanged}>
@@ -448,15 +466,12 @@ const FlightPage = () => {
                             <NavigateBeforeIcon />
                           </ListItemIcon>
                         </ListItemButton>
-
                         <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Day</ListItemButton>
                         <ListItemButton>
                           <ListItemIcon onClick={onNextDay}>
                             <NavigateNextIcon />
                           </ListItemIcon>
                         </ListItemButton>
-
-
                       </ListItem>
                       <ListItem key={'week'} disablePadding>
                         <ListItemButton onClick={onWeekChanged}>
@@ -487,24 +502,19 @@ const FlightPage = () => {
                             <NavigateBeforeIcon />
                           </ListItemIcon>
                         </ListItemButton>
-
                         <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
                         <ListItemButton onClick={onNextMonth}>
                           <ListItemIcon>
                             <NavigateNextIcon />
                           </ListItemIcon>
                         </ListItemButton>
-
-
                       </ListItem>
-
                     </List>
                   </GeneralDrawer>
                   <ToggleButton value={""} aria-lable="prev-selection" size="medium" onClick={onFilterModePrev}>
                     <Tooltip title="Switch to day view"><NavigateBeforeIcon fontSize="inherit" /></Tooltip>
                   </ToggleButton>
                   <ToggleButton value={""} aria-lable="next-selection" size="medium" onClick={onFilterModeNext}> <NavigateNextIcon fontSize="inherit" /></ToggleButton>
-
                 </Box>
                 <Box display={'flex'} justifyContent={"flex-end"}>
                   <Tooltip title="Add Flight">
@@ -520,15 +530,11 @@ const FlightPage = () => {
               {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
               <Box sx={{ width: '100%', height: '100%' }}>
                 <Paper sx={{ width: '100%', mb: 1 }}>
-
-
                   <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
                   <StyledAccordion >
                     {
-
                       getFilteredDataMemo.map((row: IFlightData, index: number) => {
                         return (
-
                           <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
                           >
                             <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
