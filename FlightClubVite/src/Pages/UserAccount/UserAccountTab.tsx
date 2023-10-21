@@ -67,8 +67,9 @@ function UserAccountTab() {
         <>
           <ContainerPageHeader>
             <Paper >
-              <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <Box gap={1} style={{ display: "flex", alignItems: "baseline", flexDirection: "row", justifyContent: "space-evenly" }}>
+            <Grid container sx={{ width: "100%", height: "100%" }} rowGap={1} gap={1} justifyContent="space-around" columns={12}>
+              <Grid item xs={12} lg={6} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", md: "48%" } }}>
+              <Box gap={1} style={{ display: "flex", alignItems: "baseline", flexDirection: "row", justifyContent: "flex-start" }}>
                   <Box>
                     <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
                       <FilterListIcon fontSize="inherit" />
@@ -107,6 +108,10 @@ function UserAccountTab() {
                     <Typography noWrap={false} style={{ color: getSign(getAccount?.balance) }}>{getAccount?.balance.toFixed(2)}</Typography>
                   </Box>
                 </Box>
+              </Grid>
+              <Grid item xs={12} lg={6} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", md: "48%" } }}>
+              <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+
                 <Box gap={1} style={{ width:'100%', display: "flex", alignItems: "baseline", flexDirection: "row", justifyContent: "space-between" }}>
                   <Box>
                     <Typography sx={{ fontSize: { xs: "1.1rem", md: "1.3rem" }, marginLeft: "2.5%" }}>
@@ -123,6 +128,8 @@ function UserAccountTab() {
                   </Box>
                 </Box>
               </Box>
+              </Grid>
+            </Grid>
               <Divider />
             </Paper>
           </ContainerPageHeader>
