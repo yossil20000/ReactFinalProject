@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
-import { ITableRowProps } from './InvoiceItemTable'
+import { IInvoiceTableRow, ITableRowProps } from '../../Interfaces/IReport'
+
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
   row: {
@@ -38,16 +39,50 @@ const styles = StyleSheet.create({
   },
 })
 
-function InvoiceTableRow({ items }: ITableRowProps) {
-  const rows = items.map((item, index) =>
+let stylesArray: Array<{ style: {} }> = [
+  StyleSheet.create({
+    style: {
+      width: '13%',
+      borderRightColor: borderColor,
+      borderRightWidth: 1
+    }
+  }),
+  StyleSheet.create({
+    style: {
+      width: '47%',
+      borderRightColor: borderColor,
+      borderRightWidth: 1
+    }
+  }),
+  StyleSheet.create({
+    style: {
+      width: '10%',
+      borderRightColor: borderColor,
+      borderRightWidth: 1
+    }
+  }),
+  StyleSheet.create({
+    style: {
+      width: '15%',
+      borderRightColor: borderColor,
+      borderRightWidth: 1
+    }
+  }),
+  StyleSheet.create({
+    style: {
+      width: '15%'
+    }
+  })
+]
+function InvoiceTableData(items: ITableRowProps) {
+  const rows = items.items.rows.map((item: IInvoiceTableRow, index: number) => 
     <View style={styles.row} key={index}>
-      <Text style={styles.date}>{item.date}</Text>
-      <Text style={styles.description}>{item.name}</Text>
-      <Text style={styles.qyt}>{item.name}</Text>
-      <Text style={styles.rate}>{item.name}</Text>
-      <Text style={styles.amount}>{item.name}</Text>
+      {item.row.map((i, j) => (
+        <Text style={stylesArray[j].style} key={`col${j}`}>"{i.data}"</Text>
+    ))}
     </View>
   )
+  { console.log("InvoiceTableData/rows", rows) }
   return (
     <>
       {rows}
@@ -55,4 +90,4 @@ function InvoiceTableRow({ items }: ITableRowProps) {
   )
 }
 
-export default InvoiceTableRow
+export default InvoiceTableData

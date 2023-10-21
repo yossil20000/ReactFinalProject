@@ -1,7 +1,7 @@
-import { InvoiceProps } from "../../Interfaces/IReport"
+import { IInvoiceDetailes, InvoiceProps } from "../../Interfaces/IReport"
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 
-function InvoiceBillTo({ invoiceDetailes, invoiceItems }: InvoiceProps) {
+function InvoiceBillTo(invoiceDetailes: IInvoiceDetailes) {
   const styles = StyleSheet.create({
     headerContainer: {
       marginTop: 12

@@ -1,6 +1,6 @@
 
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
-import { InvoiceProps } from '../../Interfaces/IReport'
+import { IInvoiceDetailes, InvoiceProps } from '../../Interfaces/IReport'
 const styles = StyleSheet.create({
   invoiceNoContainer: {
     flexDirection: 'row',
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
 })
 
-function InvoiceNumber({ invoiceDetailes,invoiceItems }: InvoiceProps) {
+function InvoiceNumber( invoiceDetailes: IInvoiceDetailes) {
   return (
     <>
       <View style={styles.invoiceNoContainer}>

@@ -1,13 +1,11 @@
-import { View, Text, StyleSheet } from '@react-pdf/renderer'
-import InvoiceTabHeader from './InvoiceTabHeader'
-import { InvoiceData } from '../../Interfaces/IReport'
-import InvoiceTableRow from './InvoiceTableRow'
+import { View, StyleSheet } from '@react-pdf/renderer'
+import { ITableRowProps } from '../../Interfaces/IReport'
 import InvoiceTableBlackLines from './InvoiceTableBlackLines'
 import InvoiceTableFooter from './InvoiceTableFooter'
-export interface ITableRowProps {
-  items: InvoiceData[]
-}
-function InvoiceItemTable({items}: ITableRowProps) {
+import InvoiceTableData from './InvoiceTableRow'
+import InvoiceTableHeader from './InvoiceTableHeader'
+
+function InvoiceItemTable({items,headers}: ITableRowProps) {
   const styles = StyleSheet.create({
     tableContainer: {
       flexDirection: 'row',
@@ -19,9 +17,9 @@ function InvoiceItemTable({items}: ITableRowProps) {
     }
   })
   return (
-    <View style={styles.tableContainer}>
-      <InvoiceTabHeader />
-      <InvoiceTableRow items={items}/>
+    <View style={styles.tableContainer} key={"invoice"}>
+      <InvoiceTableHeader key={"tabHeader"} header={headers.header}/>
+      <InvoiceTableData key={""} items={items} headers={headers}/>
       <InvoiceTableBlackLines rowCounts={4}/>
       <InvoiceTableFooter total={34.5}/>
     </View>

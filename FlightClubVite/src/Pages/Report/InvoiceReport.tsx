@@ -24,16 +24,16 @@ const styles = StyleSheet.create({
   }
 });
 
-function InvoiceReport({ invoiceItems,invoiceDetailes }: InvoiceProps)  {
+function InvoiceReport({ invoiceItems,invoiceDetailes,invoiceHeader }: InvoiceProps)  {
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
         
-        <InvoiceTitle title="Quarter 1 expense"/>
-        <InvoiceNumber invoiceDetailes={invoiceDetailes} invoiceItems={invoiceItems}/>
-        <InvoiceBillTo invoiceDetailes={invoiceDetailes} invoiceItems={invoiceItems}/>
-        <InvoiceItemTable items={invoiceItems}/>
-        <InvoiceFooter message="Club Account: 12335"/>
+      <InvoiceTitle title="Quarter 1 expense" key={"title"}/>
+        <InvoiceNumber key={"number"} member={invoiceDetailes.member} invoiceNo={invoiceDetailes.invoiceNo} date={invoiceDetailes.date}  />
+        <InvoiceBillTo key={"bill"} member={invoiceDetailes.member} invoiceNo={invoiceDetailes.invoiceNo} date={invoiceDetailes.date} />
+        <InvoiceItemTable key={"table"} items={ invoiceItems} headers={invoiceHeader}/>
+        <InvoiceFooter key={"footer"} message="Club Account: 12335"/>
       </Page>
     </Document>
   )

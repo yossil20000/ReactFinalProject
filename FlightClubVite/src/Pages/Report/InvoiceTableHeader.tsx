@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
+import { IInvoiceTableHeader } from '../../Interfaces/IReport'
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
   container: {
@@ -36,16 +37,50 @@ const styles = StyleSheet.create({
     width: '15%'
   },
 })
-function InvoiceTabHeader() {
+let stylesArray:Array<{style: {}}>=[
+  StyleSheet.create({
+  style: {
+    width: '13%',
+    borderRightColor: borderColor,
+    borderRightWidth: 1
+  }
+}),
+StyleSheet.create({
+  style: {
+    width: '47%',
+    borderRightColor: borderColor,
+    borderRightWidth: 1
+  }
+}),
+StyleSheet.create({
+  style: {
+    width: '10%',
+    borderRightColor: borderColor,
+    borderRightWidth: 1
+  }
+}),
+StyleSheet.create({
+  style: {
+    width: '15%',
+    borderRightColor: borderColor,
+    borderRightWidth: 1
+  }
+}),
+StyleSheet.create({
+  style: {
+    width: '15%'
+  }
+})
+] 
+function InvoiceTableHeader({header}: IInvoiceTableHeader) {
   return (
     <View style={styles.container}>
-      <Text style={styles.date}>Date</Text>
-      <Text style={styles.description}>Item Description</Text>
-      <Text style={styles.qyt}>Qyt</Text>
-      <Text style={styles.rate}>@</Text>
-      <Text style={styles.amount}>Amount</Text>
+      {header.map((i,j) => (
+      <Text style={stylesArray[j].style}>{i.title}</Text>  
+      ))}
+      
     </View>
   )
 }
 
-export default InvoiceTabHeader
+export default InvoiceTableHeader
