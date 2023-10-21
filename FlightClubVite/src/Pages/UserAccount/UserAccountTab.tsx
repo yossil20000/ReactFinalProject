@@ -14,6 +14,7 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import { from_to_Filter, IOrderTableFilter } from '../../Utils/filtering';
 import { SetProperty } from '../../Utils/setProperty';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)
@@ -45,10 +46,20 @@ function UserAccountTab() {
   }, [data])
 
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.log("UserAccountTab/onDateChanged", key, value,filter)
+    CustomLogger.log("UserAccountTab/onDateChanged", key, value, filter)
     if (value === null) return;
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
+  }
+  function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
+    event?.defaultPrevented
+    CustomLogger.log("AccountOrdersTab/onAction", event?.target, action, item)
+    switch (action) {
+      case EAction.SAVE:
+        //setOpenFlightAdd(true);
+
+        break;
+    }
   }
   return (
     <Box fontSize={{ xs: "1rem", md: "1.2rem" }}>
@@ -56,14 +67,13 @@ function UserAccountTab() {
         <>
           <ContainerPageHeader>
             <Paper >
-              <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}>
-                <Box gap={1} style={{ display: "flex", alignItems: "baseline", flexDirection: "row" }}>
+              <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Box gap={1} style={{ display: "flex", alignItems: "baseline", flexDirection: "row", justifyContent: "space-evenly" }}>
                   <Box>
-                    <Grid item xs={2}>
-                      <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
-                        <FilterListIcon fontSize="inherit" />
-                      </IconButton>
-                    </Grid>
+                    <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+                      <FilterListIcon fontSize="inherit" />
+                    </IconButton>
+
                     <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
                       <List sx={{ display: 'flex', flexDirection: 'column' }}>
                         <ListItem key={"fromDate"} disablePadding>
@@ -97,14 +107,22 @@ function UserAccountTab() {
                     <Typography noWrap={false} style={{ color: getSign(getAccount?.balance) }}>{getAccount?.balance.toFixed(2)}</Typography>
                   </Box>
                 </Box>
-                <Typography sx={{ fontSize: { xs: "1.1rem", md: "1.3rem" }, marginLeft: "2.5%" }}>
-                  AccountId:  {getAccount?.account_id}
-                </Typography>
-                <Typography sx={{ fontSize: { xs: "1.1rem", md: "1.3rem" }, marginLeft: "2.5%" }}>
-                  Name:  {getAccount?.member.family_name}
-                </Typography>
+                <Box gap={1} style={{ width:'100%', display: "flex", alignItems: "baseline", flexDirection: "row", justifyContent: "space-between" }}>
+                  <Box>
+                    <Typography sx={{ fontSize: { xs: "1.1rem", md: "1.3rem" }, marginLeft: "2.5%" }}>
+                      AccountId:  {getAccount?.account_id}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ fontSize: { xs: "1.1rem", md: "1.3rem" }, marginLeft: "2.5%" }}>
+                      Name:  {getAccount?.member.family_name}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} display={[{ key: EAction.SAVE, value: "PDF" }]} />
+                  </Box>
+                </Box>
               </Box>
-
               <Divider />
             </Paper>
           </ContainerPageHeader>
