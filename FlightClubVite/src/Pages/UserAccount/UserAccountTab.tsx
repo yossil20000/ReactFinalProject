@@ -141,7 +141,7 @@ function UserAccountTab() {
               {(isError === false && isLoading === false) ? (
                 <Grid container sx={{ width: "100%", height: "100%" }} rowGap={1} gap={1} justifyContent="space-around" columns={12}>
                   {getTransaction.map((transaction) => (
-                    <Grid item xs={12} lg={6} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", md: "48%" } }}>
+                    <Grid item xs={12} lg={6} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", lg: "48%" } }}>
                       <MobileTransaction item={transaction} accountId={getAccount?.account_id} />
 
                     </Grid>
