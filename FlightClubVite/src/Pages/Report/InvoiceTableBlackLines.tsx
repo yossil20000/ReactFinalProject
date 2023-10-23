@@ -18,12 +18,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1
   },
   description: {
-    width: '47%',
-    borderRightColor: borderColor,
-    borderRightWidth: 1
-  },
-  qyt: {
-    width: '10%',
+    width: '57%',
     borderRightColor: borderColor,
     borderRightWidth: 1
   },
@@ -45,7 +40,6 @@ function InvoiceTableBlackLines({ rowCounts }: ITableBlacLineProps) {
     <View style={styles.row} key={`BR${i}`}>
       <Text style={styles.date}>-</Text>
       <Text style={styles.description}>-</Text>
-      <Text style={styles.qyt}>-</Text>
       <Text style={styles.rate}>-</Text>
       <Text style={styles.amount}>-</Text>
     </View>

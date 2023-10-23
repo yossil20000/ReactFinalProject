@@ -40,3 +40,32 @@ export interface IInvoiceTableCell {
   items: IInvoiceTableData,
   headers: IInvoiceTableHeader
 }
+const defaultInvoiceItems: IInvoiceTableData = {
+    rows: [
+      {row: [{data: "d1",toolTip:"tT1"},{data: "d1",toolTip:"tT1"}]},
+      {row: [{data: "d1",toolTip:"tT1"},{data: "d1",toolTip:"tT1"}]}
+    ]
+}
+const defautInvoiceHeader: IInvoiceTableHeader = {
+  header:  [
+    {title: "Date",toolTip: "Issue Date"},
+    {title: "Description",toolTip: "Description"},
+    {title: "Operation",toolTip: "Flight/"},
+    {title: "Total",toolTip: "Total in shekel"}
+  ]
+}
+const defaultInvoiceMember : InvoiceMember = {
+  member_id: "000000",
+  family_name: "Yos",
+  first_name: "Levy"
+}
+const defaultInvoiceDetailes: IInvoiceDetailes = {
+  member: defaultInvoiceMember,
+  invoiceNo: "12345",
+  date: (new Date).toLocaleDateString()
+}
+export const defaultInvoiceProps : InvoiceProps = {
+  invoiceItems: defaultInvoiceItems,
+  invoiceHeader: defautInvoiceHeader,
+  invoiceDetailes: defaultInvoiceDetailes
+}

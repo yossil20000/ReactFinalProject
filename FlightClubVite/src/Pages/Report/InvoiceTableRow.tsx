@@ -8,8 +8,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#bff0fd',
     backgroundColor: '#bee0fd',
     borderBottomWidth: 1,
-    alignItems: 'center',
-    height: 24,
+    height: 48,
     textAlign: 'center',
     fontStyle: 'bold',
 
@@ -22,7 +21,8 @@ const styles = StyleSheet.create({
   description: {
     width: '47%',
     borderRightColor: borderColor,
-    borderRightWidth: 1
+    borderRightWidth: 1,
+    textAlign: 'left',
   },
   qyt: {
     width: '10%',
@@ -49,14 +49,7 @@ let stylesArray: Array<{ style: {} }> = [
   }),
   StyleSheet.create({
     style: {
-      width: '47%',
-      borderRightColor: borderColor,
-      borderRightWidth: 1
-    }
-  }),
-  StyleSheet.create({
-    style: {
-      width: '10%',
+      width: '57%',
       borderRightColor: borderColor,
       borderRightWidth: 1
     }
@@ -65,7 +58,8 @@ let stylesArray: Array<{ style: {} }> = [
     style: {
       width: '15%',
       borderRightColor: borderColor,
-      borderRightWidth: 1
+      borderRightWidth: 1,
+      height: "20px"
     }
   }),
   StyleSheet.create({
@@ -78,7 +72,7 @@ function InvoiceTableData(items: ITableRowProps) {
   const rows = items.items.rows.map((item: IInvoiceTableRow, index: number) => 
     <View style={styles.row} key={index}>
       {item.row.map((i, j) => (
-        <Text style={stylesArray[j].style} key={`col${j}`}>"{i.data}"</Text>
+        <Text style={stylesArray[j].style} key={`col${j}`}>{i.data}</Text>
     ))}
     </View>
   )

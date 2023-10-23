@@ -23,6 +23,7 @@ import CalnanderViewDay from '../Components/Calander/CalnanderViewDay'
 import AccountReport from '../Pages/Report/AccountReport.jsx'
 import Invoice from '../Pages/Report/InvoiceReport'
 import InvoicePage from '../Pages/Report/InvoicePage'
+import { IInvoiceTableData, IInvoiceTableHeader, InvoiceProps } from '../Interfaces/IReport'
 
 
 export function PagesRouter() {
@@ -48,12 +49,40 @@ export function PagesRouter() {
       }
       dispatch(setCredentials(login_info as ILoginResult));
   }, []) */
+  const header: IInvoiceTableHeader = {
+    header:  [
+      {title: "Date",toolTip: "Issue Date"},
+      {title: "Description",toolTip: "Description"},
+      {title: "Quantity",toolTip: "How many units"},
+      {title: "Unit Price",toolTip: "Price per units"},
+      {title: "Total",toolTip: "Total in shekel"}
+    ]
+  }
+  const data: IInvoiceTableData = {
+    rows: [
+      {row: [{data: "d1",toolTip:"tT1"},{data: "d1",toolTip:"tT1"}]},
+      {row: [{data: "d1",toolTip:"tT1"},{data: "d1",toolTip:"tT1"}]}
+    ]
+  }
+  const invoiceProps: InvoiceProps = {
+    invoiceItems: data,
+    invoiceHeader: header,
+    invoiceDetailes: {
+      member: {
+        member_id: "123456",
+        family_name: "Yosef",
+        first_name: 'levy'
+      },
+      invoiceNo: "123456",
+      date: (new Date()).toLocaleDateString()
+    }
+  }
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
       <Route path="/calander" element={<CalnanderViewDay title='Yossi'/>} />
       <Route path="/report" element={<AccountReport/>} />
-      <Route path='/invoice' element={<InvoicePage/>}/>
+      <Route path='/invoice' element={<InvoicePage invoiceItems={invoiceProps.invoiceItems} invoiceDetailes={invoiceProps.invoiceDetailes} invoiceHeader={invoiceProps.invoiceHeader}/>}/>
         <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
           <Route path="/home" element={<HomePage></HomePage>} />
         </Route>

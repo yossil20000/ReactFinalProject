@@ -20,7 +20,7 @@ function InvoiceItemTable({items,headers}: ITableRowProps) {
     <View style={styles.tableContainer} key={"invoice"}>
       <InvoiceTableHeader key={"tabHeader"} header={headers.header}/>
       <InvoiceTableData key={""} items={items} headers={headers}/>
-      <InvoiceTableBlackLines rowCounts={4}/>
+      <InvoiceTableBlackLines rowCounts={1}/>
       <InvoiceTableFooter total={34.5}/>
     </View>
   )
