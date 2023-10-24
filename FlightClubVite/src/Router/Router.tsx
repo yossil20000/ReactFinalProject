@@ -62,7 +62,8 @@ export function PagesRouter() {
     rows: [
       {row: [{data: "d1",toolTip:"tT1"},{data: "d1",toolTip:"tT1"}]},
       {row: [{data: "d1",toolTip:"tT1"},{data: "d1",toolTip:"tT1"}]}
-    ]
+    ],
+    total: 0
   }
   const invoiceProps: InvoiceProps = {
     invoiceItems: data,
@@ -74,7 +75,8 @@ export function PagesRouter() {
         first_name: 'levy'
       },
       invoiceNo: "123456",
-      date: (new Date()).toLocaleDateString()
+      date: (new Date()).toLocaleDateString(),
+      mainTitle: "Invoice"
     }
   }
   return (
@@ -82,7 +84,7 @@ export function PagesRouter() {
       <Route path='/' element={<Layout />}>
       <Route path="/calander" element={<CalnanderViewDay title='Yossi'/>} />
       <Route path="/report" element={<AccountReport/>} />
-      <Route path='/invoice' element={<InvoicePage invoiceItems={invoiceProps.invoiceItems} invoiceDetailes={invoiceProps.invoiceDetailes} invoiceHeader={invoiceProps.invoiceHeader}/>}/>
+      <Route path='/invoice' element={<InvoicePage invoiceItems={invoiceProps.invoiceItems} invoiceDetailes={invoiceProps.invoiceDetailes} invoiceHeader={invoiceProps.invoiceHeader} />}/>
         <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
           <Route path="/home" element={<HomePage></HomePage>} />
         </Route>

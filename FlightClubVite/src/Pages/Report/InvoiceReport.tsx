@@ -29,11 +29,11 @@ function InvoiceReport({ invoiceItems,invoiceDetailes,invoiceHeader }: InvoicePr
     <Document>
       <Page size={"A4"} style={styles.page}>
         
-      <InvoiceTitle title="Quarter 1 expense" key={"title"}/>
-        <InvoiceNumber key={"number"} member={invoiceDetailes.member} invoiceNo={invoiceDetailes.invoiceNo} date={invoiceDetailes.date}  />
-        <InvoiceBillTo key={"bill"} member={invoiceDetailes.member} invoiceNo={invoiceDetailes.invoiceNo} date={invoiceDetailes.date} />
+      <InvoiceTitle title={invoiceDetailes.mainTitle} key={"title"}/>
+        <InvoiceNumber key={"number"} member={invoiceDetailes.member} invoiceNo={invoiceDetailes.invoiceNo} date={invoiceDetailes.date} mainTitle={invoiceDetailes.mainTitle} />
+        <InvoiceBillTo key={"bill"} member={invoiceDetailes.member} invoiceNo={invoiceDetailes.invoiceNo} date={invoiceDetailes.date} mainTitle={invoiceDetailes.mainTitle}/>
         <InvoiceItemTable key={"table"} items={ invoiceItems} headers={invoiceHeader}/>
-        <InvoiceFooter key={"footer"} message="Club Account: 12335"/>
+        <InvoiceFooter key={"footer"} message="Baz Club Haifa"/>
       </Page>
     </Document>
   )

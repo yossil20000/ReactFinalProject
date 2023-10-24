@@ -16,7 +16,7 @@ import { SetProperty } from '../../Utils/setProperty';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import InvoicePage from '../Report/InvoicePage';
-import { IInvoiceTableData, IInvoiceTableHeader, IInvoiceTableRow, InvoiceProps ,defaultInvoiceProps} from '../../Interfaces/IReport';
+import { IInvoiceTableData, IInvoiceTableHeader, IInvoiceTableRow, InvoiceProps ,defaultInvoiceDetailes,defaultInvoiceMember,defaultInvoiceProps} from '../../Interfaces/IReport';
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice); 
   const [openFilter, setOpenFilter] = useState(false)
@@ -36,19 +36,21 @@ function UserAccountTab() {
           {title: "Total",toolTip: "Total in shekel"}
         ]
       }
+      let total: number = 0;
       const invoiceItems : IInvoiceTableData = {
         
         rows: transaction.map((i,j) => {
           let row: IInvoiceTableRow;
+          total = total + Number(i.amount);
           row = {row: [{data: (new Date(i.date)).toLocaleDateString(),toolTip:"Issue Date"},{data: COrderDescription.displayTransaction(i.description),toolTip:"Item Description"},{data: i.order.type.toString(),toolTip: "Order"},{data: i.amount.toFixed(2),toolTip: "Total"}]}
           CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.map", j,row)
           return row 
-        })
-      
+        }),
+        total: total
       }
       CustomLogger.info("UserAccountTab/getInvoiceReportData/transaction", transaction)
       CustomLogger.info("UserAccountTab/getInvoiceReportData/invoiceItems_", invoiceItems,invoiceHeader)
-      setInvoiceProps((prev) => ({...prev,invoiceHeader: invoiceHeader,invoiceItems: invoiceItems }))
+      setInvoiceProps((prev) => ({...prev,invoiceHeader: invoiceHeader,invoiceItems: invoiceItems,total:total }))
     }
     catch(error){
       CustomLogger.info("UserAccountTab/getInvoiceReportData/error", error)
@@ -78,6 +80,15 @@ function UserAccountTab() {
       const account: IAccount | undefined = data.data.find((account) => account.member._id === login.member._id);
       
       if (account !== undefined) {
+        const invoiceMember = defaultInvoiceMember;
+        const invoiceDetailes = defaultInvoiceDetailes;
+        invoiceMember.family_name = account.member.family_name
+        invoiceMember.first_name = account.member.first_name
+        invoiceMember.member_id = account.member.member_id
+        invoiceDetailes.member = invoiceMember;
+        invoiceDetailes.invoiceNo = `${Date.now()}/${account.member.member_id}`
+        invoiceDetailes.mainTitle = `Account ${account.account_id} balance: ${account.balance}`
+        setInvoiceProps((prev) => ({...prev,invoiceDetailes: invoiceDetailes }))
         return account
       }
     }
