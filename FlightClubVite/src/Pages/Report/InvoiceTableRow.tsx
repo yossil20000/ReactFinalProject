@@ -76,7 +76,7 @@ function InvoiceTableData(items: ITableRowProps) {
     ))}
     </View>
   )
-  { console.log("InvoiceTableData/rows", rows) }
+  { console.log("InvoiceTableData/rows", rows,items) }
   return (
     <>
       {rows}

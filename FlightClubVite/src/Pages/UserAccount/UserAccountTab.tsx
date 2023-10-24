@@ -6,7 +6,7 @@ import DatePickerDate from '../../Components/Buttons/DatePickerDate';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import GeneralDrawer from '../../Components/GeneralDrawer';
 import { useFetchAccountSearchQuery } from '../../features/Account/accountApiSlice'
-import { IAccount } from '../../Interfaces/API/IAccount';
+import { COrderDescription, IAccount } from '../../Interfaces/API/IAccount';
 import { ITransaction } from '../../Interfaces/API/IClub';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
@@ -40,12 +40,13 @@ function UserAccountTab() {
         
         rows: transaction.map((i,j) => {
           let row: IInvoiceTableRow;
-          row = {row: [{data: (new Date(i.date)).toLocaleDateString(),toolTip:"Issue Date"},{data: i.description,toolTip:"Item Description"},{data: i.order.type.toString(),toolTip: "Order"},{data: i.amount.toFixed(2),toolTip: "Total"}]}
+          row = {row: [{data: (new Date(i.date)).toLocaleDateString(),toolTip:"Issue Date"},{data: COrderDescription.displayTransaction(i.description),toolTip:"Item Description"},{data: i.order.type.toString(),toolTip: "Order"},{data: i.amount.toFixed(2),toolTip: "Total"}]}
           CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.map", j,row)
           return row 
         })
       
       }
+      CustomLogger.info("UserAccountTab/getInvoiceReportData/transaction", transaction)
       CustomLogger.info("UserAccountTab/getInvoiceReportData/invoiceItems_", invoiceItems,invoiceHeader)
       setInvoiceProps((prev) => ({...prev,invoiceHeader: invoiceHeader,invoiceItems: invoiceItems }))
     }
