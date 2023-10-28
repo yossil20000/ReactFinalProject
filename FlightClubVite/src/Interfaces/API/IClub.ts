@@ -54,7 +54,7 @@ export enum Transaction_Type {
   TRANSFER = "Transfer"
 }
 export enum PaymentMethod {
-  
+
   VISA = "VISA",
   CHECK = "CHECK",
   TRANSFER = "TRANSFER",
@@ -103,6 +103,34 @@ export interface ITransactionBase {
 
 export interface ITransaction extends ITransactionBase {
   _id: string
+}
+export class CTransaction {
+
+  static getAccountSign = (item: ITransaction, accountId: string | undefined): string => {
+    CustomLogger.info("CTransaction/item", item, item.type, Transaction_Type.CREDIT)
+    if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toUpperCase()) {
+      return 'gray';
+    }
+    if (item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toUpperCase())
+    return "red"
+    else if (accountId !== undefined && item.source.includes(accountId) )
+      return "red"
+    else
+      return "green";
+
+  }
+
+  static getAmount = (item: ITransaction, accountId: string | undefined): number => {
+    if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toLocaleUpperCase())
+      return item.amount;
+    if (item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toLocaleUpperCase())
+    return item.amount * -1
+    else if (accountId !== undefined && item.source.includes(accountId) )
+      return item.amount * -1
+    else
+      return item.amount
+
+  }
 }
 
 

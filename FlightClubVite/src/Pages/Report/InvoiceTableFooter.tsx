@@ -32,7 +32,7 @@ function InvoiceTableFooter({ total }: ITableFooterProps) {
   return (
     <View style={styles.row} >
       <Text style={styles.description}>Total</Text>
-      <Text style={styles.total}>{total}</Text>
+      <Text style={styles.total}>{total.toFixed(2)}</Text>
     </View>
   )
 }

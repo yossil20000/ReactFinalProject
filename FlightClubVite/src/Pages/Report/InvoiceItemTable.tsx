@@ -21,7 +21,7 @@ function InvoiceItemTable({items,headers}: ITableRowProps) {
       <InvoiceTableHeader key={"tabHeader"} header={headers.header}/>
       <InvoiceTableData key={""} items={items} headers={headers}/>
       <InvoiceTableBlackLines rowCounts={1}/>
-      <InvoiceTableFooter total={0}/>
+      <InvoiceTableFooter total={items.total}/>
     </View>
   )
 }

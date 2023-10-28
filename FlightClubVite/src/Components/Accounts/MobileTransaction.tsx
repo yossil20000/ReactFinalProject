@@ -1,7 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Fab, Grid, SvgIcon, SvgIconProps, Tooltip, Typography } from '@mui/material'
 import React, { useMemo } from 'react'
 import { IOrderType, OT_REF } from '../../Interfaces/API/IAccount'
-import { ITransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub'
+import { CTransaction, ITransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub'
 import FlightIcon from '@mui/icons-material/Flight';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -119,8 +119,8 @@ export const getValue = (val: number | undefined): string => {
   return (val !== undefined && val > 0) ? "green" : 'red'
 }
 function MobileTransaction({ item, accountId }: MobileTransactionProps) {
-
-  const getAccountSign = (): string => {
+console.log("MobileTransaction/transaction,accountId",item,accountId)
+/*   const getAccountSign = (): string => {
     CustomLogger.info("MobileTransaction/item", item, item.type, Transaction_Type.CREDIT)
     if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toUpperCase()) {
       return 'gray';
@@ -140,7 +140,7 @@ function MobileTransaction({ item, accountId }: MobileTransactionProps) {
       return item.amount
 
   }
-
+ */
   return (
     <Box margin={'0.5ch'}>
       <Accordion>
@@ -157,7 +157,7 @@ function MobileTransaction({ item, accountId }: MobileTransactionProps) {
             <Grid item xs={2} sm={2} alignItems={"center"} justifyItems={"left"}>
               <Box display={"flex"} alignSelf={"baseline"}>
                 <ShekelIcon sx={{ fontSize: "0.7rem" }} />
-                <Typography style={{ color: getAccountSign() }}>{getAmount()}</Typography>
+                <Typography style={{ color: CTransaction.getAccountSign(item,accountId) }}>{CTransaction.getAmount(item,accountId)}</Typography>
               </Box>
             </Grid>
 

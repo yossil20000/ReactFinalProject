@@ -1,5 +1,4 @@
 
-import { ThirtyFpsRounded } from "@mui/icons-material"
 import { ITransaction } from "./IClub"
 import { IFilter } from "./IFilter"
 import IMember, { MemberType } from "./IMember"
