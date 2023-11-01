@@ -1,3 +1,4 @@
+import '../../Types/date.extensions';
 import { Box, Divider, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, Typography } from '@mui/material';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useAppSelector } from '../../app/hooks';
@@ -17,6 +18,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import InvoicePage from '../Report/InvoicePage';
 import { IInvoiceTableData, IInvoiceTableHeader, IInvoiceTableRow, InvoiceProps, defaultInvoiceDetailes, defaultInvoiceMember, defaultInvoiceProps } from '../../Interfaces/IReport';
+import QuarterButtons from '../../Components/Buttons/QuarterButtons';
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)
@@ -27,61 +29,65 @@ function UserAccountTab() {
   const [invoiceProps, setInvoiceProps] = useState<InvoiceProps>(defaultInvoiceProps);
   const [transcations, setTransactions] = useState<ITransaction[]>([])
   const [account, setAccount] = useState<IAccount | undefined>(undefined)
-  const [balance,setBalance] = useState<number>(0);
-/*   const getInvoiceReportData = (transaction: ITransaction[]) => {
-    try {
-      const invoiceHeader: IInvoiceTableHeader = {
-        header: [
-          { title: "Date", toolTip: "Issue Date" },
-          { title: "Description", toolTip: "Description" },
-          { title: "Operation", toolTip: "Flight/" },
-          { title: "Total", toolTip: "Total in shekel" }
-        ]
+  const [balance, setBalance] = useState<number>(0);
+  let date_s = (new Date()).getStartQuarterDate(2023, 4);
+  console.log("getStartQuarterDate/start", date_s.toLocaleString())
+  let date_e = (new Date()).getEndQuarterDate(2023, 4);
+  console.log("getStartQuarterDate/end", date_e.toLocaleString())
+  /*   const getInvoiceReportData = (transaction: ITransaction[]) => {
+      try {
+        const invoiceHeader: IInvoiceTableHeader = {
+          header: [
+            { title: "Date", toolTip: "Issue Date" },
+            { title: "Description", toolTip: "Description" },
+            { title: "Operation", toolTip: "Flight/" },
+            { title: "Total", toolTip: "Total in shekel" }
+          ]
+        }
+        let totalAmount: number = 0;
+        const invoiceItems: IInvoiceTableData = {
+  
+          rows: transaction.map((i, j) => {
+            let row: IInvoiceTableRow;
+            let amount: number = 10
+            try {
+              amount = CTransaction.getAmount(i, account?.account_id)
+              CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.getAmount", amount)
+            }
+            catch (error) {
+              CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.exception", j, error)
+            }
+            totalAmount = totalAmount + CTransaction.getAmount(i,account?.account_id);
+            row = { row: [{ data: (new Date(i.date)).toLocaleDateString(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i,account?.account_id).toFixed(2), toolTip: "Total" }] }
+            CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.map", j, row)
+            return row
+          }),
+          total: totalAmount
+        }
+        CustomLogger.info("UserAccountTab/ReportData/transaction", transaction)
+        CustomLogger.info("UserAccountTab/ReportData/invoiceItems_", invoiceItems, invoiceHeader)
+        setInvoiceProps((prev) => ({ ...prev, invoiceHeader: invoiceHeader, invoiceItems: invoiceItems, total: totalAmount }))
       }
-      let totalAmount: number = 0;
-      const invoiceItems: IInvoiceTableData = {
-
-        rows: transaction.map((i, j) => {
-          let row: IInvoiceTableRow;
-          let amount: number = 10
-          try {
-            amount = CTransaction.getAmount(i, account?.account_id)
-            CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.getAmount", amount)
-          }
-          catch (error) {
-            CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.exception", j, error)
-          }
-          totalAmount = totalAmount + CTransaction.getAmount(i,account?.account_id);
-          row = { row: [{ data: (new Date(i.date)).toLocaleDateString(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i,account?.account_id).toFixed(2), toolTip: "Total" }] }
-          CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.map", j, row)
-          return row
-        }),
-        total: totalAmount
+      catch (error) {
+        CustomLogger.info("UserAccountTab/getInvoiceReportData/error", error)
       }
-      CustomLogger.info("UserAccountTab/ReportData/transaction", transaction)
-      CustomLogger.info("UserAccountTab/ReportData/invoiceItems_", invoiceItems, invoiceHeader)
-      setInvoiceProps((prev) => ({ ...prev, invoiceHeader: invoiceHeader, invoiceItems: invoiceItems, total: totalAmount }))
-    }
-    catch (error) {
-      CustomLogger.info("UserAccountTab/getInvoiceReportData/error", error)
-    }
-
-  } */
-/*   const getTransaction = useMemo((): ITransaction[] | [] => {
-    CustomLogger.info("UserAccountTab/getTransaction/data", data?.data)
-
-    if (data?.data !== null && data?.data !== undefined) {
-      CustomLogger.info("UserAccountTab/getTransaction/dataok", data?.data, login.member._id)
-      const account: IAccount | undefined = data?.data.find((a) => a.member._id === login.member._id);
-      if (account !== undefined) {
-        CustomLogger.info("UserAccountTab/getTransaction/accountFound", account, account.transactions)
-        setTransactions(account.transactions)
-        getInvoiceReportData(account.transactions)
-        return account.transactions
+  
+    } */
+  /*   const getTransaction = useMemo((): ITransaction[] | [] => {
+      CustomLogger.info("UserAccountTab/getTransaction/data", data?.data)
+  
+      if (data?.data !== null && data?.data !== undefined) {
+        CustomLogger.info("UserAccountTab/getTransaction/dataok", data?.data, login.member._id)
+        const account: IAccount | undefined = data?.data.find((a) => a.member._id === login.member._id);
+        if (account !== undefined) {
+          CustomLogger.info("UserAccountTab/getTransaction/accountFound", account, account.transactions)
+          setTransactions(account.transactions)
+          getInvoiceReportData(account.transactions)
+          return account.transactions
+        }
       }
-    }
-    return []
-  }, [data]) */
+      return []
+    }, [data]) */
 
 
   useEffect(() => {
@@ -109,24 +115,24 @@ function UserAccountTab() {
 
           rows: transcations.map((i, j) => {
             let row: IInvoiceTableRow;
-           /*  let amount: number = 0
-            try {
-              amount = CTransaction.getAmount(i, account?.account_id)
-              CustomLogger.info("UserAccountTab/ReportData/transcations.getAmount", amount)
-            }
-            catch (error) {
-              CustomLogger.info("UserAccountTab/ReportData/transcations.exception", j, error)
-            } */
-            total = total + CTransaction.getAmount(i,account.account_id);
-            row = { row: [{ data: (new Date(i.date)).toLocaleDateString(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i,account.account_id).toFixed(2), toolTip: "Total" }] }
-            CustomLogger.info("UserAccountTab/ReportData/transcations.map", i,j, row)
+            /*  let amount: number = 0
+             try {
+               amount = CTransaction.getAmount(i, account?.account_id)
+               CustomLogger.info("UserAccountTab/ReportData/transcations.getAmount", amount)
+             }
+             catch (error) {
+               CustomLogger.info("UserAccountTab/ReportData/transcations.exception", j, error)
+             } */
+            total = total + CTransaction.getAmount(i, account.account_id);
+            row = { row: [{ data: (new Date(i.date)).toLocaleDateString(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i, account.account_id).toFixed(2), toolTip: "Total" }] }
+            CustomLogger.info("UserAccountTab/ReportData/transcations.map", i, j, row)
             return row
           }),
           total: total
         }
         CustomLogger.info("UserAccountTab/ReportData/transaction", transcations)
-        CustomLogger.info("UserAccountTabeReportData/invoiceProps", invoiceItems, invoiceHeader,invoiceDetailes)
-        setInvoiceProps((prev) => ({ ...prev, invoiceHeader: invoiceHeader, invoiceItems: invoiceItems, total: total ,invoiceDetailes: invoiceDetailes}))
+        CustomLogger.info("UserAccountTabeReportData/invoiceProps", invoiceItems, invoiceHeader, invoiceDetailes)
+        setInvoiceProps((prev) => ({ ...prev, invoiceHeader: invoiceHeader, invoiceItems: invoiceItems, total: total, invoiceDetailes: invoiceDetailes }))
       }
       catch (error) {
         CustomLogger.info("UserAccountTab/ReportData/error", error)
@@ -134,12 +140,12 @@ function UserAccountTab() {
 
     }
 
-  }, [account, transcations,balance])
+  }, [account, transcations, balance])
   useEffect(() => {
     if (data?.data !== null && data?.data !== undefined) {
       CustomLogger.info("UserAccountTab/useEffect/data?.data", data?.data)
       const account: IAccount | undefined = data.data.find((account) => account.member._id === login.member._id);
-      
+
       if (account !== undefined) {
         CustomLogger.info("UserAccountTab/useEffect/account.balance", account.balance)
         setBalance(account.balance)
@@ -154,7 +160,7 @@ function UserAccountTab() {
                 invoiceDetailes.mainTitle = `Account ${account.account_id} balance: ${account.balance}`
                 setInvoiceProps((prev) => ({...prev,invoiceDetailes: invoiceDetailes })) */
         setAccount(account);
-        
+
       }
     }
 
@@ -209,6 +215,9 @@ function UserAccountTab() {
                               <DatePickerDate value={filter.to === undefined ? new Date() : filter.to} param={"to"} lable='To Date' onChange={onDateChanged} />
                             </ListItemButton>
                           </ListItem>
+                          <ListItem key={"qurater"}>
+                            <QuarterButtons quarter={(new Date()).getQuarter()} year={(new Date()).getFullYear()}  />
+                          </ListItem>
                         </List>
                       </GeneralDrawer>
                     </Box>
@@ -222,7 +231,7 @@ function UserAccountTab() {
                     </Box>
                     <Box>
                       <Typography noWrap={false} style={{ color: getSign(balance) }}>{balance.toFixed(2)}</Typography>
-                      
+
                     </Box>
                   </Box>
                 </Grid>

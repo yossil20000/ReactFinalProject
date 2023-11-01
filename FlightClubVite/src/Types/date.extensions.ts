@@ -25,8 +25,26 @@ declare global {
       compareTime(date: Date): number;
       getHoursDiff(date: Date) : number;
       getLocal24Hours() : string;
+      getStartQuarterDate(year: number ,quarter: number): Date
+      getEndQuarterDate(year: number ,quarter: number): Date
+      getQuarter() : number
    }
 }
+Date.prototype.getQuarter = function() : number {
+   return Math.floor(this.getMonth() / 3) + 1
+}
+Date.prototype.getStartQuarterDate = function(year:number ,quarter: number) : Date {
+   let step = (quarter -1);
+   return new Date(year,step * 3 ,1,0,0,0,0);
+}
+Date.prototype.getEndQuarterDate = function(year:number ,quarter: number) : Date {
+   let step = (quarter -1);
+   let month = (step * 3) + 3;
+   let lastDay = new Date(year,month,0,23,59,59,999);
+   console.log("QuarterDate",step,month,lastDay)
+   return lastDay;
+}
+
 Date.prototype.getLocal24Hours = function(isLong: boolean = false) : string {
    if(isLong)
       return this.toLocaleTimeString("en-US",{hour12: false})
