@@ -51,5 +51,14 @@ export function from_to_Filter(today: Date): any {
     from: (today.addDays(-30)).getStartDayDate(),
   }
 };
+export function Current_Quarter_Filter(): any {
+  const today = new Date();
+  let filter = {
+    to: today.getEndQuarterDate(today.getFullYear(),today.getQuarter()),
+    from: today.getStartQuarterDate(today.getFullYear(),today.getQuarter()),
+  }
+  console.log("Current_Quarter_Filter/filter",filter)
+  return filter;
+};
 
 

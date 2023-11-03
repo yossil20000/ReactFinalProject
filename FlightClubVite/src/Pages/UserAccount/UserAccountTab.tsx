@@ -12,19 +12,19 @@ import { CTransaction, ITransaction } from '../../Interfaces/API/IClub';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import { from_to_Filter, IOrderTableFilter } from '../../Utils/filtering';
+import { Current_Quarter_Filter, from_to_Filter, IOrderTableFilter } from '../../Utils/filtering';
 import { SetProperty } from '../../Utils/setProperty';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import InvoicePage from '../Report/InvoicePage';
 import { IInvoiceTableData, IInvoiceTableHeader, IInvoiceTableRow, InvoiceProps, defaultInvoiceDetailes, defaultInvoiceMember, defaultInvoiceProps } from '../../Interfaces/IReport';
-import QuarterButtons from '../../Components/Buttons/QuarterButtons';
+import QuarterButtons, { IQuarterFilter } from '../../Components/Buttons/QuarterButtons';
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)
   const [accountFilter, setAccountFilter] = useState({ member: [login.member._id] })
   const { data, isLoading, isError, error } = useFetchAccountSearchQuery(accountFilter);
-  const [filter, setFilter] = useState<IOrderTableFilter>(from_to_Filter(new Date()));
+  const [filter, setFilter] = useState<IOrderTableFilter>(Current_Quarter_Filter());
   const [openSaveAsPDF, setOpenSaveAsPDF] = useState(false);
   const [invoiceProps, setInvoiceProps] = useState<InvoiceProps>(defaultInvoiceProps);
   const [transcations, setTransactions] = useState<ITransaction[]>([])
@@ -34,6 +34,10 @@ function UserAccountTab() {
   console.log("getStartQuarterDate/start", date_s.toLocaleString())
   let date_e = (new Date()).getEndQuarterDate(2023, 4);
   console.log("getStartQuarterDate/end", date_e.toLocaleString())
+  console.log("getStartQuarterDate/filter", filter.from )
+  const OnQuarterFilterChanged = (filter: IQuarterFilter) => {
+    console.log("OnQuarterFilterChanged/filter",filter)
+  }
   /*   const getInvoiceReportData = (transaction: ITransaction[]) => {
       try {
         const invoiceHeader: IInvoiceTableHeader = {
@@ -167,7 +171,7 @@ function UserAccountTab() {
   }, [data])
 
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.log("UserAccountTab/onDateChanged", key, value, filter)
+    CustomLogger.info("UserAccountTab/onDateChanged", key, value, filter)
     if (value === null) return;
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
@@ -181,7 +185,7 @@ function UserAccountTab() {
         break;
     }
   }
-
+  CustomLogger.log("UserAccountTab/filter", filter)
 
   return (
     <Box fontSize={{ xs: "1rem", md: "1.2rem" }}>
@@ -216,7 +220,7 @@ function UserAccountTab() {
                             </ListItemButton>
                           </ListItem>
                           <ListItem key={"qurater"}>
-                            <QuarterButtons quarter={(new Date()).getQuarter()} year={(new Date()).getFullYear()}  />
+                            <QuarterButtons quarterFilter={{quarter:(new Date()).getQuarter() ,year:(new Date()).getFullYear()}} onChange={OnQuarterFilterChanged}  />
                           </ListItem>
                         </List>
                       </GeneralDrawer>
