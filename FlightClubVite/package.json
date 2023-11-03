@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite --port 4000",
+    "client": "vite --port 4000",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "https": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem vite --port 4000"
@@ -34,7 +34,7 @@
     "react-redux": "^8.0.2",
     "react-responsive": "^9.0.0-beta.10",
     "react-router-dom": "^6.4.2",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^3.0.1",
     "react-to-pdf": "^0.0.14",
     "styled-components": "^5.3.5"
   },
