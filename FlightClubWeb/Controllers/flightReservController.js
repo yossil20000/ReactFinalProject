@@ -134,7 +134,7 @@ exports.reservation_delete = function (req, res, next) {
 				log.info("FlightReservation.findById/doc", doc)
 				async.parallel({
 					member_delete_flight: function (callback) {
-						Member.findOneAndUpdate(doc.member._id, { $pull: { flight_reservs: doc._id } }).exec(callback);
+						Member.findOneAndUpdate({_id: doc.member._id}, { $pull: { flight_reservs: doc._id } }).exec(callback);
 					},
 					device_delete_flight: function (callback) {
 						Device.findById(doc.device._id)
@@ -276,8 +276,9 @@ exports.reservation_update = [
 				return next(new ApplicationError("reservation_update", 400, "CONTROLLER.FLIGHT_RESERVE.STATUS.VALIDATION", { name: "ExpressValidator", errors }));
 			}
 			else {
-				const results =  await  FlightReservation.findOneAndUpdate(req.body._id, { date_from: req.body.date_from, date_to: req.body.date_to ,timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())}).populate('device member')
-				notifyMessage = `Flight from: ${results.date_from} to: ${results.date_to} \n on device: ${results.device.device_id} by: ${results.member.full_name}`
+				
+				const results =  await  FlightReservation.findOneAndUpdate({_id: req.body._id}, { date_from: req.body.date_from, date_to: req.body.date_to ,timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())}).populate('device member')
+				notifyMessage = `Flight from: ${results.date_from} to: ${results.date_to} \n Changed to Flight From: ${req.body.date_from} To: ${req.body.date_to}\n on device: ${results.device.device_id} by: ${results.member.full_name}`
 						await sendNotification(constants.NotifyEvent.FlightReservation,constants.NotifyOn.CHANGED, notifyMessage)
 						return res.status(201).json({ success: true, errors: [], data: [] });
 						/* FlightReservation.findOneAndUpdate(req.body._id, { date_from: req.body.date_from, date_to: req.body.date_to ,timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())}, (err, results) => {
