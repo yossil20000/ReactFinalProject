@@ -1,5 +1,5 @@
 import { Grid, TextField } from "@mui/material"
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider,  MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { useContext } from "react";
 import { MembersContext, MembersContextType } from "../../../app/Context/MemberContext";
@@ -79,11 +79,11 @@ function GeneralTab() {
         <Grid item xs={12} sm={6}>
           <Grid item xs={12}>
             <LocalizationProvider dateAdapter={AdapterLuxon}>
-              <MobileDatePicker
+              <MobileDateTimePicker 
+                views={['year','month','day']}
                 label="Date Of Birth"
                 value={selectedItem?.date_of_birth === null ? new Date() : selectedItem?.date_of_birth}
                 onChange={(newValue) => handleTimeChange(newValue, "date_of_birth")}
-                renderInput={(params) => <TextField {...params} fullWidth={true} />}
               />
             </LocalizationProvider>
           </Grid>
@@ -99,9 +99,7 @@ function GeneralTab() {
             selectedItem={{ lable: selectedItem?.gender === undefined ? "" : selectedItem?.gender.toString(), _id: "", description: "" }} />
         </Grid>
         <Grid item xs={12}>
-
         </Grid>
-
       </Grid>
     </>
   )

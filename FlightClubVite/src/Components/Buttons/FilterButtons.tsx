@@ -1,5 +1,5 @@
 import { alpha,Box, Button, createTheme, IconButton, TextField, ThemeProvider, Toolbar, Tooltip, useMediaQuery } from "@mui/material";
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import SplitedButton from "./SplitedButton";
@@ -60,18 +60,15 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
         {isByDateRange || dateRangeBP ? (
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <ThemeProvider theme={defaultMaterialThem}>
-              <MobileDatePicker
+              <MobileDateTimePicker 
                 label="From Date"
-                value={filterDate.from}
+                value={DateTime.fromJSDate(filterDate.from)}
                 onChange={handleFromDateFilterChange}
-                renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
               />
-              <MobileDatePicker
-
+              <MobileDateTimePicker 
                 label="To Date"
-                value={filterDate.to}
+                value={DateTime.fromJSDate(filterDate.to)}
                 onChange={handleToDateFilterChange}
-                renderInput={(params) => <TextField {...params} size={'small'} color={'error'} sx={{ label: { color: "#2196f3" }, ml: { sm: 1 } }} />}
               />
             </ThemeProvider>
 

@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
 import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box } from "@mui/material";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -117,13 +117,10 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
             <Box sx={{ marginLeft: "0px", marginTop: '1ch' }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    disableMaskedInput
+                  <MobileDateTimePicker
                     label="From Date"
-                    mask=''
-                    value={reservationCreate.date_from}
+                    value={DateTime.fromJSDate(reservationCreate?.date_from == undefined ? new Date() : reservationCreate?.date_from)}
                     onChange={handleFromDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -133,13 +130,10 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
             <Box >
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    mask=''
-                    disableMaskedInput
+                  <MobileDateTimePicker
                     label="To Date"
-                    value={reservationCreate.date_to}
+                    value={DateTime.fromJSDate(reservationCreate.date_to)}
                     onChange={handleToDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0"}} />}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -151,38 +145,38 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
         <TransitionAlert {...dateErrorAlert}/>
       </Item>
     </Grid> */}
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop:'2ch' }}>
-              <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{marginTop: '2ch'}}>
-              <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
+          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
+            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
           </Grid>
-          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%" ,marginTop:'2ch'}}>
-              <TextField
-                disabled
-                sx={{ marginLeft: "0px", width: "100%" }}
-                name="description"
-                id="outlined-disabled"
-                label="Status"
-                value={deviceDescription}
-                multiline
-              />
+          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
+            <TextField
+              disabled
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="description"
+              id="outlined-disabled"
+              label="Status"
+              value={deviceDescription}
+              multiline
+            />
           </Grid>
-          <Grid item xs={12} sx={{ marginLeft: "0px", width: "100%", marginTop:'2ch' }}>
-              <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id} />
+          <Grid item xs={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
+            <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id} />
           </Grid>
           {validationAlert.map((item) => (
-            <Grid item xs={12} sx={{marginTop: '2ch'}}>
+            <Grid item xs={12} sx={{ marginTop: '2ch' }}>
               <ValidationAlert {...item} />
             </Grid>
           ))}
-          <Grid item xs={12} md={6} xl={6} sx={{marginTop:'2ch'}}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
             <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
               Cancle
             </Button>
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{marginTop:'2ch'}}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
             <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnSave}>
               Save

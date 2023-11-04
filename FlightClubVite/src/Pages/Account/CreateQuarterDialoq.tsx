@@ -1,6 +1,6 @@
 import { useTheme } from '@emotion/react'
 import { Dialog, DialogTitle, DialogContent, Card, CardContent, Grid, Typography, Divider, TextField, CardActions, Button, Checkbox, FormControlLabel, ThemeProvider } from '@mui/material'
-import { LocalizationProvider, DateTimePicker, DatePicker } from '@mui/x-date-pickers'
+import { LocalizationProvider, DateTimePicker, DatePicker, MobileDateTimePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { DateTime } from 'luxon'
 import React, { useCallback, useState } from 'react'
@@ -116,13 +116,10 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
                 <Item sx={{ marginLeft: "0px" }}>
                   <LocalizationProvider dateAdapter={AdapterLuxon}>
                     <ThemeProvider theme={theme}>
-                      <DatePicker
-                        disableMaskedInput
+                      <MobileDateTimePicker 
                         label="Date"
-                        mask=''
-                        value={selectedMembers.date}
+                        value={DateTime.fromJSDate(selectedMembers.date)}
                         onChange={handleDateChange}
-                        renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                       />
                     </ThemeProvider>
                   </LocalizationProvider>

@@ -1,5 +1,5 @@
-import { Grid, TextField } from "@mui/material"
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { Grid } from "@mui/material"
+import { LocalizationProvider,  MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { useCallback, useContext, useMemo } from "react";
 import { MembersContext, MembersContextType } from "../../../app/Context/MemberContext";
@@ -22,35 +22,35 @@ const SetProperty = (obj: any, path: string, value: any): any => {
 }
 function PermissionsTab() {
 
-  const { setSelectedItem: setSelectedMember, selectedItem : selectedMember, members } = useContext(MembersContext) as MembersContextType;
-  const getSelectedMemberMemberShip = useMemo(() : InputComboItem => {
-    CustomLogger.log("PermissionsTab/getSelectedMemberMemberShip",selectedMember)  
-    let initialMembership : InputComboItem = {
-        _id: selectedMember?.membership ?  selectedMember?.membership._id : "",
-        lable: selectedMember?.membership ?  selectedMember?.membership.rank.toString() : "",
-        description: ""
-      }
-      CustomLogger.info("PermissionsTab/getSelectedMemberMemberShip/initial",initialMembership) 
-      return initialMembership;
-  },[selectedMember])
+  const { setSelectedItem: setSelectedMember, selectedItem: selectedMember, members } = useContext(MembersContext) as MembersContextType;
+  const getSelectedMemberMemberShip = useMemo((): InputComboItem => {
+    CustomLogger.log("PermissionsTab/getSelectedMemberMemberShip", selectedMember)
+    let initialMembership: InputComboItem = {
+      _id: selectedMember?.membership ? selectedMember?.membership._id : "",
+      lable: selectedMember?.membership ? selectedMember?.membership.rank.toString() : "",
+      description: ""
+    }
+    CustomLogger.info("PermissionsTab/getSelectedMemberMemberShip/initial", initialMembership)
+    return initialMembership;
+  }, [selectedMember])
   const handleTimeChange = useCallback((newValue: Date | null | undefined, name: string) => {
     CustomLogger.log(`handleTimeChange/newValue , key`, newValue, name);
     if (newValue === null || newValue === undefined)
       return;
     const newObj: IMemberAdmin = SetProperty(selectedMember, name, newValue) as IMemberAdmin;
     setSelectedMember(newObj)
-  },[selectedMember]);
+  }, [selectedMember]);
   const onComboChanged = useCallback((item: InputComboItem, prop: string): void => {
     CustomLogger.log("/item", item, prop);
     const newObj: IMemberAdmin = SetProperty(selectedMember, prop, item.lable) as IMemberAdmin;
     setSelectedMember(newObj)
-  },[selectedMember])
+  }, [selectedMember])
 
   const onRoleChanged = useCallback((item: LabelType[], prop: string): void => {
     CustomLogger.log("onComboChanged/item", item, prop);
     const newObj: IMemberAdmin = SetProperty(selectedMember, prop, item.map((i) => i.name)) as IMemberAdmin;
     setSelectedMember(newObj)
-  },[selectedMember]);
+  }, [selectedMember]);
 
   const labelsFromRole = useCallback((): LabelType[] => {
     const lables: LabelType[] = Object.keys(Role).filter((v) => isNaN(Number(v))).
@@ -63,7 +63,7 @@ function PermissionsTab() {
         }
       })
     return lables;
-  },[])
+  }, [])
 
   const getSelectedRoles = useCallback((): LabelType[] => {
 
@@ -76,34 +76,34 @@ function PermissionsTab() {
 
     }
     return [];
-  },[labelsFromRole,selectedMember?.role])
- 
+  }, [labelsFromRole, selectedMember?.role])
+
   const onMemberShipChanged = useCallback((item: IMembership) => {
-    CustomLogger.log("onMemberShipChanged/selectedMember",selectedMember)
+    CustomLogger.log("onMemberShipChanged/selectedMember", selectedMember)
     const newObj: IMemberAdmin = SetProperty(selectedMember, "membership", item) as IMemberAdmin;
     setSelectedMember(newObj)
-    CustomLogger.info("onMemberShipChanged/newObj",newObj)
-  },[selectedMember])
+    CustomLogger.info("onMemberShipChanged/newObj", newObj)
+  }, [selectedMember])
   return (
     <>
       <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} alignContent={'start'}>
         <Grid item xs={12}>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <MobileDatePicker
+            <MobileDateTimePicker
+              views={['year', 'month', 'day']}
               label="Date of join"
               value={selectedMember?.date_of_join === null ? new Date() : selectedMember?.date_of_join}
               onChange={(newValue) => handleTimeChange(newValue, "date_of_join")}
-              renderInput={(params) => <TextField {...params} fullWidth={true} />}
             />
           </LocalizationProvider>
         </Grid>
         <Grid item xs={12} display={selectedMember?.status === Status.Active ? "none" : ""}>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <MobileDatePicker
+            <MobileDateTimePicker
+              views={['year', 'month', 'day']}
               label="Date of leave"
               value={selectedMember?.date_of_leave === null ? new Date() : selectedMember?.date_of_leave}
               onChange={(newValue) => handleTimeChange(newValue, "date_of_leave")}
-              renderInput={(params) => <TextField {...params} fullWidth={true} />}
             />
           </LocalizationProvider>
         </Grid>
@@ -114,13 +114,11 @@ function PermissionsTab() {
           <MemberTypeCombo onChanged={(item) => onComboChanged(item, "member_type")} source={source} selectedItem={getSelectedItem(selectedMember?.member_type === undefined ? "" : selectedMember?.member_type.toString())} />
         </Grid>
         <Grid item xs={12} sm={12}>
-
           <CheckSelect selectedItems={getSelectedRoles()} items={labelsFromRole()} onSelected={onRoleChanged} label={"Roles"} property={'role.roles'} />
         </Grid>
         <Grid item xs={12} sm={12}>
-          <MembershipCombo onChanged={onMemberShipChanged} source={"Permission/MembershipCombo"} selectedItem={getSelectedMemberMemberShip}/>
+          <MembershipCombo onChanged={onMemberShipChanged} source={"Permission/MembershipCombo"} selectedItem={getSelectedMemberMemberShip} />
         </Grid>
-
       </Grid>
     </>
   )

@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
 import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, CircularProgress } from "@mui/material";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, DateTimePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, Validat
 import { useUpdateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
 import { IReservationUpdate, ReservationUpdate } from "../../Interfaces/API/IReservation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 export interface UpdateReservationDialogProps {
   value: IReservationUpdate;
@@ -110,13 +111,11 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
             <Item sx={{ marginLeft: "0px" }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    disableMaskedInput
+                  <MobileDateTimePicker 
                     label="From Date"
-                    mask=''
-                    value={reservationUpdate.date_from}
+                    value={DateTime.fromJSDate(reservationUpdate.date_from)}
                     onChange={handleFromDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
+                    
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -124,15 +123,12 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item >
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    mask=''
-                    disableMaskedInput
+                  <MobileDateTimePicker
                     label="To Date"
-                    value={reservationUpdate.date_to}
+                    value={DateTime.fromJSDate(reservationUpdate.date_to)}
                     onChange={handleToDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, }} />}
                   />
                 </ThemeProvider>
               </LocalizationProvider>

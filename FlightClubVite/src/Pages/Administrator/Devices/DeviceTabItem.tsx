@@ -4,7 +4,7 @@ import IDevice, { DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
-import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
+import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import DeviceStatusCombo from '../../../Components/Devices/DeviceStatusCombo'
 import DeviceMTCombo from '../../../Components/Devices/DeviceMTCombo'
@@ -269,11 +269,11 @@ function DeviceTabItem() {
                 <Grid container spacing={1} columns={{ xs: 2, sm: 2, md: 3 }}>
                   <Grid item xs={1}>
                     <LocalizationProvider dateAdapter={AdapterLuxon}>
-                      <MobileDatePicker
+                      <MobileDateTimePicker
+                        views={['year', 'month', 'day']}
                         label="Next Service"
                         value={selectedItem?.due_date === null ? new Date() : selectedItem?.due_date}
                         onChange={(newValue) => handleTimeChange(newValue, "due_date")}
-                        renderInput={(params) => <TextField {...params} fullWidth={true} />}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -298,7 +298,6 @@ function DeviceTabItem() {
                     <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={{ lable: selectedItem?.status === undefined ? "" : selectedItem?.status.toString(), _id: "", description: "" }} />
                   </Grid>
                 </Grid>
-
               </AccordionDetails>
             </Accordion>
             <Accordion >
@@ -309,7 +308,6 @@ function DeviceTabItem() {
                   </Grid>
                 </Grid>
               </AccordionSummary>
-
               <AccordionDetails>
                 <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
                   <Grid item xs={1}>

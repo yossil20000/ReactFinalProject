@@ -2,13 +2,14 @@
 import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import IMemberUpdate from '../../Interfaces/IMemberInfo';
 import { resizeFileTobase64 } from '../../Utils/files';
 import GenderCombo from '../../Components/Buttons/GenderCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
+import { DateTime } from 'luxon';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -19,7 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function PersonalInfo({ numPage, page, setPage, formData, setFormData}: IPageNavigate<IMemberUpdate>) {
+function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";
@@ -140,38 +141,37 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData}: IPageNav
         <Grid item xs={12} md={12}>
           <Item>
             <LocalizationProvider dateAdapter={AdapterLuxon}>
-              <MobileDatePicker
+              <MobileDateTimePicker
                 label="Date Of Birth"
-                inputFormat="MM/dd/yyyy"
-                value={formData.date_of_birth}
-                onChange={handleTimeChange}
-                renderInput={(params) =>
-                  <TextField sx={{ width: "100%", margin: "auto" }} {...params} />}
+                views={['year', 'month', 'day']}
+                value={DateTime.fromJSDate(formData.date_of_birth ? formData.date_of_birth : new Date())}
+                onChange={(e) => { handleTimeChange(e ? e.toJSDate() : new Date()) }}
+                sx={{ width: '100%' }}
               />
             </LocalizationProvider>
           </Item>
         </Grid>
         <Grid item xs={12}>
-        <Grid container spacing={0.5} padding={1} columns={{ xs: 4 }}>
-        <Grid item xs={4}>
-          <Typography sx={{ width: "100%", flexShrink: 0 }}>Phone: {`+${formData?.contact?.phone.country}${formData?.contact?.phone.area.replace(/^0+/, '')}${formData?.contact?.phone.number}`}</Typography>
-        </Grid>
-        <Grid item xs={1}>
-          <TextField fullWidth onChange={handlePhoneChange("country")} id="country" label="Country"
-            name="contact.phone.country" placeholder="Country Code" variant="standard"
-            value={formData?.contact?.phone.country} InputLabelProps={{ shrink: true }} />
-        </Grid>
-        <Grid item xs={1}>
-          <TextField fullWidth onChange={handlePhoneChange("area")} id="area" label="Area"
-            name="contact.phone.area" placeholder="Area code" variant="standard"
-            value={formData?.contact?.phone.area} InputLabelProps={{ shrink: true }} />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField fullWidth onChange={handlePhoneChange("number")} id="number" label="Number"
-            name="contact.phone.number" placeholder="Phone Number" variant="standard"
-            value={formData?.contact?.phone.number} InputLabelProps={{ shrink: true }} />
-        </Grid>
-      </Grid>
+          <Grid container spacing={0.5} padding={1} columns={{ xs: 4 }}>
+            <Grid item xs={4}>
+              <Typography sx={{ width: "100%", flexShrink: 0 }}>Phone: {`+${formData?.contact?.phone.country}${formData?.contact?.phone.area.replace(/^0+/, '')}${formData?.contact?.phone.number}`}</Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <TextField fullWidth onChange={handlePhoneChange("country")} id="country" label="Country"
+                name="contact.phone.country" placeholder="Country Code" variant="standard"
+                value={formData?.contact?.phone.country} InputLabelProps={{ shrink: true }} />
+            </Grid>
+            <Grid item xs={1}>
+              <TextField fullWidth onChange={handlePhoneChange("area")} id="area" label="Area"
+                name="contact.phone.area" placeholder="Area code" variant="standard"
+                value={formData?.contact?.phone.area} InputLabelProps={{ shrink: true }} />
+            </Grid>
+            <Grid item xs={2}>
+              <TextField fullWidth onChange={handlePhoneChange("number")} id="number" label="Number"
+                name="contact.phone.number" placeholder="Phone Number" variant="standard"
+                value={formData?.contact?.phone.number} InputLabelProps={{ shrink: true }} />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={"gender"} selectedItem={{ lable: formData?.gender === undefined ? "" : formData?.gender.toString(), _id: "", description: "" }} />

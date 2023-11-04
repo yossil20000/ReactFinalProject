@@ -1,16 +1,13 @@
 import { ThemeProvider } from "@emotion/react";
 import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box } from "@mui/material";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import { ITransitionAlrertProps, IValidationAlertProps, ValidationAlert } from "../../Components/Buttons/TransitionAlert";
-import DeviceDetailes from "../../Components/Devices/DeviceDetailes";
 import DevicesFlightCombo from "../../Components/Devices/DeviceFlightCombo";
 import DeviceMemberCombo from "../../Components/Devices/DeviceMemberCombo";
-import DevicesCombo from "../../Components/Devices/DevicesCombo";
-import MembersCombo from "../../Components/Members/MembersCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
@@ -124,13 +121,11 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
             <Box sx={{ marginLeft: "0px", marginTop: '2ch' }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    disableMaskedInput
+                  <MobileDateTimePicker
+                    views={['year', 'month', 'day']}
                     label="Date"
-                    mask=''
-                    value={flightCreate.date}
+                    value={DateTime.fromJSDate(flightCreate.date)}
                     onChange={handleFromDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -142,7 +137,6 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
         <TransitionAlert {...dateErrorAlert}/>
       </Item>
     </Grid> */}
-
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
@@ -206,7 +200,6 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-
           <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
             <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
@@ -222,7 +215,6 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           {validationAlert.map((item) => (
             <Grid item xs={12}>
               <Item>
-
                 <ValidationAlert {...item} />
               </Item>
             </Grid>

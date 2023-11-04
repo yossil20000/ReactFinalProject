@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
 import { Dialog, DialogTitle, DialogContent, Grid, Typography, TextField, Button, createTheme, Paper, styled, CircularProgress } from "@mui/material";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, DateTimePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -101,13 +101,11 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
             <Item sx={{ marginLeft: "0px" }}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <DateTimePicker
-                    disableMaskedInput
+                  <MobileDateTimePicker
+                    views={['year', 'month', 'day']}
                     label="Date"
-                    mask=''
-                    value={flightUpdate.date}
+                    value={DateTime.fromJSDate(flightUpdate.date)}
                     onChange={handleFromDateFilterChange}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
                   />
 
                 </ThemeProvider>

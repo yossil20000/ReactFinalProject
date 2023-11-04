@@ -9,12 +9,13 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import { createTheme, ListItemIcon, TextField } from '@mui/material';
-import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import { createTheme, ListItemIcon } from '@mui/material';
+import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { IFilterItems } from '../Interfaces/IDateFilter';
+import { DateTime } from 'luxon';
 const drawerWidth = 320;
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -62,7 +63,6 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items, ch
   }
   return (
     <Box sx={{ display: 'flex' }}>
-
       <Drawer
         sx={{
           width: 'auto',
@@ -82,7 +82,6 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items, ch
           </IconButton>
         </DrawerHeader>
         <Divider />
-
         <List sx={{ display: 'flex', flexDirection: 'column' }}>
           <ListItem key={"fromDate"} disablePadding>
             <ListItemButton>
@@ -91,54 +90,37 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items, ch
               </ListItemIcon>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <MobileDatePicker
-                    disableMaskedInput
+                  <MobileDateTimePicker
+                    views={["year", "month", "day"]}
                     label="From Date"
-
-                    mask=''
-                    value={getDate("fromDate")}
-                    onChange={(value) => onDateChanged("fromDate", value)}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
+                    value={DateTime.fromJSDate(getDate("fromDate"))}
+                    onChange={(value) => onDateChanged("fromDate", value == undefined ? new Date() : value?.toJSDate())}
                   />
-
                 </ThemeProvider>
-
               </LocalizationProvider>
             </ListItemButton>
-
           </ListItem>
           <ListItem key={"toDate"} disablePadding>
-
             <ListItemButton>
               <ListItemIcon>
                 <DateRangeIcon />
               </ListItemIcon>
-
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <MobileDatePicker
-                    disableMaskedInput
+                  <MobileDateTimePicker
+                    views={["year", "month", "day"]}
                     label="To Date"
-
-                    mask=''
-                    value={getDate('toDate')}
-                    onChange={(value) => onDateChanged("toDate", value)}
-                    renderInput={(params) => <TextField {...params} size={'small'} helperText={null} sx={{ width: "100%", label: { color: "#2196f3" }, ml: { sm: 1 }, marginLeft: "0" }} />}
+                    value={DateTime.fromJSDate(getDate('toDate'))}
+                    onChange={(value) => onDateChanged("toDate", value == undefined ? new Date() : value?.toJSDate())}
                   />
-
                 </ThemeProvider>
-
               </LocalizationProvider>
             </ListItemButton>
           </ListItem>
         </List>
-
         <Divider />
         {children === undefined ? null : <>{children}</>}
-
       </Drawer>
-
-
     </Box>
   );
 }

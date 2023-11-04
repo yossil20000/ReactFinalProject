@@ -1,8 +1,11 @@
 import { Box, TextField, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from "@mui/material"
 import { EQuarterOption } from "../../Utils/enums";
 import { useState } from "react";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 
 export interface IQuarterFilter {
@@ -10,40 +13,37 @@ export interface IQuarterFilter {
   year: number;
 }
 export interface IQuarterButtonsProps {
-  quarterFilter : IQuarterFilter;
-  onChange: (filter: IQuarterFilter) => void ;
+  quarterFilter: IQuarterFilter;
+  onChange: (filter: IQuarterFilter) => void;
 }
 
 function QuarterButtons(props: IQuarterButtonsProps) {
   const [quarter, setQuarter] = useState<EQuarterOption>(props.quarterFilter.quarter);
-  const [year, setYear] = useState<Date>(new Date(props.quarterFilter.year,1,0))
-  
+  const [year, setYear] = useState<Date>(new Date(props.quarterFilter.year, 1, 0))
+
   const handleQuarterChanged = (
     event: React.MouseEvent<HTMLElement>,
-    newQuarter: EQuarterOption ) => {
-    if (newQuarter !== null){
+    newQuarter: EQuarterOption) => {
+    if (newQuarter !== null) {
       setQuarter(newQuarter);
-    props.onChange({quarter: newQuarter,year: year.getFullYear()})
-  }
+      props.onChange({ quarter: newQuarter, year: year.getFullYear() })
+    }
   };
 
   return (
     <Box display={'flex'} justifyContent={"center"} width={'100%'}>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
-        <DatePicker
-          views={['year']}
-          label="Year"
-          value={year}
-          onChange={(newValue) => {
-            console.log("DatePicker",newValue)
-            
-            if(newValue !== null ){
-            setYear(newValue);
-            props.onChange({quarter: quarter,year: newValue.getFullYear()})
-            }
-          }}
-          renderInput={(params : any) => <TextField {...params} helperText={null} />}
-        />
+        <DemoContainer components={['DatePicker']}>
+          <DatePicker label={'"year"'} views={['year']}
+            value={year}
+            onChange={(newValue) => {
+              console.log("DatePicker", newValue)
+              if (newValue !== null) {
+                setYear(newValue);
+                props.onChange({ quarter: quarter, year: newValue.getFullYear() })
+              }
+            }} />
+        </DemoContainer>
       </LocalizationProvider>
       <ToggleButtonGroup value={quarter} exclusive aria-label="quarter select" onChange={handleQuarterChanged} >
         <ToggleButton value={EQuarterOption.E_QO_Q1} aria-lable="quarter 1" size="small"> <Tooltip title="Select Q1" ><></></Tooltip><Typography>Q1</Typography></ToggleButton>
