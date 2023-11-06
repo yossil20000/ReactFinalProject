@@ -34,9 +34,9 @@ function UserAccountTab() {
   console.log("getStartQuarterDate/start", date_s.toLocaleString())
   let date_e = (new Date()).getEndQuarterDate(2023, 4);
   console.log("getStartQuarterDate/end", date_e.toLocaleString())
-  console.log("getStartQuarterDate/filter", filter.from )
+  console.log("getStartQuarterDate/filter", filter.from)
   const OnQuarterFilterChanged = (filter: IQuarterFilter) => {
-    console.log("OnQuarterFilterChanged/filter",filter)
+    console.log("OnQuarterFilterChanged/filter", filter)
   }
   /*   const getInvoiceReportData = (transaction: ITransaction[]) => {
       try {
@@ -220,7 +220,7 @@ function UserAccountTab() {
                             </ListItemButton>
                           </ListItem>
                           <ListItem key={"qurater"}>
-                            <QuarterButtons quarterFilter={{quarter:(new Date()).getQuarter() ,year:(new Date()).getFullYear()}} onChange={OnQuarterFilterChanged}  />
+                            <QuarterButtons quarterFilter={{ quarter: (new Date()).getQuarter(), year: (new Date()).getFullYear() }} onChange={OnQuarterFilterChanged} />
                           </ListItem>
                         </List>
                       </GeneralDrawer>

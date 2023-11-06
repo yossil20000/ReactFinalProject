@@ -5,6 +5,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { DateTime } from "luxon";
 
 export interface IQuarterFilter {
   quarter: EQuarterOption;
@@ -31,17 +32,15 @@ function QuarterButtons(props: IQuarterButtonsProps) {
   return (
     <Box display={'flex'} justifyContent={"center"} width={'100%'}>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
-        <DemoContainer components={['DatePicker']}>
-          <DatePicker label={'"year"'} views={['year']}
-            value={year}
+        <DatePicker label={'year'} views={['year']}
+            value={DateTime.fromJSDate(year)}
             onChange={(newValue) => {
               console.log("DatePicker", newValue)
               if (newValue !== null) {
-                setYear(newValue);
-                props.onChange({ quarter: quarter, year: newValue.getFullYear() })
+                setYear(newValue.toJSDate());
+                props.onChange({ quarter: quarter, year: newValue.year })
               }
             }} />
-        </DemoContainer>
       </LocalizationProvider>
       <ToggleButtonGroup value={quarter} exclusive aria-label="quarter select" onChange={handleQuarterChanged} >
         <ToggleButton value={EQuarterOption.E_QO_Q1} aria-lable="quarter 1" size="small"> <Tooltip title="Select Q1" ><></></Tooltip><Typography>Q1</Typography></ToggleButton>
