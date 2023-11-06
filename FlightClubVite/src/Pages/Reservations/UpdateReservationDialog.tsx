@@ -8,7 +8,7 @@ import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, Validat
 import { useUpdateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
 import { IReservationUpdate, ReservationUpdate } from "../../Interfaces/API/IReservation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
 
 export interface UpdateReservationDialogProps {
   value: IReservationUpdate;
@@ -123,7 +123,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                     label="To Date"
