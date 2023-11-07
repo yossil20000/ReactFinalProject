@@ -22,21 +22,24 @@ import QuarterButtons, { IQuarterFilter } from '../../Components/Buttons/Quarter
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)
-  const [accountFilter, setAccountFilter] = useState({ member: [login.member._id] })
+  const [accountFilter, setAccountFilter] = useState({ member: login.member._id,from: (new Date()).getStartQuarterDate().toLocaleString() ,to: (new Date()).getEndQuarterDate().toLocaleString()}) 
   const { data, isLoading, isError, error } = useFetchAccountSearchQuery(accountFilter);
-  const [filter, setFilter] = useState<IOrderTableFilter>(Current_Quarter_Filter());
+  /* const [filter, setFilter] = useState<IOrderTableFilter>(Current_Quarter_Filter()); */
   const [openSaveAsPDF, setOpenSaveAsPDF] = useState(false);
   const [invoiceProps, setInvoiceProps] = useState<InvoiceProps>(defaultInvoiceProps);
   const [transcations, setTransactions] = useState<ITransaction[]>([])
   const [account, setAccount] = useState<IAccount | undefined>(undefined)
   const [balance, setBalance] = useState<number>(0);
-  let date_s = (new Date()).getStartQuarterDate(2023, 4);
+/*   let date_s = (new Date()).getStartQuarterDate(2023, 4);
   console.log("getStartQuarterDate/start", date_s.toLocaleString())
   let date_e = (new Date()).getEndQuarterDate(2023, 4);
-  console.log("getStartQuarterDate/end", date_e.toLocaleString())
-  console.log("getStartQuarterDate/filter", filter.from)
+  console.log("getStartQuarterDate/end", date_e.toLocaleString()) */
+  
   const OnQuarterFilterChanged = (filter: IQuarterFilter) => {
     console.log("OnQuarterFilterChanged/filter", filter)
+    let from: Date = (new Date()).getStartQuarterDate(filter.year, filter.quarter);
+    let to: Date = (new Date()).getEndQuarterDate(filter.year, filter.quarter);
+    setAccountFilter((prev) => ({...prev, from : from.toLocaleString(), to: to.toLocaleString() }))
   }
   /*   const getInvoiceReportData = (transaction: ITransaction[]) => {
       try {
@@ -116,6 +119,7 @@ function UserAccountTab() {
 
         let total: number = 0;
         const invoiceItems: IInvoiceTableData = {
+          
 
           rows: transcations.map((i, j) => {
             let row: IInvoiceTableRow;
@@ -135,7 +139,7 @@ function UserAccountTab() {
           total: total
         }
         CustomLogger.info("UserAccountTab/ReportData/transaction", transcations)
-        CustomLogger.info("UserAccountTabeReportData/invoiceProps", invoiceItems, invoiceHeader, invoiceDetailes)
+        CustomLogger.info("UserAccountTab/ReportData/invoiceProps", invoiceItems, invoiceHeader, invoiceDetailes)
         setInvoiceProps((prev) => ({ ...prev, invoiceHeader: invoiceHeader, invoiceItems: invoiceItems, total: total, invoiceDetailes: invoiceDetailes }))
       }
       catch (error) {
@@ -144,7 +148,7 @@ function UserAccountTab() {
 
     }
 
-  }, [account, transcations, balance])
+  }, [account, transcations, balance,accountFilter])
   useEffect(() => {
     if (data?.data !== null && data?.data !== undefined) {
       CustomLogger.info("UserAccountTab/useEffect/data?.data", data?.data)
@@ -153,7 +157,16 @@ function UserAccountTab() {
       if (account !== undefined) {
         CustomLogger.info("UserAccountTab/useEffect/account.balance", account.balance)
         setBalance(account.balance)
-        setTransactions(account.transactions);
+        let from: Date = new Date(accountFilter.from);
+        let to: Date = new Date(accountFilter.to);
+        
+        let filterdTransaction = account.transactions.filter((i) => { 
+          let date = new Date(i.date)
+          console.log("UserAccountTab/useEffect/filterLoop" ,to.compareDate(new Date(i.date)),from.compareDate(date))
+          return to.compareDate(date) >= 0 && from.compareDate(date) <= 0
+        } ) 
+        CustomLogger.info("UserAccountTab/useEffect/filterdTransaction", account.transactions,filterdTransaction)
+        setTransactions(filterdTransaction);
         /*         const invoiceMember = defaultInvoiceMember;
                 const invoiceDetailes = defaultInvoiceDetailes;
                 invoiceMember.family_name = account.member.family_name
@@ -168,13 +181,13 @@ function UserAccountTab() {
       }
     }
 
-  }, [data])
+  }, [data, accountFilter])
 
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.info("UserAccountTab/onDateChanged", key, value, filter)
+    CustomLogger.info("UserAccountTab/onDateChanged", key, value, accountFilter)
     if (value === null) return;
-    const newFilter = SetProperty(filter, key, new Date(value));
-    setFilter(newFilter)
+    const newFilter = SetProperty(accountFilter, key, new Date(value));
+    setAccountFilter(newFilter)
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
@@ -185,7 +198,7 @@ function UserAccountTab() {
         break;
     }
   }
-  CustomLogger.log("UserAccountTab/filter", filter)
+  CustomLogger.log("UserAccountTab/filter", accountFilter)
 
   return (
     <Box fontSize={{ xs: "1rem", md: "1.2rem" }}>
@@ -208,7 +221,7 @@ function UserAccountTab() {
                               <ListItemIcon>
                                 <DateRangeIcon />
                               </ListItemIcon>
-                              <DatePickerDate value={filter.from === undefined ? new Date() : filter.from} param="from" lable='From Date' onChange={onDateChanged} />
+                              <DatePickerDate value={accountFilter.from === undefined ? new Date() : new Date(accountFilter.from)} param="from" lable='From Date' onChange={onDateChanged} />
                             </ListItemButton>
                           </ListItem>
                           <ListItem key={"toDate"} disablePadding>
@@ -216,7 +229,7 @@ function UserAccountTab() {
                               <ListItemIcon>
                                 <DateRangeIcon />
                               </ListItemIcon>
-                              <DatePickerDate value={filter.to === undefined ? new Date() : filter.to} param={"to"} lable='To Date' onChange={onDateChanged} />
+                              <DatePickerDate value={accountFilter.to === undefined ? new Date() : new Date(accountFilter.to)} param={"to"} lable='To Date' onChange={onDateChanged} />
                             </ListItemButton>
                           </ListItem>
                           <ListItem key={"qurater"}>
@@ -279,7 +292,7 @@ function UserAccountTab() {
                   <Fragment>
                     {(openSaveAsPDF === true) ?
                       (<Fragment>
-                        <InvoicePage invoiceItems={invoiceProps.invoiceItems} invoiceHeader={invoiceProps.invoiceHeader} invoiceDetailes={invoiceProps.invoiceDetailes}></InvoicePage>
+                        <InvoicePage invoiceItems={invoiceProps.invoiceItems} invoiceHeader={invoiceProps.invoiceHeader} invoiceDetailes={invoiceProps.invoiceDetailes}></InvoicePage>  
                       </Fragment>) :
                       (<Fragment>
                         <Box>

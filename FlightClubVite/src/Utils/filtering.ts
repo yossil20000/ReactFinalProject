@@ -45,6 +45,11 @@ export interface IOrderTableFilter {
   to?: Date;
   orderStatus?: OrderStatus
 }
+export interface IUserAccountFilter {
+  member?: string;
+  from?: Date;
+  to?: Date;
+}
 export function from_to_Filter(today: Date): any {
   return {
     to: (today.addDays(1)).getEndDayDate(),

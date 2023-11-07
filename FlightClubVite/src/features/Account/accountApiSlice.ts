@@ -43,9 +43,9 @@ export const accountApiSlice = createApi({
         providesTags: ["Accounts"],
 
       }),
-      fetchAccountSearch: builder.query<IResultBase<IAccount>,  {[key: string]: string[]} >({
+      fetchAccountSearch: builder.query<IResultBase<IAccount>,  {[key: string]: string} >({
         query: (params) => ({
-          url:getUrlWithParamsArray(`/${URLS.ACCOUNTS_SEARCH}`,params) ,
+          url:getUrlWithParams(`/${URLS.ACCOUNTS_SEARCH}`,params) ,
           method: "GET"
         }),
         providesTags: ["Accounts"],
