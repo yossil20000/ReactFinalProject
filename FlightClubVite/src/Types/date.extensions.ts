@@ -1,3 +1,4 @@
+import { DIALOG_WIDTH } from "@mui/x-date-pickers/internals";
 
 export {}
 
@@ -23,21 +24,34 @@ declare global {
       getStartDayDate() : Date;
       getEndDayDate() : Date;
       compareTime(date: Date): number;
+      compareDate(date: Date) : number;
       getHoursDiff(date: Date) : number;
       getLocal24Hours() : string;
-      getStartQuarterDate(year: number ,quarter: number): Date
-      getEndQuarterDate(year: number ,quarter: number): Date
+      getStartQuarterDate(year?: number ,quarter?: number): Date
+      getEndQuarterDate(year?: number ,quarter?: number): Date
       getQuarter() : number
    }
 }
 Date.prototype.getQuarter = function() : number {
    return Math.floor(this.getMonth() / 3) + 1
 }
-Date.prototype.getStartQuarterDate = function(year:number ,quarter: number) : Date {
+Date.prototype.getStartQuarterDate = function(year?:number ,quarter?: number) : Date {
+   if(quarter == undefined){
+      quarter= (new Date()).getQuarter()
+   }
+   if(year === undefined){
+      year = (new Date()).getFullYear()
+   }
    let step = (quarter -1);
    return new Date(year,step * 3 ,1,0,0,0,0);
 }
-Date.prototype.getEndQuarterDate = function(year:number ,quarter: number) : Date {
+Date.prototype.getEndQuarterDate = function(year?:number ,quarter?: number) : Date {
+   if(quarter == undefined){
+      quarter= (new Date()).getQuarter()
+   }
+   if(year === undefined){
+      year = (new Date()).getFullYear()
+   }
    let step = (quarter -1);
    let month = (step * 3) + 3;
    let lastDay = new Date(year,month,0,23,59,59,999);
@@ -63,8 +77,20 @@ Date.prototype.compareTime = function (date: Date) : number {
    if(deltaM > 0) return 1
    else if(deltaM < 0) return -1
    return 0
+}
+Date.prototype.compareDate = function (date: Date) : number {
+   const deltaY = this.getFullYear() - date.getFullYear() 
+   if(deltaY > 0) return 1;
+   else if(deltaY < 0) return -1
+   const deltaM = this.getMonth() - date.getMonth();
+   if(deltaM > 0) return 1
+   else if(deltaM < 0) return -1
+   const deltaD = this.getDay() - date.getDay();
+   if(deltaD > 0) return 1
+   else if(deltaD < 0) return -1
+   return 0;
 
-} 
+}  
 Date.prototype.getStartDayDate = function() : Date {
  return new Date(this.getFullYear(),this.getMonth(),this.getDate(),0,0,0);
 }
