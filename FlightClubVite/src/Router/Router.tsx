@@ -24,6 +24,7 @@ import AccountReport from '../Pages/Report/AccountReport.jsx'
 import Invoice from '../Pages/Report/InvoiceReport'
 import InvoicePage from '../Pages/Report/InvoicePage'
 import { IInvoiceTableData, IInvoiceTableHeader, InvoiceProps } from '../Interfaces/IReport'
+import ExportExelTable from '../Components/Report/exel/exportTable'
 
 
 export function PagesRouter() {
@@ -83,6 +84,7 @@ export function PagesRouter() {
     <Routes>
       <Route path='/' element={<Layout />}>
       <Route path="/calander" element={<CalnanderViewDay title='Yossi'/>} />
+      <Route path="/exel" element={<ExportExelTable file={'./test'} sheet={'flight'} title={'Flight Table'} header={["Date","Flight","From","To description"]} body={[["b1","b2","b3","b4"],["c1","c2","c3","b5"],["b1","b2","b3","b4"],["c1","c2","c3","b5"]]}/>}/>
       <Route path="/report" element={<AccountReport/>} />
       <Route path='/invoice' element={<InvoicePage invoiceItems={invoiceProps.invoiceItems} invoiceDetailes={invoiceProps.invoiceDetailes} invoiceHeader={invoiceProps.invoiceHeader} />}/>
         <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
