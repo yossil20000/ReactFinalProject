@@ -33,7 +33,7 @@ function ReportDialog(props: IReportDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel}>
-          Cancel
+          Close
         </Button>
         <Button onClick={handleOk}>Save</Button>
       </DialogActions>

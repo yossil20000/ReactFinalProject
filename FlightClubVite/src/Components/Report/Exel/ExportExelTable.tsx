@@ -1,4 +1,4 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
 import { useEffect } from "react";
 import { downloadExcel } from "react-export-table-to-excel";
 
@@ -8,7 +8,8 @@ export interface IExportExelTable {
   title: string;
   header: string[];
   body: Array<string[]>
-  save:boolean
+  save:boolean;
+  showSelfSave?:boolean
 }
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,7 +31,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function ExportExelTable({ file, sheet, title, header, body ,save}: IExportExelTable) {
+function ExportExelTable({ file, sheet, title, header, body ,save,showSelfSave=false}: IExportExelTable) {
   function handleExportTable() : boolean {
     const opt = 'downloadExcel Method'; 
     const result = downloadExcel({
@@ -53,7 +54,7 @@ function ExportExelTable({ file, sheet, title, header, body ,save}: IExportExelT
   },[save])
   return (
     <TableContainer component={Paper}>
-      <button onClick={handleExportTable}>export table</button>
+      {showSelfSave ? <Button onClick={handleExportTable}>export table</Button> : <></>}
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <caption>{`File:${file} Sheet:${sheet}`}</caption>
         <TableHead>
