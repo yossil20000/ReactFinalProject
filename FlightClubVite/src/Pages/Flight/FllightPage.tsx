@@ -1,10 +1,9 @@
 import "../../Types/date.extensions"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, Paper, styled, TablePagination, ToggleButton, Tooltip, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, List, ListItem, ListItemButton, ListItemIcon, Paper, styled, TablePagination, ToggleButton, Tooltip, Typography } from "@mui/material";
+import { Fragment, useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
-import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, FlightStatus } from "../../Interfaces/API/IFlight";
+import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, FlightStatus, CFlightToReport, IFlightData } from "../../Interfaces/API/IFlight";
 import GeneralCanDo, { CanDo } from "../../Utils/owner";
 import { useAppSelector } from "../../app/hooks";
 import { ILoginResult } from "../../Interfaces/API/ILogin";
@@ -26,16 +25,15 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons.js";
 import DatePickerDate from "../../Components/Buttons/DatePickerDate";
-import { Container } from "@mui/system";
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from "../Layout/Container";
 import { EfilterMode } from "../../Utils/enums";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { BorderClear } from "@mui/icons-material";
 import { MemberType, Role } from "../../Interfaces/API/IMember";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
-import { selectCurrentId } from "../../features/Auth/authSlice";
+import ExportExelTable from "../../Components/Report/Exel/ExportExelTable";
+import ReportDialog from "../../Components/Report/Exel/ReportDialog";
 
 const dateFilter: IDateFilter = newDateFilter;
 const StyledAccordion = styled(Box)(({ theme }) => ({
@@ -45,11 +43,6 @@ const StyledAccordion = styled(Box)(({ theme }) => ({
 }
 ))
 
-interface IFlightData {
-  _id: string; _id_member: string; name: string; description: string;
-  device_id: string; date: Date; member_id: string; validOperation: CanDo;
-  hobbs_start: number; hobbs_stop: number; engien_start: number; engien_stop: number; status: FlightStatus;
-}
 
 function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
   return {
@@ -57,7 +50,7 @@ function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
     name: flight.member.family_name, device_id: flight.device.device_id,
     date: new Date(flight.date), member_id: flight.member.member_id,
     hobbs_start: flight.hobbs_start, hobbs_stop: flight.hobbs_stop, engien_start: flight.engien_start, engien_stop: flight.engien_stop, status: flight.status,
-    validOperation: validOperation
+    validOperation: validOperation, duration: flight.duration, reuired_hobbs: flight.reuired_hobbs, timeOffset: flight.timeOffset
   }
 }
 
@@ -127,6 +120,7 @@ const FlightPage = () => {
   const [dateRef, setDateRef] = useState(new Date())
   const [openFilter, setOpenFilter] = useState(false)
   const [openFlightAdd, setOpenFlightAdd] = useState(false);
+  const [openExport, setOpenExport] = useState(false);
   const [openFlightUpdate, setOpenFlightUpdate] = useState(false);
   const [DeleteFlight] = useDeleteFlightMutation();
   const [order, setOrder] = useState<Order>('asc');
@@ -136,22 +130,15 @@ const FlightPage = () => {
   const [isFilterOwner, setIsFilterOwner] = useState(false);
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>(dateFilter as IReservationFilterDate);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const login: ILoginResult | undefined = useAppSelector<ILoginResult | undefined>((state) => state.authSlice);
   const { isLoading, isError, error, data: flights, refetch } = useGetAllFlightsQuery({ from: filterDate.from, to: filterDate.to } as IFlightFilterDate);
   const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH);
   const [confirmation, setConfirmation] = useState<ConfirmationDialogProps>({ open: false } as ConfirmationDialogProps);
   const [selectedMember, setSelectedMember] = useState<InputComboItem>()
-
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login === undefined ? "" : login.member._id, login === undefined ? [Role.guest] : login?.member.roles)))
   }
-  useEffect(() => {
-    if (isError) {
-      CustomLogger.error("FlightPage/useEffect/error", (error as any)); flightsData
-    }
-
-  }, [isLoading]);
   const getFilteredData = (): IFlightData[] => {
     CustomLogger.info("getFilteredData/flightData", flightsData)
     if (flightsData === undefined) return [];
@@ -166,10 +153,12 @@ const FlightPage = () => {
 
     return filterdData;
   }
+
+
   const filterMember = function (flight: IFlightData): Boolean {
     /* CustomLogger.log("FlightPage/filterMember/", flights === undefined ? "Undefined" : flight) */
-    if(selectedMember?._id.trim().length === 0) return true;
-    if (flight._id_member == selectedMember?._id){
+    if (selectedMember?._id.trim().length === 0) return true;
+    if (flight._id_member == selectedMember?._id) {
       /* CustomLogger.log("FlightPage/filterMember/", selectedMember, flight, true) */
       return true;
     }
@@ -292,6 +281,7 @@ const FlightPage = () => {
 
   const handleAddOnClose = () => {
     setOpenFlightAdd(false);
+    setOpenExport(false)
   }
   const getFilteredDataMemo = getFilteredData()
   const onTodayChanged = () => {
@@ -356,8 +346,9 @@ const FlightPage = () => {
     switch (action) {
       case EAction.ADD:
         setOpenFlightAdd(true);
-
         break;
+        case EAction.SAVE:
+          setOpenExport(true)
     }
   }
   const onDateChanged = (key: string, value: Date | null) => {
@@ -422,6 +413,13 @@ const FlightPage = () => {
   const onMemberChanged = (item: InputComboItem) => {
     setSelectedMember(item)
   }
+
+/*   useEffect(() => {
+    if (isError) {
+      CustomLogger.error("FlightPage/useEffect/error", (error as any)); flightsData
+    }
+  }, [isLoading]); */
+
   return (
     <>
       <ContainerPage>
@@ -518,16 +516,17 @@ const FlightPage = () => {
                 </Box>
                 <Box display={'flex'} justifyContent={"flex-end"}>
                   <Tooltip title="Add Flight">
-                    <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "flight" }]} />
+                    <ActionButtons OnAction={onAction} show={[EAction.ADD,EAction.SAVE]} item="" display={[{ key: EAction.ADD, value: "flight" },{key:EAction.SAVE,value:"Export"}]} />
                   </Tooltip>
                 </Box>
               </Box>
             </Box>
           </ContainerPageHeader>
           <ContainerPageMain>
-            <>
+            <Fragment>
               {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
               {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
+              {openExport && <ReportDialog onClose={handleAddOnClose} open={openExport} table={(new CFlightToReport(flightsData)).getFlightToExel()} action="FlightExport" />}
               <Box sx={{ width: '100%', height: '100%' }}>
                 <Paper sx={{ width: '100%', mb: 1 }}>
                   <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
@@ -602,11 +601,11 @@ const FlightPage = () => {
                   </StyledAccordion>
                 </Paper>
               </Box>
-            </>
+            </Fragment>
           </ContainerPageMain>
           <ContainerPageFooter>
             <TablePagination
-              rowsPerPageOptions={[1, 5, 10, 25]}
+              rowsPerPageOptions={[1, 5, 10, 25, 50]}
               component="div"
               count={flightsData?.length}
               rowsPerPage={rowsPerPage}

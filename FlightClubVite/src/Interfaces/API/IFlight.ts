@@ -1,6 +1,8 @@
+
+import { IExportExelTable } from "../../Components/Report/Exel/ExportExelTable";
+import { CanDo } from "../../Utils/owner";
 import { IDateFilter } from "../IDateFilter";
 import IDevice from "./IDevice"
-import IFlightReservation from "./IFlightReservation"
 import IMember from "./IMember"
 
 export interface IFlightFilterDate extends IDateFilter {
@@ -137,6 +139,36 @@ export class CFlightUpdate extends CFlightBase implements IFlightUpdate {
 
 }
 
+export class CFlightToReport {
+    private flights: IFlightData[] = [];
+    constructor(flights : IFlightData[]){
+        this.flights= flights;
+        console.info("CFlightToReport/CTOR_flights",this.flights)
+    }
+    getFlightToExel(file: string="flightReport",sheet:string ="Flights",title:string= "Flight Reports"): IExportExelTable{
+        let report : IExportExelTable = {
+            file: file,
+            sheet: sheet,
+            title: title,
+            header: [],
+            body: [],
+            save:false
+        }
+        report.header=["Index","Date","EngienStart","EngienEnd","Description"]
+        report.body = this.flights.map((flight,i) => {
+            console.info("CFlightToReport/flight",flight)
+            return [i.toFixed(0),flight.date.toLocaleString(),flight.engien_start.toFixed(1),flight.engien_stop.toFixed(1),flight.description]
+        })
+        console.info("CFlightToReport/report",report)
+        return report;
+    }
+}
 export interface IFlightDeleteApi {
     _id: string
 }
+
+export interface IFlightData  extends IFlightBase{
+    _id: string; _id_member: string; name: string; description: string;
+    device_id: string; date: Date; member_id: string; validOperation: CanDo;
+    hobbs_start: number; hobbs_stop: number; engien_start: number; engien_stop: number; status: FlightStatus;
+  }

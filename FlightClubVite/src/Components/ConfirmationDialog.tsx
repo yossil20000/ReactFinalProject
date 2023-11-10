@@ -9,28 +9,28 @@ export interface ConfirmationDialogProps {
   action: string;
   keepMounted: boolean;
   open: boolean;
-  onClose: (value: boolean,action:string) => void;
+  onClose: (value: boolean, action: string) => void;
   title: string;
   content: string;
-  key?:string;
+  key?: string;
 }
 
 export default function ConfirmationDialog(props: ConfirmationDialogProps) {
-  const { onClose, title="Yossi", content, open,action,key, ...other } = props;
-  
+  const { onClose, title = "Yossi", content, open, action, key, ...other } = props;
+
 
   const handleCancel = () => {
-    onClose(false,action);
+    onClose(false, action);
   };
 
   const handleOk = () => {
-    onClose(true,action);
+    onClose(true, action);
   };
 
   return (
-    
+
     <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%',backgroundColor:'white'} ,'& .MuiBackdrop-root': {backgroundColor: 'rgba(255, 255, 255, 0.1)'}}}
+      sx={{ '& .MuiDialog-paper': { width: '80%', backgroundColor: 'white' }, '& .MuiBackdrop-root': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
       maxWidth="xs"
       open={open}
       {...other}
@@ -39,12 +39,11 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
       <DialogContent dividers>
         <Grid container>
           <Grid item xs={12}>
-          <Typography paragraph>
-{content}
-          </Typography>
+            <Typography paragraph>
+              {content}
+            </Typography>
           </Grid>
         </Grid>
-        
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel}>

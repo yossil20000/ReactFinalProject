@@ -1,4 +1,5 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
+import { useEffect } from "react";
 import { downloadExcel } from "react-export-table-to-excel";
 
 export interface IExportExelTable {
@@ -7,6 +8,7 @@ export interface IExportExelTable {
   title: string;
   header: string[];
   body: Array<string[]>
+  save:boolean
 }
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -14,7 +16,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+    fontSize: 15,
   },
 }));
 
@@ -28,10 +30,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function ExportExelTable({ file, sheet, title, header, body }: IExportExelTable) {
-  function handleExportTable() {
+function ExportExelTable({ file, sheet, title, header, body ,save}: IExportExelTable) {
+  function handleExportTable() : boolean {
     const opt = 'downloadExcel Method'; 
-    downloadExcel({
+    const result = downloadExcel({
       fileName: file,
       sheet: sheet,
       tablePayload: {
@@ -40,12 +42,20 @@ function ExportExelTable({ file, sheet, title, header, body }: IExportExelTable)
         body: body,
       },
     });
+    return result;
   }
+  useEffect(() => {
+    if(save){
+      if(handleExportTable()){
+
+      }
+    }
+  },[save])
   return (
     <TableContainer component={Paper}>
       <button onClick={handleExportTable}>export table</button>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <caption>{title}</caption>
+        <caption>{`File:${file} Sheet:${sheet}`}</caption>
         <TableHead>
           <StyledTableRow>
           {header.map((head) => (
