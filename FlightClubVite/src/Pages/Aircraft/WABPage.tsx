@@ -1,7 +1,7 @@
 import { Box } from '@mui/system'
 import { Fragment, useEffect, useState } from 'react'
 import WABChart from '../../Components/WOBChart'
-import { CWAB, WABGc, WABItem } from '../../Interfaces/API/IWAB'
+import { CWAB, WABGc, WABItem, WABItemType } from '../../Interfaces/API/IWAB'
 import { Input, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
 
@@ -55,7 +55,7 @@ function WABPage() {
 
   return (
     <Fragment>
-      <Box display={'flex'} flexWrap={'wrap'} width={'100%'} flexDirection={'row'} height={'100%'}>
+      <Box display={'flex'} flexWrap={'wrap'} width={'100%'} flexDirection={'row'} height={'100%'} sx={{ overflow: "scroll" }}>
           <WABChart wabXPoints={CoG?.cgMoment} wabYPoints={CoG?.cgWeight} />
         <Box display={'flex'} flexDirection={'column'} minWidth={'50%'} sx={{ overflow: "scroll" }} >
         <Table aria-label='weight and balance table'  >
@@ -79,6 +79,7 @@ function WABPage() {
                     sx={{ width: "100%" }}
                     value={row.weight}
                     name={"weight"}
+                    disabled={row.type == WABItemType.WAB_AIRCRAFT}
                     onChange={(e) => onChange(e, row)}
                   /></TableCell>
                   <TableCell width="10%">{row.weight}</TableCell>
