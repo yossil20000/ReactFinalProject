@@ -47,8 +47,8 @@ function AccountTransactionsTab() {
     const newKey = key == 'fromDate' ? "from" : key == 'toDate' ? 'to' : "";
     if (newKey == "") { CustomLogger.log("onFilterChanged/ value not set", key); return }
 
-    const newObj = SetProperty(filter, `dateFilter.${newKey}`, new Date(value));
-    setFilter(newObj);
+    const neWABj = SetProperty(filter, `dateFilter.${newKey}`, new Date(value));
+    setFilter(neWABj);
 
   }
   const getItems = (): IFilterItems[] => {

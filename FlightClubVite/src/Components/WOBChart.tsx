@@ -1,43 +1,59 @@
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { ChartsYAxis, axisClasses } from '@mui/x-charts';
+import { axisClasses } from '@mui/x-charts';
 
-export default function WOBChart() {
+export interface WABChartProps {
+  wabXPoints: (number|null )[]
+  wabYPoints: (number| null )[]
+}
+export default function WABChart({wabXPoints,wabYPoints}: WABChartProps) {
   const [connectNulls, setConnectNulls] = React.useState(true);
-
-  return (
-    <Stack sx={{ width: 500 }}>
+  /* wabXPoints= [40.28,39.96,39.69,42.44,44.76,44.88,45.07 ] 
+  wabYPoints= [1552,1772,1892,2062,2232,2237,2400] */
+  let dataAxis :(number| null )[] =     [35, 35,36.5, 40.5,40.5, 35,36.5,39.5,47.3,47.3,40.5,40.5,36.5 ] 
+  console.log("WABChart/wabYPoints_wabXPoints",wabXPoints,wabYPoints );
+  dataAxis = dataAxis.concat(wabXPoints)
+  let dataYUtility = [1200, 1960, 2100, 2100, 1200,1200];
+  let dataYNormal =  [null,null,null,null,null,null,2100,2400,2400,1200,1200,2100,2100]
+  let dataYCG :(number| null)[] = Array(dataYNormal.length).fill(null)
+  dataYCG = dataYCG.concat(wabYPoints)
+/*   const initializeArrayWithValues = (n:any, val = null) => Array(n).fill(val);
+initializeArrayWithValues(5, 2); // [2, 2, 2, 2, 2] */
+  console.log("WABChart/dataYCG", dataYCG);
+return(
+    <Stack sx={{width: {xs: "100%", xl:'50%'}, height:{xs:"auto"}  }}>
 
       <LineChart
       yAxis={[{label:"Weight" }]}
-        xAxis={[{label:"Moment", id:"moment", data: [35, 35,36.5, 40.5,40.5, 35,36.5,39.5,47.3,47.3,40.5,40.5,36.5,40.28,40.28,39.96,39.69,42.44,44.76,44.88,45.07 ] }]}
+        xAxis={[{label:"Moment", id:"moment", data: dataAxis }]}
         series={[
           {
-            data: [1200, 1960, 2100, 2100,  1200,1200],
+            data: dataYUtility,
             connectNulls,
             area: true,
-            curve: "linear"
+            curve: "linear",
+            label: 'Utility'
           },
           {
-            data: [null,null,null,null,null,null,2100,2400,2400,1200,1200,2100,2100],
+            data: dataYNormal,
             connectNulls,
             area: true,
-            curve: "linear"
+            curve: "linear",
+            label: 'Normal'
           },
           {
-            data: [null,null,null,null,null,null,null,null,null,null,null,null,null,1200,1552,1772,1892,2062,2232,2237,2400],
+            data:  dataYCG /* [null,null,null,null,null,null,null,null,null,null,null,null,null,1552,1772,1892,2062,2232,2237,2400] */,
             connectNulls,
             area: false,
             curve: "linear",
-            color: "red"
+            color: "red",
+            label: 'C.G'
           },
   
         ]}
-        height={500}
-        margin={{ top: 20, bottom: 20,left:100 }}
+        height={300}
+        margin={{ top: 50, bottom: 20,left:100 }}
         sx={{
           [`.${axisClasses.left} .${axisClasses.label}`]: {
             transform: 'translate(-25px, 0)',
