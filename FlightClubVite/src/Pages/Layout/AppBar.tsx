@@ -44,6 +44,7 @@ const ResponsiveAppBar = () => {
     { name: 'Gallery', route: 'gallery' },
     { name: 'Admin', route: 'admin' },
     { name: "Account", route: "account" },
+    { name: "WAB", route: "WAB" },
     { name: `Login ${remainLogin}`, route: "login" },
 
   ];

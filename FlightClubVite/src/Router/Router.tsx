@@ -84,7 +84,7 @@ export function PagesRouter() {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
-      <Route path="/WOB" element={<WOBPage/>}/>
+      <Route path="/WAB" element={<WOBPage/>}/>
       <Route path="/calander" element={<CalnanderViewDay title='Yossi'/>} />
       <Route path="/exel" element={<ExportExelTable file={'./test'} sheet={'flight'} title={'Flight Table'} header={["Date","Flight","From","To description"]} body={[["b1","b2","b3","b4"],["c1","c2","c3","b5"],["b1","b2","b3","b4"],["c1","c2","c3","b5"]]} save={false} />}/>
       <Route path="/report" element={<AccountReport/>} />
