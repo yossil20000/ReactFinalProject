@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
-import { LineChart } from '@mui/x-charts/LineChart';
+/* import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from '@mui/x-charts';
-
+ */
 export interface WABChartProps {
   wabXPoints: (number|null )[]
   wabYPoints: (number| null )[]
@@ -22,48 +22,6 @@ export default function WABChart({wabXPoints,wabYPoints}: WABChartProps) {
 initializeArrayWithValues(5, 2); // [2, 2, 2, 2, 2] */
   console.log("WABChart/dataYCG", dataYCG);
 return(
-    <Stack sx={{width: {xs: "100%", xl:'50%'}, height:{xs:"auto"}  }}>
-
-      <LineChart
-      yAxis={[{label:"Weight" }]}
-        xAxis={[{label:"Moment", id:"moment", data: dataAxis }]}
-        series={[
-          {
-            data: dataYUtility,
-            connectNulls,
-            area: true,
-            curve: "linear",
-            label: 'Utility'
-          },
-          {
-            data: dataYNormal,
-            connectNulls,
-            area: true,
-            curve: "linear",
-            label: 'Normal'
-          },
-          {
-            data:  dataYCG /* [null,null,null,null,null,null,null,null,null,null,null,null,null,1552,1772,1892,2062,2232,2237,2400] */,
-            connectNulls,
-            area: false,
-            curve: "linear",
-            color: "red",
-            label: 'C.G'
-          },
-  
-        ]}
-        height={300}
-        margin={{ top: 50, bottom: 20,left:100 }}
-        sx={{
-          [`.${axisClasses.left} .${axisClasses.label}`]: {
-            transform: 'translate(-25px, 0)',
-          },
-          [`.${axisClasses.right} .${axisClasses.label}`]: {
-            transform: 'translate(30px, 10)',
-          },
-        }}
-      />
-      
-    </Stack>
+<></>
   );
 }
