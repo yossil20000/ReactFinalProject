@@ -56,7 +56,7 @@ function WABPage() {
   return (
     <Fragment>
       <Box display={'flex'} flexWrap={'wrap'} width={'100%'} flexDirection={'row'} height={'100%'} sx={{ overflow: "scroll" }}>
-        {/* <WABChart wabXPoints={CoG?.cgMoment} wabYPoints={CoG?.cgWeight} /> */}
+        <WABChart wabXPoints={CoG?.cgMoment} wabYPoints={CoG?.cgWeight} />
         <Box display={'flex'} flexDirection={'column'} minWidth={'50%'} sx={{ overflow: "scroll" }} >
           <Table aria-label='weight and balance table'  >
             <caption>CGC Weight And Balance</caption>
