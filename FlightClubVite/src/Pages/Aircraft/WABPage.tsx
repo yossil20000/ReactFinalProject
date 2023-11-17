@@ -1,7 +1,7 @@
 import { Box } from '@mui/system'
 import { Fragment, useEffect, useState } from 'react'
 import WABChart from '../../Components/WOBChart'
-import { CWAB, WABGc, WABItem, WABItemType } from '../../Interfaces/API/IWAB'
+import { CWAB, EPoint_WAB_GC, WABGc, WABItem, WABItemType } from '../../Interfaces/API/IWAB'
 import { Input, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
 
@@ -52,11 +52,13 @@ function WABPage() {
     setItems(CGC.items)
     setCoG(CWAB.calcCG(CGC.items))
   }, [])
-
+  const onWABChange = (cGResult: EPoint_WAB_GC)  => {
+    console.log("WABPage/onWABChange/utility,normal", cGResult.toString())
+  }
   return (
     <Fragment>
       <Box display={'flex'} flexWrap={'wrap'} width={'100%'} flexDirection={'row'} height={'100%'} sx={{ overflow: "scroll" }}>
-        <WABChart wabXPoints={CoG?.cgMoment} wabYPoints={CoG?.cgWeight} />
+        <WABChart wabXPoints={CoG?.cgMoment} wabYPoints={CoG?.cgWeight} onChanged={onWABChange}/>
         <Box display={'flex'} flexDirection={'column'} minWidth={'50%'} sx={{ overflow: "scroll" }} >
           <Table aria-label='weight and balance table'  >
             <caption>CGC Weight And Balance</caption>

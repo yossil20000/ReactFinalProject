@@ -34,7 +34,8 @@ export type WABGc = {
   cg: number;
   validation: string[];
   cgMoment: (number | null)[];
-  cgWeight: (number | null)[]
+  cgWeight: (number | null)[];
+  /* performance: EPoint_WAB_GC */
 }
 export interface IWAB {
   items: WABItem[];
@@ -125,6 +126,13 @@ function CreateCGCWaB(): WABItem[] {
 
   return items;
 }
+export enum EPoint_WAB_GC {
+  EPOINT_IN_UTILITY = "IN_UTILITY",
+  EPOINT_IN_NORMAL = "IN_NORMAL",
+  EPOINT_GC_LIMIT = "GC_LIMIT",
+  EPOINT_WEIGHT_LIMIT =  "WEIGHT_LIMIT",
+  EPOINT_OUT_LIMIT = "OUT_LIMIT"
+} 
 
 export class CWAB implements IWAB {
   items: WABItem[] = [];

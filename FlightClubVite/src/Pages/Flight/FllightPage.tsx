@@ -419,7 +419,31 @@ const FlightPage = () => {
       CustomLogger.error("FlightPage/useEffect/error", (error as any)); flightsData
     }
   }, [isLoading]); */
-
+  if (isLoading) {
+    CustomLogger.info('FlightPage/isLoading', isLoading)
+    return (
+      <div className='main' style={{ overflow: 'auto' }}>
+        <FullScreenLoader />
+      </div>
+    )
+  }
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      const errMsg = 'error' in error ? error : JSON.stringify(error)
+      CustomLogger.error('FlightPage/error', errMsg)
+      return (
+        <div>
+          <div>AccountFlightPage</div>
+          <div>An error has occurred:</div>
+          <div>{errMsg}</div>
+        </div>
+      )
+    } else {
+      // you can access all properties of `SerializedError` here
+      return <div>{error}</div>
+    }
+  }
   return (
     <>
       <ContainerPage>
