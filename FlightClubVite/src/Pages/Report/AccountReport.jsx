@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material'
-import React, { createRef } from 'react'
-import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
-import Pdf from "react-to-pdf"
+import { createRef } from 'react'
+import ContainerPage, { ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
+/* import Pdf from "react-to-pdf" */
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -38,9 +38,9 @@ function AccountReport() {
             <div>AccountReport</div>
             <h1>Hello</h1>
             <h2>Hi from react</h2>
-            <Pdf targetRef={ref} filename={reportError.pdf}>
+{/*             <Pdf targetRef={ref} filename={reportError.pdf}>
               {({ toPdf }) => <Button onClick={toPdf}>Generate PDF</Button>}
-            </Pdf>
+            </Pdf> */}
 
           </Box>
         </ContainerPageHeader>
