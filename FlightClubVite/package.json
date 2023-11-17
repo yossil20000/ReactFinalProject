@@ -4,7 +4,6 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "vite --port 4000",
-    "install": "yarn",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "https": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem vite --port 4000"
