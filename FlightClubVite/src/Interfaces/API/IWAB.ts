@@ -152,7 +152,7 @@ function CreateCGCWaB(): WABItem[] {
     pX: 0, pY: 1,
     weightLimit: 300,
     displayUnits: WABUnits.WAB_GALON,
-    displayName: "Main Fuel [1 gal == 6 lb]",
+    displayName: "Main Fuel [galon]",
     unit: WABUnits.WAB_POUND,
     displayValue: 0
   }

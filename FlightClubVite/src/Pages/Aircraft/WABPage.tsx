@@ -95,8 +95,8 @@ function WABPage() {
             <TableHead>
               <TableRow>
                 <TableCell width="50%" align='left'></TableCell>
-                <TableCell width="10%" align='left'>Quantity [lb]</TableCell>
-                <TableCell width="10%" align='left'>Weight</TableCell>
+                <TableCell width="10%" align='left'>Quantity [kg]</TableCell>
+                <TableCell width="10%" align='left'>Weight [lb]</TableCell>
                 <TableCell width="10%" align='left'>Station</TableCell>
                 <TableCell width="10%" align='left'>Arm</TableCell>
                 <TableCell width="10%" align='left'>Moment</TableCell>
