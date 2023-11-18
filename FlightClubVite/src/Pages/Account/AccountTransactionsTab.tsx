@@ -11,16 +11,15 @@ import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFoo
 import React from 'react';
 import FilterDrawer from '../../Components/FilterDrawer';
 import { SetProperty } from '../../Utils/setProperty';
-import { IDateFilter, IFilterItems, newDateFilter } from '../../Interfaces/IDateFilter';
+import { IDateFilter, IFilterItems, fullYearFilter, newDateFilter } from '../../Interfaces/IDateFilter';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import PayTransactionDialog from './PayTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
 import GeneralTransactionDialog from './GeneralTransactionDialog';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { Role } from '../../Interfaces/API/IMember';
 
-const dateFilter: IDateFilter = newDateFilter;
+const dateFilter: IDateFilter = fullYearFilter;
 
 function AccountTransactionsTab() {
   const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})

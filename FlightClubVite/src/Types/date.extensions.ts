@@ -30,8 +30,18 @@ declare global {
       getStartQuarterDate(year?: number ,quarter?: number): Date
       getEndQuarterDate(year?: number ,quarter?: number): Date
       getQuarter() : number
+      getStartOfYear(): Date
+      getEndOfYear(): Date
    }
 }
+Date.prototype.getStartOfYear = function() : Date{
+   return this.getFirstDateOfMonth(this.getFullYear(),0)
+
+}
+Date.prototype.getEndOfYear = function() : Date{
+   return this.getLastDateOfMonth(this.getFullYear(),11)
+}
+
 Date.prototype.getQuarter = function() : number {
    return Math.floor(this.getMonth() / 3) + 1
 }

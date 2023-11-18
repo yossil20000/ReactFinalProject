@@ -1,5 +1,5 @@
 import '../../Types/Number.extensions'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
@@ -12,6 +12,9 @@ import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { MemberType } from '../../Interfaces/API/IMember';
+import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { DateTime } from 'luxon';
 
 export interface PayTransactionDialogProps {
 
@@ -65,7 +68,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionTypeMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [bank, setBank] = useState<IClubAccount | undefined>();
-
+  const theme = useTheme()
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
   
@@ -175,7 +178,11 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     CustomLogger.log("NewTransaction/SetProperty/newobj", newObj)
     return newObj;
   }
-
+  const handleDateChange = (newValue: DateTime | null) => {
+    let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    newDate.setSeconds(0, 0);
+    setSelectedTransaction(prev => ({ ...prev, date: newDate }))
+  };
   return (
 
     <Dialog
@@ -218,6 +225,19 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                   value={selectedTransaction?.amount} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} 
                   inputProps={{max: 1000 ,min:1}}/>
+              </Grid>
+              <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
+                <Item sx={{ marginLeft: "0px" }}>
+                  <LocalizationProvider dateAdapter={AdapterLuxon}>
+                    <ThemeProvider theme={theme}>
+                      <MobileDateTimePicker 
+                        label="Date"
+                        value={DateTime.fromJSDate(selectedTransaction.date)}
+                        onChange={handleDateChange}
+                      />
+                    </ThemeProvider>
+                  </LocalizationProvider>
+                </Item>
               </Grid>
               <Grid item xs={12}>
                 <TextField fullWidth={true} onChange={handleChange} id="description" name="description"

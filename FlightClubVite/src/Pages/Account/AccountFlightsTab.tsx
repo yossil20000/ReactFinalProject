@@ -1,5 +1,5 @@
 import { Box, Grid, TablePagination } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { EAction } from '../../Components/Buttons/ActionButtons';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable';
@@ -11,7 +11,6 @@ import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 import CreateFlightOrderDialog from './CreateFlightOrderDialog';
 import FullScreenLoader from '../../Components/FullScreenLoader';
-import DeviceMemberCombo from '../../Components/Devices/DeviceMemberCombo';
 import MembersCombo from '../../Components/Members/MembersCombo';
 import {UseIsAuthorized,IRequireAuthProps} from '../../Components/RequireAuth'
 import { Role } from '../../Interfaces/API/IMember';
@@ -151,6 +150,7 @@ function AccountFlightsTab() {
 
   const onMemberChanged = (item: InputComboItem) => {
     setSelectedMember(item)
+    setPage(0)
 }
   const onDeviceChange = (item: InputComboItem, has_hobbs: boolean) => {
     const filter: any = JSON.parse(JSON.stringify(accountFlightFilter));

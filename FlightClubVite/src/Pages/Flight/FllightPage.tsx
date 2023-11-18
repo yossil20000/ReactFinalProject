@@ -32,10 +32,13 @@ import { MemberType, Role } from "../../Interfaces/API/IMember";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
-import ExportExelTable from "../../Components/Report/Exel/ExportExelTable";
 import ReportDialog from "../../Components/Report/Exel/ReportDialog";
 
-const dateFilter: IDateFilter = newDateFilter;
+const dateFilter: IDateFilter = {
+  from: (new Date()).getStartOfYear(),
+  to: (new Date()).getEndOfYear(),
+  currentOffset: 0
+}
 const StyledAccordion = styled(Box)(({ theme }) => ({
   color: theme?.palette.primary.main,
   "& .MuiAccordionSummary-content:nth-of-type(2n+1)":

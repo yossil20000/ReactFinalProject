@@ -10,6 +10,11 @@ export const newDateFilter : IDateFilter ={
   from: (new Date().addDays(-30)).getStartDayDate(),
   currentOffset: 0
 }
+export const fullYearFilter: IDateFilter = {
+  from: (new Date()).getStartOfYear(),
+  to: (new Date()).getEndOfYear(),
+  currentOffset: 0
+}
 
 export interface IFilterItems {
   key: string;

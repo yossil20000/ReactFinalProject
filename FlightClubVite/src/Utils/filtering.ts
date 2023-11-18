@@ -56,6 +56,15 @@ export function from_to_Filter(today: Date): any {
     from: (today.addDays(-30)).getStartDayDate(),
   }
 };
+
+export function from_to_year_Filter(today: Date): any {
+  return {
+    to: today.getEndOfYear(),
+    from: today.getStartOfYear(),
+  }
+};
+
+
 export function Current_Quarter_Filter(): any {
   const today = new Date();
   let filter = {
