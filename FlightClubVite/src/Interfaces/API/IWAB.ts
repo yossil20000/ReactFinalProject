@@ -6,9 +6,24 @@ export enum WABItemType {
 }
 export enum WABUnits {
   WAB_GALON = "GALON",
-  WAB_CG= "INCH",
-  WAB_POUND = "POUND"
+  WAB_POUND = "POUND",
+  WAB_KG= "KILO"
 }
+const lbTokg = (lb: number) : number => lb / 2.2;
+const galonTolb = (galon: number): number => galon * 6;
+const kgTolb = (kg: number) : number => kg * 2.2;
+const lbTogalon = (lb: number): number => lb / 6;
+const galonTokg = (galon:number) : number => lbTokg(galonTolb(galon))
+const kgTogalon = (kg:number) : number => lbTogalon(kgTolb(kg))
+
+export const unitConversion = {
+  category:{
+    POUNDTOKILO: lbTokg,
+  GALONTOPOUND: galonTolb,
+  KILOTOPOUND: kgTolb,
+  POUNDTOGALON: lbTogalon
+  }
+};
 export type WABItem = {
   type: WABItemType;
   weight: number;
@@ -18,6 +33,8 @@ export type WABItem = {
   pY?: number;
   weightLimit?: number;
   displayName?: string;
+  displayValue: number;
+  displayUnits: WABUnits;
   unit: WABUnits
 }
 export type WABAircraft = {
@@ -55,73 +72,89 @@ function CreateCGCWaB(): WABItem[] {
     pX:0,pY:0,
     weightLimit: 2400,
     displayName: "Empty Weight",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_KG,
+    unit: WABUnits.WAB_POUND,
+    displayValue: 705.45
   }
   items[1] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 170,
+    weight: 176,
     cX: 0,
     cY: 37,
     pX: 1, pY: 1,
     displayName: "Pilot",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_KG,
+    unit: WABUnits.WAB_POUND,
+    displayValue: 80
   }
   items[2] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 50,
+    weight: 0,
     cX: 0,
     cY: 37,
     pX: 2, pY: 1,
     displayName: "Co-Pilot",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_KG,
+    unit: WABUnits.WAB_POUND,
+    displayValue: 0
   }
   items[3] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 50,
+    weight: 0,
     cX: 0,
     cY: 73,
     pX: 1, pY: 2,
     displayName: "RearL Passanger",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_KG,
+    unit: WABUnits.WAB_POUND,
+    displayValue: 0
   }
   items[4] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 75,
+    weight: 0,
     cX: 0,
     cY: 73,
     pX: 2, pY: 2,
     displayName: "RearR Passanger",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_KG,
+    unit: WABUnits.WAB_POUND,
+    displayValue: 0
   }
   items[5] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 70,
+    weight: 33,
     cX: 0,
     cY: 95,
     pX: 1, pY: 3,
     weightLimit: 120,
     displayName: "Baggage 120",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_KG,
+    unit: WABUnits.WAB_POUND,
+    displayValue: 15
   }
   items[6] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 50,
+    weight: 0,
     cX: 0,
     cY: 123,
     pX: 1, pY: 4,
     weightLimit: 50,
     displayName: "Baggage 50",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_KG,
+    unit: WABUnits.WAB_POUND,
+    displayValue: 0
   }
   items[7] = {
     type: WABItemType.WAB_FUEL,
-    weight: 300,
+    weight: 0,
     cX: 0,
     cY: 47.9,
     pX: 0, pY: 1,
     weightLimit: 300,
-    displayName: "Main Fuel",
-    unit: WABUnits.WAB_POUND
+    displayUnits: WABUnits.WAB_GALON,
+    displayName: "Main Fuel [1 gal == 6 lb]",
+    unit: WABUnits.WAB_POUND,
+    displayValue: 0
   }
 
   return items;
@@ -187,3 +220,14 @@ export class CWAB implements IWAB {
   }
 
 }
+
+type UserRoles = Record<string, (any)>;
+
+export const conv: UserRoles = {
+  POUNDTOKILO: lbTokg,
+  KILOTOPOUND: kgTolb,
+  POUNDTOGALON: lbTogalon,
+  GALONTOPOUND: galonTolb,
+  GALONTOKILO: galonTokg, 
+  KILOTOGALON: kgTogalon
+};
