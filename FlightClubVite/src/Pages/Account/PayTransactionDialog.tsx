@@ -146,11 +146,11 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
 
   const RenderSource = (): JSX.Element => {
 
-    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} />
+    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} includesType={[MemberType.Club]}/>
   }
   const RenderDestination = (): JSX.Element => {
 
-    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} />
+    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member,MemberType.Supplier]}/>
 
   }
 
@@ -188,7 +188,9 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="lg" open={open} {...other}>
-      <DialogTitle>Create Payment Transaction</DialogTitle>
+      <DialogTitle>
+        <div>Create Payment Transaction</div>
+      </DialogTitle>
       {(isQuery && isLoading) ? (
         <>
           <FullScreenLoader />

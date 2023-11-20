@@ -183,6 +183,8 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
     <Dialog sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="lg" open={open} {...other}>
       <DialogTitle textAlign={"center"}>Add Expense Transaction</DialogTitle>
+      <div>Credit: (-) destination </div>
+      <div>Debit:  (+) destination </div>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
           <Grid item xs={12}><Divider /></Grid>

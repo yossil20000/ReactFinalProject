@@ -1,6 +1,7 @@
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useEffect, useState } from 'react';
+import { MemberType } from '../../Interfaces/API/IMember';
 
 export interface ComboProps {
   onChanged: (item: InputComboItem) => void;
@@ -8,6 +9,14 @@ export interface ComboProps {
   selectedItem?: InputComboItem;
   filter?: any;
   title?: any;
+}
+export interface IClubAccountProps extends ComboProps {
+  onChanged: (item: InputComboItem) => void;
+  source: string;
+  selectedItem?: InputComboItem;
+  filter?: any;
+  title?: any;
+  includesType: MemberType[];
 }
 
 export interface SelectComboProps extends ComboProps {

@@ -19,7 +19,7 @@ import CreateQuarterDialoq, { ICreateQuarterExpense } from './CreateQuarterDialo
 import OrderStatusCombo from '../../Components/Buttons/OrderStatusCombo';
 import { OrderStatus } from '../../Interfaces/API/IAccount';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
-import { Role } from '../../Interfaces/API/IMember';
+import { MemberType, Role } from '../../Interfaces/API/IMember';
 
 function AccountOrdersTab() {
   const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
@@ -77,7 +77,7 @@ function AccountOrdersTab() {
                 </IconButton>
               </Grid>
               <Grid item xs={4}  >
-                <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} />
+                <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} includesType={[MemberType.Club]} />
               </Grid >
               <Grid item xs={3}>
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{key: EAction.ADD,value: isAuthorized}]} />

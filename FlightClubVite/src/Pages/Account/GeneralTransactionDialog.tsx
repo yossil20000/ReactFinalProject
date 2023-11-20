@@ -145,11 +145,11 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
 
   const RenderSource = (): JSX.Element => {
 
-    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_GeneralTransactionDialogs/Source"} />
+    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_GeneralTransactionDialogs/Source"} includesType={[MemberType.Club]}/>
   }
   const RenderDestination = (): JSX.Element => {
 
-    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} />
+    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member,MemberType.Supplier]} />
 
   }
 
@@ -187,6 +187,8 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
       maxWidth="lg" open={open} {...other}>
       <DialogTitle>Create Transaction</DialogTitle>
+      <div>Credit: (-) destination </div>
+      <div>Debit:  (+) destination </div>
       {(isQuery && isLoading) ? (
         <>
           <FullScreenLoader />

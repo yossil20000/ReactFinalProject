@@ -49,7 +49,7 @@ function RefreshTokenDialog({open,expired,onClose} : IRefreshDialogProps) {
     
     let refreshProps: IRefreshToken = {
       member_id: login?.member.member_id,
-      username: login?.member.username
+      username: login?.member.username 
     }
     await refresh(refreshProps).unwrap().then((payload) => {
       CustomLogger.info("RefreshTokenDialog/onSave/", payload);

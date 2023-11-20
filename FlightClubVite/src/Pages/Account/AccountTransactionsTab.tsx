@@ -17,7 +17,7 @@ import PayTransactionDialog from './PayTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import GeneralTransactionDialog from './GeneralTransactionDialog';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
-import { Role } from '../../Interfaces/API/IMember';
+import { MemberType, Role } from '../../Interfaces/API/IMember';
 
 const dateFilter: IDateFilter = fullYearFilter;
 
@@ -105,7 +105,7 @@ function AccountTransactionsTab() {
             {(openPayTransaction == true) ? (<PayTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openPayTransaction} />) : (null)}
             {(openAddTransaction == true) ? (<GeneralTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
             <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
-              <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
+              <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} includesType={[MemberType.Club,MemberType.Member,MemberType.Supplier]} />
             </FilterDrawer>
             <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter} />
           </>
