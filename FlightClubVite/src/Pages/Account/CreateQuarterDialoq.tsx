@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react'
-import { Dialog, DialogTitle, DialogContent, Card, CardContent, Grid, Typography, Divider, TextField, CardActions, Button, Checkbox, FormControlLabel, ThemeProvider } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, Card, CardContent, Grid, Typography, Divider, TextField, CardActions, Button, Checkbox, FormControlLabel, ThemeProvider, LinearProgress } from '@mui/material'
 import { LocalizationProvider, DateTimePicker, DatePicker, MobileDateTimePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { DateTime } from 'luxon'
@@ -30,7 +30,7 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
   const [selectedMembers, setSelectedMembers] = useState<ICreateQuarterExpense>({ all: true, members_Id: [], device_Id: "", description: "", date: new Date() });
   const [isSaved, setIsSaved] = useState(false);
   const [requestAllItems, setRequestAllItems] = useState(false);
-  const [CreateQuarterOrder] = useCreateQuarterOrderMutation()
+  const [CreateQuarterOrder,{isError,isLoading}] = useCreateQuarterOrderMutation()
   const theme = useTheme()
   const onDeviceChanged = (item: InputComboItem) => {
     setSelectedDevice(item)
@@ -45,21 +45,31 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
   }
   const handleOnCancel = () => {
     setValidationAlert([])
-    if (isSaved) {/* onSave(value) */ }
-    else
+
       onClose()
   }
   const handleOnSave = async () => {
     CustomLogger.log("CreateQuarterDialoq/handleOnSave", selectedMembers)
     try {
       setValidationAlert([])
-      const results = await CreateQuarterOrder(selectedMembers).unwrap()
-      CustomLogger.info("CreateQuarterDialoq/handleOnSave/result", results)
+      setIsSaved(false)
+      await CreateQuarterOrder(selectedMembers).unwrap().then((results) => {
+        CustomLogger.info("CreateQuarterDialoq/handleOnSave/result", results)
+        if(results.success){
+          setIsSaved(true)
+        }
+      } ).catch((err) => {
+        const validation = getValidationFromError(err, handleOnValidatiobClose);
+        setValidationAlert(validation);
+        CustomLogger.error("CreateQuarterDialoq/handleOnSave/error", err)  
+      })
+
     }
     catch (error) {
+      CustomLogger.error("CreateQuarterDialoq/handleOnSave/error", error)
       const validation = getValidationFromError(error, handleOnValidatiobClose);
       setValidationAlert(validation);
-      CustomLogger.error("CreateQuarterDialoq/handleOnSave/error", error)
+      
     }
   }
   const handleOnValidatiobClose = useCallback(() => {
@@ -116,7 +126,7 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
                 <Item sx={{ marginLeft: "0px" }}>
                   <LocalizationProvider dateAdapter={AdapterLuxon}>
                     <ThemeProvider theme={theme}>
-                      <MobileDateTimePicker 
+                      <MobileDateTimePicker
                         label="Date"
                         value={DateTime.fromJSDate(selectedMembers.date)}
                         onChange={handleDateChange}
@@ -147,28 +157,38 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
           </CardContent>
           <CardActions>
             <Grid container sx={{ width: "100%" }} justifyContent="center">
-              <Grid item xs={12} md={6} xl={6}>
-                <Item><Button variant="outlined" sx={{ width: "100%" }}
-                  onClick={handleOnCancel}>
-
-                  {isSaved === true ? "Close " : "Cancle"}
-                </Button></Item>
-              </Grid>
-              <Grid item xs={12} md={6} xl={6}>
-                <Item><Button variant="outlined" sx={{ width: "100%" }}
-                  disabled={isSaved === true ? true : false}
-                  onClick={handleOnSave}>
-                  {isSaved === true ? "Saved" : "Save"}
-                </Button></Item>
-              </Grid>
+              {true ? (<><LinearProgress /></>) : null}
               {validationAlert.map((item) => (
                 <Grid item xs={12}>
                   <Item>
-
                     <ValidationAlert {...item} />
                   </Item>
                 </Grid>
               ))}
+              {(isLoading ) ? (
+                <>
+                  <Grid item xs={12} alignItems={'center'}><Item>Loading</Item></Grid>
+                  <Grid item xs={12}><Item><LinearProgress /></Item></Grid>
+                </>
+              ) : (
+                <>
+                  <Grid item xs={12} md={6} xl={6}>
+                    <Item><Button variant="outlined" sx={{ width: "100%" }}
+                      onClick={handleOnCancel}>
+                      {isSaved === true ? "Close " : "Cancle"}
+                    </Button></Item>
+                  </Grid>
+                  <Grid item xs={12} md={6} xl={6}>
+                    <Item><Button variant="outlined" sx={{ width: "100%" }}
+                      disabled={isSaved === true ? true : false}
+                      onClick={handleOnSave}>
+                      {isSaved === true ? "Created" : "Create"}
+                    </Button></Item>
+                  </Grid>
+                </>
+              )
+              }
+
             </Grid>
           </CardActions>
         </Card>
