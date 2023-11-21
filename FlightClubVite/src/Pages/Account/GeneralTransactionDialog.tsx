@@ -106,12 +106,10 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
 
   const handleOnCancel = () => {
     setValidationAlert([])
-
     onClose()
   }
   const handleOnValidatiobClose = useCallback(() => {
     setValidationAlert([])
-
   }, [])
 
   const handleOnSave = async () => {
@@ -228,13 +226,11 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
       )}
 
       <DialogActions>
-
         <Grid container sx={{ width: "100%" }} justifyContent="center">
           {true ? (<><LinearProgress /></>) : null}
           {validationAlert.map((item) => (
             <Grid item xs={12}>
               <Item>
-
                 <ValidationAlert {...item} />
               </Item>
             </Grid>
@@ -259,8 +255,6 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
                 </Button></Item>
               </Grid></>
           )}
-
-
         </Grid>
       </DialogActions>
     </Dialog>
