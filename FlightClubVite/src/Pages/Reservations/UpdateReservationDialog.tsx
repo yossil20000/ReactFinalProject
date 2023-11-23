@@ -115,7 +115,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
                     label="From Date"
                     value={DateTime.fromJSDate(reservationUpdate.date_from)}
                     onChange={handleFromDateFilterChange}
-                    
+                    ampm={false}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -127,6 +127,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                     label="To Date"
+                    ampm={false}
                     value={DateTime.fromJSDate(reservationUpdate.date_to)}
                     onChange={handleToDateFilterChange}
                   />

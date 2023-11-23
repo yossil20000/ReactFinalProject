@@ -17,6 +17,7 @@ export default function DatePickerDate({value,param,lable, onChange}: IDatePicke
     <LocalizationProvider dateAdapter={AdapterLuxon}>
     <ThemeProvider theme={defaultMaterialThem}>
       <MobileDateTimePicker  
+      ampm={false}
       views={["year","month",'day']} 
       defaultValue={DateTime.now()}
         label={lable}

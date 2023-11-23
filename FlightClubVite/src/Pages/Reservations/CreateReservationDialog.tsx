@@ -118,6 +118,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
+                  ampm={false}
                     label="From Date"
                     value={DateTime.fromJSDate(reservationCreate?.date_from == undefined ? new Date() : reservationCreate?.date_from)}
                     onChange={handleFromDateFilterChange}
@@ -131,6 +132,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
+                  ampm={false}
                     label="To Date"
                     value={DateTime.fromJSDate(reservationCreate.date_to)}
                     onChange={handleToDateFilterChange}
