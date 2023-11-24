@@ -199,8 +199,8 @@ exports.reservation_create = [
 				return;
 			}
 			let newReservation = new FlightReservation({
-				date_from: req.body.date_from,
-				date_to: req.body.date_to,
+				date_from: new Date( req.body.date_from),
+				date_to: new Date(req.body.date_to),
 				member: req.body._id_member,
 				device: req.body._id_device,
 				timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())
@@ -209,11 +209,12 @@ exports.reservation_create = [
 			const found = await FlightReservation.findOne({
 				$and: [
 					{ device: newReservation.device },
-					{
-						$or: [
+					{date_from: {"$lte": new Date(newReservation._doc.date_to)} , date_to: {"$gte": new Date(newReservation._doc.date_from)}
+						
+						/* $or: [
 							{ $and: [{ data_from: { $lte: newReservation._doc.date_to } }, { date_to: { $gte: newReservation._doc.date_to } }] },
 							{ $and: [{ data_from: { $lte: newReservation._doc.date_from } }, { date_to: { $gte: newReservation._doc.date_from } }] }
-						]
+						] */
 					}
 				]
 			}).exec();
@@ -242,8 +243,8 @@ exports.reservation_create = [
 				return;
 			}
 			else {
-				log.info("Create/else");
-				return next(new ApplicationError("reservation_create", 400, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError(newReservation._id, `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist`, '', "DB.Reservation")).validationResult.errors }));
+				log.info("Create/else_found",found?._doc);
+				return next(new ApplicationError("reservation_create", 400, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError(newReservation._id, `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist (${found?._doc.date_from.toLocaleString()} -${found?._doc.date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
 				
 			}
 		}
