@@ -42,6 +42,7 @@ import FullScreenLoader from "../../Components/FullScreenLoader";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { MemberType } from "../../Interfaces/API/IMember";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
+import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
 
 const dateFilter: IDateFilter = newDateFilter;
 interface ItableData {
@@ -205,7 +206,7 @@ function ReservationsPageOld() {
   const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
   const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH)
   const [selectedMember, setSelectedMember] = useState<InputComboItem>();
-
+  const [confirmation, setConfirmation] = useState<ConfirmationDialogProps>({ open: false, isOperate: false } as ConfirmationDialogProps);
   function SetReservationUpdate(id_reservation: string) {
     const reservation = rows.filter(item => item._id_reservaion === id_reservation)
     if (reservation.length === 1 && reservation[0].name) {
@@ -236,7 +237,7 @@ function ReservationsPageOld() {
     setRows(rows);
     CustomLogger.info('UseEffect/rows', rows)
 
-  }, [reservations?.data,selectedMember])
+  }, [reservations?.data, selectedMember])
 
   /* Table Section */
   const [order, setOrder] = useState<Order>('asc');
@@ -271,7 +272,7 @@ function ReservationsPageOld() {
       setExpanded(newExpanded ? panel : false);
     };
 
-  const handleDeleteClick = async (event: React.MouseEvent<unknown>, _id: string) => {
+  const handleDelete = async (_id: string) => {
     const reservationDelete: IReservationDelete = {
       _id: _id
     }
@@ -282,10 +283,12 @@ function ReservationsPageOld() {
         .then((payload) => {
           CustomLogger.info("DeleteReservation Fullfill", payload)
           refetch();
+          setConfirmation((prev) => ({ ...prev, open: false, isOperate: false }))
         });
     }
     catch (err) {
       CustomLogger.error("DeleteReservation/err", err)
+      setConfirmation((prev) => ({ ...prev, open: false, isOperate: false }))
     }
   }
 
@@ -456,14 +459,40 @@ function ReservationsPageOld() {
   }
   const filterReservation = function (reservation: IReservation): Boolean {
     /* CustomLogger.log("FlightPage/filterMember/", flights === undefined ? "Undefined" : flight) */
-    if(selectedMember?._id.trim().length === 0) return true;
-    if (reservation.member._id == selectedMember?._id){
+    if (selectedMember?._id.trim().length === 0) return true;
+    if (reservation.member._id == selectedMember?._id) {
       CustomLogger.log("Reservation/filterReservation/", selectedMember, reservation, true)
       return true;
     }
     CustomLogger.log("Reservation/filterReservation/", selectedMember, reservation, false)
     return false
 
+  }
+  const onConfirmationClose = (value: boolean, action: string) => {
+    CustomLogger.info("Reservation/onConfirmationClose", confirmation, value)
+    if (value) {
+      if (action === "DELETE_RESERVATION") {
+        setConfirmation((prev) => ({ ...prev, isOperate: true }))
+        handleDelete(confirmation.key === undefined ? "" : confirmation.key)
+      }
+      else
+        setConfirmation((prev) => ({ ...prev, open: false }))
+      CustomLogger.info("Reservation/OnDeleteFlight/key", confirmation.key)
+    }
+    else
+      setConfirmation((prev) => ({ ...prev, open: false,isOperate: false }))
+
+  }
+  const handleConfirmation = (action: string, id: string) => {
+    CustomLogger.info("Reservation/handleConfirmation/", action)
+    if (action === "DELETE_RESERVATION") {
+      setConfirmation((prev) => ({
+        ...prev,
+        open: true, action: action, content: "Please, press Confirm to Delete Reservation", title: "Confirmation", key: id,
+        onClose: onConfirmationClose
+      }))
+      CustomLogger.info("Reservation/handleConfirmation/DELETE_FLIGHT", confirmation)
+    }
   }
   return (
     <>
@@ -482,10 +511,10 @@ function ReservationsPageOld() {
                 </ToggleButton>
               </Tooltip>
               <Tooltip title="Prev Reservations">
-              <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="prev-selection" onClick={onFilterModePrev} size="small"> <NavigateBeforeIcon /></ToggleButton>
+                <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="prev-selection" onClick={onFilterModePrev} size="small"> <NavigateBeforeIcon /></ToggleButton>
               </Tooltip>
               <Tooltip title="Next Reservations">
-              <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="next-selection" onClick={onFilterModeNext} size="small"> <NavigateNextIcon /></ToggleButton>
+                <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="next-selection" onClick={onFilterModeNext} size="small"> <NavigateNextIcon /></ToggleButton>
               </Tooltip>
               <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
                 <List sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -510,8 +539,8 @@ function ReservationsPageOld() {
 
                   </ListItem>
                   <ListItem key={"member"}>
-                        <MembersCombo onChanged={onMemberChanged} source={"_ReservationPage/member"} filter={{ filter: { member_type: MemberType.Member } }} />
-                      </ListItem>
+                    <MembersCombo onChanged={onMemberChanged} source={"_ReservationPage/member"} filter={{ filter: { member_type: MemberType.Member } }} />
+                  </ListItem>
                   <ListItem key={'today'} disablePadding>
                     <ListItemButton onClick={onTodayChanged}>
                       <ListItemIcon>
@@ -573,7 +602,7 @@ function ReservationsPageOld() {
               </GeneralDrawer>
             </Box>
             <Box display={'flex'} justifyContent={"flex-end"}>
-            <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
+              <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
                 <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view" size="small"> <Tooltip title="Switch to day view"><TodayIcon /></Tooltip></ToggleButton>
                 <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view" size="small"> <Tooltip title="Switch to table view"><TableViewIcon /></Tooltip></ToggleButton>
               </ToggleButtonGroup>
@@ -613,7 +642,7 @@ function ReservationsPageOld() {
                             return false;
                           }).sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row: ItableData) => {
-                              
+
                               return (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id_reservaion}>
                                   <TableCell align="left">{row.device_name}</TableCell>
@@ -622,7 +651,7 @@ function ReservationsPageOld() {
                                   <TableCell align="left">{row.name}</TableCell>
                                   <TableCell align="left">{row.member_id}</TableCell>
                                   <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}</TableCell>
-                                  <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}</TableCell>
+                                  <TableCell align="left">{(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleConfirmation("DELETE_RESERVATION", row._id_reservaion)}>Delete</Button> : null}</TableCell>
                                 </TableRow>
                               );
                             })}
@@ -668,7 +697,11 @@ function ReservationsPageOld() {
 
                                   </Typography>
                                   <Typography>
-                                    {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleDeleteClick(event, row._id_reservaion)}>Delete</Button> : null}
+                                    {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
+                                      open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
+                                      onClose={onConfirmationClose} isOperate={false} />
+                                    ) : null}
+                                    {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleConfirmation("DELETE_RESERVATION", row._id_reservaion)}>Delete</Button> : null}
                                   </Typography>
 
                                 </Grid>

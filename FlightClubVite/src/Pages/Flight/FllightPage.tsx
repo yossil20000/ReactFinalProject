@@ -230,6 +230,7 @@ const FlightPage = () => {
         .then((payload) => {
           CustomLogger.info("DeleteFlight Fullfill", payload)
           refetch();
+          
         });
     }
     catch (err) {
@@ -392,15 +393,17 @@ const FlightPage = () => {
   }
   const onConfirmationClose = (value: boolean, action: string) => {
     CustomLogger.info("FlightPage/onConfirmationClose", confirmation, value)
-    setConfirmation((prev) => ({ ...prev, open: false }))
-
     if (value) {
       if (action === "DELETE_FLIGHT")
         handleDelete(confirmation.key === undefined ? "" : confirmation.key)
+      else 
+      setConfirmation((prev) => ({ ...prev, open: false }))
       CustomLogger.info("FlightPage/OnDeleteFlight/key", confirmation.key)
     }
-
+    else
+    setConfirmation((prev) => ({ ...prev, open: false }))
   }
+
   const handleConfirmation = (action: string, id: string) => {
     CustomLogger.info("FlightPage/handleConfirmation/", action)
     if (action === "DELETE_FLIGHT") {
@@ -411,8 +414,8 @@ const FlightPage = () => {
       }))
       CustomLogger.info("FlightPage/handleConfirmation/DELETE_FLIGHT", confirmation)
     }
-
   }
+
   const onMemberChanged = (item: InputComboItem) => {
     setSelectedMember(item)
   }
@@ -610,7 +613,7 @@ const FlightPage = () => {
                                           <Typography>
                                             {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
                                               open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
-                                              onClose={onConfirmationClose} />
+                                              onClose={onConfirmationClose} isOperate={false} />
                                             ) : null}
                                             {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleConfirmation("DELETE_FLIGHT", row._id)}>Delete</Button> : null}
                                           </Typography>

@@ -34,7 +34,7 @@ function Copyright(props: any) {
         {'.'}
       </Typography>
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {`Version 2.0.1.0 ${(new Date(2023,10,25)).getDisplayDate()}`}
+      {`Version 2.0.1.1 ${(new Date(2023,10,25)).getDisplayDate()}`}
       </Typography>
     </Box>
 

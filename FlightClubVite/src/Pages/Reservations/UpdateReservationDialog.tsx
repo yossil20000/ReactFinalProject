@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, CircularProgress } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, CircularProgress, Box } from "@mui/material";
 import { LocalizationProvider, DateTimePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
@@ -8,6 +8,7 @@ import TransitionAlert, { ITransitionAlrertProps, IValidationAlertProps, Validat
 import { useUpdateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
 import { IReservationUpdate, ReservationUpdate } from "../../Interfaces/API/IReservation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
+import { green } from "@mui/material/colors";
 
 
 export interface UpdateReservationDialogProps {
@@ -85,7 +86,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
     CustomLogger.log("UpdateReserationDialog/onSave", reservationUpdate)
     let reservation = new ReservationUpdate();
     reservation.copy(reservationUpdate);
-    CustomLogger.info("UpdateReserationDialog/onSave/reservation", reservation)
+    CustomLogger.info("UpdateReserationDialog/onSave/reservation", reservation,reservationUpdate)
     if (!reservation.IsValid()) {
       setdateErrorAlert((prev) => ({ ...prev, alertTitle: "Date Input Error", alertMessage: "Date_to must be greater then date_from", open: true, onClose: onCloseDateError }))
       return;
@@ -137,7 +138,6 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
           </Grid>
           <Grid item xs={12}>
             <Item>
-              {isLoading && <CircularProgress size='1rem' color='primary' />}
               <TransitionAlert {...dateErrorAlert} />
             </Item>
           </Grid>
@@ -173,14 +173,33 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
-              Cancle
+              Close
             </Button></Item>
           </Grid>
+
           <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
+            <Item>
+            <Box sx={{ m: 1, position: 'relative' }}>
+            {isLoading && (
+          <CircularProgress
+            size={24}
+            sx={{
+              color: green[500],
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+          
+        )}
+              <Button disabled={isLoading} variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnSave}>
               Save
-            </Button></Item>
+            </Button>
+            </Box>
+            </Item>
           </Grid>
         </Grid>
       </DialogContent>
