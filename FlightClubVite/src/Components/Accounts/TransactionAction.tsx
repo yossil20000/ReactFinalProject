@@ -117,7 +117,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
 
   return (
     <Box  >
-      {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
+      {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content } isOperate={false}
       open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
       onClose={onConfirmationClose} />
       ): null}
