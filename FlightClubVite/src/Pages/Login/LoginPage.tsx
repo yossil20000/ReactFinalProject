@@ -1,10 +1,9 @@
+import '../../Types/date.extensions'
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -19,21 +18,26 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getFromLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
-import PasswordButton from '../../Components/Buttons/PasswordButton';
 import { IconButton, InputAdornment } from '@mui/material';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
 
 
 function Copyright(props: any) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Yosef Levy
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
+    <Box>
+      <Typography variant="body2" color="text.secondary" align="center" {...props}>
+        {'Copyright © '}
+        <Link color="inherit" href="#">
+          Yosef Levy
+        </Link>{' '}
+        {new Date().getFullYear()}
+        {'.'}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {`Version 2.0.1.0 ${(new Date(2023,10,25)).getDisplayDate()}`}
+      </Typography>
+    </Box>
+
   );
 }
 const theme = createTheme();
@@ -155,20 +159,19 @@ export default function LoginPage() {
                 id="password"
                 InputProps={{
                   endAdornment: <InputAdornment position="start">
-                                    <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
                   </InputAdornment>,
                 }}
               />
-              
               {renderError()}
-{/*               <FormControlLabel
+              {/*               <FormControlLabel
                 control={<Checkbox value={true} color="primary" name='resend' />}
                 label="Resend"
               /> */}
@@ -188,7 +191,7 @@ export default function LoginPage() {
                   </Link>
                 </Grid>
                 <Grid item>
-{/*                   <Link href="#" variant="body2">
+                  {/*                   <Link href="#" variant="body2">
                     {"Resend"}
                   </Link> */}
                 </Grid>
