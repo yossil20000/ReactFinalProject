@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNavigate<IMemberUpdate>) {
-
+  CustomLogger.info("PersonalInfo/formData", formData , formData.date_of_birth)
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : "";
     CustomLogger.info("PersonalInfo/handleImageChange/file", file);
@@ -39,28 +39,28 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
   }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     setFormData({ ...formData, [prop]: item.lable });
-    CustomLogger.info("formData", formData)
+    CustomLogger.info("PersonalInfo/onComboChanged/formData", formData)
   }
   const handlePersonChange = (prop: any) => (event: any) => {
     setFormData({ ...formData, [prop]: event.target.value });
-    CustomLogger.info("formData", formData)
+    CustomLogger.info("PersonalInfo/handlePersonChange/formData", formData)
   };
 
   const handleTimeChange = (newValue: Date | null) => {
     if (newValue === null)
       return;
     setFormData({ ...formData, date_of_birth: newValue });
-    CustomLogger.info("formData", formData)
+    CustomLogger.info("PersonalInfo/handleTimeChange/formData", formData)
   };
   const handleemailChange = (prop: any) => (event: any) => {
     setFormData({ ...formData, contact: { ...formData.contact, [prop]: event.target.value } });
-    CustomLogger.info("formData", formData)
+    CustomLogger.info("PersonalInfo/handleemailChange/formData", formData)
   };
 
 
   const handlePhoneChange = (prop: any) => (event: any) => {
     setFormData(prev => ({ ...prev, contact: { ...prev.contact, phone: { ...prev.contact.phone, [prop]: event.target.value } } }));
-    CustomLogger.info("formData", formData)
+    CustomLogger.info("PersonalInfo/handleemailChange/formData", formData)
   };
   return (
     <div className='main' style={{ width: "99%", margin: "1% auto", overflow: "auto" }}>
@@ -140,11 +140,11 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
         </Grid>
         <Grid item xs={12} md={12}>
           <Item>
-            <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
               <MobileDateTimePicker
                 label="Date Of Birth"
                 views={['year', 'month', 'day']}
-                value={DateTime.fromJSDate(formData.date_of_birth ? formData.date_of_birth : new Date())}
+                value={DateTime.fromJSDate(formData.date_of_birth ? new Date(formData.date_of_birth) : new Date())}
                 onChange={(e) => { handleTimeChange(e ? e.toJSDate() : new Date()) }}
                 sx={{ width: '100%' }}
               />

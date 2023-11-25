@@ -124,7 +124,7 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
               </Grid>
               <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
                 <Item sx={{ marginLeft: "0px" }}>
-                  <LocalizationProvider dateAdapter={AdapterLuxon}>
+                  <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                     <ThemeProvider theme={theme}>
                       <MobileDateTimePicker
                         label="Date"

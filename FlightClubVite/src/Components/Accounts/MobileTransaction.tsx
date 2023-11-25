@@ -1,10 +1,8 @@
+import '../../Types/date.extensions';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Fab, Grid, SvgIcon, SvgIconProps, Tooltip, Typography } from '@mui/material'
-import React, { useMemo } from 'react'
-import { IOrderType, OT_REF } from '../../Interfaces/API/IAccount'
-import { CTransaction, ITransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub'
+import { CTransaction, ITransaction, Transaction_OT } from '../../Interfaces/API/IClub'
 import FlightIcon from '@mui/icons-material/Flight';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
-import PaidIcon from '@mui/icons-material/Paid';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { green } from '@mui/material/colors';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -151,7 +149,7 @@ console.log("MobileTransaction/transaction,accountId",item,accountId)
             </Grid>
             <Grid item xs={8} sm={8}>
               <Grid>{item.destination}</Grid>
-              <Grid>{(new Date(item.date)).toLocaleDateString()}</Grid>
+              <Grid>{new Date(item.date).getDisplayDate()}</Grid>
 
             </Grid>
             <Grid item xs={2} sm={2} alignItems={"center"} justifyItems={"left"}>

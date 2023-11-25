@@ -119,7 +119,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           </Grid>
           <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
             <Box sx={{ marginLeft: "0px", marginTop: '2ch' }}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                     views={['year', 'month', 'day']}

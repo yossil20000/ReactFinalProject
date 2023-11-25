@@ -39,7 +39,6 @@ import CalnanderViewDay from "../../Components/Calander/CalnanderViewDay.js";
 import { EfilterMode, EviewMode } from "../../Utils/enums";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FullScreenLoader from "../../Components/FullScreenLoader";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { MemberType } from "../../Interfaces/API/IMember";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
@@ -473,7 +472,7 @@ function ReservationsPageOld() {
         <Box sx={{ width: '100%' }}>
           {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
           {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
-          <Typography variant="h6" align="center">{`Reservations ${filterDate.from.toLocaleDateString()} : ${filterDate.to.toLocaleDateString()}`}</Typography>
+          <Typography variant="h6" align="center">{`Reservations ${filterDate.from.getDisplayDate()} : ${filterDate.to.getDisplayDate()}`}</Typography>
 
           <Box display={'flex'} justifyContent={"space-between"}>
             <Box display={'flex'} justifyContent={"flex-start"}>
@@ -614,11 +613,12 @@ function ReservationsPageOld() {
                             return false;
                           }).sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row: ItableData) => {
+                              
                               return (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id_reservaion}>
                                   <TableCell align="left">{row.device_name}</TableCell>
-                                  <TableCell align="left">{new Date(row.date_from).toLocaleString()}</TableCell>
-                                  <TableCell align="left">{new Date(row.date_to).toLocaleString()}</TableCell>
+                                  <TableCell align="left">{(new Date(row.date_from)).getDisplayDateTime()}</TableCell>
+                                  <TableCell align="left">{(new Date(row.date_to)).getDisplayDateTime()}</TableCell>
                                   <TableCell align="left">{row.name}</TableCell>
                                   <TableCell align="left">{row.member_id}</TableCell>
                                   <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}</TableCell>
@@ -645,7 +645,7 @@ function ReservationsPageOld() {
                         return (
                           <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
                             <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                              <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).toLocaleString()} {"=>"} {new Date(row.date_to).toLocaleString()}</Typography>
+                              <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).getDisplayDateTime()} {"=>"} {new Date(row.date_to).getDisplayDateTime()}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                               <Grid container spacing={1}>

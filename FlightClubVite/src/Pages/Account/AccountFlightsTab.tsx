@@ -42,7 +42,7 @@ function createData(
 const columns: Column[] = [
   {
     id: 'date', label: 'Date', minWidth: 170, isCell: true, format: (date: Date): string => {
-      return (new Date(date)).toLocaleDateString()
+      return (new Date(date)).getDisplayDate()
     }
   },
   {
@@ -196,7 +196,7 @@ function AccountFlightsTab() {
       const [units, pricePeUnit, amount, discount] = getPrice(flightFound);
       const description : orderDescription = {
         operation: 'FLIGHT',
-        date: new Date(flightFound.date).toLocaleDateString(),
+        date: flightFound.date.getDisplayDate(),
         engien_start: flightFound.engien_start,
         engien_stop: flightFound.engien_stop,
         total: Number((flightFound.engien_stop - flightFound.engien_start).toFixed(2)) ,

@@ -78,7 +78,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       CustomLogger.info("OrderTable/orderRows/filter/dofilter_4", doFilter)
       return doFilter;
     }).map((row : IOrder) => ({
-      id: row._id, date: new Date(row.order_date).toLocaleDateString(),
+      id: row._id, date: new Date(row.order_date).getDisplayDate(),
       amount: row.amount,
       product: row.orderType.referance,
       units: row.units,

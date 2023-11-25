@@ -53,12 +53,13 @@ useEffect(() => {
 },[isLoading])
 
   const transactionRows = () => {
-
+  
     const rows = reservations?.map((row: IReservation) => ({
+      
       id: row._id,
       device: row.device.device_id,
-      date_from: new Date(row.date_from).toLocaleString(),
-      date_to: new Date(row.date_to).toLocaleString(),
+      date_from: row.date_from.getDisplayDate(),
+      date_to: "",
       name: row.member.family_name,
       member_id: row.member.member_id,
       validOperation : GeneralCanDo(row.member._id, login.member._id, login.member.roles)

@@ -47,7 +47,7 @@ const getData = useMemo(() => {
 
     const rows = transactions?.map((row: ITransaction) => ({
       id: row._id,
-      date: new Date(row.date).toLocaleDateString(),
+      date: new Date().getDisplayDate(),
       source: row.source,
       destination: row.destination,
       amount: row.amount,

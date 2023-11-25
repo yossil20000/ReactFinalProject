@@ -99,7 +99,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
 
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={12} xl={12} >
             <Item sx={{ marginLeft: "0px" }}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                     views={['year', 'month', 'day']}

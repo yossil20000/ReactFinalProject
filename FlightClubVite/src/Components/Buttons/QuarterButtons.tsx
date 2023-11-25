@@ -31,7 +31,7 @@ function QuarterButtons(props: IQuarterButtonsProps) {
 
   return (
     <Box display={'flex'} justifyContent={"center"} width={'100%'}>
-      <LocalizationProvider dateAdapter={AdapterLuxon}>
+      <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
         <DatePicker label={'year'} views={['year']}
             value={DateTime.fromJSDate(year)}
             onChange={(newValue) => {

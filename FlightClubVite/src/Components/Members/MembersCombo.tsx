@@ -5,7 +5,6 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import { IMemberCombo, IMemberComboFilter } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem, newInputComboItem } from '../Buttons/ControledCombo';
-import { defaultInvoiceDetailes } from '../../Interfaces/IReport';
 
 export  const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
   return {  lable: `${input.family_name}/${input.member_id}`, _id: input._id ,description: "",key: input.member_type }

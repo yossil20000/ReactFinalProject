@@ -1,3 +1,4 @@
+import "../Types/date.extensions"
 export interface IInvoiceHeader {
   title: string,
   toolTip: string
@@ -65,7 +66,7 @@ export const defaultInvoiceMember: InvoiceMember = {
 export const defaultInvoiceDetailes: IInvoiceDetailes = {
   member: defaultInvoiceMember,
   invoiceNo: "12345",
-  date: (new Date).toLocaleDateString(),
+  date: (new Date()).getDisplayDate(),
   mainTitle: "Invoice"
 }
 export const defaultInvoiceProps: InvoiceProps = {

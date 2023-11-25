@@ -58,7 +58,7 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
       <Box display={"flex"} justifyContent={"space-between"} sx={{ flexGrow: 1 }}>
         <SplitedButton options={selectedDateFilterOptions} handleClick={handleFilterClick} />
         {isByDateRange || dateRangeBP ? (
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
             <ThemeProvider theme={defaultMaterialThem}>
               <MobileDateTimePicker 
                 label="From Date"

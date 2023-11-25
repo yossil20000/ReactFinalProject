@@ -12,6 +12,7 @@ import DevicesCombo from "../../Components/Devices/DevicesCombo";
 import { useCreateReservationMutation } from "../../features/Reservations/reservationsApiSlice";
 import { IReservationCreateApi } from "../../Interfaces/API/IReservation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
+import { useAppSelector } from "../../app/hooks";
 const source: string = "CreateReservation"
 
 export interface CreateReservationDialogProps {
@@ -41,7 +42,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 }
 
 function CreateReservationDialog({ value, onClose, onSave, open, ...other }: CreateReservationDialogProps) {
-
+  const login = useAppSelector((state) => state.authSlice);
   CustomLogger.log("CreateReservationDialog/value", value)
   const [CreateReservation, { isError, isLoading, error, isSuccess }] = useCreateReservationMutation();
   const [reservationCreate, setReservationCreate] = useState<IReservationCreateApi>(value);
@@ -49,8 +50,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [deviceDescription, setDeviceDescription] = useState("");
   const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-
+  const [selectedMember,setSelectedMember] = useState<InputComboItem>({} as InputComboItem)
   useEffect(() => {
+    
     CustomLogger.info("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Reservation Create", alertMessage: "Reserva Create Successfully", open: true, onClose: onClose, severity: "success" }))
@@ -60,8 +62,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       setValidationAlert(validation);
       return;
     }
-  }, [isLoading])
 
+  }, [isLoading])
+ 
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
@@ -76,6 +79,18 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
   };
 
+/*   useEffect(() => {
+    login.member._id
+    let defaultMember:InputComboItem = {
+      _id: login.member._id,
+      lable: `${login.member.family_name} ${login.member.member_id}`,
+      description: ""
+    }
+    setSelectedMember(defaultMember)
+    onMemberChanged(defaultMember)
+    setReservationCreate(prev => ({ ...prev, _id_member: login.member._id }))
+    CustomLogger.info("CreateReservationDialog/useEffect/setReservationCreate",login.member._id)
+   },[value]) */
 
   const handleOnCancel = () => {
     setValidationAlert([])
@@ -104,6 +119,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   }
   const onMemberChanged = (item: InputComboItem) => {
     setReservationCreate(prev => ({ ...prev, _id_member: item._id }))
+    CustomLogger.log("CreateFlightDialoq/onMemberChanged/item", item);
   }
   return (
     <Dialog
@@ -115,7 +131,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
         <Grid container sx={{ width: "100%" }} justifyContent="center" >
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
             <Box sx={{ marginLeft: "0px", marginTop: '1ch' }}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider  adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                   ampm={false}
@@ -129,7 +145,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '1ch' }}>
             <Box >
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon} >
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                   ampm={false}
@@ -151,7 +167,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
             <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
-            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
+            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} selectedItem={selectedMember}/>
           </Grid>
           <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
             <TextField

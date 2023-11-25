@@ -9,7 +9,7 @@ interface ComboPropsEx extends ComboProps {
   requestItems?: boolean;
 }
 function DeviceMemberCombo(props: ComboPropsEx) {
-  const { requestItems = false, getAllItems, onChanged, source, filter, selectedDepended, title = "Select Member" } = props
+  const { requestItems = false, getAllItems, onChanged, source, filter, selectedDepended, title = "Select Member",selectedItem } = props
   const { data, isError, isLoading, error } = useFetchDevicCanReservQuery(selectedDepended._id);
 
   const [deviceCanreservItems, setDeviceCanreservItems] = useState<InputComboItem[]>([]);
@@ -35,11 +35,16 @@ function DeviceMemberCombo(props: ComboPropsEx) {
       description: ""
     } as InputComboItem)
   }, [selectedDepended])
+
   useEffect(() => {
+    if(selectedItem)
+    onSelectedItem(selectedItem)
     if (selectedDeviceCanreserv)
       onChanged(selectedDeviceCanreserv)
-  }, [])
+  }, [selectedItem])
+
   useEffect(() => {
+
     if (requestItems && getAllItems !== undefined)
       getAllItems(deviceCanreservItems)
   }, [requestItems])

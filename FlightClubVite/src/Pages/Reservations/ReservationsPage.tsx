@@ -123,7 +123,7 @@ function ReservationPage() {
                   </IconButton>
                 </Grid>
                 <Grid item xs={11}>
-                  <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "rESERVATION" }]} />
+                  <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Reservation" }]} />
                 </Grid>
               </Grid>
             </Box>

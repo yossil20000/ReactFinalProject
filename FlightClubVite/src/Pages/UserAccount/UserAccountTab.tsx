@@ -12,7 +12,6 @@ import { CTransaction, ITransaction } from '../../Interfaces/API/IClub';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import { Current_Quarter_Filter, from_to_Filter, IOrderTableFilter } from '../../Utils/filtering';
 import { SetProperty } from '../../Utils/setProperty';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
@@ -132,7 +131,7 @@ function UserAccountTab() {
                CustomLogger.info("UserAccountTab/ReportData/transcations.exception", j, error)
              } */
             total = total + CTransaction.getAmount(i, account.account_id);
-            row = { row: [{ data: (new Date(i.date)).toLocaleDateString(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i, account.account_id).toFixed(2), toolTip: "Total" }] }
+            row = { row: [{ data: (new Date(i.date)).getDisplayDate(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i, account.account_id).toFixed(2), toolTip: "Total" }] }
             CustomLogger.info("UserAccountTab/ReportData/transcations.map", i, j, row)
             return row
           }),

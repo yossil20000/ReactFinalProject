@@ -453,7 +453,7 @@ const FlightPage = () => {
         <>
           <ContainerPageHeader>
             <Box marginTop={0} display={'flex'} flexDirection={'column'}>
-              <Typography variant="h6" align="center">{`Flights ${filterDate.from.toLocaleDateString()} - ${filterDate.to.toLocaleDateString()}`}</Typography>
+              <Typography variant="h6" align="center">{`Flights ${filterDate.from.getDisplayDate()} - ${filterDate.to.getDisplayDate()}`}</Typography>
               <Box sx={{ width: '100%', mb: 1, display: "flex", justifyContent: "space-between" }} >
                 <Box display={'flex'} justifyContent={"flex-start"}>
                   <ToggleButton value={""} aria-label="close" size="medium" onClick={() => setOpenFilter(true)}>
@@ -564,7 +564,7 @@ const FlightPage = () => {
                           <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
                           >
                             <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                              <Typography variant='caption'> {row.device_id} , {new Date(row.date).toLocaleString()}</Typography>
+                              <Typography variant='caption'> {row.device_id} , {row.date.getDisplayDate()}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                               <Grid container spacing={1} columns={12}>

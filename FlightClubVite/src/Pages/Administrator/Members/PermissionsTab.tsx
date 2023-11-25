@@ -12,6 +12,7 @@ import MembershipCombo from "../../../Components/Membership/MembershipCombo";
 import { IMemberAdmin, Role, Status } from "../../../Interfaces/API/IMember";
 import IMembership from "../../../Interfaces/API/IMembership";
 import { getSelectedItem, setProperty } from "../../../Utils/setProperty";
+import { DateTime } from "luxon";
 const source = "admin/member/general"
 
 const SetProperty = (obj: any, path: string, value: any): any => {
@@ -88,22 +89,22 @@ function PermissionsTab() {
     <>
       <Grid container width={"100%"} height={"100%"} rowSpacing={2} columnSpacing={1} columns={12} alignContent={'start'}>
         <Grid item xs={12}>
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
             <MobileDateTimePicker
               views={['year', 'month', 'day']}
               label="Date of join"
-              value={selectedMember?.date_of_join === null ? new Date() : selectedMember?.date_of_join}
-              onChange={(newValue) => handleTimeChange(newValue, "date_of_join")}
+              value={DateTime.fromJSDate(selectedMember?.date_of_join === null ? new Date() : new Date(selectedMember?.date_of_join!))}
+              onChange={(newValue) => handleTimeChange(newValue?.toJSDate(), "date_of_join")}
             />
           </LocalizationProvider>
         </Grid>
         <Grid item xs={12} display={selectedMember?.status === Status.Active ? "none" : ""}>
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
             <MobileDateTimePicker
               views={['year', 'month', 'day']}
               label="Date of leave"
-              value={selectedMember?.date_of_leave === null ? new Date() : selectedMember?.date_of_leave}
-              onChange={(newValue) => handleTimeChange(newValue, "date_of_leave")}
+              value={DateTime.fromJSDate(selectedMember?.date_of_leave === null ? new Date() : new Date(selectedMember?.date_of_leave!))}
+              onChange={(newValue) => handleTimeChange(newValue?.toJSDate(), "date_of_leave")}
             />
           </LocalizationProvider>
         </Grid>

@@ -72,7 +72,7 @@ function NoticeEdit() {
           />
         </Grid>
         <Grid item xs={12} >
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
             <ThemeProvider theme={defaultMaterialThem}>
               <MobileDateTimePicker
                 label="Issue Date"
@@ -86,7 +86,7 @@ function NoticeEdit() {
         </Grid>
         {notice.isExpired !== true ? null : (
           <Grid item xs={12} >
-            <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
               <ThemeProvider theme={defaultMaterialThem}>
                 <MobileDateTimePicker
                   label="Due Date"

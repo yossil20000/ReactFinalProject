@@ -1,7 +1,8 @@
 import { DIALOG_WIDTH } from "@mui/x-date-pickers/internals";
 
 export {}
-
+const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short'});
 declare global {
    interface Date {
       addDays(days: number, useThis?: boolean): Date;
@@ -13,6 +14,7 @@ declare global {
       getWeek() : number;
       isSameMonth(date : Date) : boolean;
       getDisplayDate() : string;
+      getDisplayDateTime() : string;
       addMinutes(minutes: number): Date;
       getFirstDateOfWeek(): Date;
       getLastDateOfWeek(): Date;
@@ -173,5 +175,9 @@ Date.prototype.isSameMonth = function (date: Date): boolean  {
 };
 
 Date.prototype.getDisplayDate = function () : string {
-   return this.toDateString()
+   return dateFormat.format(this)
+}
+
+Date.prototype.getDisplayDateTime = function () : string {
+   return dateTimeFormat.format(this)
 }

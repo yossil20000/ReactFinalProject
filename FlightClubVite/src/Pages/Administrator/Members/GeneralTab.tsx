@@ -8,6 +8,7 @@ import GenderCombo from "../../../Components/Buttons/GenderCombo";
 import { LabelType } from "../../../Components/Buttons/MultiOptionCombo";
 import { IMemberAdmin, Role } from "../../../Interfaces/API/IMember";
 import { setProperty } from "../../../Utils/setProperty";
+import { DateTime } from "luxon";
 const source = "admin/member/general"
 
 const SetProperty = (obj: any, path: string, value: any): any => {
@@ -78,12 +79,12 @@ function GeneralTab() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Grid item xs={12}>
-            <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
               <MobileDateTimePicker 
                 views={['year','month','day']}
                 label="Date Of Birth"
-                value={selectedItem?.date_of_birth === null ? new Date() : selectedItem?.date_of_birth}
-                onChange={(newValue) => handleTimeChange(newValue, "date_of_birth")}
+                value={DateTime.fromJSDate(selectedItem?.date_of_birth === null ? new Date() : new Date(selectedItem?.date_of_birth!))}
+                onChange={(newValue) => handleTimeChange(newValue?.toJSDate(), "date_of_birth")}
               />
             </LocalizationProvider>
           </Grid>

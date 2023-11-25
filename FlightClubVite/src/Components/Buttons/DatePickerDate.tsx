@@ -14,7 +14,7 @@ export default function DatePickerDate({value,param,lable, onChange}: IDatePicke
 
   })
   return(
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
+    <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
     <ThemeProvider theme={defaultMaterialThem}>
       <MobileDateTimePicker  
       ampm={false}

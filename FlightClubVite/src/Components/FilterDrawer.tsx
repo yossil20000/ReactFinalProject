@@ -88,7 +88,7 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items, ch
               <ListItemIcon>
                 <DateRangeIcon />
               </ListItemIcon>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                     views={["year", "month", "day"]}
@@ -105,7 +105,7 @@ export default function FilterDrawer({ setOpen, open, onFilterChanged, items, ch
               <ListItemIcon>
                 <DateRangeIcon />
               </ListItemIcon>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                     views={["year", "month", "day"]}

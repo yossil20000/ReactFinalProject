@@ -21,6 +21,7 @@ import { blue } from '@mui/material/colors';
 import { resizeFileTobase64 } from '../../../Utils/files';
 import { useAppDispatch } from '../../../app/hooks';
 import { setDirty } from '../../../features/Admin/adminPageSlice';
+import { DateTime } from 'luxon';
 
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
@@ -268,12 +269,12 @@ function DeviceTabItem() {
               <AccordionDetails>
                 <Grid container spacing={1} columns={{ xs: 2, sm: 2, md: 3 }}>
                   <Grid item xs={1}>
-                    <LocalizationProvider dateAdapter={AdapterLuxon}>
+                    <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                       <MobileDateTimePicker
                         views={['year', 'month', 'day']}
                         label="Next Service"
-                        value={selectedItem?.due_date === null ? new Date() : selectedItem?.due_date}
-                        onChange={(newValue) => handleTimeChange(newValue, "due_date")}
+                        value={DateTime.fromJSDate(selectedItem?.due_date ? (new Date(selectedItem?.due_date)) : new Date())}
+                        onChange={(newValue) => handleTimeChange(newValue?.toJSDate(), "due_date")}
                       />
                     </LocalizationProvider>
                   </Grid>

@@ -109,7 +109,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
         <Grid container sx={{ width: "100%" }} justifyContent="center">
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
             <Item sx={{ marginLeft: "0px" }}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon} >
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker 
                     label="From Date"
@@ -123,7 +123,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item >
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
                     label="To Date"
