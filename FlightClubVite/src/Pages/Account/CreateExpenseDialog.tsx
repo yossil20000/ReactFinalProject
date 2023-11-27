@@ -64,7 +64,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
   }, [])
   const handleOnSave = async () => {
-    CustomLogger.log("CreateExspenseDialog/onSave", selectedExpense)
+    CustomLogger.log("CreateExspenseDialog/onSave/selectedExpense", selectedExpense)
     setValidationAlert([]);
     if (selectedSource !== undefined) {
       const expanse = UpdateSourceAccountFields()
@@ -72,7 +72,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
         update: expanse
       }
       await createExpense(filterData).unwrap().then((data) => {
-        CustomLogger.info("CreateExspenseDialog/onSave/", data);
+        CustomLogger.info("CreateExspenseDialog/onSave/data", data);
         if (data.success) {
           setIsSaved(true)
         }

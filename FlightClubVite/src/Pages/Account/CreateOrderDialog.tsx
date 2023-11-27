@@ -36,7 +36,7 @@ function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetO
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved,setIsSaved] = useState(false);
-
+  const [isSave,setIsSave] = useState(false)
   useEffect(() => {
     CustomLogger.info("CreatetOrderDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -75,6 +75,7 @@ function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetO
   }, [])
   const handleOnSave = async () => {
     CustomLogger.log("CreatetOrderDialog/onSave", orderCreate)
+    setIsSave(true)
     let order = new COrderCreate();
     order.copy(orderCreate);
     CustomLogger.info("CreatetOrderDialog/onSave/order", order)
@@ -84,9 +85,11 @@ function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetO
       CustomLogger.log("CreatetOrderDialog/onSave/", data);
       if(data.data._id !== undefined){
         setIsSaved(true)
+        setIsSave(false)
       }
     }).catch((err) => {
       CustomLogger.error("CreatetOrderDialog/onSave/error", err.data.errors);
+      setIsSave(false)
     });
   }
 
@@ -206,13 +209,13 @@ function CreatetOrderDialog({ value, onClose, onSave, open, ...other }: CreatetO
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
-
+              disabled={isSave}
               {isSaved === true ? "Close ": "Cancle"}
             </Button></Item>
           </Grid>
           <Grid item xs={12} md={6} xl={6}>
             <Item><Button variant="outlined" sx={{ width: "100%" } } 
-            disabled={isSaved === true ? true : false}
+            disabled={(isSaved === true || isSave === true) ? true : false}
               onClick={handleOnSave}>
               {isSaved === true ? "Saved" : "Save"}
             </Button></Item>

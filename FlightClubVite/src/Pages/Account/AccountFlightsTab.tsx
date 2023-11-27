@@ -197,7 +197,7 @@ function AccountFlightsTab() {
       const [units, pricePeUnit, amount, discount] = getPrice(flightFound);
       const description : orderDescription = {
         operation: 'FLIGHT',
-        date: flightFound.date.getDisplayDate(),
+        date: (new Date(flightFound.date)).getDisplayDate(),
         engien_start: flightFound.engien_start,
         engien_stop: flightFound.engien_stop,
         total: Number((flightFound.engien_stop - flightFound.engien_start).toFixed(2)) ,
