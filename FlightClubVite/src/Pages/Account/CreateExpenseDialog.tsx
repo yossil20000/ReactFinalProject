@@ -1,5 +1,5 @@
 import '../../Types/Number.extensions'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
 import { useCallback, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
@@ -7,14 +7,15 @@ import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons
 import TypesCombo from '../../Components/Buttons/TypesCombo';
 import Item from '../../Components/Item';
 import { useCreateExpenseMutation, useClubAccountQuery } from '../../features/Account/accountApiSlice';
-import { IClubAccount, PaymentMethod } from '../../Interfaces/API/IClub';
-import { IExpenseBase, IUpsertExpanse, newExpense, Utilizated } from '../../Interfaces/API/IExpense';
+import { IExpenseBase, IUpsertExpanse, newExpense } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import UtilizatedCombo from '../../Components/Buttons/UtilizatedCombo';
-import EnumTCombo from '../../Components/Buttons/EnumTCombo';
 import { MemberType } from '../../Interfaces/API/IMember';
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { DateTime } from 'luxon';
 export interface CreateExpenseDialogProps {
 
   onClose: () => void;
@@ -23,16 +24,15 @@ export interface CreateExpenseDialogProps {
 }
 
 function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseDialogProps) {
+  const theme = useTheme()
   const [createExpense, { isError, isLoading }] = useCreateExpenseMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
-  const [bank, setBank] = useState<IClubAccount | undefined>();
-
   const [selectedExpense, setSelectedExpense] = useState<IExpenseBase>(newExpense);
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
   const [selectedType, setSelectedType] = useState<InputComboItem>()
   const [selectedCategory, setSelectedCategory] = useState<InputComboItem>()
-
+  
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const UpdateSourceAccountFields = (): IExpenseBase => {
@@ -137,6 +137,11 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     setSelectedExpense(setProperty(selectedExpense, prop, item.lable))
     CustomLogger.log("selectedExpense", selectedExpense)
   }
+  const handleDateChange = (newValue: DateTime | null) => {
+    let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    newDate.setSeconds(0, 0);
+    setSelectedExpense(prev => ({ ...prev, date: newDate }))
+  };
   return (
 
     <Dialog
@@ -150,38 +155,38 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
       ) : (
         <>
           <DialogContent>
-            <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
+            <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12} rowGap={1}>
               <Grid item xs={12} sm={6}  >
                 {RenderSource()}
               </Grid >
               <Grid item xs={12} sm={6}>
                 {RenderDestination()}
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <TypesCombo selectedKey='Expense' title={'Category'} selectedValue={selectedExpense.expense.category} onChanged={onCategoryChanged} source={"_CreateExspense/Category"} />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <TypesCombo selectedKey={`Expense.${selectedCategory?.lable}`} title={"Type"} selectedValue={selectedExpense.expense.type} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <UtilizatedCombo onChanged={(item) => onComboChanged(item, "expense.utilizated")} source={""}
                   selectedItem={{ lable: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField fullWidth={true} onChange={handleNumberChange} id="units" name="units"
                   type={"number"}
                   label="Units" placeholder="Units" variant="standard"
                   value={selectedExpense?.units} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField fullWidth={true} onChange={handleNumberChange} id="pricePeUnit" name="pricePeUnit"
                   type={"number"}
                   label="Unit Price" placeholder="Per Unit" variant="standard"
                   value={selectedExpense?.pricePeUnit} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField fullWidth={true} onChange={handleNumberChange} id="amount" name="amount"
                   disabled
                   type={"number"}
@@ -189,7 +194,21 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
                   value={selectedExpense?.amount} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={4 }sx={{paddingRight: "2ch"}}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
+                    <ThemeProvider theme={theme}>
+                      <MobileDatePicker
+                        sx={{ width:"100%"} }  
+                        label="Date"
+                        value={DateTime.fromJSDate(selectedExpense.date)}
+                        onChange={handleDateChange}
+                        
+                      />
+                    </ThemeProvider>
+                  </LocalizationProvider>
+              </Grid>
+              
+              <Grid item xs={8}>
                 <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
                   multiline
                   label="Description" placeholder="Expense Description" variant="standard"

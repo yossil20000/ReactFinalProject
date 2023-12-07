@@ -21,6 +21,8 @@ function ClubAccountsCombo(props: IClubAccountProps) {
   const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`${source}`, undefined);
 
   const accountToItemCombo = (input: IClubAccountCombo): InputComboItem => {
+    if(input.member.member_type == MemberType.Supplier)
+      return { lable: `${input.member.first_name}.${input.member.family_name}/${input.account_id}`, _id: input._id, description: "", key: input.member.member_type, key2: input.account_id }
     return { lable: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: "", key: input.member.member_type, key2: input.account_id }
   }
 

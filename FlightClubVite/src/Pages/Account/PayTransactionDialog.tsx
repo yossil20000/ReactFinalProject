@@ -1,5 +1,5 @@
 import '../../Types/Number.extensions'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
@@ -15,21 +15,21 @@ import { MemberType } from '../../Interfaces/API/IMember';
 import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
-
+import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
 export interface PayTransactionDialogProps {
 
   onClose: () => void;
   onSave: (value: IExpenseBase) => void;
   open: boolean;
 }
-let newTransaction : IAddTransaction={
+let newTransaction: IAddTransaction = {
   source: {
     _id: "",
     accountType: ""
   },
   destination: {
-    _id:"" ,
-    accountType: "" 
+    _id: "",
+    accountType: ""
   },
   amount: Number("0"),
   type: Transaction_Type.TRANSFER,
@@ -47,9 +47,9 @@ let newTransaction : IAddTransaction={
 const getAccountType = (memberType: string | undefined): string => {
   /* CustomLogger.info("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
   /* CustomLogger.info("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
- if(memberType === undefined){
-  memberType = ""
-}
+  if (memberType === undefined) {
+    memberType = ""
+  }
 
   switch (memberType) {
     case MemberType.Club:
@@ -67,16 +67,16 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionTypeMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
-  const [bank, setBank] = useState<IClubAccount | undefined>();
+  const [flipSource, setFlipSource] = useState(false)
   const theme = useTheme()
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
-  
+
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
 
   const UpdateSourceAccountFields = (): IAddTransaction => {
-    let newObj : IAddTransaction = selectedTransaction
+    let newObj: IAddTransaction = selectedTransaction
     newObj = {
       source: {
         _id: selectedSource?.key2 === undefined ? "" : selectedSource?.key2,
@@ -108,8 +108,8 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
 
   const handleOnCancel = () => {
     setValidationAlert([])
-  
-      onClose()
+
+    onClose()
   }
   const handleOnValidatiobClose = useCallback(() => {
     setValidationAlert([])
@@ -119,7 +119,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const handleOnSave = async () => {
     CustomLogger.log("PayTransactionDialog/onSave", selectedTransaction)
     setValidationAlert([]);
- const transaction = UpdateSourceAccountFields()
+    const transaction = UpdateSourceAccountFields()
     if (transaction !== undefined) {
       await AddTransaction(transaction).unwrap().then((data) => {
         CustomLogger.info("PayTransactionDialog/onSave/", data);
@@ -133,7 +133,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
       });
     }
   }
-  
+
   const onSelectedSource = (item: InputComboItem) => {
     CustomLogger.log("onSelectedSource/item", item)
     setSelectedSource(item)
@@ -145,21 +145,29 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   }
 
   const RenderSource = (): JSX.Element => {
-
-    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} includesType={[MemberType.Club]}/>
+    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} includesType={[MemberType.Member, MemberType.Supplier,MemberType.Club]} />
+    /* return flipSource === false ?
+     
+    :
+    <ClubAccountsCombo title={"DE"} selectedItem={selectedDestination} onChanged={onSelectedSource} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} /> */
   }
   const RenderDestination = (): JSX.Element => {
-
-    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member,MemberType.Supplier]}/>
-
+    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier,MemberType.Club]} />
+    /* return flipSource === false ?
+    <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} />
+    :
+    <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_NewTransactions/Source"} includesType={[MemberType.Club]} /> */
   }
-
+  const handleFlipClick = ()=> {
+    CustomLogger.log("NewTransaction/handleFlipClick",flipSource, )
+    setFlipSource((prev) => !prev)
+    
+  }
   const handleNumericChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    
+
     CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
-    
-    if(event.target.name = "amount")
-    {
+
+    if (event.target.name = "amount") {
       event.target.value = Math.abs(Number(event.target.value)).toString()
     }
     const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
@@ -167,7 +175,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     setSelectedTransaction(newObj)
   };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    
+
     CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
     const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
     setSelectedTransaction(newObj)
@@ -183,6 +191,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     newDate.setSeconds(0, 0);
     setSelectedTransaction(prev => ({ ...prev, date: newDate }))
   };
+ 
   return (
 
     <Dialog
@@ -198,41 +207,46 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
       ) : (
         <>
           <DialogContent>
-            <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
-              <Grid item xs={12} sm={6}  >
+            <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12} rowGap={1}>
+              <Grid item xs={11} sm={5}  >
                 {RenderSource()}
               </Grid >
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={2} textAlign={"center"} margin={"auto"}>
+                <IconButton color="primary" aria-label="flip source and destination" onClick={handleFlipClick}>
+                  <FlipCameraAndroidIcon/>
+                </IconButton>
+              </Grid>
+              <Grid item xs={11} sm={5}>
                 {RenderDestination()}
               </Grid>
               <Grid item xs={6}>
-              <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
-              disabled
-              label="Pay Method" placeholder="Payment Method" variant="standard"
-              value={selectedTransaction?.payment.method} required
-              helperText="" error={false} InputLabelProps={{ shrink: true }} />
-            </Grid>
-          <Grid item xs={6}>
-            <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
-              multiline
-              label="Pay Referance" placeholder="Payment Referance" variant="standard"
-              value={selectedTransaction?.payment.referance} required
-              helperText="" error={false} InputLabelProps={{ shrink: true }} />
-          </Grid>
+                <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
+                  disabled
+                  label="Pay Method" placeholder="Payment Method" variant="standard"
+                  value={selectedTransaction?.payment.method} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
+                  multiline
+                  label="Pay Referance" placeholder="Payment Referance" variant="standard"
+                  value={selectedTransaction?.payment.referance} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+              </Grid>
               <Grid item xs={6}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
-                  
+
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"
                   value={selectedTransaction?.amount} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} 
-                  inputProps={{max: 1000 ,min:1}}/>
+                  helperText="" error={false} InputLabelProps={{ shrink: true }}
+                  inputProps={{ max: 1000, min: 1 }} />
               </Grid>
               <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
                 <Item sx={{ marginLeft: "0px" }}>
                   <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                     <ThemeProvider theme={theme}>
-                      <MobileDateTimePicker 
+                      <MobileDateTimePicker
                         label="Date"
                         value={DateTime.fromJSDate(selectedTransaction.date)}
                         onChange={handleDateChange}

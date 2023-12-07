@@ -149,6 +149,7 @@ export interface IClubAccountCombo {
     _id: string,
     member_id: string,
     family_name: string,
+    first_name: string,
     member_type: string
   }
 }
