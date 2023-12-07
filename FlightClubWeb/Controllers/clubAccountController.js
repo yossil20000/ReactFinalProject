@@ -120,7 +120,7 @@ exports.combo = function (req, res, next) {
         , populate: [{
           path: 'member',
           model: "Member",
-          select: { "_id": 1, "family_name": 1, "member_id": 1, "member_type": 1 }
+          select: { "_id": 1, "family_name": 1, "member_id": 1, "member_type": 1 , "first_name": 1}
         }]
       })
 
@@ -455,7 +455,9 @@ exports.add_transaction_Type = [
         let isSourceAccount = source.accountType == constants.EAccountType.MEMBER || source.accountType == constants.EAccountType.SUPPLIERS; 
         let isDenstinationAccount = destination.accountType == constants.EAccountType.MEMBER || destination.accountType == constants.EAccountType.SUPPLIERS; 
         if (isSourceBank)
-          sourceTransaction = await ClubAccount.findOne({ account_id: source._id }).exec();
+        {
+          sourceTransaction = await ClubAccount.findOne({ account_id: source._id }).exec(); 
+        }
         else if (isSourceAccount)
           sourceTransaction = await Account.findOne({ account_id: source._id }).populate('member');
         else {
@@ -500,7 +502,8 @@ exports.add_transaction_Type = [
         });
 
         if (type == constants.TransactionType.TRANSFER) {
-          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
+          
+          sourceTransaction.balance = Number(sourceTransaction.balance.toFixed(2)) + Number(Number(isSourceBank ? -amount : amount).toFixed(2));
         }
         else if(type == constants.TransactionType.CREDIT){
           if(isSourceAccount){
@@ -529,7 +532,7 @@ exports.add_transaction_Type = [
 
         destinationTransaction.transactions.push(newTransaction);
         if (type === constants.TransactionType.TRANSFER) {
-          destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(Number(amount).toFixed(2));
+          destinationTransaction.balance = Number(destinationTransaction.balance.toFixed(2)) + Number(Number(isSourceBank ? -amount : amount).toFixed(2));
         }
         else if(type === constants.TransactionType.CREDIT){
           if(isDenstinationAccount){

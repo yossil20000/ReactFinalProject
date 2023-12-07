@@ -24,7 +24,6 @@ const readline = require('readline').createInterface({
   })
  
 
-/* var mongoDB = userArgs[0] === undefined ? process.env.MONGODB_URL : userArgs[0]; */
 var mongoDB = userArgs[0] === undefined ? process.env.MONGODB_URL : userArgs[0];
 //console.log(mongoDB);
 
@@ -170,90 +169,71 @@ function createMembers(cb) {
     async.series([
         function (callback) {
             const roles = new Role({
-                roles: [CE.ROLES[2]]
+                roles: [CE.ROLES[0]]
             })
-            memberCreate("Yaki", "Aizental", "1965-08-21", "2011-11-01", "000001000","yos.1965@gmail.com", "Pass1000@",memberships[0],roles,"User1000@","Member", callback);
-
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2]]
-            })
-             memberCreate("Azriel", "Lucatz", "1965-08-21", "2011-11-01", "000002000","yos.1965@gmail.com", "Pass2000@",memberships[0],roles,"User2000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2],CE.ROLES[5]]
-            })
-            memberCreate("Udi", "Efrat", "1965-08-21", "2011-11-01", "000003000","yos.1965@gmail.com", "Pass3000@",memberships[0],roles,"User3000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2]]
-            })
-            memberCreate("Dov", "Haimovitz", "1965-08-21", "2011-11-01", "000004000","yos.1965@gmail.com", "Pass4000@",memberships[0],roles,"User4000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[0],CE.ROLES[1],CE.ROLES[2],CE.ROLES[3],CE.ROLES[4],CE.ROLES[5]]
-            })
-            memberCreate("Yossi", "Levy", "1965-08-21", "2011-11-01", "059828392","yos.1965@gmail.com", "Pass5000@",memberships[0],roles,"User5000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2]]
-            })
-            memberCreate("Ohad", "Levy", "1965-08-21", "2011-11-01", "000006000","yos.1965@gmail.com", "Pass6000@",memberships[0],roles,"User6000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2]]
-            })
-            memberCreate("Uri", "Eitan", "1965-08-21", "2011-11-01", "000007000","yos.1965@gmail.com", "Pass7000@",memberships[0],roles,"User7000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2]]
-            })
-            memberCreate("Oren", "Witzman", "1965-08-21", "2011-11-01", "000008000","yos.1965@gmail.com", "Pass8000@",memberships[0],roles,"User8000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2],CE.ROLES[4],CE.ROLES[5]]
-            })
-            memberCreate("Giora", "Yael", "1965-08-21", "2011-11-01", "000009000","yos.1965@gmail.com", "Pass9000@",memberships[0],roles,"User9000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2]]
-            })
-            memberCreate("Gadi", "Fux", "1965-08-21", "2011-11-01", "000010000","yos.1965@gmail.com", "Pass10000@",memberships[0],roles,"User10000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2]]
-            })
-            memberCreate("Boris", "Tsyrlin", "1965-08-21", "2011-11-01", "000011000","yos.1965@gmail.com", "Pass11000@",memberships[0],roles,"User11000@","Member", callback);
-        },
-        function (callback) {
-            const roles = new Role({
-                roles: [CE.ROLES[2],CE.ROLES[4],CE.ROLES[5]]
-            })
-            memberCreate("Golan", "Bartal", "1965-08-21", "2011-11-01", "000012000","yos.1965@gmail.com", "Pass12000@",memberships[0],roles,"User12000@","Member", callback);
+            memberCreate("Leumi", "Bank", "1965-08-21", "2011-11-01", "000015000","yos.1965@gmail.com", "Pass15000@","63f3b0dafef004dc9f10d53e",roles,"User15000@","Supplier", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[0]]
             })
-            memberCreate("Moonair", "Garage", "1965-08-21", "2011-11-01", "000013000","yos.1965@gmail.com", "Pass13000@",memberships[0],roles,"User13000@","Supplier", callback);
+            memberCreate("Megido", "Airport", "1965-08-21", "2011-11-01", "000016000","yos.1965@gmail.com", "Pass16000@","63f3b0dafef004dc9f10d53e",roles,"User16000@","Supplier", callback);
         },
         function (callback) {
             const roles = new Role({
                 roles: [CE.ROLES[0]]
             })
-            memberCreate("Supplier", "Others", "1965-08-21", "2011-11-01", "000014000","yos.1965@gmail.com", "Pass14000@",memberships[0],roles,"User14000@","Supplier", callback);
+            memberCreate("Yeuda", "Carmely", "1965-08-21", "2011-11-01", "000017000","yos.1965@gmail.com", "Pass17000@","63f3b0dafef004dc9f10d53e",roles,"User17000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Paz", "Fuel", "1965-08-21", "2011-11-01", "000018000","yos.1965@gmail.com", "Pass18000@","63f3b0dafef004dc9f10d53e",roles,"User18000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("CAAI", "GOV", "1965-08-21", "2011-11-01", "000019000","yos.1965@gmail.com", "Pass19000@","63f3b0dafef004dc9f10d53e",roles,"User19000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Menora", "Insurance", "1965-08-21", "2011-11-01", "000020000","yos.1965@gmail.com", "Pass20000@","63f3b0dafef004dc9f10d53e",roles,"User20000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Hameshapetz", "Fixer", "1965-08-21", "2011-11-01", "000021000","yos.1965@gmail.com", "Pass21000@","63f3b0dafef004dc9f10d53e",roles,"User21000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Laipair", "Utils", "1965-08-21", "2011-11-01", "000022000","yos.1965@gmail.com", "Pass22000@","63f3b0dafef004dc9f10d53e",roles,"User22000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("FNA", "Garage", "1965-08-21", "2011-11-01", "000023000","yos.1965@gmail.com", "Pass23000@","63f3b0dafef004dc9f10d53e",roles,"User23000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("Alon", "Golomb", "1965-08-21", "2011-11-01", "000024000","yos.1965@gmail.com", "Pass24000@","63f3b0dafef004dc9f10d53e",roles,"User24000@","Supplier", callback);
+        },
+        function (callback) {
+            const roles = new Role({
+                roles: [CE.ROLES[0]]
+            })
+            memberCreate("SPD_Hosting", "Internet", "1965-08-21", "2011-11-01", "000025000","yos.1965@gmail.com", "Pass25000@","63f3b0dafef004dc9f10d53e",roles,"User25000@","Supplier", callback);
         }
-        
+
 
     ],
         cb
@@ -298,12 +278,12 @@ readline.question(`Do You Want to Delete (YeS)?`, ans => {
 
     if(ans == 'YeS'){
         
-        dropCollections();
+       /*  dropCollections(); */
         async.series([
-            createMemberships,
+            /* createMemberships, */
             createMembers,
-            createDeviceType,
-            createDevice,
+            /* createDeviceType,
+            createDevice, */
         ],
             // Optional callback
             function (err, results) {
