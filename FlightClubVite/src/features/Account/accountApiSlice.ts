@@ -1,15 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
-import { getServerAddress, URLS } from "../../Enums/Routers"
+import { URLS } from "../../Enums/Routers"
 import { IAccount, IAccountsCombo, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
-import { IAddTransaction, IClubAccount, IClubAccountsCombo, IClubAddAccount, ITransaction } from "../../Interfaces/API/IClub"
+import { IAddTransaction, IClubAccount, IClubAccountSaving, IClubAccountsCombo, IClubAddAccount,  ITransaction, IUpdateAccountSaving } from "../../Interfaces/API/IClub"
 import { IExpense, IUpsertExpanse } from "../../Interfaces/API/IExpense"
 import { ITypes } from "../../Interfaces/API/ITypes"
 import { IFilter } from "../../Interfaces/API/IFilter"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
-import { getUrlWithParams, getUrlWithParamsArray } from "../../Utils/url"
+import { getUrlWithParams } from "../../Utils/url"
 import { IDateFilter } from "../../Interfaces/IDateFilter"
 import { ICreateQuarterExpense } from "../../Pages/Account/CreateQuarterDialoq"
+import { getServerAddress } from "../../Utils/setting"
 
 export const accountApiSlice = createApi({
   reducerPath: "accountApiSlice",
@@ -229,6 +230,19 @@ export const accountApiSlice = createApi({
 
         })
       }),
+      fetchAccountSaving: builder.query<IResultBaseSingle<IClubAccountSaving>,string>({
+        query: (key) => ({
+          url:`/${URLS.CLUB_RESERV}/${key}`,
+          method: "GET"
+        })
+      }),
+      updateAccountSaving: builder.mutation<IResultBaseSingle<IClubAccountSaving>,IUpdateAccountSaving>({
+        query: (body) => ({
+          url: `/${URLS.CLUB_RESERV}`,
+          method: "POST",
+          body: body
+        })
+      })
       
     }
   }
@@ -261,5 +275,7 @@ export const {
   useDeleteExpenseMutation,
   useFetchTypesQuery,
   useFetchTransactionQuery,
-  useCreateQuarterOrderMutation
+  useCreateQuarterOrderMutation,
+  useFetchAccountSavingQuery,
+  useUpdateAccountSavingMutation
 } = accountApiSlice;

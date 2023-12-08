@@ -1,4 +1,4 @@
-import { IAccount, IAccountsCombo, IOrder } from "./IAccount";
+import { IAccount } from "./IAccount";
 import { Status } from "./IStatus";
 
 export interface IClubAccountBase {
@@ -34,6 +34,28 @@ export interface IClubAccountBase {
 
 export interface IClubAccount extends IClubAccountBase {
   _id: string
+}
+export interface IClubAccountSaving {
+  _id: string;
+  balance: number,
+  club: {
+      account_id: string,
+      brand: string,
+      branch: string,
+      _id: string
+  },
+  reserve: [
+      {
+          _id: string,
+          id: string,
+          balance:number,
+          description: string
+      }
+  ]
+}
+export interface IUpdateAccountSaving {
+  reserve_id: string,
+  new_balance : number
 }
 export enum EAccountType {
   EAT_BANK = "100100",

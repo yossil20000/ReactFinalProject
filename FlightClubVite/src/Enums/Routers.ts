@@ -1,19 +1,3 @@
-export const isHttps : boolean = true;
-export function getServerAddress () {
- const deploy: boolean = true;
-
-  if(deploy)
-  {
-    return  URLS.BACKEND_ADDRESS_DEPLOY;
-  }
-  else{
-    return URLS.BACKEND_URL;
-  }
-  if(false)
-    return `https://${URLS.BACKEND_ADDRESS}`
-  else
-  return `http://${URLS.BACKEND_ADDRESS}`
-} 
 
 export  enum URLS{
 
@@ -87,6 +71,7 @@ export  enum URLS{
     CLUB_UPDATE_EXPENSE = 'api/club_account/update_expense',
     CLUB_DELETE_EXPENSE = 'api/club_account/delete_expense',
     CLUB_TRANSACTION_SEARCH = 'api/club_account/transaction/search',
+    CLUB_RESERV = 'api/club_account/club/account_saving',
     TYPES = 'api/type',
     NOTIFY = 'api/notification',
     NOTIFY_SEARCH = 'api/notification/search',

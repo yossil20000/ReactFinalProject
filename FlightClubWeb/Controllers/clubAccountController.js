@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const log = require('debug-level').log('ClubAccountController');
-const { body, param, validationResult } = require('express-validator');
+const { body, param, validationResult,query } = require('express-validator');
 const ClubAccount = require('../Models/clubAccount');
 const Order = require('../Models/order');
 const { Account } = require('../Models/account');
@@ -9,6 +9,7 @@ const { ApplicationError } = require('../middleware/baseErrors');
 const { CValidationError } = require('../Utils/CValidationError');
 const constants = require('../Models/constants');
 const Expense = require('../Models/expense');
+
 
 const transactionOptions = {
   readPreference: 'primary',
@@ -781,7 +782,7 @@ exports.create_expense = [
   async (req, res, next) => {
 
     try {
-
+      
       let { filter, update } = req.body;
       if (filter === undefined) filter = {};
       if (update === undefined) update = {};
@@ -836,6 +837,52 @@ exports.list_transaction = [
     }
     catch (error) {
       return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB.TRANSACTION_LIST.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
+
+]
+
+exports.list_account_saving = [
+  query('_id').isLength({ min: 24, max: 24 }).withMessage(" club _id must be  24 characters"),
+  async (req, res, next) => {
+    let { _id } = req.query;
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.RESERV_LIST.VALIDATION", { name: "ExpressValidator", errors }));
+      }
+      const results = await ClubAccount.findOne({"_id": _id}).select("reserve club balance");
+      if (results) {
+        return res.status(201).json({ success: true, data: results });
+      }
+      return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB_ACCOUNT.RESERVE_LIST.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Reserve Not Exist", '', "DB")).validationResult.errors }));
+    }
+    catch (error) {
+      return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB.RESERVE_LIST.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
+
+]
+exports.account_saving_update = [
+  body('reserve_id').isLength({ min: 1}).withMessage("reserve_id must be supply"),
+  async (req, res, next) => {
+
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.RESERV_UPDATE.VALIDATION", { name: "ExpressValidator", errors }));
+      }
+      const results = await ClubAccount.findOne({ "reserve.id": req.body.reserve_id}).select("balance reserve club");
+      if (results) {
+        results.reserve[0].balance = req.body.new_balance
+        /* console.log("newResult",req.body.new_balance , results.reserve[0].balance) */
+        const saveResult = await results.save() 
+        return res.status(201).json({ success: true, data: saveResult });
+      }
+      return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB_ACCOUNT.RESERVE_UPDATE.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Reserve Not Exist", '', "DB")).validationResult.errors }));
+    }
+    catch (error) {
+      return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB.RESERVE_UPDATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 

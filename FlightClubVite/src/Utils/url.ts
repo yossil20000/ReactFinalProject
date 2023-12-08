@@ -1,4 +1,5 @@
-import { isHttps } from "../Enums/Routers";
+import { isHttps } from "./setting";
+
 let httpPefix = "https://"
 export function getUrlWithParams (url: string,params: {[key: string]: string}) : string  {
   let added: boolean = false;

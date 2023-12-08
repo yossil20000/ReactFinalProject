@@ -17,4 +17,6 @@ router.put('/add_transaction',clubAccountController.add_transaction);
 router.put('/add_transaction_type',clubAccountController.add_transaction_Type);
 router.delete('/delete_expense/:_id',clubAccountController.delete_expense)
 router.get('/transaction/search',clubAccountController.list_transaction)
+router.get('/club/account_saving',clubAccountController.list_account_saving);
+router.post('/club/account_saving',clubAccountController.account_saving_update)
 module.exports = router;
