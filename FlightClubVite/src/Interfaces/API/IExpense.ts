@@ -1,9 +1,9 @@
 import { OrderStatus } from "./IAccount"
-import { EAccountType } from "./IClub"
 import { MemberType } from "./IMember"
 export enum Utilizated {
   HOURS_0000= "HOURS_0000",
-  HOURS_0001= "HOURS_0001",
+  HOURS_0100= "HOURS_0100",
+  HOURS_0200= "HOURS_0200",
   HOURS_0500= "HOURS_0500",
   HOURS_1000= "HOURS_1000",
   HOURS_1500= "HOURS_1500",
