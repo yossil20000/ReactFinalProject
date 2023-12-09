@@ -29,7 +29,15 @@ export interface IClubAccountBase {
     },
     email: string,
 
-  }
+  },
+  account_saving: [
+    {
+        _id: string,
+        id: string,
+        balance:number,
+        description: string
+    }
+]
 }
 
 export interface IClubAccount extends IClubAccountBase {
@@ -44,7 +52,7 @@ export interface IClubAccountSaving {
       branch: string,
       _id: string
   },
-  reserve: [
+  account_saving: [
       {
           _id: string,
           id: string,

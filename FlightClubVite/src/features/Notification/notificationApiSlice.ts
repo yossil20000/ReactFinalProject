@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { getServerAddress, URLS } from "../../Enums/Routers";
+import {  URLS } from "../../Enums/Routers";
 import { RootState } from "../../app/userStor";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import { INotification } from "../../Interfaces/API/INotification";
-import { urPK } from "@mui/material/locale";
+import { getServerAddress } from "../../Utils/setting";
 
 export const notifyApiSlice = createApi({
   reducerPath: "notifyApiSlice",

@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
-import { getServerAddress, URLS } from "../../Enums/Routers";
+import { URLS } from "../../Enums/Routers";
 import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import { getUrlWithParams } from "../../Utils/url";
-import customFetchBase from "../customeFetchBase";
+import { getServerAddress } from "../../Utils/setting";
 
 export const flightApi = createApi({
   reducerPath: "flightApi",

@@ -851,7 +851,7 @@ exports.list_account_saving = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.RESERV_LIST.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const results = await ClubAccount.findOne({"_id": _id}).select("reserve club balance");
+      const results = await ClubAccount.findOne({"_id": _id}).select("account_saving club balance");
       if (results) {
         return res.status(201).json({ success: true, data: results });
       }
@@ -872,9 +872,9 @@ exports.account_saving_update = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.RESERV_UPDATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const results = await ClubAccount.findOne({ "reserve.id": req.body.reserve_id}).select("balance reserve club");
+      const results = await ClubAccount.findOne({ "reserve.id": req.body.reserve_id}).select("balance account_saving club");
       if (results) {
-        results.reserve[0].balance = req.body.new_balance
+        results.account_saving[0].balance = req.body.new_balance
         /* console.log("newResult",req.body.new_balance , results.reserve[0].balance) */
         const saveResult = await results.save() 
         return res.status(201).json({ success: true, data: saveResult });

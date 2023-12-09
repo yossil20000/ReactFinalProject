@@ -8,16 +8,16 @@ var ClubSchema = new Schema({
   brand: { type: String, required: true, default: "BAZ", uppercase: true },
   branch: { type: String, required: true, default: "HAIFA", uppercase: true }
 })
-var ReserveSchema = new Schema({
+var AccountSavingSchema = new Schema({
   id: { type: String, required: true, unique: true ,uppercase: true, default: "ENGINE"},
   balance: { type: mongoose.Decimal128, default: 0, get: getDecimal },
   description: { type: String, required: true, default: "Engiene Replacment" }
-})
+},{toJSON: {getters: true}})
 var ClubAccountSchema = new Schema({
   accounts: [{ type: Schema.Types.ObjectId, ref: "Account", unique: true }],
   transactions: [TransactionSchema],
   balance: { type: mongoose.Decimal128, default: 0, get: getDecimal },
-  reserve: [ReserveSchema],
+  account_saving: [AccountSavingSchema],
   description: { type: String },
   status: { type: String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active },
   club: ClubSchema,

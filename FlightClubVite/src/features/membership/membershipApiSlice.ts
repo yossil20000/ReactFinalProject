@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor";
-import { getServerAddress, URLS } from "../../Enums/Routers";
+import { URLS } from "../../Enums/Routers";
 import IMembership, { IMembershipCombo } from "../../Interfaces/API/IMembership";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
+import { getServerAddress } from "../../Utils/setting";
 
 
 export const membershipApiSlice = createApi({

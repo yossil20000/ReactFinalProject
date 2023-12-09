@@ -1,12 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import IResultBase, { IResultBaseSingle } from '../../Interfaces/API/IResultBase'
-import {getServerAddress, URLS} from '../../Enums/Routers';
+import { URLS} from '../../Enums/Routers';
 import IClubNotice from "../../Interfaces/API/IClubNotice";
 import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import IMemberUpdate from "../../Interfaces/IMemberInfo";
 import IMemberCreate from "../../Interfaces/IMemberCreate";
 import { Gender, IMemberAdmin, IMemberCombo, IMemberComboFilter, IMemberStatus, Status } from "../../Interfaces/API/IMember";
+import { getServerAddress } from "../../Utils/setting";
 
 
 interface Role {

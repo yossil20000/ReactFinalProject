@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor";
-import { getServerAddress, URLS } from "../../Enums/Routers";
+import { URLS } from "../../Enums/Routers";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
 import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
+import { getServerAddress } from "../../Utils/setting";
 
 
 export const reservationApiSlice = createApi({
