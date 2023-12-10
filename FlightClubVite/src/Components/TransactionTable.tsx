@@ -38,16 +38,18 @@ const getData = useMemo(() => {
       setTransactions(filterAccount);
     }
     else {
+
       setTransactions(dataTransaction.data)
     }
   }
 }, [dataTransaction, selectedClubAccount])
 
   const transactionRows = useMemo(() => {
-
+    
+    
     const rows = transactions?.map((row: ITransaction) => ({
       id: row._id,
-      date: new Date().getDisplayDate(),
+      date: new Date(row.date).getDisplayDate(),
       source: row.source,
       destination: row.destination,
       amount: row.amount,
