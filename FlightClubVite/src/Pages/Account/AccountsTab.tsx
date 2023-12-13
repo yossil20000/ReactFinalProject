@@ -50,7 +50,9 @@ function createData(
 interface IAccountFilter {
   account_id: string;
   active_only: boolean;
-  negative_balance: boolean
+  negative_balance: boolean;
+  members: boolean;
+  suppliers: boolean
 }
 function AccountsTab() {
   const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
@@ -116,7 +118,7 @@ function AccountsTab() {
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const { data, refetch, isLoading, error } = useFetchAllAccountsQuery({});
   const { data: bankAccounts } = useClubAccountQuery(true);
-  const [filterData, setFilterData] = useState({ account_id: "", active_only: false,negative_balance: false } as IAccountFilter)
+  const [filterData, setFilterData] = useState({ account_id: "", active_only: false,negative_balance: false,members:true,suppliers:true } as IAccountFilter)
   const getData = useMemo(() => {
     let bankFound: IClubAccount | undefined = undefined;
     if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
@@ -143,7 +145,7 @@ function AccountsTab() {
     return rows === undefined ? [] : rows;
   }, [data, bankAccounts, bank])
 
-  const filterAccont = (item: Data): boolean => {
+  const filterAccount = (item: Data): boolean => {
     let filter: boolean = true;
     if (filterData.account_id != "") {
       if (filterData.account_id !== item._id) {
@@ -151,13 +153,17 @@ function AccountsTab() {
         return filter;
       }
     }
-    if (filterData.active_only) {
-      filter = item.status === Status.Active
+    
+    if(filterData.negative_balance && filter == true){
+      filter = item.balance < 0 ? true : false
     }
-    if(filterData.negative_balance){
-      filter = item.balance < 0
+    if(!filterData.members && filter == true){
+      filter = item.member_type == MemberType.Member ? false : true
     }
 
+    if(!filterData.suppliers && filter == true){
+      filter = item.member_type == MemberType.Supplier ? false : true
+    }
     return filter;
   }
   const OnSelectedAccount = (item: string): void => {
@@ -289,6 +295,14 @@ function AccountsTab() {
                       name={"negative_balance"} checked={filterData?.negative_balance}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
                       label={filterData?.negative_balance ? "Negative Balance" : "Balance"} />
+                                          <FormControlLabel control={<Checkbox onChange={handleFilterChange}
+                      name={"members"} checked={filterData?.members}
+                      sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
+                      label={filterData?.members ? "Members" : "Not Members"} />
+                       <FormControlLabel control={<Checkbox onChange={handleFilterChange}
+                      name={"suppliers"} checked={filterData?.suppliers}
+                      sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
+                      label={filterData?.suppliers ? "Suppliers" : "Not Suppliers"} />
                   </Fragment>
                 </Box>
               </Grid>
@@ -300,7 +314,7 @@ function AccountsTab() {
             {(openAddToBank == true && bank !== undefined && selectedAccount !== undefined) ? (<AddAccountToBankDialog value={selectedAccount} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddToBank} bank={bank} />) : (null)}
             {openAccountAdd == true ? (<CreateAccountDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAccountAdd} />) : (null)}
             {(openAccountEdit == true && selectedAccount !== undefined) ? (<UpdateAccountDialog value={selectedAccount} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAccountEdit} />) : (null)}
-            <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.filter(filterAccont)} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
+            <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.filter(filterAccount)} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
           </>
         </ContainerPageMain>
         <ContainerPageFooter>
@@ -310,7 +324,7 @@ function AccountsTab() {
                 <TablePagination
                   rowsPerPageOptions={[1, 5, 10, 25, 100]}
                   component="div"
-                  count={getData.filter(filterAccont).length}
+                  count={getData.filter(filterAccount).length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}
