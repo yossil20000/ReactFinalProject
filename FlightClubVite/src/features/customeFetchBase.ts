@@ -1,7 +1,7 @@
 import { BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { Mutex } from "async-mutex";
 import { logOut } from '../features/Auth/authSlice';
-import { getServerAddress } from '../Utils/setting';
+import { getServerAddress } from '../Enums/Routers'
 
 const baseUrl = getServerAddress();
 const mutex = new Mutex();

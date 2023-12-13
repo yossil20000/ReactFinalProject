@@ -1,10 +1,9 @@
 import base from "@emotion/styled/types/base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import {  URLS } from "../../Enums/Routers";
+import {  URLS,getServerAddress } from "../../Enums/Routers";
 import ILogin, { IChangePassword, IChangePasswordResults, ILoginResult, IRefreshToken, IReset, IResetResult } from "../../Interfaces/API/ILogin";
 import { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import {RootState} from '../../app/userStor'
-import { getServerAddress } from "../../Utils/setting";
 
 export const authApiSlice = createApi({
     reducerPath: 'apiAuthSlice',

@@ -1,3 +1,19 @@
+export const isHttps : boolean = true;
+export function getServerAddress () {
+ const deploy: boolean = true;
+
+  if(deploy)
+  {
+    return  URLS.BACKEND_ADDRESS_DEPLOY;
+  }
+  else{
+    return URLS.BACKEND_URL;
+  }
+  if(false)
+    return `https://${URLS.BACKEND_ADDRESS}`
+  else
+  return `http://${URLS.BACKEND_ADDRESS}`
+} 
 
 export  enum URLS{
 

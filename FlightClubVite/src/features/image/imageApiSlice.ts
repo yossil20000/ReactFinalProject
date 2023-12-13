@@ -1,9 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { URLS } from "../../Enums/Routers";
+import { URLS , getServerAddress} from "../../Enums/Routers";
 import { RootState } from "../../app/userStor";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import IImage, { IImageBase } from "../../Interfaces/API/IImage";
-import { getServerAddress } from "../../Utils/setting";
 
 export const imageApiSlice = createApi({
   reducerPath: "imageApiSlice",

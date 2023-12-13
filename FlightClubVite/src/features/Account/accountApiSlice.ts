@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
-import { URLS } from "../../Enums/Routers"
+import { URLS , getServerAddress} from "../../Enums/Routers"
 import { IAccount, IAccountsCombo, IOrder, IOrderBase } from "../../Interfaces/API/IAccount"
 import { IAddTransaction, IClubAccount, IClubAccountSaving, IClubAccountsCombo, IClubAddAccount,  ITransaction, IUpdateAccountSaving } from "../../Interfaces/API/IClub"
 import { IExpense, IUpsertExpanse } from "../../Interfaces/API/IExpense"
@@ -10,7 +10,6 @@ import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase
 import { getUrlWithParams } from "../../Utils/url"
 import { IDateFilter } from "../../Interfaces/IDateFilter"
 import { ICreateQuarterExpense } from "../../Pages/Account/CreateQuarterDialoq"
-import { getServerAddress } from "../../Utils/setting"
 
 export const accountApiSlice = createApi({
   reducerPath: "accountApiSlice",

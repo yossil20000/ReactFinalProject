@@ -1,10 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
-import { URLS } from "../../Enums/Routers"
+import { URLS , getServerAddress } from "../../Enums/Routers"
 import IDevice, { IDeviceCanReserve, IDeviceCombo, IDeviceComboFilter, IDeviceCreate } from "../../Interfaces/API/IDevice"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
-import { getServerAddress } from "../../Utils/setting"
 
 export const deviceApiSlice = createApi({
   reducerPath: "deviceApiSlice",

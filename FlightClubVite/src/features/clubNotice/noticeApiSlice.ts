@@ -1,9 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
-import { URLS } from "../../Enums/Routers";
+import { URLS,getServerAddress } from "../../Enums/Routers";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import IClubNotice from '../../Interfaces/API/IClubNotice'
-import { getServerAddress } from "../../Utils/setting";
 
 
 
