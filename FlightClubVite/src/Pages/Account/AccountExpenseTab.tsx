@@ -16,6 +16,9 @@ import DeleteExpenseDialog from './DeleteExpenseDialog'
 import UpdateExpenseDialog from './UpdateExpenseDialog'
 import FullScreenLoader from '../../Components/FullScreenLoader'
 import { UseIsAuthorized } from '../../Components/RequireAuth';
+import ReportDialog from '../../Components/Report/Exel/ReportDialog'
+import { CFlightToReport } from '../../Interfaces/API/IFlight'
+import { CExpenseToReport } from '../../Interfaces/API/IAccountReport'
 
 interface Data {
   _id: string,
@@ -49,7 +52,7 @@ function createData(_id: string, date: Date,
 
 
 function AccountExpenseTab() {
-  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
+  const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
   const columns: Column[] = [
     { id: '_id', label: 'id', minWidth: 50, isCell: false, align: 'left' },
     { id: 'date', label: 'Date', minWidth: 30, isCell: true, align: 'left', format: (value: Date) => new Date(value).getDisplayDate() },
@@ -70,12 +73,13 @@ function AccountExpenseTab() {
     { id: 'status', label: 'Status', minWidth: 70, align: 'left', format: (value: Status) => value.toLocaleUpperCase(), isCell: true },
     { id: 'source', label: 'Source', minWidth: 170, align: 'left', isCell: true },
     { id: 'destination', label: 'Destination', minWidth: 170, align: 'left', isCell: true },
-    { id: 'render', label: '', minWidth: 70, align: 'center', render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{key: EAction.ADD,value: isAuthorized}]} /></>), isCell: true }
+    { id: 'render', label: '', minWidth: 70, align: 'center', render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD, EAction.SAVE]} display={[{ key: EAction.SAVE, value: "Export" }]} item={""} disable={[{ key: EAction.ADD, value: isAuthorized }]} /></>), isCell: true }
   ];
 
 
-  const { data, refetch ,isLoading,error} = useFetchExpenseQuery({});
+  const { data, refetch, isLoading, error } = useFetchExpenseQuery({});
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
+  const [openExpenseSave, setOpenExpenseSave] = useState(false);
   const [openExpenseEdit, setOpenExpenseEdit] = useState(false);
   const [openAddTransaction, setOpenAddTransaction] = useState(false);
   const [openDeleteExpense, setOpenDeleteExpense] = useState(false);
@@ -83,7 +87,7 @@ function AccountExpenseTab() {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [count,setCount] = useState(0);
+  const [count, setCount] = useState(0);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -99,20 +103,20 @@ function AccountExpenseTab() {
       return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
         <>{row.status == OrderStatus.CREATED ? (<>
           <Box display={'flex'} flexDirection={'column'} gap={1}>
-            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT,value:isAuthorized}]}/>
-            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{key: EAction.PAY,value: isAuthorized}]}/>
-            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE,value:isAuthorized}]}/>
+            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT, value: isAuthorized }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY, value: isAuthorized }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE, value: isAuthorized }]} />
           </Box>
         </>) : (<></>)}
         </>)
     });
     CustomLogger.info("AccountExpenseTab/getData/rows", rows)
-    rows =  rows === undefined ? [] : rows;
+    rows = rows === undefined ? [] : rows;
     setCount(rows.length);
     return rows;
   }, [data])
 
-  
+
   const OnSelectedAccount = (item: string): void => {
     const found = data?.data.find((expense) => expense._id === item);
     CustomLogger.log("AccountExpenseTab/OnSelectedAccount", found);
@@ -124,6 +128,9 @@ function AccountExpenseTab() {
     switch (action) {
       case EAction.ADD:
         setOpenExpenseAdd(true)
+        break;
+      case EAction.SAVE:
+        setOpenExpenseSave(true);
         break;
       case EAction.EDIT:
         if (item !== undefined) {
@@ -149,6 +156,7 @@ function AccountExpenseTab() {
     setOpenExpenseEdit(false);
     setOpenAddTransaction(false);
     setOpenDeleteExpense(false)
+    setOpenExpenseSave(false);
   }
   const handleAddOnSave = () => {
     refetch();
@@ -166,7 +174,7 @@ function AccountExpenseTab() {
       </div>
     )
   }
-  
+
   if (error) {
     if ('status' in error) {
       // you can access all properties of `FetchBaseQueryError` here
@@ -196,11 +204,13 @@ function AccountExpenseTab() {
           </ContainerPageHeader>
           <ContainerPageMain>
             <>
+            {openExpenseSave && <ReportDialog onClose={handleAddOnClose} open={openExpenseSave} table={(new CExpenseToReport(data?.data ? data.data : [])).getExpesesToExel()} action="ExpenseExport" />}
+              
               {openExpenseAdd == true ? (<CreateExpenseDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseAdd} />) : (null)}
               {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
               {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
               {(openDeleteExpense == true && selectedExpense !== undefined) ? (<DeleteExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openDeleteExpense} />) : (null)}
-              <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "",disable:[] }} />
+              <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "", disable: [] }} />
             </>
           </ContainerPageMain>
           <ContainerPageFooter>
