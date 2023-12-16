@@ -25,6 +25,7 @@ export interface ILoginResult {
         email: string;
         username:string;
         image: string;
+        id_number: string
     };
 }
 

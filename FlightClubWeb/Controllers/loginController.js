@@ -63,7 +63,8 @@ exports.signin = function (req, res, next) {
                                 roles: member.role.roles,
                                 username: member.username,
                                 image: member.image,
-                                gender: member.gender
+                                gender: member.gender,
+                                id_number: member.id_number
                             },
 
                         }

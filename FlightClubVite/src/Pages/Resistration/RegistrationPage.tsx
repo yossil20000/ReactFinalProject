@@ -15,6 +15,7 @@ function RegistrationPage() {
   const initialForm: IMemberCreate = {
     _id: '',
     member_id: '',
+    id_number: '',
     family_name: '',
     first_name: '',
     contact: {

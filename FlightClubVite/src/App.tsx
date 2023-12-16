@@ -33,6 +33,7 @@ export function LocalStorage() {
                 "member": {
                     _id: "",
                     member_id: "",
+                    id_number: "",
                     family_name: "guset",
                     first_name: "user",
                     roles: [Role.guest],

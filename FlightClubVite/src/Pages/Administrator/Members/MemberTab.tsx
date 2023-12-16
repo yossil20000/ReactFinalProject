@@ -71,6 +71,7 @@ function MemberTab() {
       date_of_leave: null,
       membership: NewMembership,
       member_id: "",
+      id_number: "",
       family_name: "",
       first_name: "",
       gender: Gender.other,
