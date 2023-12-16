@@ -9,7 +9,7 @@ const payload = {
     userId: "",
     roles: [],
     _id: "",
-    id_number
+    id_number: ""
 };
 // SIGNING OPTIONS
 let signOptions = {
