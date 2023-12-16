@@ -90,7 +90,7 @@ function GeneralTab() {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"} label={"Member Id"} InputLabelProps={{ shrink: true }} />
+          <TextField  onChange={handleChange} name="member_id" fullWidth value={selectedItem?.member_id} variant={"standard"} label={"Member Id"} InputLabelProps={{ shrink: true }} disabled={true}/>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField onChange={handleChange} name="contact.email" fullWidth value={selectedItem?.contact?.email} variant={"standard"} label={"email"} InputLabelProps={{ shrink: true }} />

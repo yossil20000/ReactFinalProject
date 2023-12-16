@@ -275,6 +275,7 @@ exports.refresh_token = function (req,res,next) {
         if (member) {
             const payLoad = authJWT.payload;
             payLoad.email = member.member_id;
+            payLoad.id_number = member.id_number;
             payLoad.userId = member._id.toString();
             payLoad.roles = member.role.roles;
             //payLoad.id = member._id;
@@ -301,6 +302,7 @@ exports.refresh_token = function (req,res,next) {
                     member: {
                         _id: member._id,
                         member_id: member.member_id,
+                        id_number: member.id_number,
                         family_name: member.family_name,
                         first_name: member.first_name,
                         roles: member.role.roles,

@@ -11,6 +11,7 @@ const {DateTime} = require('luxon');
 var Schema = mongoose.Schema;
 var MemberSchema = new Schema({
     member_id: {type: String, required: true },
+    id_number: {type: String, required: true ,default: "00000000"},
     family_name: {type: String, required: true },
     first_name: {type: String, required: true },
     contact:{

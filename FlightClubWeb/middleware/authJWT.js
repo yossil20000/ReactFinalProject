@@ -8,7 +8,8 @@ const payload = {
     email: "",
     userId: "",
     roles: [],
-    _id: ""
+    _id: "",
+    id_number
 };
 // SIGNING OPTIONS
 let signOptions = {

@@ -308,17 +308,6 @@ exports.flight_delete = [
         return res.status(400).json({ success: false, errors: ["Flight  delete Not exist"], data: [] })
       }
 
-      /*     const member = await Member.findById(flight.member._id).exec();
-          //log.info("flight/find/member",member,req.body.member_id)
-          if (member === null | member === undefined) {
-            return res.status(400).json({ success: false, errors: ["Member Not Exist"], data: [] })
-          }
-          const device = await Device.findById(req.body.device_id).exec();
-          if (device === null | device === undefined) {
-            return res.status(400).json({ success: false, errors: ["Device Not Exist"], data: [] })
-          } */
-
-
       const trananctionResult = await session.withTransaction(async () => {
         const flightDeleteResult = await Flight.deleteOne({ _id: req.body._id }, { session: session });
         const deviceUpdate = await Device.updateOne({ _id: flight.device._id }, { $pull: { flights: req.body._id } }, { session });

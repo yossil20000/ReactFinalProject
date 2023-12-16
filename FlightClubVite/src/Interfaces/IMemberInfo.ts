@@ -4,6 +4,7 @@ import { Gender } from "./API/IMember";
 export default interface IMemberUpdate{
     _id:string;
     member_id: string
+    id_number: string
     family_name: string
     first_name: string
     contact:{

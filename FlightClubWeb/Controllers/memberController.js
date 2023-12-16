@@ -28,7 +28,7 @@ exports.combo = function (req, res, next) {
     try {
         log.info("combo/filter", req.body);
         Member.find(req?.body?.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
-            .select('family_name _id member_id first_name member_type')
+            .select('family_name _id member_id first_name member_type id_number')
             .sort([['family_name', 'ascending']])
             .exec(function (err, list_members) {
                 if (err) { return next(err); }
@@ -207,6 +207,7 @@ exports.member_create = [
                                 first_name: user.first_name,
                                 family_name: user.family_name,
                                 member_id: req.body.member_id,
+                                id_number: req.body.id_number,
                                 date_of_birth: user.date_of_birth === undefined ? new Date() : user.date_of_birth,
                                 date_of_join: user.date_of_join === undefined ? new Date() : user.date_of_join,
                                 password: user.password,

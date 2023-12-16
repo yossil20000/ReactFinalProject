@@ -30,6 +30,7 @@ export enum Role{
 }
 export interface IMemberBase {
     member_id: string
+    id_number: string
     family_name: string
     first_name: string
     image: string,
