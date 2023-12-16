@@ -6,8 +6,8 @@ export interface IDateFilter {
 }
 
 export const newDateFilter : IDateFilter ={
-  to: (new Date().addDays(1)).getEndDayDate(),
-  from: (new Date().addDays(-30)).getStartDayDate(),
+  to: (new Date().addDays(30)).getEndDayDate(),
+  from: (new Date().addDays(-1)).getStartDayDate(),
   currentOffset: 0
 }
 export const fullYearFilter: IDateFilter = {

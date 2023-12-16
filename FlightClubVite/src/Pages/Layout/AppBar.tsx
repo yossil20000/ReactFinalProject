@@ -40,11 +40,11 @@ const ResponsiveAppBar = () => {
     { name: 'Home', route: ROUTES.HOME },
     { name: 'Reservations', route: ROUTES.RESERVATION },
     { name: 'Flight', route: ROUTES.Flight },
-    { name: 'Members', route: 'members' },
-    { name: 'Gallery', route: 'gallery' },
-    { name: 'Admin', route: 'admin' },
-    { name: "Account", route: "account" },
     { name: "WAB", route: "WAB" },
+    { name: "Account", route: "account" },
+    { name: 'Admin', route: 'admin' },
+    { name: 'Contacts', route: 'members' },
+    { name: 'Gallery', route: 'gallery' },
     { name: `Login ${remainLogin}`, route: "login" },
 
   ];
