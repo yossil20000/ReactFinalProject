@@ -26,15 +26,17 @@ function Copyright(props: any) {
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {`Version 2.0.3.0 ${(new Date(2023,11,19)).getDisplayDate()}`}
+      <div>Added Scheduler:</div>
+      <div>Notify when aircraft need service soon  </div>
+      </Typography>
+      <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
         <Link color="inherit" href="#">
           Yosef Levy
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {`Version 2.0.2.0 ${(new Date(2023,12,14)).getDisplayDate()}`}
       </Typography>
     </Box>
 

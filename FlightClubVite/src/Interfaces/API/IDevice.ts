@@ -26,7 +26,8 @@ export enum DEVICE_STATUS  {
 export enum DEVICE_MT{
     "50hr",
     "100hr",
-    "Annual"
+    "Annual",
+    "200hr"
 }
 export enum DEVICE_MET  {
     HOBBS = "HOBBS",
