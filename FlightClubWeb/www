@@ -5,9 +5,9 @@
  */
 const httpType = 'http';
 var app = require('./app');
-var {findDeviceNextService} = require('../Services/schedulerService')
-const { sendNotification } = require('../Services/notificationService');
-const constants = require('../Models/constants')
+var {findDeviceNextService} = require('./Services/schedulerService')
+const { sendNotification } = require('./Services/notificationService');
+const constants = require('./Models/constants')
 var debug = require('debug')('FlightClub:server');
 var https = require('https');
 var http = require('http');
