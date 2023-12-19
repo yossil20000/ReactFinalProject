@@ -58,8 +58,8 @@ else {
  */
 server.on('error', onError);
 server.on('listening', onListening);
-server.listen(port, "localhost");
-
+/* server.listen(port, "localhost"); */
+server.listen(port, process.env.ADDRESS);
 
 /**
  * Normalize a port into a number, string, or false.
