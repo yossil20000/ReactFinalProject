@@ -5,11 +5,27 @@
  */
 const httpType = 'http';
 var app = require('./app');
+var {findDeviceNextService} = require('../Services/schedulerService')
+const { sendNotification } = require('../Services/notificationService');
+const constants = require('../Models/constants')
 var debug = require('debug')('FlightClub:server');
 var https = require('https');
 var http = require('http');
 const fs = require("fs");
 var log = require('debug-level').log('www');
+const schedule = require('node-schedule');
+
+const job = schedule.scheduleJob('0 0 22 * * *', function(){
+  const {device} = findDeviceNextService({device_id: "4XCGC"})
+  device.then((res) => {
+    console.log("Scheduler device",(res.due_date - new Date()) / (1000 * 60 *60 *24),new Date(),(res.engien_meter - res.maintanance.next_meter) < 10, res.maintanance,res.engien_meter,res.due_date)
+    if((res.due_date - new Date()) / (1000 * 60 *60 *24) < 14 || (res.engien_meter - res.maintanance.next_meter) < 10 )
+      sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,`Service Soon ${res.maintanance.type} for ${res.device_id} . Current Engien: ${res.engien_meter} Next Service: on ${res.maintanance.next_meter} ${res.due_date}`)
+  }).catch((error) => {
+    console.log("Scheduler Error",error)
+  })
+  
+})
 
 /**
  * Get port from environment and store in Express.
@@ -42,7 +58,7 @@ else {
  */
 server.on('error', onError);
 server.on('listening', onListening);
-server.listen(port, process.env.ADDRESS);
+server.listen(port, "localhost");
 
 
 /**

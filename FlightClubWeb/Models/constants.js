@@ -12,7 +12,7 @@ const DEVICE_STATUS = {
     2:"MAINTANANCE",
     3:"NOT_EXIST"}
 const DEVICE_MT={
-    0:"50hr", 1:"100hr",2:"Annual"
+    0:"50hr", 1:"100hr",2:"Annual",3:"200hr"
 }
 const DEVICE_MET = {
     HOBBS:'HOBBS',ENGIEN:'ENGIEN'

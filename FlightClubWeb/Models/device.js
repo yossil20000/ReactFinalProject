@@ -17,7 +17,7 @@ var DeviceSchema = new Schema({
     hobbs_meter: {type: mongoose.Decimal128, get: getDecimal},
     engien_meter: {type: mongoose.Decimal128, get: getDecimal},
     maintanance: {
-        type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2]] , default: CE.DEVICE_MT[0]},
+        type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2],CE.DEVICE_MT[3]] , default: CE.DEVICE_MT[0]},
         next_meter:{type: mongoose.Decimal128, get: getDecimal}
     },
     price:{
