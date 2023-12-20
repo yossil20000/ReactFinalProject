@@ -15,6 +15,19 @@ const fs = require("fs");
 var log = require('debug-level').log('www');
 const schedule = require('node-schedule');
 
+if((globalThis.LastDate.lastCheck - new Date()) / (1000 * 60 *60 *24))
+{
+  console.log("globalThis.LastDate check",globalThis.LastDate.lastCheck)
+  const {device} = findDeviceNextService({device_id: "4XCGC"})
+  device.then((res) => {
+    console.log("Scheduler device",(res.due_date - new Date()) / (1000 * 60 *60 *24),new Date(),(res.engien_meter - res.maintanance.next_meter) < 10, res.maintanance,res.engien_meter,res.due_date)
+    if((res.due_date - new Date()) / (1000 * 60 *60 *24) < 14 || (res.engien_meter - res.maintanance.next_meter) < 10 )
+      sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,`Service Soon ${res.maintanance.type} for ${res.device_id} . Current Engien: ${res.engien_meter} Next Service: on ${res.maintanance.next_meter} ${res.due_date}`)
+      globalThis.LastDate.lastCheck = new Date()
+  }).catch((error) => {
+    console.log("Scheduler Error",error)
+  })
+}
 const job = schedule.scheduleJob('0 0 22 * * *', function(){
   const {device} = findDeviceNextService({device_id: "4XCGC"})
   device.then((res) => {

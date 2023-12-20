@@ -7,7 +7,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var log = require('debug-level').log('app');
-
+require('./Types/date.extensions')
 // Routs
 
 var membersRouter = require('./routes/member');
@@ -131,4 +131,17 @@ if (userArgs[0] == "yossi") {
       console.log('async result:', result);
   })() */
 }
+if (typeof globalThis.LastDate === "undefined") {
+  Object.defineProperty(globalThis, "LastDate", {
+    value: {
+      lastCheck: (new Date()).addDays(-2),
+      scheduler: '0 0 22 * * *',
+      schedulerNow: '0/1 * * * * *'
+    },
+    enumerable: false,
+    configurable: true,
+    writable: true,
+  });
+}
+console.log("globalThis.yossi from",globalThis.LastDate)
 module.exports = app;
