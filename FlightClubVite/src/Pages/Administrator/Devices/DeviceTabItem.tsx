@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
-import React, { useContext, useMemo } from 'react';
-import IDevice, { DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice';
+import React, { useContext, useMemo, useState } from 'react';
+import IDevice, { CServicesToReport, DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
@@ -22,6 +22,7 @@ import { resizeFileTobase64 } from '../../../Utils/files';
 import { useAppDispatch } from '../../../app/hooks';
 import { setDirty } from '../../../features/Admin/adminPageSlice';
 import { DateTime } from 'luxon';
+import ReportDialog from '../../../Components/Report/Exel/ReportDialog';
 
 const source: string = "DeviceTabItem"
 const labelsFromDEVICE_INS = (): LabelType[] => {
@@ -39,13 +40,16 @@ const labelsFromDEVICE_INS = (): LabelType[] => {
 const navLableItems = labelsFromDEVICE_INS();
 
 function DeviceTabItem() {
-
+  const [openExport, setOpenExport] = useState(false);
   const setDirtyDispatch = useAppDispatch()
   const { setSelectedItem, selectedItem, membersCombo } = useContext(DevicesContext) as DevicesContextType;
   const { selectedItem: selectdDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
   const SetDirtyFlage = () => {
     CustomLogger.info("SetDirtyFlage/dirtyFlag", source, true);
     setDirtyDispatch(setDirty({ key: source, value: true }))
+  }
+  const handleAddOnClose = () => {
+    setOpenExport(false)
   }
   const memberCanReserve = useMemo((): (LabelType[]) => {
     const labels: (LabelType[] | undefined) = membersCombo?.map((item) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
@@ -250,7 +254,7 @@ function DeviceTabItem() {
                       value={selectedItem?.hobbs_meter} InputLabelProps={{ shrink: true }} />
                   </Grid>
                   <Grid item xs={1}>
-                    <TextField fullWidth onChange={handleChange} id="engien_meter" label="Engien"
+                    <TextField disabled fullWidth onChange={handleChange} id="engien_meter" label="Engien"
                       name="engien_meter" placeholder="Engien meter" variant="standard"
                       value={selectedItem?.engien_meter} InputLabelProps={{ shrink: true }} />
                   </Grid>
@@ -272,7 +276,7 @@ function DeviceTabItem() {
                     <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                       <MobileDateTimePicker
                         views={['year', 'month', 'day']}
-                        label="Next Service"
+                        label="Next Annual"
                         value={DateTime.fromJSDate(selectedItem?.due_date ? (new Date(selectedItem?.due_date)) : new Date())}
                         onChange={(newValue) => handleTimeChange(newValue?.toJSDate(), "due_date")}
                       />
@@ -297,6 +301,9 @@ function DeviceTabItem() {
                   </Grid>
                   <Grid item xs={1}>
                     <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={{ lable: selectedItem?.status === undefined ? "" : selectedItem?.status.toString(), _id: "", description: "" }} />
+                  </Grid>
+                  <Grid item xs={12}>
+                  {openExport && <ReportDialog onClose={handleAddOnClose} open={openExport} table={(new CServicesToReport(selectedItem)).getServicesToExel()} action="ServicesExport" />}
                   </Grid>
                 </Grid>
               </AccordionDetails>

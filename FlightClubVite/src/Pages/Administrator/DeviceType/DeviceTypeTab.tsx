@@ -122,7 +122,6 @@ function DeviceTypeTab() {
     }
   }
   return (
-    
       <div className='yl__container' style={{ height: "100%", position: "relative" }}>
         <div className='header'>
           <Box marginTop={2}>
@@ -156,9 +155,6 @@ function DeviceTypeTab() {
 
         </div>
       </div>
- 
-      
-    
   )
 }
 

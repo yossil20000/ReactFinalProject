@@ -1,12 +1,17 @@
 import { FuelUnits } from "../../Types/FuelUnits"
 import IDeviceType from "./IDeviceType"
+import '../../Types/date.extensions';
 import { IFilter } from "./IFilter"
 import IFlight from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
 import IMember, { IMemberCombo } from "./IMember"
 import { Status } from "./IStatus"
-export interface IDeviceComboFilter extends IFilter{
-    filter?:{
+import { IExportExelTable } from "../../Components/Report/Exel/ExportExelTable";
+
+
+
+export interface IDeviceComboFilter extends IFilter {
+    filter?: {
         status: Status
     },
     select?: string,
@@ -17,48 +22,61 @@ export interface IDeviceComboFilter extends IFilter{
         maintanance: number;
     }
 }
-export enum DEVICE_STATUS  {
+export enum DEVICE_STATUS {
     IN_SERVICE,
     OUT_OFSERVICE,
     MAINTANANCE,
     NOT_EXIST
 }
-export enum DEVICE_MT{
+export enum DEVICE_MT {
     "50hr",
     "100hr",
-    "Annual",
     "200hr"
 }
-export enum DEVICE_MET  {
+export enum DEVICE_MET {
     HOBBS = "HOBBS",
     ENGIEN = "ENGIEN"
 }
-export enum DEVICE_INS  {
-    VFR='#7057ff',
+export enum DEVICE_INS {
+    VFR = '#7057ff',
     IFR = '#008672',
-    G1000 ='#b60205',
+    G1000 = '#b60205',
     ICE = '#d93f0b',
     AIR_CONDITION = '#0e8a16'
 }
-interface IDeviceBase{
-    
+export type Maintanance = {
+    type: DEVICE_MT
+    next_meter: number
+}
+export type Services = {
+    _id: string
+    date: Date,
+    engien_meter: number,
+    type: string,
+    description: string
+}
+interface IDeviceBase {
+
     device_id: string
     device_type: (IDeviceType | string)
     description: string
     available: boolean
     device_status: DEVICE_STATUS
-    due_date: Date
     hobbs_meter: number
     engien_meter: number
+    due_date: Date
     maintanance: {
-        type : DEVICE_MT
-        next_meter: number
+        type: DEVICE_MT
+        next_meter: number,
+        services: [
+            Services
+        ]
     },
-    price:{
+    price: {
         base: number
         meter: DEVICE_MET
     },
-    details:{
+    details: {
         image: string
         color: string
         seats: number
@@ -73,39 +91,62 @@ interface IDeviceBase{
     has_hobbs: boolean
 }
 
-export  interface IDeviceCreate extends IDeviceBase {
-    
-    can_reservs:IMember[]
+export interface IDeviceCreate extends IDeviceBase {
+
+    can_reservs: IMember[]
     flights: IFlight[]
     flight_reservs: IFlightReservation[]
 
 }
 
 
-export  interface IDeviceAdminUpdate extends IDeviceBase {
+export interface IDeviceAdminUpdate extends IDeviceBase {
     _id: string
-    can_reservs:IMember[]
+    can_reservs: IMember[]
 }
 
 export default interface IDevice extends IDeviceBase {
     _id: string
-    can_reservs:IMember[]
+    can_reservs: IMember[]
     flights: IFlight[]
     flight_reservs: IFlightReservation[]
 
 }
 export interface IDeviceCombo {
-    _id:string;
+    _id: string;
     device_id: string;
     engien_meter: number;
     available: boolean;
-    maintanance: {
-        type : DEVICE_MT
-        next_meter: number
-    };
+    maintanance: Maintanance;
     can_reservs: IMemberCombo[]
     has_hobbs: boolean;
-  }
-  export interface IDeviceCanReserve {
+}
+export interface IDeviceCanReserve {
     can_reservs: IMemberCombo[]
-  }
+}
+
+
+export class CServicesToReport {
+    private device: IDevice;
+    constructor(device: IDevice) {
+        this.device = device;
+        console.info("CServicesToReport/CTOR_device", this.device)
+    }
+    getServicesToExel(file: string = "serviceReport", sheet: string = "Services", title: string = "Services Reports"): IExportExelTable {
+        let report: IExportExelTable = {
+            file: file,
+            sheet: sheet,
+            title: title,
+            header: [],
+            body: [],
+            save: false
+        }
+        report.header = ["Index", "Date", "Engine Meter", "Type", "Description"]
+        report.body = this.device.maintanance.services.map((service, i) => {
+            console.info("CServicesToReport/service", service)
+            return [i.toFixed(0), service.date.getDisplayDate(), service.engien_meter.toFixed(1), service.type, service.description]
+        })
+        console.info("CServicesToReport/report", report)
+        return report;
+    }
+}

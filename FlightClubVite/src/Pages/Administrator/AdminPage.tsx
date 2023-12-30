@@ -17,13 +17,15 @@ import { MembersContext } from '../../app/Context/MemberContext';
 import { IMemberAdmin } from '../../Interfaces/API/IMember';
 import MembershipTab from './Membership/MembershipTab';
 import NoticeTab from './Notice/NoticeTab';
+import ServicesTab from './Services/ServicesTab';
 
 const items: ScrollableTabsItem[] = [
   { id: 0, label: "Devices" },
-  { id: 1, label: "Device Type" },
-  { id: 2, label: "Members" },
-  { id: 3, label: "Membership" },
-  { id: 4, label: "Notices" }
+  { id: 1 ,label: "Services"},
+  { id: 2, label: "Device Type" },
+  { id: 3, label: "Members" },
+  { id: 4, label: "Membership" },
+  { id: 5, label: "Notices" }
 
 ]
 
@@ -56,10 +58,11 @@ function AdminPage() {
                 <Box height={"100%"} sx={{ backgroundColor: "white" }}>
                   <Paper style={{ height: "100%" }}>
                     {value === 0 && <DeviceTab />}
-                    {value === 1 && (<DeviceTypeTab />)}
-                    {value === 2 && (<MemberTab />)}
-                    {value === 3 && (<MembershipTab />)}
-                    {value === 4 && (<NoticeTab />)}
+                    {value === 1 && <ServicesTab />}
+                    {value === 2 && (<DeviceTypeTab />)}
+                    {value === 3 && (<MemberTab />)}
+                    {value === 4 && (<MembershipTab />)}
+                    {value === 5 && (<NoticeTab />)}
                   </Paper>
                 </Box>
               </MembersContext.Provider>

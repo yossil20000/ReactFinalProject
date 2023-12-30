@@ -29,7 +29,16 @@ function newDevice(): IDevice {
     engien_meter: 0,
     maintanance: {
       type: DEVICE_MT['50hr'],
-      next_meter: 0
+      next_meter: 0,
+      services: [
+        {
+          _id: "",
+          date: new Date(),
+          engien_meter: 0,
+          type: DEVICE_MT['100hr'].toString(),
+          description: ""
+        }
+      ]
     },
     price: {
       base: 0,
@@ -57,7 +66,7 @@ function newDevice(): IDevice {
 export type ActionState = "init" | 'start' | "stop"
 
 function DeviceTab() {
-  
+
   const setDirtyDispatch = useAppDispatch();
   const dairtyAdminFlag = useAppSelector((state) => state.setDairty);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);

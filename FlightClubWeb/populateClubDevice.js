@@ -13,7 +13,6 @@ if (!userArgs[0].startsWith('mongodb')) {
 */
 var async = require('async')
 var DeviceType = require('./Models/deviceType')
-var Device = require('./models/device')
 var Member = require('./Models/member')
 var FlightReservation = require('./Models/flightReservation');
 

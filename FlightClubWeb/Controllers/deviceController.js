@@ -10,7 +10,7 @@ exports.device_list = function (req, res, next) {
     try{
     log.info('device_list',req.body.filter);
     Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
-        .populate("device_type")
+        .populate("device_type maintanance.services")
         .select(req.body.select === undefined ? "" : req.body.select)
         .sort([['device_id', 'ascending']])
         .exec(function (err, list_devices) {

@@ -4,6 +4,12 @@ const { DataTime } = require('luxon');
 const constants = require('../Models/constants');
 const CE = require('../Models/constants');
 var Schema = mongoose.Schema;
+var DeviceServicesSchema = new Schema( {
+        date: {type: Date, default: new Date()},
+        engien_meter: {type: mongoose.Decimal128, get: getDecimal , default: 10},
+        type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2]] , default: CE.DEVICE_MT[0]},
+        description: {type: String}
+    },{toJSON: {getters: true}})
 
 var DeviceSchema = new Schema({
     status:{type:String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active},
@@ -17,8 +23,11 @@ var DeviceSchema = new Schema({
     hobbs_meter: {type: mongoose.Decimal128, get: getDecimal},
     engien_meter: {type: mongoose.Decimal128, get: getDecimal},
     maintanance: {
-        type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2],CE.DEVICE_MT[3]] , default: CE.DEVICE_MT[0]},
-        next_meter:{type: mongoose.Decimal128, get: getDecimal}
+        type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2]] , default: CE.DEVICE_MT[0]},
+        next_meter:{type: mongoose.Decimal128, get: getDecimal},
+        services: [
+            DeviceServicesSchema
+        ]
     },
     price:{
         base: {type: mongoose.Decimal128,get: getDecimal},
