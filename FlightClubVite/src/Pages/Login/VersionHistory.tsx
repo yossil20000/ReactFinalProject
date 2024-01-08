@@ -20,7 +20,8 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
   ]
   const rows   = [
     {id: 1,version: "2.0.4.0",date: new Date(2023,11,19).getDisplayDate() , "description" : "Added Scheduler"  ,"known_bug": "Admin/Devices Device Type need to reselect for update/save operation"},
-    {id: 2,version: "2.0.5.0",date: new Date(2024,0,24).getDisplayDate() , "description" : "Add version history. Add Admin/Services list"  ,"known_bug": "Admin/Devices Device Type need to reselect for update/save operation"}
+    {id: 2,version: "2.0.5.0",date: new Date(2024,0,24).getDisplayDate() , "description" : "Add version history. Add Admin/Services list"  ,"known_bug": "Admin/Devices Device Type need to reselect for update/save operation"},
+    {id: 3,version: "2.0.5.1",date: new Date(2024,0,24).getDisplayDate() , "description" : "Fix AccountAccounts filter by member type"  ,"known_bug": "Admin/Devices Device Type need to reselect for update/save operation"}
   ]
   function CustomToolbar() {
     return (
