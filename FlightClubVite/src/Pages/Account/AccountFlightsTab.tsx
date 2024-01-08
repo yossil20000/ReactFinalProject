@@ -14,7 +14,7 @@ import CreateFlightOrderDialog from './CreateFlightOrderDialog';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import MembersCombo from '../../Components/Members/MembersCombo';
 import {UseIsAuthorized,IRequireAuthProps} from '../../Components/RequireAuth'
-import { Role } from '../../Interfaces/API/IMember';
+import { MemberType, Role } from '../../Interfaces/API/IMember';
 import { useAppSelector } from '../../app/hooks';
 interface IData {
   _id: string;
@@ -282,7 +282,7 @@ function AccountFlightsTab() {
                 <DevicesFlightCombo onChanged={onDeviceChange} source={"_accounts/devices"} />
               </Grid >
               <Grid item xs={12} md={6}>
-                <MembersCombo onChanged={onMemberChanged} source={"_accounts/members"} />
+                <MembersCombo onChanged={onMemberChanged} source={"_accounts/members"}filter={{ filter: { member_type: MemberType.Member } }} />
               </Grid> 
             </Grid>
           </Box>

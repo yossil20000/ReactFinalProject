@@ -23,6 +23,7 @@ export default function TransactionTable({ hideAction = false, filter = {} as IT
   const { data: dataTransaction , isLoading,error } = useFetchTransactionQuery(filter.dateFilter)
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
+  const [page, setPage] = useState(1);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
 useEffect(()=>{
   CustomLogger.info("TransactionTable/filter", filter)
@@ -112,16 +113,18 @@ const getData = useMemo(() => {
     <div style={{ height: "100%", width: '100%' }}>
       <DataGrid
        sx={{"& .MuiDataGrid-cellContent": {whiteSpace: "break-spaces"}}}
+       getRowHeight={() => 'auto'} 
+       columnVisibilityModel={{id:false}}
         rows={transactionRows}
         columns={columns}
-        pageSize={pageSize}
-        rowsPerPageOptions={[5, 10, 15, 20]}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        pageSizeOptions={[5, 10, 15, 20]}
+        paginationModel={{page,pageSize}}
+        onPaginationModelChange={(newPageSize) => {setPageSize(newPageSize.pageSize),setPage(newPageSize.page) }}
+        
         checkboxSelection={false}
         getRowId={(row) => row.id}
-        disableSelectionOnClick
-        experimentalFeatures={{ newEditingApi: true }}
-        onCellEditCommit={(params) => setRowId(params.id.toString())}
+        disableRowSelectionOnClick
+        onCellEditStop={(params, event) => setRowId(params.id.toString())}
       /* rowHeight={123} */
 
       />

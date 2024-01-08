@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
-import { URLS , getServerAddress } from "../../Enums/Routers"
+import { getServerAddress } from "../../Enums/Routers"
+import { URLS } from "../../Enums/Urls"
 import IDevice, { IDeviceCanReserve, IDeviceCombo, IDeviceComboFilter, IDeviceCreate } from "../../Interfaces/API/IDevice"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
@@ -36,6 +37,14 @@ export const deviceApiSlice = createApi({
       updateDevice: builder.mutation<IResultBaseSingle<IDevice>, IDevice>({
         query: (device) => ({
           url: `/${URLS.DEVICE_UPDATE}`,
+          method: 'PUT',
+          body: device
+        }),
+        invalidatesTags: ["Devices"]
+      }),
+      updateOneDevice: builder.mutation<IResultBaseSingle<IDevice>, {_id: string,update: {}}>({
+        query: (device) => ({
+          url: `/${URLS.DEVICE_UPDATE_ONE}`,
           method: 'PUT',
           body: device
         }),
@@ -91,5 +100,6 @@ export const {
   useFetchDeviceQuery,
   useFetchDevicsComboQuery,
   useUpdateStatusDeviceMutation,
-  useFetchDevicCanReservQuery
+  useFetchDevicCanReservQuery,
+  useUpdateOneDeviceMutation
 } = deviceApiSlice;

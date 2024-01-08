@@ -29,10 +29,18 @@ export enum DEVICE_STATUS {
     NOT_EXIST
 }
 export enum DEVICE_MT {
-    "50hr",
-    "100hr",
-    "200hr"
+    "50hr" = "50hr",
+    "100hr"= "100hr",
+    "200hr" = "200hr" 
 }
+
+export enum DEVICE_SERVICE {
+    "50hr" = "50hr",
+    "100hr"= "100hr",
+    "200hr" = "200hr",
+    "Annual" = 'Annual'
+}
+
 export enum DEVICE_MET {
     HOBBS = "HOBBS",
     ENGIEN = "ENGIEN"

@@ -19,6 +19,7 @@ interface IOrderTableProps {
 export default function OrderTable({selectedMember, hideAction=false,filter={},selectedClubAccount}: IOrderTableProps) {
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
+  const [page, setPage] = useState(1);
   const { data: orders ,isLoading,error} = useGetOrderSearchQuery(filter);
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
@@ -104,7 +105,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     { field: 'member', hide: true },
     { field: 'description', hide: true },
     { field: 'date',hide: false, headerName: 'Date', minWidth: 100, sortable: true,
-    filterable: false,flex:1},
+    filterable: true,flex:1},
     { field: 'orderBy', headerName: 'Order By', minWidth: 100,flex:2 },
     { field: 'product', headerName: 'Product', minWidth: 80,flex:1 },
     { field: 'units', headerName: 'Units', type: 'number', minWidth: 70 , flex: 1 },
@@ -164,16 +165,16 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   return (
     <div style={{ height: "100%", width: '100%' }}>
       <DataGrid
+       columnVisibilityModel={{id:false,member:false,description:false}}
         rows={orderRows}
         columns={columns}
-        pageSize={pageSize}
-        rowsPerPageOptions={[5, 10,15, 20]}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        pageSizeOptions={[5, 10,15, 20]}
+        onPaginationModelChange={(newPageSize) => {setPageSize(newPageSize.pageSize), setPage(newPageSize.page)}}
+        paginationModel={{page,pageSize}}
         checkboxSelection={false}
         getRowId={(row) => row.id}
-        disableSelectionOnClick
-        experimentalFeatures={{ newEditingApi: true }}
-        onCellEditCommit={(params) => setRowId(params.id.toString())}
+        disableRowSelectionOnClick
+        onCellEditStop={(params,event) => setRowId(params.id.toString())}
       /* rowHeight={123} */
 
       />

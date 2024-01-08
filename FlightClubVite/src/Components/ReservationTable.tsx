@@ -41,6 +41,8 @@ export default function ReservationTable({ hideAction = false, filter = {} as IR
   const [openDelete,setOpenDelete] = useState(false)
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(5);
+  const [page, setPage] = useState(1);
+  
   const [reservations, setReservations] = useState<IReservation[]>();
 useEffect(()=>{
   CustomLogger.info("ReservationTable/filter", filter)
@@ -147,16 +149,16 @@ useEffect(() => {
     <div style={{ height: "100%", width: '100%' }}>
       {openUpdate && <UpdateReservationDialog onClose={handleOnClose} value={reservationUpdate} open={openUpdate} onSave={handleOnClose} />}
       <DataGrid
+      columnVisibilityModel={{id:false}}
         rows={transactionRows()}
         columns={columns}
-        pageSize={pageSize}
-        rowsPerPageOptions={[5, 10, 15, 20]}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        pageSizeOptions={[5, 10, 15, 20]}
+        paginationModel={{page,pageSize}}
+        onPaginationModelChange={(newPageSize) => {setPageSize(newPageSize.pageSize),setPage(newPageSize.page) }}
         checkboxSelection={false}
         getRowId={(row) => row.id}
-        disableSelectionOnClick
-        experimentalFeatures={{ newEditingApi: true }}
-        onCellEditCommit={(params) => setRowId(params.id.toString())}
+        disableRowSelectionOnClick
+        onCellEditStop={(params, event) => setRowId(params.id.toString())}
       /* rowHeight={123} */
 
       />

@@ -18,19 +18,19 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getFromLocalStorage } from '../../Utils/localStorage';
 import { LOCAL_STORAGE } from '../../Enums/localStroage';
-import { IconButton, InputAdornment } from '@mui/material';
+import { Checkbox, FormControlLabel, IconButton, InputAdornment } from '@mui/material';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
+import VersionHistory, { IVersionHistoryProps } from './VersionHistory';
+import { width } from '@mui/system';
 
 
-function Copyright(props: any) {
+function Copyright({ show: showVersion }: IVersionHistoryProps) {
+
   return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {`Version 2.0.3.0 ${(new Date(2023,11,19)).getDisplayDate()}`}
-      <div>Added Scheduler:</div>
-      <div>Notify when aircraft need service soon  </div>
-      </Typography>
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Box width={"100%"}>
+
+      <VersionHistory show={showVersion} />
+      <Typography variant="body2" color="text.secondary" align="center" >
         {'Copyright © '}
         <Link color="inherit" href="#">
           Yosef Levy
@@ -54,6 +54,7 @@ export default function LoginPage() {
 
   const [loginError, setLoginError] = React.useState<string[]>([]);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [showVersion, setShowVersion] = React.useState(false);
   const id = useAppSelector((state) => state.authSlice.member._id);
   CustomLogger.log("id", id)
   CustomLogger.log("id", selectCurrentId)
@@ -112,97 +113,111 @@ export default function LoginPage() {
     event.preventDefault();
   };
   return (
-    <div className='main'>
+    <>
 
       <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
+        <Container component="main" >
           <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
-            <Box component="form" onSubmit={handleLoginSubmit} noValidate sx={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                InputProps={{
-                  endAdornment: <InputAdornment position="start">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>,
+          {showVersion == false ?
+            (
+              <Box
+                sx={{
+                  marginTop: 8,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                 }}
-              />
-              {renderError()}
-              {/*               <FormControlLabel
-                control={<Checkbox value={true} color="primary" name='resend' />}
-                label="Resend"
-              /> */}
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="/reset" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  {/*                   <Link href="#" variant="body2">
-                    {"Resend"}
-                  </Link> */}
-                </Grid>
-              </Grid>
-            </Box>
-          </Box>
-          <Copyright sx={{ mt: 8, mb: 4 }} />
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                  Sign in
+                </Typography>
+                <Box component="form" onSubmit={handleLoginSubmit} noValidate sx={{ mt: 1 }}>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    InputProps={{
+                      endAdornment: <InputAdornment position="start">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>,
+                    }}
+                  />
+                  {renderError()}
+                  {/*               <FormControlLabel
+              control={<Checkbox value={true} color="primary" name='resend' />}
+              label="Resend"
+            /> */}
+
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Sign In
+                  </Button>
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <Link href="/reset" variant="body2">
+                        Forgot password?
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Box>
+            ) : 
+            (
+<Copyright show={true} />
+            )}
+
+          <Grid container>
+
+            <Grid item xs={12}>
+              <Typography variant="body2" color="text.secondary" align="center" >
+
+                <FormControlLabel control={<Checkbox onChange={() => { setShowVersion(!showVersion) }}
+                  name={"active_only"} checked={showVersion}
+                  sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
+                  label={showVersion ? "Hide Version History" : "Show Version History"} />
+              </Typography>
+            </Grid>
+          </Grid>
+          
         </Container>
       </ThemeProvider>
-    </div>
+    </>
   )
 }

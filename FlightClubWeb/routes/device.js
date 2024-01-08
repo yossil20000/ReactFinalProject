@@ -11,6 +11,7 @@ router.get('/reserv/:_id',deviceController.device_reservation);
 router.get('/flights/:_id',deviceController.device_flights);
 router.post('/create',deviceController.create);
 router.put('/update',deviceController.update);
+router.put('/updateOne',deviceController.updateOne);
 router.put('/status',deviceController.status);
 router.delete('/delete',deviceController.delete);
 

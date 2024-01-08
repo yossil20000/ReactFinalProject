@@ -90,7 +90,7 @@ exports.reservation_create_s = (req, res, next) => {
 	)
 }
 
-exports.reservation_delete_m2m = async function (req, res, next) {
+/* exports.reservation_delete_m2m = async function (req, res, next) {
 	try {
 		body("_id").trim().isLength({ min: 1 }).withMessage("_id must be specified");
 		body("member_id").trim().isLength({ min: 1 }).withMessage("member_id must be specified");
@@ -112,7 +112,7 @@ exports.reservation_delete_m2m = async function (req, res, next) {
 	catch (error) {
 		return next(new ApplicationError("reservation_delete_m2m", 400, "CONTROLLER.FLIGHT_RESERV.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
 	}
-}
+} */
 
 exports.reservation_delete = function (req, res, next) {
 	try {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../app/hooks';
-import { URLS } from '../../Enums/Routers';
+import { URLS } from '../../Enums/Urls';
 import { logOut } from '../../features/Auth/authSlice';
 
 function LogoutPage() {

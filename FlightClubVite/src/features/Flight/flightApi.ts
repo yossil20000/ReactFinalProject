@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
-import { URLS , getServerAddress } from "../../Enums/Routers";
+import { getServerAddress } from "../../Enums/Routers";
+import { URLS } from "../../Enums/Urls";
 import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import { getUrlWithParams } from "../../Utils/url";

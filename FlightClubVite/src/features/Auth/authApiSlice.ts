@@ -1,6 +1,7 @@
 import base from "@emotion/styled/types/base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import {  URLS,getServerAddress } from "../../Enums/Routers";
+import {  getServerAddress } from "../../Enums/Routers";
+import {  URLS } from "../../Enums/Urls";
 import ILogin, { IChangePassword, IChangePasswordResults, ILoginResult, IRefreshToken, IReset, IResetResult } from "../../Interfaces/API/ILogin";
 import { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import {RootState} from '../../app/userStor'
