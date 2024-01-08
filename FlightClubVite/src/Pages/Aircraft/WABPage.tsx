@@ -1,12 +1,13 @@
 import { Box } from '@mui/system'
 import { Fragment, useEffect, useState } from 'react'
 import WABChart from '../../Components/WOBChart'
-import { CWAB, EPoint_WAB_GC, WABGc, WABItem, WABItemType, WABUnits, conv, unitConversion } from '../../Interfaces/API/IWAB'
-import { Input, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { CWAB, EPoint_WAB_GC, WABGc, WABItem, WABItemType, WABUnits, conv } from '../../Interfaces/API/IWAB'
+import { Input, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 
 function WABPage() {
-  const [items, setItems] = useState<WABItem[]>()
+  const [items, setItems] = useLocalStorage<WABItem[]>("CGC_ITEMS",[])
   const [CoG, setCoG] = useState<WABGc>({ x: 0, y: 0, weight: 0, cg: 0, validation: [], cgMoment: [], cgWeight: [] })
   const [cgResults, setCgResults] = useState<EPoint_WAB_GC>(EPoint_WAB_GC.EPOINT_IN_NORMAL)
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, row: WABItem) => {
@@ -51,7 +52,8 @@ function WABPage() {
     console.log("WABPage/useEffect")
     let CGC = new CWAB()
     CGC.inititialCGC();
-    setItems(CGC.items)
+    if(items.length== 0)
+      setItems(CGC.items)
     setCoG(CWAB.calcCG(CGC.items))
   }, [])
   const onWABChange = (cGResult: EPoint_WAB_GC) => {
