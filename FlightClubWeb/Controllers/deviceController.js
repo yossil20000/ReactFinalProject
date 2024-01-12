@@ -182,7 +182,7 @@ exports.create = [
 
 exports.update = [
     body('_id').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id'),
-    body('device_type').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id_device_type must be valid'),
+    body('device_type._id').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id_device_type must be valid'),
     body('device_id', "lenght > 3 and only [0-9] [A-Z]").custom((value, { req }) => {
         return /^[A-Z0-9]{4,}$/.test(value)
     }),

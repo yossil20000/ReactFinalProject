@@ -21,6 +21,8 @@ function DeviceTypesCombo(props: ComboProps) {
     const found = devicesItems.find((item) => item._id === selectedItem?._id)
     if (found !== undefined)
       setSelectedDevice(found)
+    else
+    setSelectedDevice(selectedItem)
   }, [selectedItem])
   CustomLogger.log("DeviceTypesCombo/selectedDevice", selectedDevice)
   useEffect(() => {
