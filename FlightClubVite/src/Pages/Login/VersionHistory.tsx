@@ -53,6 +53,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
             <DataGrid sx={{width: "100%"}} slots={{
               toolbar: CustomToolbar
             }}
+            pageSizeOptions={[5, 10,15, 20,50,100]}
             rows={show ? rows : []} columns={columns } getRowHeight={() => 'auto'}/>
           </Box>
         </Container>

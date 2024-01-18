@@ -117,7 +117,7 @@ const getData = useMemo(() => {
        columnVisibilityModel={{id:false}}
         rows={transactionRows}
         columns={columns}
-        pageSizeOptions={[5, 10, 15, 20]}
+        pageSizeOptions={[5, 10, 15, 20,50,100]}
         paginationModel={{page,pageSize}}
         onPaginationModelChange={(newPageSize) => {setPageSize(newPageSize.pageSize),setPage(newPageSize.page) }}
         

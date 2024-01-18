@@ -168,7 +168,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
        columnVisibilityModel={{id:false,member:false,description:false}}
         rows={orderRows}
         columns={columns}
-        pageSizeOptions={[5, 10,15, 20]}
+        pageSizeOptions={[5, 10,15, 20,50,100]}
         onPaginationModelChange={(newPageSize) => {setPageSize(newPageSize.pageSize), setPage(newPageSize.page)}}
         paginationModel={{page,pageSize}}
         checkboxSelection={false}
