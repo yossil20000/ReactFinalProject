@@ -1,8 +1,8 @@
 import '../../Types/date.extensions'
-import { Box, Grid, TablePagination } from '@mui/material';
+import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, TablePagination } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { EAction } from '../../Components/Buttons/ActionButtons';
-import { InputComboItem } from '../../Components/Buttons/ControledCombo';
+import { InputComboItem, newInputComboItem } from '../../Components/Buttons/ControledCombo';
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable';
 import DevicesFlightCombo from '../../Components/Devices/DeviceFlightCombo';
 import { useGetAllFlightsSearchQuery } from '../../features/Flight/flightApi';
@@ -13,9 +13,16 @@ import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFoo
 import CreateFlightOrderDialog from './CreateFlightOrderDialog';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import MembersCombo from '../../Components/Members/MembersCombo';
-import {UseIsAuthorized,IRequireAuthProps} from '../../Components/RequireAuth'
+import { UseIsAuthorized, IRequireAuthProps } from '../../Components/RequireAuth'
 import { MemberType, Role } from '../../Interfaces/API/IMember';
 import { useAppSelector } from '../../app/hooks';
+import { DateRangeIcon } from '@mui/x-date-pickers';
+import DatePickerDate from '../../Components/Buttons/DatePickerDate';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import GeneralDrawer from '../../Components/GeneralDrawer';
+import { SetProperty } from '../../Utils/setProperty';
+import { IDateFilter } from '../../Interfaces/IDateFilter';
+import { IAccountFlightFilter, from_to_year_Filter, getAccountFlightFilter } from '../../Utils/filtering';
 interface IData {
   _id: string;
   date: Date;
@@ -103,42 +110,45 @@ const columns: Column[] = [
   },
 ];
 
-const allowedRoles: IRequireAuthProps= {
+const allowedRoles: IRequireAuthProps = {
   roles: [Role.desk, Role.admin, Role.account]
 }
 function AccountFlightsTab() {
-  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
+  const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
+  const [openFilter, setOpenFilter] = useState(false)
+  const [filter, setFilter] = useState<IDateFilter>({ ...from_to_year_Filter(new Date()) });
+
   const login = useAppSelector((state) => state.authSlice);
-  const [ref,setRef] = useState(false)
-  useEffect(()=> {
+  const [ref, setRef] = useState(false)
+  useEffect(() => {
     setRef(login.member.roles.find(role => allowedRoles?.roles?.includes(role)) ? false : true)
-  },[login.member.roles])
-  if(allowedRoles === undefined || allowedRoles.roles === undefined){
+  }, [login.member.roles])
+  if (allowedRoles === undefined || allowedRoles.roles === undefined) {
     setRef(false);
-      }
+  }
   const [openOrderAdd, setOpenOrderAdd] = useState(false);
   const [order, setOrder] = useState<IOrderBase>(new COrderCreate());
-  const [accountFlightFilter, setaccountFlightFilter] = useState({ status: FlightStatus.CREATED })
-  const { data, isError,error,isLoading,refetch } = useGetAllFlightsSearchQuery(accountFlightFilter);
+  const [accountFlightFilter, setaccountFlightFilter] = useState<IAccountFlightFilter>(getAccountFlightFilter())
+  const { data, isError, error, isLoading, refetch } = useGetAllFlightsSearchQuery(accountFlightFilter);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
-  const [selectedMember,setSelectedMember] = useState<InputComboItem>()
+  const [selectedMember, setSelectedMember] = useState<InputComboItem>()
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-/*   const filterFlights = useCallback(() : IFlight[] => {
-    if(selectedMember || selectedMember != "")
-    {
-      const filtered =  data?.data.filter((flight) => flight.member._id == selectedMember?.lable )
-      CustomLogger.info("AccountFlight/filterFlights/filtered",filtered)
-      return filtered !== undefined ? filtered : []
-    }
-    return data?.data === undefined ? [] : data?.data
-    
-  },[data?.data,selectedMember]) */
-  const filterFlight = (flight : IFlight): boolean => {
-    if(selectedMember?.lable != ""){
+  /*   const filterFlights = useCallback(() : IFlight[] => {
+      if(selectedMember || selectedMember != "")
+      {
+        const filtered =  data?.data.filter((flight) => flight.member._id == selectedMember?.lable )
+        CustomLogger.info("AccountFlight/filterFlights/filtered",filtered)
+        return filtered !== undefined ? filtered : []
+      }
+      return data?.data === undefined ? [] : data?.data
+      
+    },[data?.data,selectedMember]) */
+  const filterFlight = (flight: IFlight): boolean => {
+    if (selectedMember?.lable != "") {
       return flight.member._id == selectedMember?._id
     }
     return true;
@@ -152,17 +162,8 @@ function AccountFlightsTab() {
   const onMemberChanged = (item: InputComboItem) => {
     setSelectedMember(item)
     setPage(0)
-}
-  const onDeviceChange = (item: InputComboItem, has_hobbs: boolean) => {
-    const filter: any = JSON.parse(JSON.stringify(accountFlightFilter));
-
-    delete filter["device"]
-    if (item._id != "") {
-      filter.device = item._id;
-    }
-    CustomLogger.log("AccountFlight/onDeviceChange/filter", filter)
-    setaccountFlightFilter(filter)
   }
+
   const sort = (a: IData, b: IData): number => {
     return a.engien_start >= b.engien_start ? 1 : -1;
   }
@@ -172,7 +173,7 @@ function AccountFlightsTab() {
     rows = rows === undefined ? [] : rows;
     setCount(rows.length)
     return rows;
-  }, [data,selectedMember])
+  }, [data, selectedMember])
 
   const getPrice = (flight: IFlight): [units: number, pricePeUnit: number, amount: number, discount: number] => {
     let units: number = 0, pricePeUnit: number = 0, discount: number = 0, amount: number = 0;
@@ -195,12 +196,12 @@ function AccountFlightsTab() {
 
     if (flightFound !== undefined) {
       const [units, pricePeUnit, amount, discount] = getPrice(flightFound);
-      const description : orderDescription = {
+      const description: orderDescription = {
         operation: 'FLIGHT',
         date: (new Date(flightFound.date)).getDisplayDate(),
         engien_start: flightFound.engien_start,
         engien_stop: flightFound.engien_stop,
-        total: Number((flightFound.engien_stop - flightFound.engien_start).toFixed(2)) ,
+        total: Number((flightFound.engien_stop - flightFound.engien_start).toFixed(2)),
         description: flightFound.description
       }
       let order: IOrderBase = {
@@ -211,7 +212,7 @@ function AccountFlightsTab() {
         discount: Number(discount.toFixed(2)),
         amount: Number(amount.toFixed(2)),
         orderType: { operation: OT_OPERATION.CREDIT, referance: OT_REF.FLIGHT },
-        description: JSON.stringify(description) ,
+        description: JSON.stringify(description),
         status: OrderStatus.CREATED,
         member: flightFound.member,
         orderBy: `${flightFound.member.family_name} / ${flightFound.member.member_id}`
@@ -242,7 +243,7 @@ function AccountFlightsTab() {
     setOpenOrderAdd(false);
     CustomLogger.log("AccountFlightPage/handleAddOnSave/value", value);
   }
-  
+
   const handleAddOnClose = () => {
     setOpenOrderAdd(false);
   }
@@ -271,25 +272,78 @@ function AccountFlightsTab() {
       return <div>{error.message}</div>
     }
   }
+  const onDateChanged = (key: string, value: Date | null) => {
+    CustomLogger.log("AccountFlightTab/onDateChanged", key, value)
+    if (value == null)
+      return;
+    const newFilter = SetProperty(accountFlightFilter, key, new Date(value));
+    setaccountFlightFilter(newFilter)
+    CustomLogger.log("AccountFlightTab/onDateChanged", newFilter)
+  }
+  const onDeviceChange = (item: InputComboItem, has_hobbs: boolean) => {
+    CustomLogger.log("AccountFlightTab/onDateChanged", item)
+    
+    const newFilter = SetProperty(accountFlightFilter, "device",item._id.length == 24 ? item._id : "aaaaaaaaaaaaaaaaaaaaaaaa"  );
+    setaccountFlightFilter(newFilter)
+    CustomLogger.log("AccountFlightTab/onDateChanged", newFilter)
+  }
+  const onDeviceChange1 = (item: InputComboItem, has_hobbs: boolean) => {
+    const filter: any = JSON.parse(JSON.stringify(accountFlightFilter));
+
+    delete filter["device"]
+    if (item._id != "") {
+      filter.device = item._id;
+    }
+    CustomLogger.log("AccountFlight/onDeviceChange/filter", filter)
+    setaccountFlightFilter(filter)
+  }
   return (
     <ContainerPage>
       <>
         {openOrderAdd && <CreateFlightOrderDialog onClose={handleAddOnClose} value={order} open={openOrderAdd} onSave={handleAddOnSave} />}
         <ContainerPageHeader>
-          <Box marginTop={2} display={'flex'}>
+          <Box marginTop={2}>
             <Grid container width={"98%"} height={"100%"} gap={2} columns={12}>
-              <Grid item xs={12} md={5}>
+              <Grid item xs={12} md={1}>
+                <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
+                  <FilterListIcon fontSize="inherit" />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} sm={5}>
                 <DevicesFlightCombo onChanged={onDeviceChange} source={"_accounts/devices"} />
               </Grid >
-              <Grid item xs={12} md={6}>
-                <MembersCombo onChanged={onMemberChanged} source={"_accounts/members"}filter={{ filter: { member_type: MemberType.Member } }} />
-              </Grid> 
+              <Grid item xs={12} sm={5}>
+                <MembersCombo onChanged={onMemberChanged} source={"_accounts/members"} filter={{ filter: { member_type: MemberType.Member } }} />
+              </Grid>
             </Grid>
           </Box>
         </ContainerPageHeader>
         <ContainerPageMain>
-        {/* <><ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "",disable:[{key: EAction.ORDER,value: !isAuthorized([Role.desk, Role.admin, Role.account] as unknown as IRequireAuthProps)}] }} /></> */}
-          <><ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "",disable:[{key: EAction.ORDER,value: isAuthorized}] }} /></>
+
+          {/* <><ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "",disable:[{key: EAction.ORDER,value: !isAuthorized([Role.desk, Role.admin, Role.account] as unknown as IRequireAuthProps)}] }} /></> */}
+          <>
+            <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
+              <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                <ListItem key={"fromDate"} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <DateRangeIcon />
+                    </ListItemIcon>
+                    <DatePickerDate value={filter.from === undefined ? new Date() : filter.from} param="from" lable='From Date' onChange={onDateChanged} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"toDate"} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <DateRangeIcon />
+                    </ListItemIcon>
+                    <DatePickerDate value={filter.to === undefined ? new Date() : filter.to} param={"to"} lable='To Date' onChange={onDateChanged} />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </GeneralDrawer>
+            <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "", disable: [{ key: EAction.ORDER, value: isAuthorized }] }} />
+          </>
         </ContainerPageMain>
         <ContainerPageFooter>
           <Grid container columns={1}>

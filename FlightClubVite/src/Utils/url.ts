@@ -1,4 +1,5 @@
 import { isHttps } from "../Enums/Routers";
+import { IAccountFlightFilter } from "./filtering";
 
 let httpPefix = "https://"
 export function getUrlWithParams (url: string,params: {[key: string]: string}) : string  {
@@ -22,27 +23,24 @@ export function getUrlWithParams (url: string,params: {[key: string]: string}) :
   }
   return urlParams.href;
 }
-
-export function getUrlWithParamsArray (url: string,params: {[key: string]: string[]}) : string  {
+export interface IParams {
+  key: string, value: any
+}
+export function getUrlWithParamsArray (url: string,params:IParams[]) : string  {
   let added: boolean = false;
-  CustomLogger.info("url/getUrlWithParams",params)
+  console.info("url/getUrlWithParams",params)
   if(url.search("/[//]/") == -1)
   {
     added = true;
     url= `${httpPefix}${url}`
   }
   const urlParams : URL = new URL(url);
-  const keys = Object(params).keys;
-  for(const k in params){
-    const values = params[k]
-    values.map((i) => (urlParams.searchParams.append(k,i)))
-    
-    
-    CustomLogger.info("url/getUrlWithParams",urlParams.href)
-  }
+  params.map((i) => (urlParams.searchParams.append(i.key,i.value)))
+  console.info("url/getUrlWithParams/href",urlParams.href)
   if(added){
     return urlParams.href.replace(httpPefix,"");
   }
+  console.info("url/getUrlWithParams/href",urlParams.href)
   return urlParams.href;
 }
 export function getParamsFromUrl (url: string) : {[key: string]: string} {

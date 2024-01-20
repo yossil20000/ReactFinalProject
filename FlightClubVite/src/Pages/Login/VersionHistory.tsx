@@ -17,6 +17,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {field: "date", type: "Date" , headerName: "Issue Date", description: "Vesrion Release Date",minWidth:140},
     {field: "description", type: "string" , headerName: "Description", description: "Vesrion Description", minWidth:140 , flex:2}, 
     {field: "known_bug", type: "string" , headerName: "Known bug", description: "Known bugs to issue date" , minWidth:140, flex:2}
+    
   ]
   const rows   = [
     {id: 1,version: "2.0.4.0",date: new Date(2023,11,19).getDisplayDate() , "description" : "Added Scheduler"  ,"known_bug": "Admin/Devices Device Type need to reselect for update/save operation"},
@@ -24,6 +25,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 3,version: "2.0.5.1",date: new Date(2024,0,9).getDisplayDate() , "description" : "Fix AccountAccounts filter by member type"  ,"known_bug": "Admin/Devices Device Type need to reselect for update/save operation"},
     {id: 4,version: "2.0.5.2",date: new Date(2024,0,10).getDisplayDate() , "description" : "Add WAB persidtance"  ,"known_bug": "Admin/Devices Device Type need to reselect for update/save operation"},
     {id: 5,version: "2.0.5.3",date: new Date(2024,0,12).getDisplayDate() , "description" : "Fix Account/Device Types select"  ,"known_bug": "Admin/Devices Devicee need to clear and reselect the device name"},
+    {id: 6,version: "2.0.6.0",date: new Date(2024,0,12).getDisplayDate() , "description" : "Account/Flight add date filter"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     
   ]
   function CustomToolbar() {

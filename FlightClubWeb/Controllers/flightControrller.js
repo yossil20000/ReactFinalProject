@@ -7,7 +7,7 @@ const Flight = require('../Models/flight');
 const Member = require('../Models/member');
 const Device = require('../Models/device');
 const { findFlights } = require('../Services/flightService');
-
+const {getFlightQuery} = require('./Url2Mongoos')
 const transactionOptions = {
   readPreference: 'primary',
   readConcern: { level: 'local' },
@@ -51,8 +51,8 @@ exports.flight_list = function (req, res, next) {
 exports.flight_search = [async function (req, res, next) {
   try {
     log.info('flight_search/params', req.query);
-
-    const { flights } = await findFlights(req.query);
+    const filter= getFlightQuery(req.query)
+    const { flights } = await findFlights(filter);
     res.status(201).json({ success: true, errors: [], data: flights });
     return;
   }

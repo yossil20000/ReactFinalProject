@@ -4,7 +4,7 @@ import { getServerAddress } from "../../Enums/Routers";
 import { URLS } from "../../Enums/Urls";
 import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
-import { getUrlWithParams } from "../../Utils/url";
+import { IParams, getUrlWithParams, getUrlWithParamsArray } from "../../Utils/url";
 
 export const flightApi = createApi({
   reducerPath: "flightApi",
@@ -29,9 +29,15 @@ export const flightApi = createApi({
           method: "GET"
         }),
       }),
-      getAllFlightsSearch: builder.query<IResultBase<IFlight>,{[key: string]: string}>({
+      getAllFlightsSearch: builder.query<IResultBase<IFlight>,{[key: string]: string} | any>({
         query: (filter) => ({
           url:getUrlWithParams(`/${URLS.FLIGHT_SEARCH}/filter`,filter) ,
+          method: "GET"
+        }),
+      }),
+      getAllFlightsParams: builder.query<IResultBase<IFlight>,IParams[]>({
+        query: (filter) => ({
+          url:getUrlWithParamsArray(`/${URLS.FLIGHT_SEARCH}/filter`,filter) ,
           method: "GET"
         }),
       }),
@@ -81,5 +87,6 @@ useCreateFlightMutation,
 useGetAllFlightsQuery,
 useDeleteFlightMutation,
 useUpdateFlightMutation,
-useGetAllFlightsSearchQuery
+useGetAllFlightsSearchQuery,
+useGetAllFlightsParamsQuery
 } = flightApi;
