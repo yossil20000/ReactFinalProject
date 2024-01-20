@@ -17,7 +17,6 @@ import UpdateExpenseDialog from './UpdateExpenseDialog'
 import FullScreenLoader from '../../Components/FullScreenLoader'
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import ReportDialog from '../../Components/Report/Exel/ReportDialog'
-import { CFlightToReport } from '../../Interfaces/API/IFlight'
 import { CExpenseToReport } from '../../Interfaces/API/IAccountReport'
 
 interface Data {
@@ -160,6 +159,7 @@ function AccountExpenseTab() {
   }
   const handleAddOnSave = () => {
     refetch();
+    setValidationAlert([])
     setOpenExpenseAdd(false);
     setOpenExpenseEdit(false);
     setOpenAddTransaction(false);
