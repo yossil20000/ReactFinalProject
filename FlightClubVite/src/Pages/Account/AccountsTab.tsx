@@ -290,11 +290,11 @@ function AccountsTab() {
               <Grid item xs={12}>
                 {RenderClubAccount}
               </Grid>
-              <Grid item xs={4}  >
+              <Grid item xs={12} md={6}  >
                 <AccountsCombo onChanged={onAccountChange} source={"_accounts"} filter={filteAccountsCombo} />
               </Grid >
-              <Grid item xs={4}>
-                <Box display={'flex'}>
+              <Grid item xs={12} md={6}>
+                <Box display={'flex'} justifyContent={'space-between'}>
                   <Fragment>
                     <FormControlLabel control={<Checkbox onChange={handleFilterChange}
                       name={"active_only"} checked={filterData?.active_only}
