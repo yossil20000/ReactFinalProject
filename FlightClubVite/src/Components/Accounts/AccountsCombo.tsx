@@ -3,16 +3,11 @@ import { useEffect, useState } from 'react'
 import { useFetchAccountsComboQuery } from '../../features/Account/accountApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { IAccountsCombo } from '../../Interfaces/API/IAccount';
-import { IMemberCombo, IMemberComboFilter } from '../../Interfaces/API/IMember';
+import { IMemberCombo, IMemberComboFilter, MemberType } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
-const filterCombo : IMemberComboFilter = {
-  filter: {
-    status: Status.Active
-  }
-  }
-  
+
 function AccountsCombo(props : ComboProps) {
   const {onChanged,source,filter} = props;
   const { data, isError, isLoading, error } = useFetchAccountsComboQuery();
@@ -27,12 +22,16 @@ function AccountsCombo(props : ComboProps) {
   
   useEffect(() => {
     CustomLogger.log("AccountsCombo/ data", data?.data)
-    
-    let items  =   data?.data.map((item: IAccountsCombo) => accountsToItemCombo(item));
+    let filterAccount = filter;
+    if(filterAccount === undefined)
+    {
+      filterAccount = (item:IAccountsCombo) => { return true}
+    }
+    let items  =   data?.data.filter(filterAccount).map((item: IAccountsCombo) => accountsToItemCombo(item));
     CustomLogger.info("AccountsCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
-  }, [data?.data])
+  }, [data?.data,filter])
 
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);

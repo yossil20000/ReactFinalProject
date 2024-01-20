@@ -2,6 +2,8 @@ import "../Types/date.extensions.js"
 import { IDateFilter } from "../Interfaces/IDateFilter";
 import { OrderStatus } from "../Interfaces/API/IAccount.js";
 import { FlightStatus } from "../Interfaces/API/IFlight.js";
+import { IMemberComboFilter, Status } from "../Interfaces/API/IMember.js";
+
 
 export function getTodayFilter(): IDateFilter {
 
@@ -56,7 +58,21 @@ export interface IAccountFlightFilter {
   from: Date,
   to: Date
 }
-export function getAccountFlightFilter() : IAccountFlightFilter {
+export interface IAccountsFilter {
+  supplier: boolean;
+  members: boolean;
+  club: boolean;
+}
+
+export function accountsFilter(): IAccountsFilter {
+  let filter : IAccountsFilter = {
+    supplier: true,
+    members: true,
+    club: false
+  }
+  return filter
+}
+export function getAccountFlightFilter(): IAccountFlightFilter {
   const today = new Date()
   return {
     from: today.getStartOfYear(),
@@ -84,10 +100,10 @@ export function from_to_year_Filter(today: Date): IDateFilter {
 export function Current_Quarter_Filter(): any {
   const today = new Date();
   let filter = {
-    to: today.getEndQuarterDate(today.getFullYear(),today.getQuarter()),
-    from: today.getStartQuarterDate(today.getFullYear(),today.getQuarter()),
+    to: today.getEndQuarterDate(today.getFullYear(), today.getQuarter()),
+    from: today.getStartQuarterDate(today.getFullYear(), today.getQuarter()),
   }
-  console.log("Current_Quarter_Filter/filter",filter)
+  console.log("Current_Quarter_Filter/filter", filter)
   return filter;
 };
 

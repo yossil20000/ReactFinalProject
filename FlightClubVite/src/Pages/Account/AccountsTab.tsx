@@ -6,7 +6,7 @@ import { InputComboItem } from '../../Components/Buttons/ControledCombo'
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert'
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable'
 import { useClubAccountQuery, useFetchAllAccountsQuery } from '../../features/Account/accountApiSlice'
-import { IAccount } from '../../Interfaces/API/IAccount'
+import { IAccount, IAccountsCombo } from '../../Interfaces/API/IAccount'
 import { IClubAccount } from '../../Interfaces/API/IClub'
 import { MemberType, Role } from '../../Interfaces/API/IMember'
 import { Status } from '../../Interfaces/API/IStatus'
@@ -44,8 +44,6 @@ function createData(
 
   return { bank, _id, account_id, member_type, name, balance, status, description, render };
 }
-;
-
 
 interface IAccountFilter {
   account_id: string;
@@ -54,14 +52,13 @@ interface IAccountFilter {
   members: boolean;
   suppliers: boolean
 }
+
 function AccountsTab() {
-  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
-  
+  const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  const handleChangePage = (event: unknown, newPage: number) => { setPage(newPage); };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -106,7 +103,7 @@ function AccountsTab() {
       label: '',
       minWidth: 170,
       align: 'center',
-      render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{key: EAction.ADD,value: isAuthorized}]}/></>),
+      render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{ key: EAction.ADD, value: isAuthorized }]} /></>),
       isCell: true
     }
   ];
@@ -118,7 +115,7 @@ function AccountsTab() {
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const { data, refetch, isLoading, error } = useFetchAllAccountsQuery({});
   const { data: bankAccounts } = useClubAccountQuery(true);
-  const [filterData, setFilterData] = useState({ account_id: "", active_only: false,negative_balance: false,members:true,suppliers:true } as IAccountFilter)
+  const [filterData, setFilterData] = useState({ account_id: "", active_only: false, negative_balance: false, members: true, suppliers: true } as IAccountFilter)
   const getData = useMemo(() => {
     let bankFound: IClubAccount | undefined = undefined;
     if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
@@ -139,7 +136,7 @@ function AccountsTab() {
         if (foundAccount)
           bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
-      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id}  /></>)
+      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
     })
     CustomLogger.info("AccountsTab/getData", rows)
     return rows === undefined ? [] : rows;
@@ -153,15 +150,15 @@ function AccountsTab() {
         return filter;
       }
     }
-    
-    if(filterData.negative_balance && filter == true){
+
+    if (filterData.negative_balance && filter == true) {
       filter = item.balance < 0 ? true : false
     }
-    if(!filterData.members && filter == true){
+    if (!filterData.members && filter == true) {
       filter = item.member_type == MemberType.Member ? false : true
     }
 
-    if(!filterData.suppliers && filter == true){
+    if (!filterData.suppliers && filter == true) {
       filter = item.member_type == MemberType.Supplier ? false : true
     }
     return filter;
@@ -233,12 +230,12 @@ function AccountsTab() {
   }
   const RenderClubAccount = useMemo(() => {
     let savingEngien: number = 1
-    if(bank){
+    if (bank) {
       const saving = bank.account_saving.find((i) => i.id == `${bank.club.account_id.toLocaleUpperCase()}.ENGINE`)?.balance
-      CustomLogger.log("AccountsTab/RenderClubAccount/saving", saving,bank,bank.account_saving[0]);
+      CustomLogger.log("AccountsTab/RenderClubAccount/saving", saving, bank, bank.account_saving[0]);
       savingEngien = saving !== undefined ? saving : 0
     }
-     
+
     return (
       <Box>
         {bank !== undefined ? (<>{bank.club.brand}/{bank.club.branch}/{bank.club.account_id} {`CASH Balnace: ${bank.balance}`} {`ENGINE Balance: ${savingEngien}`}</>) : (<>Undefined</>)}
@@ -271,6 +268,18 @@ function AccountsTab() {
       return <div>{error.message}</div>
     }
   }
+  const filteAccountsCombo = (item: IAccountsCombo) => {
+    console.log("AccountsTab/filterAccount/item", item, MemberType.Member, item.member.member_type, filterData.members, filterData.suppliers);
+    if (filterData.members == false) {
+      if (MemberType.Member.toUpperCase() == item.member.member_type.toUpperCase())
+        return false
+    }
+    if (filterData.suppliers == false) {
+      if (MemberType.Supplier.toUpperCase() == item.member.member_type.toUpperCase())
+        return false
+    }
+    return true
+  }
   return (
     <ContainerPage>
       <>
@@ -282,7 +291,7 @@ function AccountsTab() {
                 {RenderClubAccount}
               </Grid>
               <Grid item xs={4}  >
-                <AccountsCombo onChanged={onAccountChange} source={"_accounts"} />
+                <AccountsCombo onChanged={onAccountChange} source={"_accounts"} filter={filteAccountsCombo} />
               </Grid >
               <Grid item xs={4}>
                 <Box display={'flex'}>
@@ -295,11 +304,11 @@ function AccountsTab() {
                       name={"negative_balance"} checked={filterData?.negative_balance}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
                       label={filterData?.negative_balance ? "Negative Balance" : "Balance"} />
-                                          <FormControlLabel control={<Checkbox onChange={handleFilterChange}
+                    <FormControlLabel control={<Checkbox onChange={handleFilterChange}
                       name={"members"} checked={filterData?.members}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
                       label={filterData?.members ? "Members" : "Not Members"} />
-                       <FormControlLabel control={<Checkbox onChange={handleFilterChange}
+                    <FormControlLabel control={<Checkbox onChange={handleFilterChange}
                       name={"suppliers"} checked={filterData?.suppliers}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
                       label={filterData?.suppliers ? "Suppliers" : "Not Suppliers"} />
