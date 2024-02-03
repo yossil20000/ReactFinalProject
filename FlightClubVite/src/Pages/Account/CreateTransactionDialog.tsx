@@ -1,8 +1,7 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Fab, Grid, IconButton, LinearProgress, TextField, Tooltip, Typography } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, LinearProgress, TextField, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react'
 
 import Item from '../../Components/Item';
-import FullScreenLoader from '../../Components/FullScreenLoader';
 import { IExpense } from '../../Interfaces/API/IExpense';
 import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
@@ -148,7 +147,7 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
             _id: value._id
           },
           payment: {
-            method: PaymentMethod.TRANSFER,
+            method: PaymentMethod.NONE,
             referance: ""
           },
           description: value.description,
@@ -253,7 +252,7 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
                   selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
           <Grid item xs={6}>
-            <PaymentMethodCombo onChanged={(item) => onComboChanged(item, "payment.method")} source={""}
+            <PaymentMethodCombo disable={true} onChanged={(item) => onComboChanged(item, "payment.method")} source={""}
               selectedItem={{ lable: selectedTransaction.payment.method === undefined ? "" : selectedTransaction.payment.method.toString(), _id: "", description: "" }} />
           </Grid>
           <Grid item xs={6}>

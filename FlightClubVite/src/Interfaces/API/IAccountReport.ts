@@ -1,6 +1,7 @@
 import '../../Types/date.extensions'
 import { IExportExelTable } from "../../Components/Report/Exel/ExportExelTable";
 import { IExpense } from "./IExpense";
+import { ITransaction } from './IClub';
 
 export interface IAccountReport {
   
@@ -36,6 +37,46 @@ export class CExpenseToReport {
           ]
       })
       console.info("CExpenseToReport/report",report)
+      return report;
+  }
+}
+export class CTransactionToReport {
+  private transaction: ITransaction[] = [];
+  constructor(transaction : ITransaction[]){
+      this.transaction= transaction;
+      console.info("CTransactionToReport/CTOR_transaction",this.transaction)
+  }
+  getTransactionsToExel(file: string="transactionReport",sheet:string ="Transactions",title:string= "Transactions Reports"): IExportExelTable{
+      let report : IExportExelTable = {
+          file: file,
+          sheet: sheet,
+          title: title,
+          header: [],
+          body: [],
+          save:false
+      }
+      report.header=["Index","_id","Date","CalcType","Source","Destination",
+      "O.Type","O.Id","D.Balance","S.Balance","Amount","Type","Payment Method","Payment Referance","Description"]
+      report.body = this.transaction?.map((transaction,i) => {
+          console.info("CExpenseToReport/expense",transaction)
+          return [i.toFixed(0),
+            transaction._id,
+            (new Date(transaction.date)).getDisplayDate(),
+            transaction.calculation_type,
+            transaction.source,
+            transaction.destination,
+            transaction.order.type.toString(),
+            transaction.order._id,
+            transaction.destination_balance.toFixed(2),
+            transaction.source_balance.toFixed(2),
+            transaction.amount.toFixed(2),
+            transaction.type.toString(),
+            transaction.payment.method.toString(),
+            transaction.payment.referance,
+            transaction.description
+          ]
+      })
+      console.info("CTransactionToReport/report",report)
       return report;
   }
 }

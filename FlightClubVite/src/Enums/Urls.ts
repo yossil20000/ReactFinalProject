@@ -61,6 +61,7 @@ export  enum URLS{
   CLUB_ADD_ORDER_TRANSACTION ='api/club_account/add_order_transaction',
   CLUB_ADD_TRANSACTION ='api/club_account/add_transaction',
   CLUB_ADD_TRANSACTION_TYPE ='api/club_account/add_transaction_type',
+  CLUB_ADD_TRANSACTION_PAYMENT ='api/club_account/add_transaction_payment',
   CLUB_EXPENSE = 'api/club_account/expense',
   CLUB_CREATE_EXPENSE = 'api/club_account/create_expense',
   CLUB_UPDATE_EXPENSE = 'api/club_account/update_expense',

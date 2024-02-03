@@ -7,50 +7,51 @@ const ROLES = {
     5: 'admin'
 }
 const DEVICE_STATUS = {
-    0:"IN_SERVICE",
-    1:"OUT_OFSERVICE",
-    2:"MAINTANANCE",
-    3:"NOT_EXIST"}
-const DEVICE_MT={
-    0:"50hr", 1:"100hr",2:"200hr"
+    0: "IN_SERVICE",
+    1: "OUT_OFSERVICE",
+    2: "MAINTANANCE",
+    3: "NOT_EXIST"
+}
+const DEVICE_MT = {
+    0: "50hr", 1: "100hr", 2: "200hr"
 }
 const DEVICE_MET = {
-    HOBBS:'HOBBS',ENGIEN:'ENGIEN'
+    HOBBS: 'HOBBS', ENGIEN: 'ENGIEN'
 }
 const DEVICE_INS = {
-    VFR:"VFR",IFR:"IFR",G1000:"G1000",ICE:"ICE",AIR_CONDITION:"AIR_CONDITION"
+    VFR: "VFR", IFR: "IFR", G1000: "G1000", ICE: "ICE", AIR_CONDITION: "AIR_CONDITION"
 }
 const STATUS = {
     "Active": "Active",
-    "Suspended":"Suspended",
-    "Removed":"Removed" 
+    "Suspended": "Suspended",
+    "Removed": "Removed"
 }
 
 const OrderStatus = {
     "CREATED": "CREATED",
-    "CLOSE" : "CLOSE"
+    "CLOSE": "CLOSE"
 }
 const OrderTypeReferance = {
     "Flight": "Flight",
-    "Expense" : "Expense",
+    "Expense": "Expense",
     "Montly": "Montly",
     "Other": "Other",
     "Transfer": "Transfer"
 }
 const ERROR_TYPE = {
-    DB : "DB",
+    DB: "DB",
     DB_RESULT: "DB_RESULT",
     EXCEPTION: "EXCEPTION",
 }
-const  EAccountType = {
+const EAccountType = {
     BANK: "100100",
     MEMBER: '200200',
     SUPPLIERS: '200300'
-  }
-  const  MemberType ={
+}
+const MemberType = {
     CLUB: "Club",
     MEMBER: "Member",
-    SUPPLIERS: "Supplier"    
+    SUPPLIERS: "Supplier"
 }
 
 const NotifyOn = {
@@ -63,23 +64,27 @@ const NotifyBy = {
 }
 const TransactionType = {
     CREDIT: "CREDIT",
-  DEBIT: "DEBIT",
-  TRANSFER: "TRANSFER"
+    DEBIT: "DEBIT",
+    TRANSFER: "TRANSFER"
 }
-const PaymentMethod ={
+const CalcType = {
+    TRANSACTION: "TRANSACTION",
+    AMOUNT: "AMOUNT"
+}
+const PaymentMethod = {
     VISA: "VISA",
     CHECK: "CHECK",
     TRANSFER: "TRANSFER",
     NONE: "NONE"
 }
 const Utilizated = {
-  HOURS_0000: "HOURS_0000",
-  HOURS_0100: "HOURS_0100",
-  HOURS_0200: "HOURS_0200",
-  HOURS_0500: "HOURS_0500",
-  HOURS_1000: "HOURS_1000",
-  HOURS_1500: "HOURS_1500",
-  HOURS_2000: "HOURS_2000"
+    HOURS_0000: "HOURS_0000",
+    HOURS_0100: "HOURS_0100",
+    HOURS_0200: "HOURS_0200",
+    HOURS_0500: "HOURS_0500",
+    HOURS_1000: "HOURS_1000",
+    HOURS_1500: "HOURS_1500",
+    HOURS_2000: "HOURS_2000"
 }
 const NotifyEvent = {
     "ClubNotice": "ClubNotice",
@@ -102,3 +107,4 @@ module.exports.EAccountType = EAccountType;
 module.exports.MemberType = MemberType;
 module.exports.NotifyOn = NotifyOn;
 module.exports.OrderTypeReferance = OrderTypeReferance;
+module.exports.CalcType = CalcType;

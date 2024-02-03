@@ -1,6 +1,6 @@
 import "../../Types/date.extensions"
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, List, ListItem, ListItemButton, ListItemIcon, Paper, styled, TablePagination, ToggleButton, Tooltip, Typography } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, SetStateAction, useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { useGetAllFlightsQuery, useDeleteFlightMutation } from "../../features/Flight/flightApi";
 import IFlight, { IFlightCreate, IFlightDeleteApi, IFlightFilterDate, IFlightUpdate, FlightStatus, CFlightToReport, IFlightData } from "../../Interfaces/API/IFlight";
@@ -33,6 +33,10 @@ import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/Co
 import MembersCombo from "../../Components/Members/MembersCombo";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import ReportDialog from "../../Components/Report/Exel/ReportDialog";
+import GridTable from "../../Components/Tables/GridTable";
+import { GridActionsCellItem, GridColDef, GridRowModes, GridRowsProp, GridValidRowModel } from "@mui/x-data-grid";
+import { GridInitialStateCommunity } from "@mui/x-data-grid/models/gridStateCommunity";
+import { DEVICE_SERVICE } from "../../Interfaces/API/IDevice";
 
 const dateFilter: IDateFilter = {
   from: (new Date()).getStartOfYear(),
@@ -139,6 +143,7 @@ const FlightPage = () => {
   const [filterMode, setFilterMode] = useState<EfilterMode>(EfilterMode.E_FM_MONTH);
   const [confirmation, setConfirmation] = useState<ConfirmationDialogProps>({ open: false } as ConfirmationDialogProps);
   const [selectedMember, setSelectedMember] = useState<InputComboItem>()
+  const [rows, setRows] = useState<GridRowsProp>([])
   function getFlightData(flights: IFlight[]): IFlightData[] {
     return flights.map((flight) => createdata(flight, GeneralCanDo(flight.member._id, login === undefined ? "" : login.member._id, login === undefined ? [Role.guest] : login?.member.roles)))
   }
@@ -230,7 +235,7 @@ const FlightPage = () => {
         .then((payload) => {
           CustomLogger.info("DeleteFlight Fullfill", payload)
           refetch();
-          
+
         });
     }
     catch (err) {
@@ -351,8 +356,8 @@ const FlightPage = () => {
       case EAction.ADD:
         setOpenFlightAdd(true);
         break;
-        case EAction.SAVE:
-          setOpenExport(true)
+      case EAction.SAVE:
+        setOpenExport(true)
     }
   }
   const onDateChanged = (key: string, value: Date | null) => {
@@ -396,12 +401,12 @@ const FlightPage = () => {
     if (value) {
       if (action === "DELETE_FLIGHT")
         handleDelete(confirmation.key === undefined ? "" : confirmation.key)
-      else 
-      setConfirmation((prev) => ({ ...prev, open: false }))
+      else
+        setConfirmation((prev) => ({ ...prev, open: false }))
       CustomLogger.info("FlightPage/OnDeleteFlight/key", confirmation.key)
     }
     else
-    setConfirmation((prev) => ({ ...prev, open: false }))
+      setConfirmation((prev) => ({ ...prev, open: false }))
   }
 
   const handleConfirmation = (action: string, id: string) => {
@@ -420,11 +425,11 @@ const FlightPage = () => {
     setSelectedMember(item)
   }
 
-/*   useEffect(() => {
-    if (isError) {
-      CustomLogger.error("FlightPage/useEffect/error", (error as any)); flightsData
-    }
-  }, [isLoading]); */
+  /*   useEffect(() => {
+      if (isError) {
+        CustomLogger.error("FlightPage/useEffect/error", (error as any)); flightsData
+      }
+    }, [isLoading]); */
   if (isLoading) {
     CustomLogger.info('FlightPage/isLoading', isLoading)
     return (
@@ -450,6 +455,30 @@ const FlightPage = () => {
       return <div>{error}</div>
     }
   }
+  let initialState: GridInitialStateCommunity = {
+    columns: {
+      columnVisibilityModel: {
+        _id: false
+      }
+    },
+    pagination: { paginationModel: { pageSize: 20 } },
+  }
+  const onSave = () => {
+
+  }
+  const columns: GridColDef[] = [
+
+    { field: '_id', type: 'string', hideable: true },
+    {
+      field: 'date', headerName: 'Date', type: 'date', sortable: true, editable: true,
+      filterable: true, flex: 1, minWidth: 110
+    },
+    { field: 'engien_start', headerName: 'Engien Start', type: 'number', minWidth: 160, flex: 1, editable: true },
+    { field: 'engien_stop', headerName: 'Engien Stop', type: 'number', minWidth: 160, flex: 1, editable: true },
+    { field: 'member_id', headerName: 'Id Number', type: 'number', minWidth: 170, flex: 1, editable: true },
+
+
+  ];
   return (
     <>
       <ContainerPage>
@@ -546,7 +575,7 @@ const FlightPage = () => {
                 </Box>
                 <Box display={'flex'} justifyContent={"flex-end"}>
                   <Tooltip title="Add Flight">
-                    <ActionButtons OnAction={onAction} show={[EAction.ADD,EAction.SAVE]} item="" display={[{ key: EAction.ADD, value: "flight" },{key:EAction.SAVE,value:"Export"}]} />
+                    <ActionButtons OnAction={onAction} show={[EAction.ADD, EAction.SAVE]} item="" display={[{ key: EAction.ADD, value: "flight" }, { key: EAction.SAVE, value: "Export" }]} />
                   </Tooltip>
                 </Box>
               </Box>
@@ -554,11 +583,16 @@ const FlightPage = () => {
           </ContainerPageHeader>
           <ContainerPageMain>
             <Fragment>
+
               {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
               {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
               {openExport && <ReportDialog onClose={handleAddOnClose} open={openExport} table={(new CFlightToReport(flightsData)).getFlightToExel()} action="FlightExport" />}
               <Box sx={{ width: '100%', height: '100%' }}>
+
                 <Paper sx={{ width: '100%', mb: 1 }}>
+                  {true ? (
+                    <GridTable title={"Flight"} style={{}} children={<></>} rows={rows} setRows={setRows} columns={columns} initialState={initialState} onSave={onSave} actionColumn={true}></GridTable>
+                  ) : (<></>)}
                   <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />
                   <StyledAccordion >
                     {

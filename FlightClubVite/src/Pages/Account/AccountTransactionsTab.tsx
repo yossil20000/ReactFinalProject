@@ -18,6 +18,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import GeneralTransactionDialog from './GeneralTransactionDialog';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { MemberType, Role } from '../../Interfaces/API/IMember';
+import ReportDialog from '../../Components/Report/Exel/ReportDialog';
+import { CTransactionToReport } from '../../Interfaces/API/IAccountReport';
 
 const dateFilter: IDateFilter = fullYearFilter;
 
@@ -25,6 +27,7 @@ function AccountTransactionsTab() {
   const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
+  const [openExpenseSave, setOpenExpenseSave] = useState(false);
   /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dateFilter.to)
   const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dateFilter.from) */
   const [dateTo, setDateTo] = useState(dateFilter.to)
@@ -65,7 +68,12 @@ function AccountTransactionsTab() {
         case "TRANSACTION":   
         setOpenAddTransaction(true)
         break;
+
       }
+      break;
+      case EAction.SAVE:
+        setOpenExpenseSave(!openExpenseSave);
+        break;
     }
   }
   const handleAddOnClose = () => {
@@ -94,6 +102,9 @@ function AccountTransactionsTab() {
               <Grid item xs={12} sm={3}>
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="PAY" display={[{ key: EAction.ADD, value: "Payment" }]} disable={[{key: EAction.ADD,value: isAuthorized}]}/>
               </Grid>
+              <Grid item xs={12} sm={3}>
+                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export" }]} disable={[{key: EAction.SAVE,value: isAuthorized}]}/>
+              </Grid>
 {/*               <Grid item xs={12} sm={6}>
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
               </Grid > */}
@@ -102,12 +113,13 @@ function AccountTransactionsTab() {
         </ContainerPageHeader>
         <ContainerPageMain>
           <>
+          
             {(openPayTransaction == true) ? (<PayTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openPayTransaction} />) : (null)}
             {(openAddTransaction == true) ? (<GeneralTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
             <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
               <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} includesType={[MemberType.Club,MemberType.Member,MemberType.Supplier]} />
             </FilterDrawer>
-            <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter} />
+            <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter}  transactionSave={openExpenseSave} setTransactionSave={setOpenExpenseSave}/>
           </>
         </ContainerPageMain>
         <ContainerPageFooter>

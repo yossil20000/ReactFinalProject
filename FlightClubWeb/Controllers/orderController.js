@@ -4,6 +4,7 @@ const { ApplicationError } = require('../middleware/baseErrors');
 const Order = require('../Models/order');
 const Flight = require('../Models/flight');
 const Device = require('../Models/device');
+const Member = require('../Models/member');
 const Memberships = require('../Models/membership');
 const { findOrders } = require('../Services/OrderService');
 const { default: mongoose } = require('mongoose');
@@ -122,18 +123,23 @@ exports.order_quarter_create = [
         await session.abortTransaction();
         return next(new ApplicationError("order_quarter_create", 400, "CONTROLLER.ORDER.ORDER_QUARTER_CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError(device, `Device not found`, 'device_id', "DB.ClubAccount")).validationResult.errors }));
       }
-      const memberships = await Memberships.findOne({rank: 'Gold'}).exec();
+      const memberships = await Memberships.find().exec();
       if(memberships == null){
         await session.abortTransaction();
         return next(new ApplicationError("order_quarter_create", 400, "CONTROLLER.ORDER.ORDER_QUARTER_CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError("Gold", `Membership not found`, 'rank', "DB.ClubAccount")).validationResult.errors }));
       }
+      let promises=[];
       if(Array.isArray(members)){
-        members.forEach((member) => {
+        promises = members.map(async (member) => {
+          let memberShip = member.memberships;
+          let currentMember =  await Member.findOne({_id: member}).select("membership").populate("membership").exec();
+          console.log("member",currentMember)
+          let price = currentMember.membership.montly_price;
           let order = new Order({
             order_date: new Date(date),
             units: 3,
-            pricePeUnit: memberships.montly_price,
-            amount: 3 * memberships.montly_price,
+            pricePeUnit: currentMember.membership.montly_price,
+            amount: 3 * currentMember.membership.montly_price,
             orderType:   {
               operation: "Credit", 
               referance: "Montly" 
@@ -152,11 +158,13 @@ exports.order_quarter_create = [
             }
             else {
               log.info("order_quarter_create.Save", results)
-              return res.status(201).json({ success: true, errors: [], data: results })
+              /* return res.status(201).json({ success: true, errors: [], data: results }) */
             }
           })
         })
       }
+      await Promise.all(promises)
+      return res.status(201).json({ success: true, errors: [], data: [] })
     }
     catch (error) {
       await session.abortTransaction();

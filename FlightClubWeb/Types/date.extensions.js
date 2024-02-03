@@ -148,3 +148,7 @@ Date.prototype.getDisplayDate = function ()  {
 Date.prototype.getDisplayDateTime = function ()  {
    return dateTimeFormat.format(this)
 }
+
+Date.prototype.getFSDate = function () {
+   return `${this.getFullYear()}_${this.getMonth()}_${this.getDay()}_${this.getHours()}_${this.getMinutes()}_${this.getSeconds()}`
+}

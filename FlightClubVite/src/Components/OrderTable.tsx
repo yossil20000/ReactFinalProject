@@ -24,15 +24,16 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
   const getTransaction = useMemo (() => (sourseId: string,destinationId: string , id: string ,amount: number,description: string) : IAddTransaction => {
+    CustomLogger.log("OrderTable/getTransaction/input",sourseId,destinationId,id)
     CustomLogger.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     let addTransaction : IAddTransaction = {
       source: {
         _id: sourseId,
-        accountType: EAccountType.EAT_ACCOUNT
+        accountType: EAccountType.EAT_BANK
       },
       destination: {
         _id: destinationId,
-        accountType: EAccountType.EAT_BANK
+        accountType: EAccountType.EAT_ACCOUNT
       },
       amount: amount,
       type: Transaction_Type.CREDIT,
@@ -41,13 +42,13 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
         type: Transaction_OT.ORDER
       },
       payment:{
-        method: PaymentMethod.TRANSFER,
+        method: PaymentMethod.NONE,
         referance: ""
       },
       description: description,
       date: new Date()
     }
-    CustomLogger.info("OrderTable/getTransaction/addTransaction",addTransaction,orders)
+    CustomLogger.info("OrderTable/getTransaction/addTransaction",addTransaction)
     return addTransaction;
   },[selectedClubAccount] )
 
@@ -128,7 +129,9 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       renderCell: (params: GridRenderCellParams) => (
         <Box display={'flex'} flexDirection={'column'} gap={1} height={"5ch"} >
  
-         <TransactionAction {...{params,rowId,setRowId,orderId : params.row.product !== OT_REF.FLIGHT ? params.row.id : undefined  ,transaction: getTransaction("",selectedClubAccount ? selectedClubAccount._id : "",params.row.id, params.row.amount,params.row.description)}}/>
+         <TransactionAction {...{params,rowId,setRowId,orderId : params.row.product !== OT_REF.FLIGHT ? params.row.id : undefined  ,
+          transaction: getTransaction(
+            selectedClubAccount?._id == undefined ? "" : selectedClubAccount?._id ,params.row.member._id,params.row.id, params.row.amount,params.row.description)}}/>
 
         </Box>
       )

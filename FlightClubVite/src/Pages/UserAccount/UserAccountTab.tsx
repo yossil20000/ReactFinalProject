@@ -18,6 +18,7 @@ import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import InvoicePage from '../Report/InvoicePage';
 import { IInvoiceTableData, IInvoiceTableHeader, IInvoiceTableRow, InvoiceProps, defaultInvoiceDetailes, defaultInvoiceMember, defaultInvoiceProps } from '../../Interfaces/IReport';
 import QuarterButtons, { IQuarterFilter } from '../../Components/Buttons/QuarterButtons';
+import UserAccountTable from '../../Components/Tables/UserAccountTable';
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)
@@ -25,6 +26,7 @@ function UserAccountTab() {
   const { data, isLoading, isError, error } = useFetchAccountSearchQuery(accountFilter);
   /* const [filter, setFilter] = useState<IOrderTableFilter>(Current_Quarter_Filter()); */
   const [openSaveAsPDF, setOpenSaveAsPDF] = useState(false);
+  const [changeView, setChangeView] = useState(true);
   const [invoiceProps, setInvoiceProps] = useState<InvoiceProps>(defaultInvoiceProps);
   const [transcations, setTransactions] = useState<ITransaction[]>([])
   const [account, setAccount] = useState<IAccount | undefined>(undefined)
@@ -40,62 +42,7 @@ function UserAccountTab() {
     let to: Date = (new Date()).getEndQuarterDate(filter.year, filter.quarter);
     setAccountFilter((prev) => ({...prev, from : from.toLocaleString(), to: to.toLocaleString() }))
   }
-  /*   const getInvoiceReportData = (transaction: ITransaction[]) => {
-      try {
-        const invoiceHeader: IInvoiceTableHeader = {
-          header: [
-            { title: "Date", toolTip: "Issue Date" },
-            { title: "Description", toolTip: "Description" },
-            { title: "Operation", toolTip: "Flight/" },
-            { title: "Total", toolTip: "Total in shekel" }
-          ]
-        }
-        let totalAmount: number = 0;
-        const invoiceItems: IInvoiceTableData = {
-  
-          rows: transaction.map((i, j) => {
-            let row: IInvoiceTableRow;
-            let amount: number = 10
-            try {
-              amount = CTransaction.getAmount(i, account?.account_id)
-              CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.getAmount", amount)
-            }
-            catch (error) {
-              CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.exception", j, error)
-            }
-            totalAmount = totalAmount + CTransaction.getAmount(i,account?.account_id);
-            row = { row: [{ data: (new Date(i.date)).toLocaleDateString(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i,account?.account_id).toFixed(2), toolTip: "Total" }] }
-            CustomLogger.info("UserAccountTab/getInvoiceReportData/transcations.map", j, row)
-            return row
-          }),
-          total: totalAmount
-        }
-        CustomLogger.info("UserAccountTab/ReportData/transaction", transaction)
-        CustomLogger.info("UserAccountTab/ReportData/invoiceItems_", invoiceItems, invoiceHeader)
-        setInvoiceProps((prev) => ({ ...prev, invoiceHeader: invoiceHeader, invoiceItems: invoiceItems, total: totalAmount }))
-      }
-      catch (error) {
-        CustomLogger.info("UserAccountTab/getInvoiceReportData/error", error)
-      }
-  
-    } */
-  /*   const getTransaction = useMemo((): ITransaction[] | [] => {
-      CustomLogger.info("UserAccountTab/getTransaction/data", data?.data)
-  
-      if (data?.data !== null && data?.data !== undefined) {
-        CustomLogger.info("UserAccountTab/getTransaction/dataok", data?.data, login.member._id)
-        const account: IAccount | undefined = data?.data.find((a) => a.member._id === login.member._id);
-        if (account !== undefined) {
-          CustomLogger.info("UserAccountTab/getTransaction/accountFound", account, account.transactions)
-          setTransactions(account.transactions)
-          getInvoiceReportData(account.transactions)
-          return account.transactions
-        }
-      }
-      return []
-    }, [data]) */
-
-
+ 
   useEffect(() => {
     if (account !== undefined && transcations.length >= 0) {
       try {
@@ -122,14 +69,6 @@ function UserAccountTab() {
 
           rows: transcations.map((i, j) => {
             let row: IInvoiceTableRow;
-            /*  let amount: number = 0
-             try {
-               amount = CTransaction.getAmount(i, account?.account_id)
-               CustomLogger.info("UserAccountTab/ReportData/transcations.getAmount", amount)
-             }
-             catch (error) {
-               CustomLogger.info("UserAccountTab/ReportData/transcations.exception", j, error)
-             } */
             total = total + CTransaction.getAmount(i, account.account_id);
             row = { row: [{ data: (new Date(i.date)).getDisplayDate(), toolTip: "Issue Date" }, { data: COrderDescription.displayTransaction(i.description), toolTip: "Item Description" }, { data: `${i.order.type.toString()} ${i.type}`, toolTip: "Order" }, { data: CTransaction.getAmount(i, account.account_id).toFixed(2), toolTip: "Total" }] }
             CustomLogger.info("UserAccountTab/ReportData/transcations.map", i, j, row)
@@ -166,15 +105,6 @@ function UserAccountTab() {
         } ) 
         CustomLogger.info("UserAccountTab/useEffect/filterdTransaction", account.transactions,filterdTransaction)
         setTransactions(filterdTransaction);
-        /*         const invoiceMember = defaultInvoiceMember;
-                const invoiceDetailes = defaultInvoiceDetailes;
-                invoiceMember.family_name = account.member.family_name
-                invoiceMember.first_name = account.member.first_name
-                invoiceMember.member_id = account.member.member_id
-                invoiceDetailes.member = invoiceMember;
-                invoiceDetailes.invoiceNo = `${Date.now()}/${account.member.member_id}`
-                invoiceDetailes.mainTitle = `Account ${account.account_id} balance: ${account.balance}`
-                setInvoiceProps((prev) => ({...prev,invoiceDetailes: invoiceDetailes })) */
         setAccount(account);
 
       }
@@ -195,12 +125,15 @@ function UserAccountTab() {
       case EAction.SAVE:
         setOpenSaveAsPDF(!openSaveAsPDF);
         break;
+      case EAction.OTHER:
+        setChangeView(!changeView)
+      break;
     }
   }
   CustomLogger.log("UserAccountTab/filter", accountFilter)
 
   return (
-    <Box fontSize={{ xs: "1rem", md: "1.2rem" }}>
+    <Box fontSize={{ xs: "1rem", md: "1.2rem" }} height={'100%'}>
       <ContainerPage >
         <>
           <ContainerPageHeader>
@@ -212,7 +145,6 @@ function UserAccountTab() {
                       <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
                         <FilterListIcon fontSize="inherit" />
                       </IconButton>
-
                       <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
                         <List sx={{ display: 'flex', flexDirection: 'column' }}>
                           <ListItem key={"fromDate"} disablePadding>
@@ -265,7 +197,7 @@ function UserAccountTab() {
                         </Typography>
                       </Box>
                       <Box>
-                        <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} display={[{ key: EAction.SAVE, value: "PDF" }]} />
+                        <ActionButtons OnAction={onAction} show={[EAction.SAVE,EAction.OTHER]} item={""} display={[{ key: EAction.SAVE, value: "Export PDF" },{ key: EAction.OTHER, value: "View" }]} />
                       </Box>
                     </Box>
                   </Box>
@@ -280,11 +212,26 @@ function UserAccountTab() {
               {(isError === false && isLoading === false && openSaveAsPDF === false) ?
                 (
                   <Grid container sx={{ width: "100%", height: "100%" }} rowGap={1} gap={1} justifyContent="space-around" columns={12}>
+                    {changeView == true ? (
+                    <>
                     {transcations.map((transaction) => (
                       <Grid item xs={12} lg={6} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", lg: "48%" } }}>
                         <MobileTransaction item={transaction} accountId={account?.account_id} />
                       </Grid>
                     ))}
+                    </>
+                    ): 
+                    (
+                     <>
+                    <UserAccountTable transactions={transcations}/> 
+                     </>
+                     )}
+{/*                     {transcations.map((transaction) => (
+                      <Grid item xs={12} lg={6} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", lg: "48%" } }}>
+                        <MobileTransaction item={transaction} accountId={account?.account_id} />
+                      </Grid>
+                    ))} */}
+                    
                   </Grid>
                 ) :
                 (

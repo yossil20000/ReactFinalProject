@@ -46,7 +46,9 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     newObj = setProperty(newObj, "destination.type", selectedDestination?.key)
     newObj = setProperty(newObj, "destination.display", selectedDestination?.lable)
     newObj = setProperty(newObj, "destination.account_id", selectedDestination?.key2)
-
+    if(selectedExpense.description == "") {
+      newObj = setProperty(newObj, "description", `|${selectedExpense.expense.category}|${selectedExpense.expense.type}|${selectedExpense.expense.utilizated}|${selectedDestination?.lable}|`)
+    }
     CustomLogger.info("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
 
     return newObj
@@ -127,11 +129,16 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     CustomLogger.log("ExpenseDialog/onCategoryChanged/item", item)
     setSelectedCategory(item)
     setSelectedExpense(setProperty(selectedExpense, `expense.category`, item.lable))
+    
+
   }
   const onTypeChanged = (item: InputComboItem) => {
     CustomLogger.log("ExpenseDialog/onTypeChanged/item", item)
     setSelectedType(item)
     setSelectedExpense(setProperty(selectedExpense, `expense.type`, item.lable))
+/*     if(selectedExpense.description == "" || selectedExpense.description.includes("|") ){
+      setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
+    } */
   }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     setSelectedExpense(setProperty(selectedExpense, prop, item.lable))

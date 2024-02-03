@@ -83,6 +83,14 @@ export enum Transaction_Type {
   DEBIT = "Debit",
   TRANSFER = "Transfer"
 }
+export enum TransactionCombo_Type {
+  CREDIT = "Credit",
+  DEBIT = "Debit"
+}
+export enum Transaction_Calc_type {
+  TRANSACTION= "TRANSACTION",
+  AMOUNT= "AMOUNT"
+}
 export enum PaymentMethod {
 
   VISA = "VISA",
@@ -118,7 +126,10 @@ export interface ITransactionBase {
   source: string,
   destination: string,
   amount: number,
+  source_balance: number,
+  destination_balance: number,
   type: Transaction_Type,
+  calculation_type: Transaction_Calc_type,
   order: {
     type: Transaction_OT,
     _id: string
@@ -138,9 +149,13 @@ export class CTransaction {
 
   static getAccountSign = (item: ITransaction, accountId: string | undefined): string => {
     CustomLogger.info("CTransaction/item", item, item.type, Transaction_Type.CREDIT)
+    if(item.calculation_type == Transaction_Calc_type.AMOUNT)
+    return item.amount >= 0 ? "green" : "red";
+
     if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toUpperCase()) {
       return 'gray';
     }
+   
     if (item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toUpperCase())
     return "red"
     else if (accountId !== undefined && item.source.includes(accountId) )
@@ -150,7 +165,9 @@ export class CTransaction {
 
   }
 
-  static getAmount = (item: ITransaction, accountId: string | undefined): number => {
+  static getAmount = (item: ITransaction, accountId: string | undefined,balance:boolean=false): number => {
+    if(item.calculation_type == Transaction_Calc_type.AMOUNT)
+      return balance ? Number(item.source_balance.toFixed(2)) :Number(item.amount.toFixed(2))
     if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toLocaleUpperCase())
       return item.amount;
     if (item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toLocaleUpperCase())

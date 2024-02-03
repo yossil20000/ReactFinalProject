@@ -1,6 +1,7 @@
 import '../../Types/date.extensions'
 import { Save } from '@mui/icons-material'
 import { Button } from '@mui/material'
+import TableViewIcon from '@mui/icons-material/TableView';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,7 +9,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import CloseIcon from '@mui/icons-material/Close';
 export enum EAction {
-  "ADD", "DELETE", "SAVE", "EDIT", "PAY", "ORDER", "CLOSE"
+  "ADD", "DELETE", "SAVE", "EDIT", "PAY", "ORDER", "CLOSE","OTHER"
 }
 export interface IActionDispaly<T> {
   key: EAction, value: T
@@ -68,6 +69,7 @@ function ActionButtons({ OnAction, show, item = "", display ,color,disable}: IAc
       {show.includes(EAction.PAY) == true && <Button fullWidth disabled= {getDisable(EAction.PAY,false)}key={"Pay"} variant='outlined' onClick={(event) => OnAction(EAction.PAY, undefined, item)} color={getColor(EAction.PAY,'primary')} startIcon={<PaymentIcon />}>{getName(EAction.PAY,"Pay")}</Button>}
       {show.includes(EAction.CLOSE) == true && <Button fullWidth disabled= {getDisable(EAction.CLOSE,false)} key={"Close"} variant='outlined' onClick={(event) => OnAction(EAction.CLOSE, undefined, item)} color={getColor(EAction.CLOSE,'primary')} startIcon={<CloseIcon />}>{getName(EAction.CLOSE,"Close")}</Button>}
       {show.includes(EAction.SAVE) == true && <Button fullWidth disabled= {getDisable(EAction.SAVE,false)} key={"Save"} variant='outlined' onClick={(event) => OnAction(EAction.SAVE, undefined, item)} color={getColor(EAction.SAVE,'primary')} startIcon={<Save />}>{getName(EAction.SAVE,"Save")} </Button>}
+      {show.includes(EAction.OTHER) == true && <Button fullWidth disabled= {getDisable(EAction.OTHER,false)} key={"Other"} variant='outlined' onClick={(event) => OnAction(EAction.OTHER, undefined, item)} color={getColor(EAction.OTHER,'primary')} startIcon={<TableViewIcon/>}>{getName(EAction.OTHER,"OTHER")} </Button>}
     </>
   )
 }

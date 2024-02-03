@@ -117,28 +117,8 @@ export const getValue = (val: number | undefined): string => {
   return (val !== undefined && val > 0) ? "green" : 'red'
 }
 function MobileTransaction({ item, accountId }: MobileTransactionProps) {
-console.log("MobileTransaction/transaction,accountId",item,accountId)
-/*   const getAccountSign = (): string => {
-    CustomLogger.info("MobileTransaction/item", item, item.type, Transaction_Type.CREDIT)
-    if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toUpperCase()) {
-      return 'gray';
-    }
-    if (accountId !== undefined && item.source.includes(accountId) && item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toUpperCase())
-      return "red"
-    else
-      return "green";
+  console.log("MobileTransaction/transaction,accountId", item, accountId)
 
-  }
-  const getAmount = (): number => {
-    if (item.type === Transaction_Type.TRANSFER)
-      return item.amount;
-    if (accountId !== undefined && item.source.includes(accountId) && item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toLocaleUpperCase())
-      return item.amount * -1
-    else
-      return item.amount
-
-  }
- */
   return (
     <Box margin={'0.5ch'}>
       <Accordion>
@@ -148,14 +128,22 @@ console.log("MobileTransaction/transaction,accountId",item,accountId)
               {getOrderIcon(item.order.type)}
             </Grid>
             <Grid item xs={8} sm={8}>
-              <Grid>{item.destination}</Grid>
+              <Grid>{item.source}</Grid>
               <Grid>{new Date(item.date).getDisplayDate()}</Grid>
-
             </Grid>
+
             <Grid item xs={2} sm={2} alignItems={"center"} justifyItems={"left"}>
-              <Box display={"flex"} alignSelf={"baseline"}>
-                <ShekelIcon sx={{ fontSize: "0.7rem" }} />
-                <Typography style={{ color: CTransaction.getAccountSign(item,accountId) }}>{CTransaction.getAmount(item,accountId)}</Typography>
+              <Box display={"flex"} alignSelf={"baseline"} justifyContent={"space-between"}>
+                <Box display={"flex"} alignSelf={"baseline"} >
+                  <>{"( "}</>
+                  <ShekelIcon sx={{ fontSize: "0.7rem" }} />
+                  <Typography style={{ color: CTransaction.getAccountSign(item, accountId) }}>{CTransaction.getAmount(item, accountId, true)}</Typography>
+                  <>{" )"}</>
+                </Box>
+                <Box display={"flex"} alignSelf={"baseline"} >
+                  <ShekelIcon sx={{ fontSize: "0.7rem" }} />
+                  <Typography style={{ color: CTransaction.getAccountSign(item, accountId) }}>{CTransaction.getAmount(item, accountId)}</Typography>
+                </Box>
               </Box>
             </Grid>
 

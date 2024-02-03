@@ -1,12 +1,12 @@
 import '../../Types/Number.extensions'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import Item from '../../Components/Item';
-import { useClubAccountQuery, useClubAddTransactionTypeMutation } from '../../features/Account/accountApiSlice';
-import { EAccountType, IAddTransaction, IClubAccount, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
+import { useClubAccountQuery, useClubAddTransactionPaymentMutation } from '../../features/Account/accountApiSlice';
+import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
 import { IExpenseBase } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
@@ -16,6 +16,7 @@ import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
+import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo';
 export interface PayTransactionDialogProps {
 
   onClose: () => void;
@@ -32,7 +33,8 @@ let newTransaction: IAddTransaction = {
     accountType: ""
   },
   amount: Number("0"),
-  type: Transaction_Type.TRANSFER,
+  
+  type: Transaction_Type.DEBIT,
   order: {
     type: Transaction_OT.TRANSFER,
     _id: ''
@@ -65,7 +67,7 @@ const getAccountType = (memberType: string | undefined): string => {
 
 function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactionDialogProps) {
   const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
-  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionTypeMutation();
+  const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionPaymentMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [flipSource, setFlipSource] = useState(false)
   const theme = useTheme()
@@ -145,14 +147,14 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   }
 
   const RenderSource = (): JSX.Element => {
-    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} includesType={[MemberType.Member, MemberType.Supplier,MemberType.Club]} />
+    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} includesType={[MemberType.Club]} />
     /* return flipSource === false ?
      
     :
     <ClubAccountsCombo title={"DE"} selectedItem={selectedDestination} onChanged={onSelectedSource} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} /> */
   }
   const RenderDestination = (): JSX.Element => {
-    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier,MemberType.Club]} />
+    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} />
     /* return flipSource === false ?
     <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} />
     :
@@ -191,7 +193,10 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     newDate.setSeconds(0, 0);
     setSelectedTransaction(prev => ({ ...prev, date: newDate }))
   };
- 
+  const onComboChanged = (item: InputComboItem, prop: string): void => {
+    setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
+    CustomLogger.log("PayTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
+  }
   return (
 
     <Dialog
@@ -234,8 +239,11 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={6}>
+                <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
+                  selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
+              </Grid>
+              <Grid item xs={6}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
-
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"
                   value={selectedTransaction?.amount} required

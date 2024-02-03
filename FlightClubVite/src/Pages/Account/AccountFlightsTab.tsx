@@ -137,16 +137,7 @@ function AccountFlightsTab() {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-  /*   const filterFlights = useCallback(() : IFlight[] => {
-      if(selectedMember || selectedMember != "")
-      {
-        const filtered =  data?.data.filter((flight) => flight.member._id == selectedMember?.lable )
-        CustomLogger.info("AccountFlight/filterFlights/filtered",filtered)
-        return filtered !== undefined ? filtered : []
-      }
-      return data?.data === undefined ? [] : data?.data
-      
-    },[data?.data,selectedMember]) */
+
   const filterFlight = (flight: IFlight): boolean => {
     if (selectedMember?.lable != "") {
       return flight.member._id == selectedMember?._id
@@ -287,16 +278,7 @@ function AccountFlightsTab() {
     setaccountFlightFilter(newFilter)
     CustomLogger.log("AccountFlightTab/onDateChanged", newFilter)
   }
-  const onDeviceChange1 = (item: InputComboItem, has_hobbs: boolean) => {
-    const filter: any = JSON.parse(JSON.stringify(accountFlightFilter));
 
-    delete filter["device"]
-    if (item._id != "") {
-      filter.device = item._id;
-    }
-    CustomLogger.log("AccountFlight/onDeviceChange/filter", filter)
-    setaccountFlightFilter(filter)
-  }
   return (
     <ContainerPage>
       <>

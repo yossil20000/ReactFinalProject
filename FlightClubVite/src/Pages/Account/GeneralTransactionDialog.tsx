@@ -86,6 +86,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
       },
       type: selectedTransaction.type,
       amount: selectedTransaction.amount,
+     
       order: {
         type: Transaction_OT.OTHER,
         _id: ''

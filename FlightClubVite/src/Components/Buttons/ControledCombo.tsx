@@ -26,7 +26,8 @@ export interface SelectComboProps extends ComboProps {
 export interface StateComboProps {
   onChanged: (item: InputComboItem) => void;
   source: string;
-  selectedItem: InputComboItem
+  selectedItem: InputComboItem;
+  disable?: boolean;
 }
 
 export interface InputComboItem{
@@ -49,10 +50,11 @@ export interface InputComboProps{
   title: string;
   selectedItem: InputComboItem | null | "";
   onSelectedItem: (item : InputComboItem) => void;
+  disable?: boolean
 }
 
 export default function ControledCombo(props: InputComboProps) {
-  const {items,title,selectedItem ,  onSelectedItem} = props;
+  const {items,title,selectedItem ,  onSelectedItem,disable=false} = props;
   const [value, setValue] = useState<InputComboItem | null>(null);
   const [inputValue, setInputValue] = useState('');
   useEffect(()=> {
@@ -79,7 +81,7 @@ export default function ControledCombo(props: InputComboProps) {
         id="controllable-states-demo"
         options={items}
         getOptionLabel={option => `${(option as InputComboItem).lable}`}
-        
+        disabled={disable}
         renderInput={(params) => <TextField {...params}  label={title} variant="standard" />}
       />
   );
