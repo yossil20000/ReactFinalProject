@@ -590,7 +590,7 @@ const FlightPage = () => {
               <Box sx={{ width: '100%', height: '100%' }}>
 
                 <Paper sx={{ width: '100%', mb: 1 }}>
-                  {false ? (
+                {false ? (
                     <GridTable title={"Flight"} style={{}} children={<></>} rows={rows} setRows={setRows} columns={columns} initialState={initialState} onSave={onSave} actionColumn={true}></GridTable>
                   ) : (<></>)}
                   <SortButtons sortCells={sortCells} onRequestSort={handleRequestSort} order={order} orderBy={orderBy} />

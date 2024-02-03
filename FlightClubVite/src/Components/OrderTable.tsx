@@ -102,23 +102,23 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   }, [orders,selectedMember,selectedClubAccount,filter.orderStatus])
 
   const columns: GridColDef[] = useMemo(() => [
-    { field: 'id', hide: true },
+    { field: 'id', hideable: true,minWidth:220 },
     { field: 'member', hide: true },
     { field: 'description', hide: true },
-    { field: 'date',hide: false, headerName: 'Date', minWidth: 100, sortable: true,
+    { field: 'date',hide: false, headerName: 'Date', minWidth: 100, maxWidth: 100,  sortable: true,
     filterable: true,flex:1},
     { field: 'orderBy', headerName: 'Order By', minWidth: 100,flex:2 },
-    { field: 'product', headerName: 'Product', minWidth: 80,flex:1 },
-    { field: 'units', headerName: 'Units', type: 'number', minWidth: 70 , flex: 1 },
+    { field: 'product', headerName: 'Product', minWidth: 80,maxWidth: 80,flex:1 },
+    { field: 'units', headerName: 'Units', type: 'number', minWidth: 70 ,maxWidth: 70, flex: 1 },
 
     {
       field: 'unitPrice',
       headerName: 'Unit Price',
       type: 'number',
-      minWidth: 80,flex:1
+      minWidth: 100,maxWidth: 120,flex:1
     },
-    { field: 'amount', headerName: 'Total', type: 'number', minWidth: 80,flex:1 },
-    { field: 'status', headerName: 'Status' ,minWidth: 80, flex:1},
+    { field: 'amount', headerName: 'Total', type: 'number', minWidth: 100,maxWidth: 120,flex:1 },
+    { field: 'status', headerName: 'Status' ,minWidth: 120, maxWidth: 120,flex:1},
     {
       field: 'actions',
       flex:1,
@@ -168,7 +168,16 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   return (
     <div style={{ height: "100%", width: '100%' }}>
       <DataGrid
-       columnVisibilityModel={{id:false,member:false,description:false}}
+      initialState={{
+        columns:{
+          columnVisibilityModel:{
+            id: false,
+            member: false,
+            description: false
+          }
+        }
+      }}
+       
         rows={orderRows}
         columns={columns}
         pageSizeOptions={[5, 10,15, 20,50,100]}
