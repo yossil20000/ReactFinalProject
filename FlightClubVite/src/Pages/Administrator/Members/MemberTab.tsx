@@ -33,7 +33,7 @@ function MemberTab() {
   const [updateMember] = useUpdateMemberMutation();
   const { refetch } = useFetcAllMembersQuery();
   const { data: memberships, isError, isLoading, isFetching, isSuccess, error } = useFetchAllMembershipQuery();
-
+  const [isSave,setIsSaved] = useState(false)
 
 
   useEffect(() => {
@@ -129,6 +129,7 @@ function MemberTab() {
   }
   async function onSave(): Promise<void> {
     let payLoad: any;
+    setIsSaved(true)
     try {
       setValidationAlert([]);
       if (selectedItem !== undefined && selectedItem?._id !== "") {
@@ -137,7 +138,7 @@ function MemberTab() {
         if (payLoad.error) {
           setValidationAlert(getValidationFromError(payLoad.error, onValidationAlertClose));
         }
-
+        setIsSaved(false)
       }
       else {
         throw new Error("Selected Member Un Defined");
@@ -146,10 +147,11 @@ function MemberTab() {
     catch (error) {
       console.error("DeviceTab/OnSave/error", error);
       setValidationAlert(getValidationFromError(error, onValidationAlertClose));
-
+      
     }
     finally {
       refetch();
+      setIsSaved(false)
     }
 
   }
@@ -215,7 +217,7 @@ function MemberTab() {
             ))}
           </Grid>
           <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} />
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} disable={[{ key: EAction.SAVE, value: isSave }]}/>
           </Box>
 
         </div>

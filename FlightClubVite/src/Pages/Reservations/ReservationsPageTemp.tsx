@@ -5,7 +5,7 @@ import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageM
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ReservationTable from '../../Components/ReservationTable';
 
-function ReservationsPage() {
+function ReservationsPageTemp() {
   const [openFilter, setOpenFilter] = useState(false)
   const [openAddReservation, setOpenAddReservation] = useState(false);
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
@@ -53,4 +53,4 @@ function ReservationsPage() {
   )
 }
 
-export default ReservationsPage
+export default ReservationsPageTemp

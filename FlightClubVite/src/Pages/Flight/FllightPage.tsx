@@ -523,7 +523,7 @@ const FlightPage = () => {
                             <NavigateBeforeIcon />
                           </ListItemIcon>
                         </ListItemButton>
-                        <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Day</ListItemButton>
+                        <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Today</ListItemButton>
                         <ListItemButton>
                           <ListItemIcon onClick={onNextDay}>
                             <NavigateNextIcon />
@@ -541,7 +541,7 @@ const FlightPage = () => {
                             <NavigateBeforeIcon />
                           </ListItemIcon>
                         </ListItemButton>
-                        <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>Week</ListItemButton>
+                        <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>This Week</ListItemButton>
                         <ListItemButton>
                           <ListItemIcon onClick={onNextWeek}>
                             <NavigateNextIcon />
@@ -559,7 +559,7 @@ const FlightPage = () => {
                             <NavigateBeforeIcon />
                           </ListItemIcon>
                         </ListItemButton>
-                        <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>Month</ListItemButton>
+                        <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>This Month</ListItemButton>
                         <ListItemButton onClick={onNextMonth}>
                           <ListItemIcon>
                             <NavigateNextIcon />
