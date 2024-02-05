@@ -17,11 +17,11 @@ import GeneralCanDo, { CanDo } from '../../Utils/owner';
 import { IMemberStatus, Status } from '../../Interfaces/API/IMember';
 
 interface ItableData {
-  _id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string, validOperation: CanDo, status: Status, image: string
+  _id: string, member_id: string, family_name: string, first_name: string, member_type:string, email: string, phone: string, validOperation: CanDo, status: Status, image: string
 }
 
-function createdata(_id: string, member_id: string, family_name: string, first_name: string, email: string, phone: string, validOperation: CanDo, status: Status, image: string): ItableData {
-  return { _id, member_id, family_name, first_name, email, phone, validOperation, status, image } as ItableData
+function createdata(_id: string, member_id: string, family_name: string, first_name: string, member_type:string,email: string, phone: string, validOperation: CanDo, status: Status, image: string): ItableData {
+  return { _id, member_id, family_name, first_name, member_type,email, phone, validOperation, status, image } as ItableData
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -69,6 +69,7 @@ const headCells: readonly HeadCell[] = [
 
   { id: "member_id", label: "Member Id", numeric: false, disablePadding: true },
   { id: "first_name", label: "Name", numeric: false, disablePadding: true },
+  { id: "member_type", label: "Type", numeric: false, disablePadding: true },
   { id: "email", label: "Email", numeric: false, disablePadding: true },
   { id: "phone", label: "Phone", numeric: false, disablePadding: true },
 ]
@@ -215,7 +216,7 @@ function MembersTablePage() {
   useEffect(() => {
 
     let rows = members?.data.map((item) => {
-      return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`, GeneralCanDo(item._id, login.member._id, login.member.roles), item.status, item.image)
+      return createdata(item._id, item.member_id, item.family_name, `${item.family_name}, ${item.first_name}`, item.member_type,item.contact.email, `${item.contact.phone.country}-${item.contact.phone.area}-${item.contact.phone.number}`, GeneralCanDo(item._id, login.member._id, login.member.roles), item.status, item.image)
     })
     CustomLogger.info('UseEffect/rows/be', rows)
     if (rows === undefined) {
@@ -320,6 +321,7 @@ function MembersTablePage() {
                             >
                               <TableCell align="left">{row.member_id}</TableCell>
                               <TableCell align="left"><Box display={'flex'} alignItems={'center'}>{row?.image !== "" ? (<Avatar alt="Remy Sharp" src={row?.image} />) : null}{row.first_name}</Box></TableCell>
+                              <TableCell align="left">{row.member_type}</TableCell>
                               <TableCell align="left">{row.email}</TableCell>
                               <TableCell align="left">{row.phone}</TableCell>
                               {/* <TableCell align="left">{(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id)}>Edit</Button> : null}</TableCell>

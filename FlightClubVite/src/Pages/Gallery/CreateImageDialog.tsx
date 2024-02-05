@@ -69,7 +69,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
     CustomLogger.log("CreateImageDialog/handleImageUpload/file", file);
     if (file) {
       /* const base64 = await convertFileTobase64(file); */
-      await resizeFileTobase64(file, 500, 50).then((result) => {
+      await resizeFileTobase64(file, 600, 600).then((result) => {
         CustomLogger.info("CreateImageDialog/handleImageUpload/result.filelength", (result as string).length);
         setImageCreate({ ...ImageCreate, image: result as string });
 
