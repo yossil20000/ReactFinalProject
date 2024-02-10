@@ -25,6 +25,7 @@ export default function ServicesTable({ selectedDevice, hideAction = false }: IS
   const [isNeedSave, setIsNeedSave] = useState(false);
   const [rows, setRows] = useState<GridRowsProp>([])
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
+  
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
@@ -147,6 +148,7 @@ useEffect(() => {
     if(isNeedSave)
       onSave()
   },[isNeedSave]) 
+  
   function EditToolbar(props: EditToolbarProps) {
     const { setRows, setRowModesModel } = props;
     const handleClick = () => {
@@ -164,19 +166,6 @@ useEffect(() => {
       </GridToolbarContainer>
     )
   }
-  /*   const getServices = useMemo(() => (id: string, date: Date, engien_meter: number, type: string, description: string): Services => {
-      CustomLogger.log("ServicesTable/getServices/selectedDevice", selectedDevice)
-      let addService: Services = {
-        
-        _id: "",
-        date: new Date(),
-        engien_meter: 0,
-        type: '',
-        description: ''
-      }
-      CustomLogger.info("ServicesTable/getServices", addService, devices)
-      return addService;
-    }, [selectedDevice]) */
 
   const serviceRows = useMemo(() => {
     CustomLogger.info("ServicesTable/serviceRows", devices)
