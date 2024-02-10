@@ -27,7 +27,8 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 5,version: "2.0.5.3",date: new Date(2024,0,12).getDisplayDate() , "description" : "Fix Account/Device Types select"  ,"known_bug": "Admin/Devices Devicee need to clear and reselect the device name"},
     {id: 6,version: "2.0.6.0",date: new Date(2024,0,12).getDisplayDate() , "description" : "Account/Flight add date filter"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 7,version: "2.0.7.0",date: new Date(2024,1,4).getDisplayDate() , "description" : "Transaction add Export, User account add table view, fix transaction DB, add balance history"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
-    {id: 7,version: "2.0.7.1",date: new Date(2024,1,5).getDisplayDate() , "description" : "Fix WAB data,Admin/Member block onSave until return,Flight&Reservation Filter lables "  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 8,version: "2.0.7.1",date: new Date(2024,1,5).getDisplayDate() , "description" : "Fix WAB data,Admin/Member block onSave until return,Flight&Reservation Filter lables "  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 9,version: "2.0.8.1",date: new Date(2024,1,10).getDisplayDate() , "description" : "Change NoticeTab to table view"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     
   ]
   function CustomToolbar() {
