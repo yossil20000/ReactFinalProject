@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 var DeviceServicesSchema = new Schema( {
         date: {type: Date, default: new Date()},
         engien_meter: {type: mongoose.Decimal128, get: getDecimal , default: 10},
-        type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2]] , default: CE.DEVICE_MT[0]},
+        type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2],"Annual"] , default: CE.DEVICE_MT[0]},
         description: {type: String}
     },{toJSON: {getters: true}})
 

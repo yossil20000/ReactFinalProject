@@ -2,7 +2,7 @@
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'; */
 import "../../Types/date.extensions"
 
-import { Box, Button, Grid, List, ListItem, ListItemButton, ListItemIcon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, Button, Grid, List, ListItem, ListItemButton, ListItemIcon, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { visuallyHidden } from '@mui/utils';
 import MediaQuery from "react-responsive";
@@ -649,6 +649,12 @@ function ReservationsPage() {
                               );
                             })}
                       </TableBody>
+                      <TableFooter>
+                      {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
+                                      open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
+                                      onClose={onConfirmationClose} isOperate={false} />
+                                    ) : null}
+                      </TableFooter>
                     </MediaQuery>
 
                   </Table>

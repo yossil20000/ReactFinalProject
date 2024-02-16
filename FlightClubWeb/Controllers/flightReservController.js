@@ -224,20 +224,28 @@ exports.reservation_create = [
 			log.info("FlightReservation.find/doc", found?._doc);
 			
 			if (found?._doc === undefined) {
-				await newReservation.save(err => {
-					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
+				newReservation.save(err => {
+					if (err) { 
+						return res.status(500).json({ success: false, errors: [err], data: [] }); 
+					}
 				});
 				device.flight_reservs.push(newReservation);
 				member.flight_reservs.push(newReservation);
-				await device.save(err => {
-					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
-				});
-		
-				await member.save(err => {
-					if (err) { return res.status(500).json({ success: false, errors: [err], data: [] }); }
-				});
+				/* const deviceSave = device.save(err => {
+					if (err) {
+						 return res.status(500).json({ success: false, errors: [err], data: [] }); 
+						}
+				}); */
+				const deviceSave = await device.save()
+				/* const memberSave = member.save(err => {
+					if (err) { 
+						return res.status(500).json({ success: false, errors: [err], data: [] }); 
+					}
+				}); */
+				const memberSave = await member.save()
+
 				const notifyResult = await sendNotification(constants.NotifyEvent.FlightReservation,constants.NotifyOn.CREATED, `Flight from: ${newReservation.date_from} to: ${newReservation.date_to} \n on device: ${device.device_id} by: ${member.full_name}`);
-        log.info("FindSameFlight/end/flightNotification",newReservation.flightNotification);
+				log.info("FindSameFlight/end/flightNotification",newReservation.flightNotification);
 				res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
 				log.info("FindSameFlight/end/created",newReservation.flightNotification);
 				return;
@@ -256,7 +264,7 @@ exports.reservation_create = [
 			
 			
 		}
-		log.info("Create/end");
+
 	}];
 
 
