@@ -3,8 +3,10 @@ const async = require('async');
 const { body, param, validationResult } = require('express-validator');
 
 const Device = require('../Models/device');
+const Flight = require('../Models/flight');
 const DeviceType = require('../Models/deviceType');
 const { ApplicationError } = require('../middleware/baseErrors');
+const { query } = require('express');
 
 exports.device_list = function (req, res, next) {
     try {
@@ -108,27 +110,68 @@ exports.device_reservation = function (req, res, next) {
         return next(new ApplicationError("device_reservation", 400, "CONTROLLER.DEVICE.DEVICE_RESERV.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
-exports.device_flights = function (req, res, next) {
-    try {
-        log.info("device_reservation");
-        Device.find({ _id: req.params._id, flights: { $exists: true, $not: { $size: 0 } } })
-            .select('flights')
-            .populate('flights')
-            .exec(function (err, results) {
-                if (err) {
-                    log.error(err);
-                    res.status(400).json({ success: false, errors: [err], data: [] });
+exports.device_flights = [
+    async (req, res, next) => {
+        try {
+            log.info("device_flights");
+            Device.find({ _id: req.params._id, flights: { $exists: true, $not: { $size: 0 } } })
+                .select('flights')
+                .populate('flights')
+                .exec(function (err, results) {
+                    if (err) {
+                        log.error(err);
+                        res.status(400).json({ success: false, errors: [err], data: [] });
+                        return;
+                    }
+                    log.info(results);
+                    res.status(202).json({ success: true, errors: [], data: results[0].flights });
                     return;
-                }
-                log.info(results);
-                res.status(202).json({ success: true, errors: [], data: results[0].flights });
-                return;
-            })
+                })
+        }
+        catch (error) {
+            return next(new ApplicationError("device_flights", 400, "CONTROLLER.DEVICE.DEVICE_FLIGHT.EXCEPTION", { name: "EXCEPTION", error }));
+        }
     }
-    catch (error) {
-        return next(new ApplicationError("device_flights", 400, "CONTROLLER.DEVICE.DEVICE_FLIGHT.EXCEPTION", { name: "EXCEPTION", error }));
+]
+
+exports.device_report = [
+    param('device_id', "lenght > 3 and only [0-9] [A-Z]").custom((value, { req }) => {
+        return /^[A-Z0-9]{4,}$/.test(value)
+    }),
+    async (req, res, next) => {
+        try {
+            log.info("device_report");
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return next(new ApplicationError("device_report", 400, "CONTROLLER.DEVICE.device_report.VALIDATION", { name: "ExpressValidator", errors }));
+            }
+            /* 
+            let device_flight = await Device.find({ device_id: req.params.device_id, flights: { $exists: true, $not: { $size: 0 } } })
+                .select('flights engien_meter')
+                .populate('flights').exec();
+                let find = await Flight.find({path: 'device',device_id: "4XCGC"}).populate('device').exec();
+             */    
+               let query = Flight.find({path: 'device',device_id: "4XCGC"}).sort({engien_stop: -1}).limit(1)
+               /* .populate({path: 'device', select: '-can_reservs -flights -flight_reservs -details.image'}) */
+               .populate({path: 'device', select: 'maintanance available device_status engien_meter status device_id due_date'})
+               /* .populate({path:"member", select: '-password -flights -flight_reservs -image'}) */
+               .populate({path: 'member', select: 'member_id family_name first_name'})
+               .exec(function (err, results) {
+                    if (err) {
+                        log.error(err);
+                        res.status(400).json({ success: false, errors: [err.message,err.stack], data: [] });
+                        return;
+                    }
+                    log.info(results);
+                    res.status(202).json({ success: true, errors: [], data: results });
+                    return;
+                })
+        }
+        catch (error) {
+            return next(new ApplicationError("device_flights", 400, "CONTROLLER.DEVICE.DEVICE_FLIGHT.EXCEPTION", { name: "EXCEPTION", error }));
+        }
     }
-}
+]
 
 exports.create = [
     body('device_type').trim().isLength({ min: 24, max: 24 }).escape().withMessage('_id_device_type must be valid'),

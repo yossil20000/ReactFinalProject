@@ -2,7 +2,7 @@ import { FuelUnits } from "../../Types/FuelUnits"
 import IDeviceType from "./IDeviceType"
 import '../../Types/date.extensions';
 import { IFilter } from "./IFilter"
-import IFlight from "./IFlight"
+import IFlight, { FlightStatus } from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
 import IMember, { IMemberCombo } from "./IMember"
 import { Status } from "./IStatus"
@@ -30,13 +30,13 @@ export enum DEVICE_STATUS {
 }
 export enum DEVICE_MT {
     "50hr" = "50hr",
-    "100hr"= "100hr",
-    "200hr" = "200hr" 
+    "100hr" = "100hr",
+    "200hr" = "200hr"
 }
 
 export enum DEVICE_SERVICE {
     "50hr" = "50hr",
-    "100hr"= "100hr",
+    "100hr" = "100hr",
     "200hr" = "200hr",
     "Annual" = 'Annual'
 }
@@ -133,6 +133,40 @@ export interface IDeviceCanReserve {
     can_reservs: IMemberCombo[]
 }
 
+export interface IDeviceReport {
+    _id: string;
+    description: string;
+    date: Date;
+    hobbs_start: number
+    hobbs_stop: number
+    engien_start: number
+    engien_stop: number
+    status: FlightStatus;
+    reuired_hobbs: boolean;
+    duration: number;
+    device: {
+        _id: string;
+        device_id: string;
+        available: boolean;
+        device_status: DEVICE_STATUS;
+        engien_meter: number
+        due_date: Date
+        maintanance: {
+            type: DEVICE_MT
+            next_meter: number,
+            services: [
+                Services
+            ]
+        };
+        status: Status;
+    }
+    member: {
+        _id: string;
+        member_id: string;
+        family_name: string;
+        first_name: string;
+    }
+}
 
 export class CServicesToReport {
     private device: IDevice;

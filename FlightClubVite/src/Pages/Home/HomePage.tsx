@@ -10,6 +10,7 @@ import { useFetchAllImagesQuery } from '../../features/image/imageApiSlice';
 import { IImageDisplay } from '../../Interfaces/API/IImage';
 import { useAppSelector } from '../../app/hooks';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
+import DeviceReport from './DeviceReport';
 
 
 function HomePage() {
@@ -44,6 +45,7 @@ function HomePage() {
 
     <div className='main'>
       <Box marginTop={2} display={'flex'} flexDirection={'column'}>
+        <DeviceReport/>
         <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
         <Box sx={{ width: "100%", height: "50vh" }}>
           <Box><Typography sx={{ height: "4ex", textAlign: "center" }}>Galllery</Typography></Box>

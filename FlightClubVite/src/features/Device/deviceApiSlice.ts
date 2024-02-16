@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor"
 import { getServerAddress } from "../../Enums/Routers"
 import { URLS } from "../../Enums/Urls"
-import IDevice, { IDeviceCanReserve, IDeviceCombo, IDeviceComboFilter, IDeviceCreate } from "../../Interfaces/API/IDevice"
+import IDevice, { IDeviceCanReserve, IDeviceCombo, IDeviceComboFilter, IDeviceCreate, IDeviceReport } from "../../Interfaces/API/IDevice"
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase"
 import { IStatus } from "../../Interfaces/API/IStatus"
 
@@ -28,7 +28,7 @@ export const deviceApiSlice = createApi({
       }),
       fetchDevice: builder.query<IResultBaseSingle<IDevice>, string>({
         query: (_id) => ({
-          url: `/${URLS.DEVICES}/${_id}`,
+          url: `/${URLS.DEVICES_DEVICE}/${_id}`,
           method: "GET"
         }),
         providesTags: ["Device"],
@@ -87,6 +87,12 @@ export const deviceApiSlice = createApi({
         }),
         invalidatesTags: ["Devices"]
       }),
+      fetchDeviceReport: builder.query<IResultBase<IDeviceReport>,string>({
+        query: (device_id) => ({
+          url: `/${URLS.DEVICE_REPORT}/${device_id}`,
+          method: 'GET'
+        })
+      })
     }
   }
 
@@ -101,5 +107,6 @@ export const {
   useFetchDevicsComboQuery,
   useUpdateStatusDeviceMutation,
   useFetchDevicCanReservQuery,
-  useUpdateOneDeviceMutation
+  useUpdateOneDeviceMutation,
+  useFetchDeviceReportQuery
 } = deviceApiSlice;

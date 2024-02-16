@@ -1,10 +1,10 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, Grid, Paper, styled, TextField, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
 import React, { useContext, useMemo, useState } from 'react';
 import IDevice, { CServicesToReport, DEVICE_INS, DEVICE_MET } from '../../../Interfaces/API/IDevice';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setProperty } from '../../../Utils/setProperty'
 import PriceMeterCombo from '../../../Components/Devices/PriceMeterCombo'
-import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from '@mui/x-date-pickers'
+import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import DeviceStatusCombo from '../../../Components/Devices/DeviceStatusCombo'
 import DeviceMTCombo from '../../../Components/Devices/DeviceMTCombo'
@@ -43,7 +43,7 @@ function DeviceTabItem() {
   const [openExport, setOpenExport] = useState(false);
   const setDirtyDispatch = useAppDispatch()
   const { setSelectedItem, selectedItem, membersCombo } = useContext(DevicesContext) as DevicesContextType;
-  const { selectedItem: selectdDeviceTypes, setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
+  const { setSelectedItem: setSelectedDeviceTypes, deviceTypes } = useContext(DeviceTypesContext) as DeviceTypesContextType
   const SetDirtyFlage = () => {
     CustomLogger.info("SetDirtyFlage/dirtyFlag", source, true);
     setDirtyDispatch(setDirty({ key: source, value: true }))
