@@ -1,4 +1,3 @@
-import { json } from "react-router-dom";
 import { IAccount } from "./IAccount";
 import { Status } from "./IStatus";
 
@@ -212,7 +211,7 @@ export interface IClubAccountsCombo {
   accounts: IClubAccountCombo[]
 }
 
-export interface IPaymentReciepe {
+export interface IPaymentRecipe {
   format: string;
   companyId: string;
   companyName: string;
@@ -232,10 +231,10 @@ export interface IPaymentReciepe {
 
 }
 type rConvert = <T, U>(x: T) => U
-interface IReciepeProcess<T, U> {
+interface IRecipeProcess<T, U> {
   convert(object: T): U
 }
-export class CPaymentReciepe<F , T> {
+export class CPaymentRecipe<F , T> {
   private convert: (f:F) => T;
 /*   private from: F;*/
   private to: T | undefined; 
@@ -255,8 +254,8 @@ export class CPaymentReciepe<F , T> {
     return object === undefined ? JSON.parse("") : JSON.parse(object)
   }
 }
-const ppp  = (x: IPaymentReciepe): IPaymentReciepe =>  x
-const x: IPaymentReciepe = {
+const ppp  = (x: IPaymentRecipe): IPaymentRecipe =>  x
+const x: IPaymentRecipe = {
   format: "",
   companyId: "",
   companyName: "",
@@ -276,9 +275,9 @@ const x: IPaymentReciepe = {
 }
 export const nameofFactory = <T>() => (name: keyof T) => name;
 
-const convert = (f: ITransaction | IAddTransaction) : IPaymentReciepe => {
-  const s  = "IPaymentReciepe"
-  let reciept: IPaymentReciepe = {
+const convert = (f: ITransaction | IAddTransaction) : IPaymentRecipe => {
+  const s  = "IPaymentRecipe"
+  let reciept: IPaymentRecipe = {
     format: s.toString(),
     companyId: "580091627",
     companyName: "BAZ",
@@ -318,8 +317,8 @@ const transactions: ITransaction = {
   description: "",
   date: new Date()
 }
-export const  getTransactionToPaymentReciept = () => new CPaymentReciepe<ITransaction | IAddTransaction,IPaymentReciepe> (convert)
-const ccc = new CPaymentReciepe<ITransaction,IPaymentReciepe> (convert)
+export const  getTransactionToPaymentReciept = () => new CPaymentRecipe<ITransaction | IAddTransaction,IPaymentRecipe> (convert)
+const ccc = new CPaymentRecipe<ITransaction,IPaymentRecipe> (convert)
 const cccc = getTransactionToPaymentReciept()
 getTransactionToPaymentReciept().getReciep(transactions)
 console.error("ICLub/ccc",cccc.getReciep(transactions))

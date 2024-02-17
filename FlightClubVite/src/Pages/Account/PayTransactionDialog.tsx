@@ -6,13 +6,13 @@ import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import Item from '../../Components/Item';
 import { useClubAccountQuery, useClubAddTransactionPaymentMutation } from '../../features/Account/accountApiSlice';
-import { EAccountType, IAddTransaction, IPaymentReciepe, PaymentMethod, Transaction_OT, Transaction_Type, getTransactionToPaymentReciept } from '../../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, IPaymentRecipe, PaymentMethod, Transaction_OT, Transaction_Type, getTransactionToPaymentReciept } from '../../Interfaces/API/IClub';
 import { IExpenseBase } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { MemberType } from '../../Interfaces/API/IMember';
-import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
@@ -75,14 +75,14 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [reciepe, setReciepe] = useState<IPaymentReciepe>()
+  const [recipe, setRecipe] = useState<IPaymentRecipe>()
 
   const [isSaved, setIsSaved] = useState(false);
   useEffect(() => {
     if (selectedTransaction) {
-      const reciepe = getTransactionToPaymentReciept().getReciep(selectedTransaction)
-      console.info("PayTransactionDialog/reciepe", reciepe)
-      setReciepe(reciepe);
+      const recipe = getTransactionToPaymentReciept().getReciep(selectedTransaction)
+      console.info("PayTransactionDialog/recipe", recipe)
+      setRecipe(recipe);
     }
   }, [selectedTransaction])
   const UpdateSourceAccountFields = (): IAddTransaction => {
@@ -104,7 +104,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
       },
       payment: {
         method: selectedTransaction.payment.method,
-        referance: JSON.stringify(reciepe)
+        referance: JSON.stringify(recipe)
       },
       description: selectedTransaction.description,
       date: new Date()
@@ -190,11 +190,11 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
     setSelectedTransaction(newObj)
   };
-  const handleReciepeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRecipeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
-    CustomLogger.log("NewTransaction/handleReciepeChange", event.target.name, event.target.value)
-    const newObj: IPaymentReciepe = SetProperty(reciepe, event.target.name, event.target.value) as IPaymentReciepe;
-    setReciepe(newObj)
+    CustomLogger.log("NewTransaction/handleRecipeChange", event.target.name, event.target.value)
+    const newObj: IPaymentRecipe = SetProperty(recipe, event.target.name, event.target.value) as IPaymentRecipe;
+    setRecipe(newObj)
   };
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
@@ -211,35 +211,35 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
     CustomLogger.log("PayTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
   }
-  const getReciepeSummary = () => {
+  const getRecipeSummary = () => {
     return (<>Payment Info</>)
   }
-  const getReciepeDetailes = () => {
+  const getRecipeDetailes = () => {
     return (
       <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12} rowGap={1}>
         <Grid item xs={12} md={4}>
-          <TextField fullWidth={true} onChange={handleReciepeChange} id="bank" name="bank"
+          <TextField fullWidth={true} onChange={handleRecipeChange} id="bank" name="bank"
             label="Bank" placeholder="Bank" variant="standard"
-            value={reciepe?.bank} required
+            value={recipe?.bank} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} md={4}>
-          <TextField fullWidth={true} onChange={handleReciepeChange} id="branch" name="branch"
+          <TextField fullWidth={true} onChange={handleRecipeChange} id="branch" name="branch"
             label="Branch" placeholder="Branch" variant="standard"
-            value={reciepe?.branch} required
+            value={recipe?.branch} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} md={4}>
-          <TextField fullWidth={true} onChange={handleReciepeChange} id="accountId" name="accountId"
+          <TextField fullWidth={true} onChange={handleRecipeChange} id="accountId" name="accountId"
             label="Account Id" placeholder="AccountId" variant="standard"
-            value={reciepe?.accountId} required
+            value={recipe?.accountId} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12}>
-          <TextField fullWidth={true} onChange={handleReciepeChange} id="referance" name="referance"
+          <TextField fullWidth={true} onChange={handleRecipeChange} id="referance" name="referance"
             multiline
             label="Referance" placeholder="Referance" variant="standard"
-            value={reciepe?.referance} required
+            value={recipe?.referance} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} md={12}>
@@ -313,9 +313,9 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
               <Grid item xs={12}>
                 <Accordion>
                   <AccordionSummary expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>
-                    {getReciepeSummary()}
+                    {getRecipeSummary()}
                   </AccordionSummary>
-                  <AccordionDetails>{getReciepeDetailes()}</AccordionDetails>
+                  <AccordionDetails>{getRecipeDetailes()}</AccordionDetails>
                 </Accordion>
               </Grid>
               <Grid item xs={12}>
@@ -330,7 +330,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                           disabled
                           multiline
                           label="Pay Referance" placeholder="Payment Referance" variant="standard"
-                          value={JSON.stringify(reciepe)} required
+                          value={JSON.stringify(recipe)} required
                           helperText="" error={false} InputLabelProps={{ shrink: true }} />
                       </Grid>
                     </Grid>
