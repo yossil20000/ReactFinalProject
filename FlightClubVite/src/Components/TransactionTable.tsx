@@ -89,17 +89,17 @@ const getData = useMemo(() => {
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id',hideable: true },
     /* { field: '_id',hideable: true }, */
-    { field: 'date', hideable: true, headerName: 'Date', minWidth: 90, flex: 1 },
-    { field: 'source', headerName: 'Source', minWidth: 100, flex: 3 },
-    { field: 'destination', headerName: 'Destination', minWidth: 100, flex: 3 },
-    { field: 'order', headerName: 'Order', minWidth: 70, flex: 1 },
-    { field: 'destination_balance', headerName: 'D.Balance', type: 'number', minWidth: 70, flex: 1 },
-    { field: 'source_balance', headerName: 'S.Balance', type: 'number', minWidth: 70, flex: 1 },
-    { field: 'amount', headerName: 'Amount', type: 'number', minWidth: 70, flex: 1 },
-    { field: 'transactionType', headerName: 'Type', type: 'number', minWidth: 70, flex: 1 },
-    { field: 'paymentMethod', headerName: 'PayMethod', type: 'text', minWidth: 90, flex: 1 },
-    { field: 'paymentReferance', headerName: 'PayRef', type: 'text', minWidth: 80, flex: 1 },
-    { field: 'description', headerName: 'Description', minWidth: 200, flex: 2 },
+    { field: 'date', hideable: true, headerName: 'Date', minWidth: 120,maxWidth: 120, flex: 1 },
+    { field: 'source', headerName: 'Source', minWidth: 130, maxWidth:180 ,flex: 2 },
+    { field: 'destination', headerName: 'Destination', minWidth: 130, maxWidth:180, flex: 2 },
+    { field: 'order', headerName: 'Order', minWidth: 110, maxWidth:110, flex: 1 },
+    { field: 'destination_balance', headerName: 'D.Balance', type: 'number', minWidth: 140, maxWidth:140, flex: 1 },
+    { field: 'source_balance', headerName: 'S.Balance', type: 'number', minWidth: 140, maxWidth:140, flex: 1 },
+    { field: 'amount', headerName: 'Amount', type: 'number', minWidth: 120, maxWidth:120, flex: 1 },
+    { field: 'transactionType', headerName: 'Type', type: 'number', minWidth: 100, maxWidth:100, flex: 1 },
+    { field: 'paymentMethod', headerName: 'PayMethod', type: 'text', minWidth: 130, maxWidth:160, flex: 1 },
+    { field: 'paymentReferance', headerName: 'PayRef', type: 'text', minWidth: 160, flex: 4 },
+    { field: 'description', headerName: 'Description', minWidth: 200, flex: 4 },
 
 
   ], [rowId, hideAction]);
@@ -136,7 +136,7 @@ const getData = useMemo(() => {
       
        sx={{"& .MuiDataGrid-cellContent": {whiteSpace: "break-spaces"}}}
        getRowHeight={() => 'auto'} 
-       columnVisibilityModel={{id:false}}
+       
         rows={transactionRows}
         columns={columns}
         pageSizeOptions={[5, 10, 15, 20,100]}

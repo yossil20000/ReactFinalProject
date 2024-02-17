@@ -1,22 +1,23 @@
 import '../../Types/Number.extensions'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
-import { useCallback, useState } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import Item from '../../Components/Item';
 import { useClubAccountQuery, useClubAddTransactionPaymentMutation } from '../../features/Account/accountApiSlice';
-import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, IPaymentReciepe, PaymentMethod, Transaction_OT, Transaction_Type, getTransactionToPaymentReciept } from '../../Interfaces/API/IClub';
 import { IExpenseBase } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { MemberType } from '../../Interfaces/API/IMember';
-import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
 import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo';
+import { GridExpandMoreIcon } from '@mui/x-data-grid';
 export interface PayTransactionDialogProps {
 
   onClose: () => void;
@@ -33,7 +34,7 @@ let newTransaction: IAddTransaction = {
     accountType: ""
   },
   amount: Number("0"),
-  
+
   type: Transaction_Type.DEBIT,
   order: {
     type: Transaction_OT.TRANSFER,
@@ -73,10 +74,17 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const theme = useTheme()
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
-
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [isSaved, setIsSaved] = useState(false);
+  const [reciepe, setReciepe] = useState<IPaymentReciepe>()
 
+  const [isSaved, setIsSaved] = useState(false);
+  useEffect(() => {
+    if (selectedTransaction) {
+      const reciepe = getTransactionToPaymentReciept().getReciep(selectedTransaction)
+      console.info("PayTransactionDialog/reciepe", reciepe)
+      setReciepe(reciepe);
+    }
+  }, [selectedTransaction])
   const UpdateSourceAccountFields = (): IAddTransaction => {
     let newObj: IAddTransaction = selectedTransaction
     newObj = {
@@ -96,7 +104,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
       },
       payment: {
         method: selectedTransaction.payment.method,
-        referance: selectedTransaction.payment.referance
+        referance: JSON.stringify(reciepe)
       },
       description: selectedTransaction.description,
       date: new Date()
@@ -160,10 +168,10 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     :
     <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_NewTransactions/Source"} includesType={[MemberType.Club]} /> */
   }
-  const handleFlipClick = ()=> {
-    CustomLogger.log("NewTransaction/handleFlipClick",flipSource, )
+  const handleFlipClick = () => {
+    CustomLogger.log("NewTransaction/handleFlipClick", flipSource,)
     setFlipSource((prev) => !prev)
-    
+
   }
   const handleNumericChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -182,6 +190,12 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
     setSelectedTransaction(newObj)
   };
+  const handleReciepeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    CustomLogger.log("NewTransaction/handleReciepeChange", event.target.name, event.target.value)
+    const newObj: IPaymentReciepe = SetProperty(reciepe, event.target.name, event.target.value) as IPaymentReciepe;
+    setReciepe(newObj)
+  };
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
     newObj = setProperty(newObj, path, value);
@@ -196,6 +210,46 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
     CustomLogger.log("PayTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
+  }
+  const getReciepeSummary = () => {
+    return (<>Payment Info</>)
+  }
+  const getReciepeDetailes = () => {
+    return (
+      <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12} rowGap={1}>
+        <Grid item xs={12} md={4}>
+          <TextField fullWidth={true} onChange={handleReciepeChange} id="bank" name="bank"
+            label="Bank" placeholder="Bank" variant="standard"
+            value={reciepe?.bank} required
+            helperText="" error={false} InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField fullWidth={true} onChange={handleReciepeChange} id="branch" name="branch"
+            label="Branch" placeholder="Branch" variant="standard"
+            value={reciepe?.branch} required
+            helperText="" error={false} InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField fullWidth={true} onChange={handleReciepeChange} id="accountId" name="accountId"
+            label="Account Id" placeholder="AccountId" variant="standard"
+            value={reciepe?.accountId} required
+            helperText="" error={false} InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField fullWidth={true} onChange={handleReciepeChange} id="referance" name="referance"
+            multiline
+            label="Referance" placeholder="Referance" variant="standard"
+            value={reciepe?.referance} required
+            helperText="" error={false} InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
+            multiline
+            label="Description" placeholder="Expense Description" variant="standard"
+            value={selectedTransaction?.description} required
+            helperText="" error={false} InputLabelProps={{ shrink: true }} />
+        </Grid>
+      </Grid>)
   }
   return (
 
@@ -218,31 +272,25 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
               </Grid >
               <Grid item xs={2} textAlign={"center"} margin={"auto"}>
                 <IconButton color="primary" aria-label="flip source and destination" onClick={handleFlipClick}>
-                  <FlipCameraAndroidIcon/>
+                  <FlipCameraAndroidIcon />
                 </IconButton>
               </Grid>
               <Grid item xs={11} sm={5}>
                 {RenderDestination()}
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={2}>
                 <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
                   disabled
                   label="Pay Method" placeholder="Payment Method" variant="standard"
                   value={selectedTransaction?.payment.method} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
-                  multiline
-                  label="Pay Referance" placeholder="Payment Referance" variant="standard"
-                  value={selectedTransaction?.payment.referance} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={6}>
+
+              <Grid item xs={12} md={3}>
                 <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
                   selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={4}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"
@@ -250,25 +298,44 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                   helperText="" error={false} InputLabelProps={{ shrink: true }}
                   inputProps={{ max: 1000, min: 1 }} />
               </Grid>
-              <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
-                <Item sx={{ marginLeft: "0px" }}>
-                  <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
-                    <ThemeProvider theme={theme}>
-                      <MobileDateTimePicker
-                        label="Date"
-                        value={DateTime.fromJSDate(selectedTransaction.date)}
-                        onChange={handleDateChange}
-                      />
-                    </ThemeProvider>
-                  </LocalizationProvider>
-                </Item>
+              <Grid item sx={{ marginLeft: "0px" }} xs={12} md={3}>
+                <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
+                  <ThemeProvider theme={theme}>
+                    <MobileDatePicker
+                      sx={{ width: '100%', paddingLeft: '0px' }}
+                      label="Date"
+                      value={DateTime.fromJSDate(selectedTransaction.date)}
+                      onChange={handleDateChange}
+                    />
+                  </ThemeProvider>
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={12}>
-                <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
-                  multiline
-                  label="Description" placeholder="Expense Description" variant="standard"
-                  value={selectedTransaction?.description} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+                <Accordion>
+                  <AccordionSummary expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>
+                    {getReciepeSummary()}
+                  </AccordionSummary>
+                  <AccordionDetails>{getReciepeDetailes()}</AccordionDetails>
+                </Accordion>
+              </Grid>
+              <Grid item xs={12}>
+                <Accordion>
+                  <AccordionSummary expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>
+                    Payment Summary
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid>
+                      <Grid item xs={12}>
+                        <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"
+                          disabled
+                          multiline
+                          label="Pay Referance" placeholder="Payment Referance" variant="standard"
+                          value={JSON.stringify(reciepe)} required
+                          helperText="" error={false} InputLabelProps={{ shrink: true }} />
+                      </Grid>
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
             </Grid>
           </DialogContent>

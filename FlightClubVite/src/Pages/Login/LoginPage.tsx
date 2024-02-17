@@ -116,7 +116,7 @@ export default function LoginPage() {
     <>
 
       <ThemeProvider theme={theme}>
-        <Container component="main" >
+        <Container component="main" style={{ overflow: "auto" }}>
           <CssBaseline />
           {showVersion == false ?
             (
@@ -198,9 +198,9 @@ export default function LoginPage() {
                   </Grid>
                 </Box>
               </Box>
-            ) : 
+            ) :
             (
-<Copyright show={true} />
+              <Copyright show={true} />
             )}
 
           <Grid container>
@@ -215,7 +215,7 @@ export default function LoginPage() {
               </Typography>
             </Grid>
           </Grid>
-          
+
         </Container>
       </ThemeProvider>
     </>

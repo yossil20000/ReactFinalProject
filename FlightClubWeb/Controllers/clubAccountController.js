@@ -739,7 +739,7 @@ exports.add_transaction_payment = [
           await session.abortTransaction();
           return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(type, `Transaction Type`, 'type', "DB.ClubAccount")).validationResult.errors }));
         }
-
+      
         const sourceTransaction = new Transaction({
           source: tSource,
           destination: tDestination,

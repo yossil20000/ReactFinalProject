@@ -1,3 +1,4 @@
+import { json } from "react-router-dom";
 import { IAccount } from "./IAccount";
 import { Status } from "./IStatus";
 
@@ -32,12 +33,12 @@ export interface IClubAccountBase {
   },
   account_saving: [
     {
-        _id: string,
-        id: string,
-        balance:number,
-        description: string
+      _id: string,
+      id: string,
+      balance: number,
+      description: string
     }
-]
+  ]
 }
 
 export interface IClubAccount extends IClubAccountBase {
@@ -47,23 +48,23 @@ export interface IClubAccountSaving {
   _id: string;
   balance: number,
   club: {
-      account_id: string,
-      brand: string,
-      branch: string,
-      _id: string
+    account_id: string,
+    brand: string,
+    branch: string,
+    _id: string
   },
   account_saving: [
-      {
-          _id: string,
-          id: string,
-          balance:number,
-          description: string
-      }
+    {
+      _id: string,
+      id: string,
+      balance: number,
+      description: string
+    }
   ]
 }
 export interface IUpdateAccountSaving {
   reserve_id: string,
-  new_balance : number
+  new_balance: number
 }
 export enum EAccountType {
   EAT_BANK = "100100",
@@ -88,8 +89,8 @@ export enum TransactionCombo_Type {
   DEBIT = "Debit"
 }
 export enum Transaction_Calc_type {
-  TRANSACTION= "TRANSACTION",
-  AMOUNT= "AMOUNT"
+  TRANSACTION = "TRANSACTION",
+  AMOUNT = "AMOUNT"
 }
 export enum PaymentMethod {
 
@@ -149,30 +150,30 @@ export class CTransaction {
 
   static getAccountSign = (item: ITransaction, accountId: string | undefined): string => {
     CustomLogger.info("CTransaction/item", item, item.type, Transaction_Type.CREDIT)
-    if(item.calculation_type == Transaction_Calc_type.AMOUNT)
-    return item.amount >= 0 ? "green" : "red";
+    if (item.calculation_type == Transaction_Calc_type.AMOUNT)
+      return item.amount >= 0 ? "green" : "red";
 
     if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toUpperCase()) {
       return 'gray';
     }
-   
+
     if (item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toUpperCase())
-    return "red"
-    else if (accountId !== undefined && item.source.includes(accountId) )
+      return "red"
+    else if (accountId !== undefined && item.source.includes(accountId))
       return "red"
     else
       return "green";
 
   }
 
-  static getAmount = (item: ITransaction, accountId: string | undefined,balance:boolean=false): number => {
-    if(item.calculation_type == Transaction_Calc_type.AMOUNT)
-      return balance ? Number(item.source_balance.toFixed(2)) :Number(item.amount.toFixed(2))
+  static getAmount = (item: ITransaction, accountId: string | undefined, balance: boolean = false): number => {
+    if (item.calculation_type == Transaction_Calc_type.AMOUNT)
+      return balance ? Number(item.source_balance.toFixed(2)) : Number(item.amount.toFixed(2))
     if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toLocaleUpperCase())
       return item.amount;
     if (item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toLocaleUpperCase())
-    return item.amount * -1
-    else if (accountId !== undefined && item.source.includes(accountId) )
+      return item.amount * -1
+    else if (accountId !== undefined && item.source.includes(accountId))
       return item.amount * -1
     else
       return item.amount
@@ -210,3 +211,117 @@ export interface IClubAccountsCombo {
   },
   accounts: IClubAccountCombo[]
 }
+
+export interface IPaymentReciepe {
+  format: string;
+  companyId: string;
+  companyName: string;
+  phone: string;
+  email: string;
+  to: string;
+  reciepeId: string;
+  date: Date;
+  accountId: string;
+  cardId: string;
+  bank: string;
+  branch: string;
+  amount: number;
+  tax: number;
+  description: string
+  referance: string
+
+}
+type rConvert = <T, U>(x: T) => U
+interface IReciepeProcess<T, U> {
+  convert(object: T): U
+}
+export class CPaymentReciepe<F , T> {
+  private convert: (f:F) => T;
+/*   private from: F;*/
+  private to: T | undefined; 
+  constructor( convert : (f:F) => T) {
+   this.convert = convert
+/*     this.from = from;*/
+    
+  }
+  public getReciep(from:F):T  {
+    this.to = this.convert(from)
+      return this.to;
+  }
+  public toString() : string {
+    return this.to === undefined ? JSON.stringify({}) : JSON.stringify(this.to)
+  }
+  public toObject(object: string) : T {
+    return object === undefined ? JSON.parse("") : JSON.parse(object)
+  }
+}
+const ppp  = (x: IPaymentReciepe): IPaymentReciepe =>  x
+const x: IPaymentReciepe = {
+  format: "",
+  companyId: "",
+  companyName: "",
+  phone: "",
+  email: "",
+  to: "",
+  reciepeId: "",
+  date: new Date(),
+  accountId: "",
+  cardId: "",
+  bank: "",
+  branch: "",
+  amount: 0,
+  tax: 0,
+  description: "",
+  referance: ""
+}
+export const nameofFactory = <T>() => (name: keyof T) => name;
+
+const convert = (f: ITransaction | IAddTransaction) : IPaymentReciepe => {
+  const s  = "IPaymentReciepe"
+  let reciept: IPaymentReciepe = {
+    format: s.toString(),
+    companyId: "580091627",
+    companyName: "BAZ",
+    phone: "0506523099",
+    email: "golan.bartal@gmail.com",
+    to: "",
+    reciepeId: "",
+    date: f.date,
+    accountId: "",
+    cardId: "",
+    bank: "",
+    branch: "",
+    amount: f.amount,
+    tax: 0,
+    description: f.description,
+    referance: ""
+  }
+  return reciept;
+}
+const transactions: ITransaction = {
+  _id: "",
+  source: "",
+  destination: "",
+  amount: 0,
+  source_balance: 0,
+  destination_balance: 0,
+  type: Transaction_Type.CREDIT,
+  calculation_type: Transaction_Calc_type.AMOUNT,
+  order: {
+    type: Transaction_OT.FLIGHT,
+    _id: ""
+  },
+  payment: {
+    method: PaymentMethod.VISA,
+    referance: ""
+  },
+  description: "",
+  date: new Date()
+}
+export const  getTransactionToPaymentReciept = () => new CPaymentReciepe<ITransaction | IAddTransaction,IPaymentReciepe> (convert)
+const ccc = new CPaymentReciepe<ITransaction,IPaymentReciepe> (convert)
+const cccc = getTransactionToPaymentReciept()
+getTransactionToPaymentReciept().getReciep(transactions)
+console.error("ICLub/ccc",cccc.getReciep(transactions))
+console.error("ICLub/toString",cccc.toString())
+console.error("ICLub/fromString",cccc.toObject(cccc.toString()))
