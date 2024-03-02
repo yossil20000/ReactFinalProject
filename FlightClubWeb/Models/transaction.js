@@ -1,7 +1,25 @@
 const constants = require('../Models/constants');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+/* export interface IPaymentRecipe {
+  format: string;
+  companyId: string;
+  companyName: string;
+  phone: string;
+  email: string;
+  to: string;
+  reciepeId: string;
+  date: Date;
+  accountId: string;
+  cardId: string;
+  bank: string;
+  branch: string;
+  amount: number;
+  tax: number;
+  description: string
+  referance: string
 
+} */
 var TransactionSchema = new Schema({
   source: {type: String, required: true},
   destination: {type: String, required: true},

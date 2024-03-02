@@ -2,6 +2,7 @@ require('dotenv').config();
 const log = require('debug-level').log('mailService');
 var express = require('express');
 const nodemailer = require('nodemailer');
+
 const Q = require('q');
 let sender = {
     service: "gmail",
@@ -66,8 +67,36 @@ function SendMailQ(to, subject,text, callback){
 });
 
 }
+async function SendMailRecipe(to, subject,text,pdf, callback){
+    const deferred = Q.defer();
+    mailOption.to = to;
+    mailOption.subject = subject;
+    mailOption.text = text;
+    mailOption.attachments =[
+        {
+            filename: pdf, // <= Here: made sure file name match
+            path: pdf, // <= Here
+            contentType: 'application/pdf'
+        }
+    ]
+    transporter.sendMail(mailOption, function(err,success) {
+    if(err){
+        log.error(err);
+        deferred.reject(err);
+    }
+    else
+    {
+        log.log(success);
+        deferred.resolve(success);
+    }
+    deferred.promise.nodeify(callback);
+    return deferred.promise;
+});
+
+}
 module.exports = {
     SendMail: SendMail,
-    SendMailQ : SendMailQ
+    SendMailQ : SendMailQ,
+    SendMailRecipe: SendMailRecipe
 } ;
 transporter.verify().then(e => log.log(e)).catch(err => log.error(err));

@@ -12,6 +12,7 @@ const { ApplicationError } = require('../middleware/baseErrors');
 const { CValidationError } = require('../Utils/CValidationError');
 const constants = require('../Models/constants');
 const Expense = require('../Models/expense');
+const { send_recipe } = require('../Services/payReciepPdf');
 
 
 const transactionOptions = {
@@ -809,7 +810,8 @@ exports.add_transaction_payment = [
         await session.commitTransaction();
         const savedCA = await ClubAccount.find().populate('transactions')
         log.info("savedCA", savedCA)
-
+        await send_recipe(destinationAccount.member.contact.email,sourceTransaction);
+        
         return res.status(201).json({ success: true, errors: ["add_transaction success"], data: [] })
       }
       catch (error) {
