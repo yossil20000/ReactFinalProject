@@ -1,3 +1,4 @@
+import { useDataGridProps } from "@mui/x-data-grid/DataGrid/useDataGridProps";
 import { IAccount } from "./IAccount";
 import { Status } from "./IStatus";
 
@@ -211,6 +212,44 @@ export interface IClubAccountsCombo {
   accounts: IClubAccountCombo[]
 }
 
+let newTransaction: IAddTransaction = {
+  source: {
+    _id: "",
+    accountType: ""
+  },
+  destination: {
+    _id: "",
+    accountType: ""
+  },
+  amount: Number("0"),
+
+  type: Transaction_Type.DEBIT,
+  order: {
+    type: Transaction_OT.TRANSFER,
+    _id: ''
+  },
+  payment: {
+    method: PaymentMethod.TRANSFER,
+    referance: ''
+  },
+  description: '',
+  date: new Date()
+}
+export type PayInfo = {
+  selectedTransaction: IAddTransaction,
+  recipe:IPaymentRecipe
+}
+
+export const newPayInfo = () : PayInfo =>{
+  const transaction = newTransaction;
+  const recipe =  getTransactionToPaymentReciept().getReciep(transaction)
+  transaction.payment.referance = JSON.stringify(recipe)
+  return {
+    selectedTransaction: transaction,
+    recipe: recipe
+  }
+
+}
 export interface IPaymentRecipe {
   format: string;
   companyId: string;
@@ -227,7 +266,8 @@ export interface IPaymentRecipe {
   amount: number;
   tax: number;
   description: string
-  referance: string
+  referance: string;
+  type: Transaction_Type
 
 }
 type rConvert = <T, U>(x: T) => U
@@ -235,16 +275,16 @@ interface IRecipeProcess<T, U> {
   convert(object: T): U
 }
 export class CPaymentRecipe<F , T> {
-  private convert: (f:F) => T;
+  private convert: (f:F,t?:T) => T;
 /*   private from: F;*/
   private to: T | undefined; 
-  constructor( convert : (f:F) => T) {
+  constructor( convert : (f:F,t?:T) => T) {
    this.convert = convert
 /*     this.from = from;*/
     
   }
-  public getReciep(from:F):T  {
-    this.to = this.convert(from)
+  public getReciep(from:F,to?: T):T  {
+    this.to = this.convert(from,to)
       return this.to;
   }
   public toString() : string {
@@ -271,29 +311,33 @@ const x: IPaymentRecipe = {
   amount: 0,
   tax: 0,
   description: "",
-  referance: ""
+  referance: "",
+  type: Transaction_Type.DEBIT
 }
 export const nameofFactory = <T>() => (name: keyof T) => name;
 
-const convert = (f: ITransaction | IAddTransaction) : IPaymentRecipe => {
+const convert = (f: ITransaction | IAddTransaction,t?:IPaymentRecipe) : IPaymentRecipe => {
   const s  = "IPaymentRecipe"
+  
+  /* const recipe : IPaymentRecipe = JSON.parse(f.payment.referance) */
   let reciept: IPaymentRecipe = {
     format: s.toString(),
-    companyId: "580091627",
-    companyName: "BAZ",
-    phone: "0506523099",
-    email: "golan.bartal@gmail.com",
-    to: "",
-    reciepeId: "",
+    companyId: t ? t.companyId : "580091627",
+    companyName: t ? t.companyName : "BAZ",
+    phone: t ? t.phone : "0506523099",
+    email: t ? t.email : "golan.bartal@gmail.com",
+    to: t ? t.to : "",
+    reciepeId: t ? t.reciepeId : "00000",
     date: f.date,
-    accountId: "",
-    cardId: "",
-    bank: "",
-    branch: "",
+    accountId: t ? t.accountId : "",
+    cardId: t ? t.cardId : "",
+    bank: t ? t.bank : "",
+    branch: t ? t.branch : "",
     amount: f.amount,
-    tax: 0,
+    tax: t ? t.tax : 0,
     description: f.description,
-    referance: ""
+    referance: t ? t.referance : "",
+    type: f ? f.type : Transaction_Type.DEBIT
   }
   return reciept;
 }

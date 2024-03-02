@@ -6,7 +6,7 @@ import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
 import Item from '../../Components/Item';
 import { useClubAccountQuery, useClubAddTransactionPaymentMutation } from '../../features/Account/accountApiSlice';
-import { EAccountType, IAddTransaction, IPaymentRecipe, PaymentMethod, Transaction_OT, Transaction_Type, getTransactionToPaymentReciept } from '../../Interfaces/API/IClub';
+import { EAccountType, IAddTransaction, IPaymentRecipe, PayInfo, PaymentMethod, Transaction_OT, Transaction_Type, getTransactionToPaymentReciept, newPayInfo } from '../../Interfaces/API/IClub';
 import { IExpenseBase } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
 import { getValidationFromError } from '../../Utils/apiValidation.Parser';
@@ -24,29 +24,7 @@ export interface PayTransactionDialogProps {
   onSave: (value: IExpenseBase) => void;
   open: boolean;
 }
-let newTransaction: IAddTransaction = {
-  source: {
-    _id: "",
-    accountType: ""
-  },
-  destination: {
-    _id: "",
-    accountType: ""
-  },
-  amount: Number("0"),
 
-  type: Transaction_Type.DEBIT,
-  order: {
-    type: Transaction_OT.TRANSFER,
-    _id: ''
-  },
-  payment: {
-    method: PaymentMethod.TRANSFER,
-    referance: ''
-  },
-  description: '',
-  date: new Date()
-}
 const getAccountType = (memberType: string | undefined): string => {
   /* CustomLogger.info("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
   /* CustomLogger.info("getTransaction/getAccountType/memberType == MemberType.Club.toString()",memberType,memberType == MemberType.Club.toString()) */
@@ -67,7 +45,9 @@ const getAccountType = (memberType: string | undefined): string => {
 }
 
 function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactionDialogProps) {
-  const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
+  /* const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
+  const [recipe, setRecipe] = useState<IPaymentRecipe>() */
+  const [payInfo,setPayInfo] = useState<PayInfo>(newPayInfo)
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionPaymentMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [flipSource, setFlipSource] = useState(false)
@@ -75,18 +55,13 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const [selectedSource, setSelectedSource] = useState<InputComboItem>()
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [recipe, setRecipe] = useState<IPaymentRecipe>()
+  
 
   const [isSaved, setIsSaved] = useState(false);
-  useEffect(() => {
-    if (selectedTransaction) {
-      const recipe = getTransactionToPaymentReciept().getReciep(selectedTransaction)
-      console.info("PayTransactionDialog/recipe", recipe)
-      setRecipe(recipe);
-    }
-  }, [selectedTransaction])
+
+
   const UpdateSourceAccountFields = (): IAddTransaction => {
-    let newObj: IAddTransaction = selectedTransaction
+    let newObj: IAddTransaction = payInfo.selectedTransaction
     newObj = {
       source: {
         _id: selectedSource?.key2 === undefined ? "" : selectedSource?.key2,
@@ -96,29 +71,28 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
         _id: selectedDestination?.key2 === undefined ? "" : selectedDestination?.key2,
         accountType: getAccountType(selectedDestination?.key)
       },
-      type: selectedTransaction.type,
-      amount: selectedTransaction.amount,
+      type: payInfo.selectedTransaction.type,
+      amount: payInfo.selectedTransaction.amount,
       order: {
-        type: selectedTransaction.order.type,
+        type: payInfo.selectedTransaction.order.type,
         _id: ''
       },
       payment: {
-        method: selectedTransaction.payment.method,
-        referance: JSON.stringify(recipe)
+        method: payInfo.selectedTransaction.payment.method,
+        referance: JSON.stringify(payInfo.recipe)
       },
-      description: selectedTransaction.description,
+      description: payInfo.selectedTransaction.description,
       date: new Date()
     }
     CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
     CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
-    setSelectedTransaction(newObj);
+    setPayInfo({selectedTransaction: newObj,recipe: payInfo.recipe});
     return newObj
   }
 
   const handleOnCancel = () => {
     setValidationAlert([])
-
     onClose()
   }
   const handleOnValidatiobClose = useCallback(() => {
@@ -127,7 +101,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   }, [])
 
   const handleOnSave = async () => {
-    CustomLogger.log("PayTransactionDialog/onSave", selectedTransaction)
+    CustomLogger.log("PayTransactionDialog/onSave", payInfo.selectedTransaction)
     setValidationAlert([]);
     const transaction = UpdateSourceAccountFields()
     if (transaction !== undefined) {
@@ -180,21 +154,29 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     if (event.target.name = "amount") {
       event.target.value = Math.abs(Number(event.target.value)).toString()
     }
-    const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
-
-    setSelectedTransaction(newObj)
+    let newObj: IAddTransaction = SetProperty(payInfo.selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
+    const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)
+    newObj = SetProperty(newObj, "payment.referance", JSON.stringify(recipe)) as IAddTransaction;
+    setPayInfo({selectedTransaction: newObj, recipe: recipe})
   };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
     CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
-    const newObj: IAddTransaction = SetProperty(selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
-    setSelectedTransaction(newObj)
+    const newObj: IAddTransaction = SetProperty(payInfo.selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
+    const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)
+    setPayInfo({selectedTransaction: newObj, recipe: recipe})
   };
+/*   const updateRecipe = (newRecipe : IPaymentRecipe) => {
+    const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)
+    const newObj = SetProperty(payInfo.selectedTransaction, "payment.referance", JSON.stringify(newRecipe)) as IAddTransaction;
+    setPayInfo({selectedTransaction: newObj, recipe: recipe})
+  } */
   const handleRecipeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
     CustomLogger.log("NewTransaction/handleRecipeChange", event.target.name, event.target.value)
-    const newObj: IPaymentRecipe = SetProperty(recipe, event.target.name, event.target.value) as IPaymentRecipe;
-    setRecipe(newObj)
+    let recipe: IPaymentRecipe = SetProperty(payInfo.recipe, event.target.name, event.target.value) as IPaymentRecipe;
+    recipe = getTransactionToPaymentReciept().getReciep(payInfo.selectedTransaction,recipe)
+    setPayInfo({selectedTransaction:payInfo.selectedTransaction,recipe: recipe})
   };
   const SetProperty = (obj: any, path: string, value: any): any => {
     let newObj = { ...obj };
@@ -205,11 +187,15 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
   const handleDateChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0);
-    setSelectedTransaction(prev => ({ ...prev, date: newDate }))
+    const newObj = setProperty(payInfo.selectedTransaction, "date", newDate)
+    const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)
+    setPayInfo({selectedTransaction:newObj,recipe: recipe})
   };
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
-    CustomLogger.log("PayTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
+    const newObj = setProperty(payInfo.selectedTransaction, prop, item.lable)
+    const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)
+    setPayInfo({selectedTransaction:newObj,recipe: recipe})
+    CustomLogger.log("PayTransactionDialog/onComboChanged/selectedTransaction", payInfo.selectedTransaction)
   }
   const getRecipeSummary = () => {
     return (<>Payment Info</>)
@@ -220,33 +206,40 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
         <Grid item xs={12} md={4}>
           <TextField fullWidth={true} onChange={handleRecipeChange} id="bank" name="bank"
             label="Bank" placeholder="Bank" variant="standard"
-            value={recipe?.bank} required
+            value={payInfo.recipe?.bank} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} md={4}>
           <TextField fullWidth={true} onChange={handleRecipeChange} id="branch" name="branch"
             label="Branch" placeholder="Branch" variant="standard"
-            value={recipe?.branch} required
+            value={payInfo.recipe?.branch} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} md={4}>
           <TextField fullWidth={true} onChange={handleRecipeChange} id="accountId" name="accountId"
             label="Account Id" placeholder="AccountId" variant="standard"
-            value={recipe?.accountId} required
+            value={payInfo.recipe?.accountId} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12}>
           <TextField fullWidth={true} onChange={handleRecipeChange} id="referance" name="referance"
             multiline
             label="Referance" placeholder="Referance" variant="standard"
-            value={recipe?.referance} required
+            value={payInfo.recipe?.referance} required
+            helperText="" error={false} InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField fullWidth={true} onChange={handleRecipeChange} id="reciepeId" name="reciepeId"
+            multiline
+            label="Reciepe Id" placeholder="reciepeId" variant="standard"
+            value={payInfo.recipe?.reciepeId} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
         <Grid item xs={12} md={12}>
           <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
             multiline
             label="Description" placeholder="Expense Description" variant="standard"
-            value={selectedTransaction?.description} required
+            value={payInfo.selectedTransaction?.description} required
             helperText="" error={false} InputLabelProps={{ shrink: true }} />
         </Grid>
       </Grid>)
@@ -282,19 +275,19 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                 <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
                   disabled
                   label="Pay Method" placeholder="Payment Method" variant="standard"
-                  value={selectedTransaction?.payment.method} required
+                  value={payInfo.selectedTransaction?.payment.method} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
 
               <Grid item xs={12} md={3}>
                 <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
-                  selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
+                  selectedItem={{ lable: payInfo.selectedTransaction.type === undefined ? "" : payInfo.selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"
-                  value={selectedTransaction?.amount} required
+                  value={payInfo.selectedTransaction?.amount} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }}
                   inputProps={{ max: 1000, min: 1 }} />
               </Grid>
@@ -304,7 +297,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                     <MobileDatePicker
                       sx={{ width: '100%', paddingLeft: '0px' }}
                       label="Date"
-                      value={DateTime.fromJSDate(selectedTransaction.date)}
+                      value={DateTime.fromJSDate(payInfo.selectedTransaction.date)}
                       onChange={handleDateChange}
                     />
                   </ThemeProvider>
@@ -330,7 +323,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                           disabled
                           multiline
                           label="Pay Referance" placeholder="Payment Referance" variant="standard"
-                          value={JSON.stringify(recipe)} required
+                          value={JSON.stringify(payInfo.recipe)} required
                           helperText="" error={false} InputLabelProps={{ shrink: true }} />
                       </Grid>
                     </Grid>
