@@ -1,13 +1,49 @@
 const Member = require('../Models/member');
+const Flight = require('../Models/flight')
 const FlightReservation = require('../Models/flightReservation');
 const { ApplicationError } = require('../middleware/baseErrors');
 const async = require('async');
 const log = require('debug-level').log('MemberController');
 const mail = require("../Services/mailService");
+require('../Types/date.extensions')
 
 var { body, validationResult } = require('express-validator');
+const { path } = require('../app');
+const member = require('../Models/member');
 
-
+exports.member_flight_summary = async function (req, res, next) {
+    try {
+        log.info("member_flight_summary");
+        const filter = {
+            from: req.body.from === undefined ? new Date().getStartOfYear() : new Date(req.body.from).getStartDayDate(),
+            to: req.body.to === undefined ? new Date().getEndOfYear() : new Date(req.body.to).getEndDayDate(),
+            status: req.body.status === undefined ? 'CLOSE' : req.body.status,
+            member_type: "Member"
+        }
+        let result = await Flight.aggregate([
+            {$match: {date : {'$gte': filter.from, '$lte' : filter.to },status: filter.status }}, 
+            {$group: {_id: '$member',total: {$sum: {$add: ['$engien_stop' ,{$multiply: [-1, '$engien_start']}]}}}},
+            {$project: {
+                totalHours: {
+                    $convert: {
+                        input: '$total',
+                        to:'string'
+                    }
+                }
+            }}
+        ]).exec();
+        
+        console.log(result)
+        const members = await Member.find({member_type: filter.member_type})
+            .select({'_id':1, 'member_id': 1 ,'id_number': 1, 'first_name': 1 , 'family_name': 1, 'flights_summary': 1})
+            .sort([['family_name', 'ascending']])
+            .exec();
+            res.status(201).json({ success: true, errors: [], data: {size: result.length, flights: result,members: members} });
+    }
+    catch (error) {
+        return next(new ApplicationError("member_list", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+}
 exports.member_list = function (req, res, next) {
     try {
         log.info("member_list");

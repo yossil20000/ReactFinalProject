@@ -4,7 +4,10 @@ const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', ti
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short'});
 declare global {
    interface Date {
+      addHours(hours: number, useThis?: boolean): Date;
       addDays(days: number, useThis?: boolean): Date;
+      addMonths(days: number, useThis?: boolean): Date;
+      addYears(days: number, useThis?: boolean): Date;
       isToday(): boolean;
       clone(): Date;
       isAnotherMonth(date: Date): boolean;
@@ -35,6 +38,16 @@ declare global {
       getEndOfYear(): Date
    }
 }
+
+Date.prototype.getStartMonth = function() : Date{
+   this.setDate(1)
+   return this
+}
+Date.prototype.getEndMonth = function() : Date{
+   
+   return this.getLastDateOfMonth(this.getFullYear(),this.getMonth())
+}
+
 Date.prototype.getStartOfYear = function() : Date{
    return this.getFirstDateOfMonth(this.getFullYear(),0)
 
@@ -125,10 +138,32 @@ Date.prototype.getFirstDateOfMonth = function(year: number,month:number) : Date 
    return new Date(year,month ,1);
 }
 
+Date.prototype.addHours = function (hours: number): Date {
+   if (!hours) return this;
+   let date = this;
+   date.setHours(date.getHours() + hours);
+
+   return date;
+};
+
 Date.prototype.addDays = function (days: number): Date {
    if (!days) return this;
    let date = this;
    date.setDate(date.getDate() + days);
+
+   return date;
+};
+Date.prototype.addMonths = function (months: number): Date {
+   if (!months) return this;
+   let date = this;
+   date.setMonth(date.getMonth() + months)
+
+   return date;
+};
+Date.prototype.addYears = function (years: number): Date {
+   if (!years) return this;
+   let date = this;
+   date.setDate(date.getFullYear() + years);
 
    return date;
 };

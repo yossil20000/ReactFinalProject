@@ -152,3 +152,37 @@ Date.prototype.getDisplayDateTime = function ()  {
 Date.prototype.getFSDate = function () {
    return `${this.getFullYear()}_${this.getMonth()}_${this.getDay()}_${this.getHours()}_${this.getMinutes()}_${this.getSeconds()}`
 }
+
+Date.prototype.getStartOfYear = function() {
+   return this.getFirstDateOfMonth(this.getFullYear(),0)
+}
+Date.prototype.getEndOfYear = function() {
+   return this.getLastDateOfMonth(this.getFullYear(),11)
+}
+
+Date.prototype.getQuarter = function() {
+   return Math.floor(this.getMonth() / 3) + 1
+}
+Date.prototype.getStartQuarterDate = function(year ,quarter) {
+   if(quarter == undefined){
+      quarter= (new Date()).getQuarter()
+   }
+   if(year === undefined){
+      year = (new Date()).getFullYear()
+   }
+   let step = (quarter -1);
+   return new Date(year,step * 3 ,1,0,0,0,0);
+}
+Date.prototype.getEndQuarterDate = function(year ,quarter) {
+   if(quarter == undefined){
+      quarter= (new Date()).getQuarter()
+   }
+   if(year === undefined){
+      year = (new Date()).getFullYear()
+   }
+   let step = (quarter -1);
+   let month = (step * 3) + 3;
+   let lastDay = new Date(year,month,0,23,59,59,999);
+   console.log("QuarterDate",step,month,lastDay)
+   return lastDay;
+}

@@ -7,7 +7,8 @@ import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import IMemberUpdate from "../../Interfaces/IMemberInfo";
 import IMemberCreate from "../../Interfaces/IMemberCreate";
-import { Gender, IMemberAdmin, IMemberCombo, IMemberComboFilter, IMemberStatus, Status } from "../../Interfaces/API/IMember";
+import { Gender, IMemberAdmin, IMemberCombo, IMemberComboFilter, IMemberFlightSummary, IMemberStatus, Status } from "../../Interfaces/API/IMember";
+import { IFlightSummaryFilter } from "../../Interfaces/API/IFilter";
 
 
 interface Role {
@@ -141,6 +142,13 @@ export const apiSlice = createApi({
                 }),
                 invalidatesTags: ["Members"]
             }),
+            flightSummary: builder.mutation<IResultBaseSingle<IMemberFlightSummary>,IFlightSummaryFilter>({
+                query: (filter) => ({
+                    url:``,
+                    method: "PUT",
+                    body: filter
+                })
+            })
         }
     }
 });
@@ -154,7 +162,8 @@ export const {
     useUpdateMemberMutation,
     useFetchMembersComboQuery,
     useFetchMembersAdminQuery,
-    useUpdateStatusMutation
+    useUpdateStatusMutation,
+    useFlightSummaryMutation
  } = apiSlice
 
 

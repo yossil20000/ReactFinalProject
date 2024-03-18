@@ -13,6 +13,7 @@ var AccountSavingSchema = new Schema({
   balance: { type: mongoose.Decimal128, default: 0, get: getDecimal },
   description: { type: String, required: true, default: "Engiene Replacment" }
 },{toJSON: {getters: true}})
+
 var ClubAccountSchema = new Schema({
   accounts: [{ type: Schema.Types.ObjectId, ref: "Account", unique: true }],
   transactions: [TransactionSchema],

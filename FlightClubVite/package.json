@@ -25,6 +25,7 @@
     "@turf/turf": "^6.5.0",
     "async-mutex": "^0.4.0",
     "axios": "^1.6.0",
+    "clsx": "^2.1.0",
     "dotenv": "^16.3.1",
     "eslint-plugin-jsx-control-statements": "^3.0.0",
     "luxon": "^3.4.3",

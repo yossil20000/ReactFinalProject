@@ -18,7 +18,8 @@ export class Enum2ComboItem<T extends {[name: string]: any}> {
 
 export enum EviewMode {
   E_VM_DAY,
-  E_VM_NORMAL
+  E_VM_NORMAL,
+  E_VM_MONTH
 }
 export enum EfilterMode {
   E_FM_DATE,

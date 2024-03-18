@@ -1,4 +1,5 @@
 import '../../Types/date.extensions';
+import './cell.css'
 import { lightBlue, red ,grey} from '@mui/material/colors';
 import { Box, Grid, Typography } from '@mui/material'
 

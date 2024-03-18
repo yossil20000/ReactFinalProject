@@ -9,6 +9,11 @@ const SALT_WORK_FACTOR = 10;
 const {DateTime} = require('luxon');
 
 var Schema = mongoose.Schema;
+var FlightsSummarySchema = new Schema({
+    year: {type: String, require: true},
+    total: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
+},{toJSON: {getters: true}})
+
 var MemberSchema = new Schema({
     member_id: {type: String, required: true },
     id_number: {type: String, required: true ,default: "00000000"},
@@ -62,6 +67,7 @@ var MemberSchema = new Schema({
     date_of_birth: {type: Date, required: true},
     date_of_join: {type: Date, required: true},
     date_of_leave: {type: Date},
+    flights_summary: [FlightsSummarySchema],
     flights: [{type: Schema.ObjectId,ref: 'Flight'}],
     flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}],
     membership: {type: Schema.ObjectId,ref: 'Membership'},
@@ -83,6 +89,12 @@ var MemberSchema = new Schema({
         });
     });
 }); */
+function getDecimal(value) {
+    if (typeof value !== 'undefined') {
+       return parseFloat(value.toString());
+    }
+    return value;
+};
 
 MemberSchema.methods.hash = function(password){
     return bcrypt.hashSync(password,SALT_WORK_FACTOR);

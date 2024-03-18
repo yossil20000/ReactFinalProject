@@ -13,7 +13,7 @@ const constants = require('../Models/constants');
 
 exports.order_list = function (req, res, next) {
   try {
-    log.info('order_list/body', req.body,req.params,req.query);
+    log.info('order_list/body', req.body, req.params, req.query);
     Order.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
       .populate('member')
       .select(req.body.select === undefined ? "" : req.body.select)
@@ -36,11 +36,11 @@ exports.order_search = [async function (req, res, next) {
   try {
     log.info('order_search/params', req.query);
     /* let from = new Date(req.query.from);
-		let to = new Date(req.query.to);
-		let filter = {order_date: {$gte : from, $lte: to}};
-		if(isNaN(from) || isNaN(to)){
-			filter = {}
-		} */
+    let to = new Date(req.query.to);
+    let filter = {order_date: {$gte : from, $lte: to}};
+    if(isNaN(from) || isNaN(to)){
+      filter = {}
+    } */
     const { orders } = await findOrders(req.query);
     res.status(201).json({ success: true, errors: [], data: orders });
     return;
@@ -76,30 +76,62 @@ exports.order_create = [
   body("pricePeUnit", "pricePeUnitbe a must number ").notEmpty().isNumeric(),
   body("amount", "products must be anumber ").notEmpty().isNumeric(),
   async function (req, res, next) {
+    const session = await mongoose.startSession();
+
     try {
       const errors = validationResult(req);
+
       if (!errors.isEmpty()) {
         return next(new ApplicationError("order_create", 400, "CONTROLLER.ORDER.ORDER_CREATE.VALIDATION", { name: "ExpressValidator", errors }));
       }
+      session.startTransaction();
       const order = await Order.create(req.body);
+
       if (order === null) {
+        session.abortTransaction()
         return res.status(400).json({ success: false, errors: ["Order Not Exist"], data: [] });
       }
-      if(req.body.orderType.referance === "Flight"){
-        Flight.updateOne({_id: req.body.product},{status: "CLOSE"}).exec((err,result) => {
-          if(err){
+      if (req.body.orderType.referance === "Flight") {
+        //positional operator
+        const year = new Date(req.body.order_date).getFullYear();
+        let member = await Member.find({_id: req.body.member._id,"flights_summary.year": year})
+        if(member.length == 0){
+          member = await Member.updateOne({_id: req.body.member._id},{$addToSet: {flights_summary: {year: year,total:0}}})
+        }
+        const updated = await Member.updateMany(
+          {
+            _id: req.body.member._id
+          },
+          {
+            "$inc": {
+              "flights_summary.$[item].total": req.body.units
+            }
+          },
+          {
+            "arrayFilters": [
+              { "item.year": year }
+            ]
+          }
+        )
+        Flight.updateOne({ _id: req.body.product }, { status: "CLOSE" }).exec((err, result) => {
+          if (err) {
+            session.abortTransaction()
             return res.status(400).json({ success: false, errors: err, data: [] });
           }
-          else{
+          else {
             return res.status(201).json({ success: true, errors: [], data: order });
           }
         })
-        
+
       }
       
     }
     catch (error) {
+      session.abortTransaction()
       return next(new ApplicationError("order_create", 400, "CONTROLLER.ORDER.ORDER_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+    finally {
+      await session.endSession();
     }
   }
 ]
@@ -119,36 +151,36 @@ exports.order_quarter_create = [
 
       session.startTransaction();
       const selectedDevice = await Device.findById(device).exec();
-      if(selectedDevice == null){
+      if (selectedDevice == null) {
         await session.abortTransaction();
         return next(new ApplicationError("order_quarter_create", 400, "CONTROLLER.ORDER.ORDER_QUARTER_CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError(device, `Device not found`, 'device_id', "DB.ClubAccount")).validationResult.errors }));
       }
       const memberships = await Memberships.find().exec();
-      if(memberships == null){
+      if (memberships == null) {
         await session.abortTransaction();
         return next(new ApplicationError("order_quarter_create", 400, "CONTROLLER.ORDER.ORDER_QUARTER_CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError("Gold", `Membership not found`, 'rank', "DB.ClubAccount")).validationResult.errors }));
       }
-      let promises=[];
-      if(Array.isArray(members)){
+      let promises = [];
+      if (Array.isArray(members)) {
         promises = members.map(async (member) => {
           let memberShip = member.memberships;
-          let currentMember =  await Member.findOne({_id: member}).select("membership").populate("membership").exec();
-          console.log("member",currentMember)
+          let currentMember = await Member.findOne({ _id: member }).select("membership").populate("membership").exec();
+          console.log("member", currentMember)
           let price = currentMember.membership.montly_price;
           let order = new Order({
             order_date: new Date(date),
             units: 3,
             pricePeUnit: currentMember.membership.montly_price,
             amount: 3 * currentMember.membership.montly_price,
-            orderType:   {
-              operation: "Credit", 
-              referance: "Montly" 
+            orderType: {
+              operation: "Credit",
+              referance: "Montly"
             },
             description: description,
             status: constants.OrderStatus.CREATED,
             member: member
           });
-          log.info("Quarder for:" ,order._doc);
+          log.info("Quarder for:", order._doc);
           order.save((err, results) => {
             if (err) {
               session.abortTransaction();
@@ -170,7 +202,7 @@ exports.order_quarter_create = [
       await session.abortTransaction();
       return next(new ApplicationError("order_quarter_create", 400, "CONTROLLER.ORDER.ORDER_QUARTER_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
     }
-    finally{
+    finally {
       await session.endSession();
     }
   }

@@ -2,7 +2,6 @@ import "../Types/date.extensions.js"
 import { IDateFilter } from "../Interfaces/IDateFilter";
 import { OrderStatus } from "../Interfaces/API/IAccount.js";
 import { FlightStatus } from "../Interfaces/API/IFlight.js";
-import { IMemberComboFilter, Status } from "../Interfaces/API/IMember.js";
 
 
 export function getTodayFilter(): IDateFilter {
@@ -95,6 +94,7 @@ export function from_to_year_Filter(today: Date): IDateFilter {
     currentOffset: (new Date()).getTimezoneOffset()
   }
 };
+
 
 
 export function Current_Quarter_Filter(): any {

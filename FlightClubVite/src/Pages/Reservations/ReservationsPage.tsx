@@ -31,6 +31,7 @@ import { SetProperty } from "../../Utils/setProperty.js";
 import TodayIcon from '@mui/icons-material/Today';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TableChartIcon from '@mui/icons-material/TableChart';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons.js";
@@ -43,6 +44,9 @@ import MembersCombo from "../../Components/Members/MembersCombo";
 import { MemberType } from "../../Interfaces/API/IMember";
 import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
+import CalanderViewMonth, { IDisplayCell } from "../../Components/Calander/CalanderViewMonth";
+import { DateTime } from "luxon";
+import { fontSize } from "@mui/system";
 
 const dateFilter: IDateFilter = newDateFilter;
 interface ItableData {
@@ -149,7 +153,7 @@ const Accordion = styled((props: AccordionProps) => (
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9em' }} />}
     {...props}
   />
 ))(({ theme }) => ({
@@ -188,7 +192,7 @@ let reservationAddIntitial: IReservationCreateApi = {
 
 function ReservationsPage() {
   const theme = useTheme();
-  const [viewMode, setViewMode] = useState<EviewMode>(EviewMode.E_VM_NORMAL);
+  const [viewMode, setViewMode] = useState<EviewMode>(EviewMode.E_VM_MONTH);
   const [dateRef, setDateRef] = useState(new Date())
   const [openFilter, setOpenFilter] = useState(false)
   const [filterDate, setFilterDate] = useState<IReservationFilterDate>(dateFilter as IReservationFilterDate);
@@ -355,7 +359,18 @@ function ReservationsPage() {
     setFilterDate(newFilter)
     refetch()
   }
-
+  const OnMonthViewDateChange = (date: Date) => {
+    CustomLogger.log("ReservationPage/OnMonthViewDateChange", date)
+    setDateRef(date)
+    const newFilter: IReservationFilterDate = {
+      from: date.getStartMonth(),
+      to: date.getEndMonth(),
+      currentOffset: 0
+    }
+    setFilterDate(newFilter)
+    refetch()
+    CustomLogger.log("ReservationPage/OnMonthViewDateChange_newFilter", newFilter)
+  }
   const onTodayChanged = () => {
     const filter = getTodayFilter();
     setFilterDate(filter);
@@ -410,14 +425,30 @@ function ReservationsPage() {
     const filter = getMonthFilter(newRefDate);
     setFilterDate(filter);
   }
-  const handleViewMode = (
-    event: React.MouseEvent<HTMLElement>,
-    newView: EviewMode | null,
-  ) => {
+  const handleViewMode = (event: React.MouseEvent<HTMLElement>, newView: EviewMode | null) => {
     if (newView !== null)
       setViewMode(newView);
+    if (newView === EviewMode.E_VM_MONTH) {
+      setFilterMode(EfilterMode.E_FM_MONTH)
+    }
   };
-
+ const getMonthReservations = () : IDisplayCell[] => {
+  let monthViewDisplay : IDisplayCell[] = [];
+  const numOfDays = DateTime.local(dateRef.getFullYear(), dateRef.getMonth()+1).daysInMonth as number
+  const today  :Date = new Date()
+  Array.from({ length: numOfDays }).map((_,index) => {
+    const date = index +1
+    const viewDayReservation = reservations?.data.filter((element) => new Date(element.date_from).isSameDate(new Date(dateRef.getFullYear(), dateRef.getMonth(),date)))
+    let displayStyle : React.CSSProperties  = {backgroundColor: '#cce3f6', fontWeight: 'bold'}
+    if(today.isSameDate(new Date(dateRef.getFullYear(),dateRef.getMonth(),index+1))) displayStyle = {backgroundColor: '#dfecf6'}
+    monthViewDisplay[date] = { 
+    display : <><b style={{fontSize: '1.2em'}}>{`${viewDayReservation?.length}`}</b>{ ``}</>,
+     displayStyle: displayStyle,
+     headerStyle: (viewDayReservation?.length === undefined  || viewDayReservation?.length == 0) ? {backgroundColor: "#9abce1", color: "#0067fe", fontSize:"1em"} : {backgroundColor: "#99cccc", color: "#0067fe", fontSize:"1.1em"}
+  }})
+  CustomLogger.info("ReservationPage/getMonthReservations/monthViewDisplay", monthViewDisplay)
+  return monthViewDisplay
+ }
   const getViewDayReservations = (): IReservation[] => {
     CustomLogger.log("ReservationPage/getViewDayReservations/dateRef", dateRef)
     const viewDayReservation = reservations?.data.filter((element) => new Date(element.date_from).isSameDate(dateRef))
@@ -475,7 +506,7 @@ function ReservationsPage() {
       CustomLogger.info("Reservation/OnDeleteFlight/key", confirmation.key)
     }
     else
-      setConfirmation((prev) => ({ ...prev, open: false,isOperate: false }))
+      setConfirmation((prev) => ({ ...prev, open: false, isOperate: false }))
 
   }
   const handleConfirmation = (action: string, id: string) => {
@@ -496,108 +527,120 @@ function ReservationsPage() {
         <Box sx={{ width: '100%' }}>
           {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
           {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
-          <Typography variant="h6" align="center">{`Reservations ${filterDate.from.getDisplayDate()} : ${filterDate.to.getDisplayDate()}`}</Typography>
+          {viewMode === EviewMode.E_VM_MONTH ?
+            (
+              <Typography variant="h6" align="center">{`Reservations`}</Typography>
+            ) : (
+              <Typography variant="h6" align="center">{`Reservations ${filterDate.from.getDisplayDate()} : ${filterDate.to.getDisplayDate()}`}</Typography>
+            )}
+
 
           <Box display={'flex'} justifyContent={"space-between"}>
-            <Box display={'flex'} justifyContent={"flex-start"}>
-              <Tooltip title="Filtering">
-                <ToggleButton value={""} aria-label="close" size="medium" onClick={() => setOpenFilter(true)}>
-                  <FilterAltIcon fontSize="inherit" />
-                </ToggleButton>
-              </Tooltip>
-              <Tooltip title="Prev Reservations">
-                <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="prev-selection" onClick={onFilterModePrev} size="small"> <NavigateBeforeIcon /></ToggleButton>
-              </Tooltip>
-              <Tooltip title="Next Reservations">
-                <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="next-selection" onClick={onFilterModeNext} size="small"> <NavigateNextIcon /></ToggleButton>
-              </Tooltip>
-              <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
-                <List sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <ListItem key={"fromDate"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <DateRangeIcon />
-                      </ListItemIcon>
-                      <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="from" lable='From Date' onChange={onDateChanged} />
+            {viewMode != EviewMode.E_VM_MONTH ?
+              (
+                <Box display={'flex'} justifyContent={"flex-start"}>
+                  <Tooltip title="Filtering">
+                    <ToggleButton value={""} aria-label="close" size="medium" onClick={() => setOpenFilter(true)}>
+                      <FilterAltIcon fontSize="inherit" />
+                    </ToggleButton>
+                  </Tooltip>
+                  <Tooltip title="Prev Reservations">
+                    <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="prev-selection" onClick={onFilterModePrev} size="small"> <NavigateBeforeIcon /></ToggleButton>
+                  </Tooltip>
+                  <Tooltip title="Next Reservations">
+                    <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="next-selection" onClick={onFilterModeNext} size="small"> <NavigateNextIcon /></ToggleButton>
+                  </Tooltip>
+                  <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
+                    <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <ListItem key={"fromDate"} disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <DateRangeIcon />
+                          </ListItemIcon>
+                          <DatePickerDate value={filterDate.from === undefined ? new Date() : filterDate.from} param="from" lable='From Date' onChange={onDateChanged} />
 
-                    </ListItemButton>
+                        </ListItemButton>
 
-                  </ListItem>
-                  <ListItem key={"toDate"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <DateRangeIcon />
-                      </ListItemIcon>
-                      <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"to"} lable='To Date' onChange={onDateChanged} />
+                      </ListItem>
+                      <ListItem key={"toDate"} disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <DateRangeIcon />
+                          </ListItemIcon>
+                          <DatePickerDate value={filterDate.to === undefined ? new Date() : filterDate.to} param={"to"} lable='To Date' onChange={onDateChanged} />
 
-                    </ListItemButton>
+                        </ListItemButton>
 
-                  </ListItem>
-                  <ListItem key={"member"}>
-                    <MembersCombo onChanged={onMemberChanged} source={"_ReservationPage/member"} filter={{ filter: { member_type: MemberType.Member } }} />
-                  </ListItem>
-                  <ListItem key={'today'} disablePadding>
-                    <ListItemButton onClick={onTodayChanged}>
-                      <ListItemIcon>
-                        <TodayIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevDay}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
+                      </ListItem>
+                      <ListItem key={"member"}>
+                        <MembersCombo onChanged={onMemberChanged} source={"_ReservationPage/member"} filter={{ filter: { member_type: MemberType.Member } }} />
+                      </ListItem>
+                      <ListItem key={'today'} disablePadding>
+                        <ListItemButton onClick={onTodayChanged}>
+                          <ListItemIcon>
+                            <TodayIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onPrevDay}>
+                          <ListItemIcon>
+                            <NavigateBeforeIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
 
-                    <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Today</ListItemButton>
-                    <ListItemButton>
-                      <ListItemIcon onClick={onNextDay}>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem key={'week'} disablePadding>
-                    <ListItemButton onClick={onWeekChanged}>
-                      <ListItemIcon>
-                        <CalendarViewWeekIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevWeek}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>This Week</ListItemButton>
-                    <ListItemButton>
-                      <ListItemIcon onClick={onNextWeek}>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem key={'month'} disablePadding>
-                    <ListItemButton onClick={onMonthChanged}>
-                      <ListItemIcon>
-                        <CalendarMonthIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onPrevMonth}>
-                      <ListItemIcon>
-                        <NavigateBeforeIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                    <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>This Month</ListItemButton>
-                    <ListItemButton onClick={onNextMonth}>
-                      <ListItemIcon>
-                        <NavigateNextIcon />
-                      </ListItemIcon>
-                    </ListItemButton>
-                  </ListItem>
-                </List>
-              </GeneralDrawer>
-            </Box>
+                        <ListItemButton onClick={onTodayChanged} sx={{ textAlign: 'center' }}>Today</ListItemButton>
+                        <ListItemButton>
+                          <ListItemIcon onClick={onNextDay}>
+                            <NavigateNextIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                      </ListItem>
+                      <ListItem key={'week'} disablePadding>
+                        <ListItemButton onClick={onWeekChanged}>
+                          <ListItemIcon>
+                            <CalendarViewWeekIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onPrevWeek}>
+                          <ListItemIcon>
+                            <NavigateBeforeIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onWeekChanged} sx={{ textAlign: 'center' }}>This Week</ListItemButton>
+                        <ListItemButton>
+                          <ListItemIcon onClick={onNextWeek}>
+                            <NavigateNextIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                      </ListItem>
+                      <ListItem key={'month'} disablePadding>
+                        <ListItemButton onClick={onMonthChanged}>
+                          <ListItemIcon>
+                            <CalendarMonthIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onPrevMonth}>
+                          <ListItemIcon>
+                            <NavigateBeforeIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                        <ListItemButton onClick={onMonthChanged} sx={{ textAlign: 'center' }}>This Month</ListItemButton>
+                        <ListItemButton onClick={onNextMonth}>
+                          <ListItemIcon>
+                            <NavigateNextIcon />
+                          </ListItemIcon>
+                        </ListItemButton>
+                      </ListItem>
+                    </List>
+                  </GeneralDrawer>
+                </Box>
+              ) :
+              (<></>)}
+
             <Box display={'flex'} justifyContent={"flex-end"}>
               <ToggleButtonGroup value={viewMode} exclusive aria-label="view mode" onChange={handleViewMode}>
                 <ToggleButton value={EviewMode.E_VM_DAY} aria-lable="day view" size="small"> <Tooltip title="Switch to day view"><TodayIcon /></Tooltip></ToggleButton>
-                <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view" size="small"> <Tooltip title="Switch to table view"><TableViewIcon /></Tooltip></ToggleButton>
+                <ToggleButton value={EviewMode.E_VM_NORMAL} aria-lable="normal view" size="small"> <Tooltip title="Switch to table view"><TableChartIcon /></Tooltip></ToggleButton>
+                <ToggleButton value={EviewMode.E_VM_MONTH} aria-lable="month view" size="small"> <Tooltip title="Switch to month view"><TableViewIcon /></Tooltip></ToggleButton>
               </ToggleButtonGroup>
             </Box>
             <Box display={'flex'} justifyContent={"flex-end"}>
@@ -607,7 +650,7 @@ function ReservationsPage() {
             </Box>
           </Box>
         </Box>
-      </div>
+      </div >
       <div className='main' style={{ overflow: 'auto', height: "100%" }}>
         <Box sx={{ width: '100%', height: '100%' }}>
           <Paper sx={{ height: "100%", width: '100%', mb: 1 }}>
@@ -650,10 +693,10 @@ function ReservationsPage() {
                             })}
                       </TableBody>
                       <TableFooter>
-                      {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
-                                      open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
-                                      onClose={onConfirmationClose} isOperate={false} />
-                                    ) : null}
+                        {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
+                          open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
+                          onClose={onConfirmationClose} isOperate={false} />
+                        ) : null}
                       </TableFooter>
                     </MediaQuery>
 
@@ -712,7 +755,9 @@ function ReservationsPage() {
                   }
                 </MediaQuery>
               </>)
-              : (
+              : viewMode === EviewMode.E_VM_MONTH ? (
+                <CalanderViewMonth value={dateRef} onChange={OnMonthViewDateChange} cellDisplay={getMonthReservations()} />
+              ) : (
                 <CalnanderViewDay title={`Reservation ${dateRef.toLocaleDateString()}`} reservations={getViewDayReservations()} />
               )}
           </Paper>

@@ -28,6 +28,11 @@ export enum Role{
     "account" = 'account',
     "admin" = "admin"
 }
+export interface IFlightSummary {
+    year: string;
+    total: number;
+    _id: string;
+}
 export interface IMemberBase {
     member_id: string
     id_number: string
@@ -101,4 +106,18 @@ export interface IMemberCombo{
   export interface IMemberStatus {
     _id: string
     status: Status
+  }
+  export interface IMemberFlightSummary {
+    flights: [{
+        _id: string,
+        totalHours: number
+    }],
+    members: [{
+        _id: string,
+        member_id: string,
+        id_number: string,
+        family_name: string,
+        first_name: string,
+    }],
+    flights_summary: [IFlightSummary]
   }

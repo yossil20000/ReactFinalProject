@@ -16,4 +16,5 @@ router.delete('/:memberId',  [authJWT.authenticate, authorize.authorize([ROLES[5
 router.post('/',[authJWT.authenticate, authorize.authorize([ROLES[4],ROLES[5]])] ,memberController.member_create);
 router.put('/',[authJWT.authenticate, authorize.authorize([ROLES[2],ROLES[3],ROLES[4],ROLES[5]])] ,memberController.member_update);
 router.put('/status',[authJWT.authenticate, authorize.authorize([ROLES[5]])] ,memberController.member_status);
+router.put('/summary',[authJWT.authenticate, authorize.authorize([ROLES[2],ROLES[3],ROLES[4],ROLES[5]])] ,memberController.member_flight_summary);
 module.exports = router;
