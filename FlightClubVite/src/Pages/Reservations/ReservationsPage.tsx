@@ -520,8 +520,10 @@ function ReservationsPage() {
     }
   }
   const onCellSelect = (value: Date) => {
-    console.log('Reservation/onCellSelect/value',value)
+    console.log('Reservation/onCellSelect/value,dateRef',value,dateRef)
     setViewMode(EviewMode.E_VM_NORMAL)
+    setDateRef(value)
+    setFilterMode(EfilterMode.E_FM_DAY)
   }
   return (
     <>
@@ -676,6 +678,12 @@ function ReservationsPage() {
                         {
                           rows.filter((r) => {
                             /* if (!isInDateRange(r)) return false; */
+                            
+                            if(filterMode == EfilterMode.E_FM_DAY)
+                            {
+                              const sameDateRef : boolean =  new Date(r.date_from).isSameDate(dateRef)
+                              if(sameDateRef == false) return false;
+                            }
                             if (!isFilterOwner) return true
                             if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
                             return false;
@@ -710,6 +718,11 @@ function ReservationsPage() {
                     rows.filter((r) => {
 
                       /* if (!isInDateRange(r)) return false; */
+                      if(filterMode == EfilterMode.E_FM_DAY)
+                      {
+                        const sameDateRef : boolean =  new Date(r.date_from).isSameDate(dateRef)
+                        if(sameDateRef == false) return false;
+                      }
                       if (!isFilterOwner) return true
                       if (isFilterOwner && r.validOperation & CanDo.Owner) return true;
                       return false;
