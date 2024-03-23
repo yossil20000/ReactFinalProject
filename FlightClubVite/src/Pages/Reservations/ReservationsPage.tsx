@@ -46,7 +46,6 @@ import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
 import CalanderViewMonth, { IDisplayCell } from "../../Components/Calander/CalanderViewMonth";
 import { DateTime } from "luxon";
-import { fontSize } from "@mui/system";
 
 const dateFilter: IDateFilter = newDateFilter;
 interface ItableData {
@@ -442,7 +441,7 @@ function ReservationsPage() {
     let displayStyle : React.CSSProperties  = {backgroundColor: '#cce3f6', fontWeight: 'bold'}
     if(today.isSameDate(new Date(dateRef.getFullYear(),dateRef.getMonth(),index+1))) displayStyle = {backgroundColor: '#dfecf6'}
     monthViewDisplay[date] = { 
-    display : <><b style={{fontSize: '1.2em'}}>{`${viewDayReservation?.length}`}</b>{ ``}</>,
+    display : <><b style={{fontSize: '1.2em'}}>{`Resrve ${viewDayReservation?.length}`}</b>{ ``}</>,
      displayStyle: displayStyle,
      headerStyle: (viewDayReservation?.length === undefined  || viewDayReservation?.length == 0) ? {backgroundColor: "#9abce1", color: "#0067fe", fontSize:"1em"} : {backgroundColor: "#99cccc", color: "#0067fe", fontSize:"1.1em"}
   }})
@@ -519,6 +518,10 @@ function ReservationsPage() {
       }))
       CustomLogger.info("Reservation/handleConfirmation/DELETE_FLIGHT", confirmation)
     }
+  }
+  const onCellSelect = (value: Date) => {
+    console.log('Reservation/onCellSelect/value',value)
+    setViewMode(EviewMode.E_VM_NORMAL)
   }
   return (
     <>
@@ -720,20 +723,18 @@ function ReservationsPage() {
                             </AccordionSummary>
                             <AccordionDetails>
                               <Grid container spacing={1}>
-                                <Grid item xs={3} >
+                                <Grid item xs={4} sm={4}>
                                   <Typography>
                                     {row.name}
                                   </Typography>
                                 </Grid>
-                                <Grid item sm={3} >
-                                  <Typography>
-                                    Id:
-                                  </Typography>
+                                <Grid item xs={4} sm={4}>
+                                  
                                   <Typography>
                                     {row.member_id}
                                   </Typography>
                                 </Grid>
-                                <Grid item sm={3} >
+                                <Grid item xs={2} sm={4} >
                                   <Typography>
                                     {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
 
@@ -756,7 +757,7 @@ function ReservationsPage() {
                 </MediaQuery>
               </>)
               : viewMode === EviewMode.E_VM_MONTH ? (
-                <CalanderViewMonth value={dateRef} onChange={OnMonthViewDateChange} cellDisplay={getMonthReservations()} />
+                <CalanderViewMonth value={dateRef} onChange={OnMonthViewDateChange} cellDisplay={getMonthReservations()} onCellSelect={onCellSelect}/>
               ) : (
                 <CalnanderViewDay title={`Reservation ${dateRef.toLocaleDateString()}`} reservations={getViewDayReservations()} />
               )}

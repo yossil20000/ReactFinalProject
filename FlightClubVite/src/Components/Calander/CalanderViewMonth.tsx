@@ -17,28 +17,29 @@ export interface IDisplayCell {
 }
 interface Props {
   value?: Date;
-  onChange?: (value: Date) => void
-  cellDisplay?: IDisplayCell[]
+  onChange: (value: Date) => void
+  cellDisplay?: IDisplayCell[],
+  onCellSelect: (value: Date) => void
 }
 let emptyCell: IDisplayCell[] = [{
   display: <></>,
   displayStyle: {},
   headerStyle: {}
 }]
-const useStyles = (them: Theme) => ({
+/* const useStyles = (them: Theme) => ({
   root: {
-    fontSize: '14px',
+    fontSize: '12px',
     // Match [md, ∞)
     //       [900px, ∞)
-    [them.breakpoints.up('sm')]: {
-      fontSize: '32px',
+    [them.breakpoints.down('sm')]: {
+      fontSize: '3px',
     },
     [them.breakpoints.up('md')]: {
       fontSize: '32px',
     },
   },
-});
-const CalanderViewMonth: React.FC<Props> = ({ value = new Date(), onChange, cellDisplay }) => {
+}); */
+const CalanderViewMonth: React.FC<Props> = ({ value = new Date(), onChange, cellDisplay,onCellSelect }) => {
   const startDate = DateTime.local(value.getFullYear(), value.getMonth() + 1).startOf('month')
   const endDate = DateTime.local(value.getFullYear(), value.getMonth() + 1).endOf('month')
   const numOfDays = DateTime.local(value.getFullYear(), value.getMonth() + 1).daysInMonth as number
@@ -51,12 +52,16 @@ const CalanderViewMonth: React.FC<Props> = ({ value = new Date(), onChange, cell
   console.log("CalanderViewMonth", startDate, endDate, numOfDays, prefixDays, suffixDays, value)
   console.log("CalanderViewMonth/cellDispaly", cellDisplay)
 
-  const style = useStyles(useTheme())
+  /* const style = useStyles(useTheme()) */
+  const onCellClick = (id: string) => {
+    console.log('CalanderViewMonth/onCellClick/id',id)
+    onCellSelect(new Date(value.getFullYear(),value.getMonth(),Number(id)))
+  }
   return (
     
       <Box sx={{ width: "100%", height: "100%" }}>
         <Grid container sx={{ width: "100%", height: "100%" }}>
-          <Grid item sx={{ width: "100%", height: "100%" }} style={style.root}>
+          <Grid item sx={{ width: "100%", height: "100%" ,fontSize:{xxs: "6px",xs:"8px",sm:"12px"},md:"14px",lg:"16px",xl:"18px"}} >
             <div style={{ width: "100%" }} className="font-bold border-t border-l grid grid-cols-7  items-center justify-center text-center;" >
               <Cell onClick={prevYear}>{'<<'}</Cell>
               <Cell onClick={prevMonth}>{'<'}</Cell>
@@ -90,7 +95,7 @@ const CalanderViewMonth: React.FC<Props> = ({ value = new Date(), onChange, cell
                     headerStyle = cellDisplay[date].headerStyle === undefined ? headerStyle : cellDisplay[date].headerStyle
 
                   }
-                  return (<CellFlight headerStyle={headerStyle} displayStyle={cellProperty} display={cell} key={date}>{`${date} ${daysOfWeek[new Date(value.getFullYear(), value.getMonth(), date).getDay()]}`}</CellFlight>)
+                  return (<CellFlight id={date.toString()} onCellClick={onCellClick} headerStyle={headerStyle} displayStyle={cellProperty} display={cell} key={date}>{`${date} ${daysOfWeek[new Date(value.getFullYear(), value.getMonth(), date).getDay()]}`}</CellFlight>)
                 })
               }
               {Array.from({ length: suffixDays == 7 ? 0 : suffixDays }).map((_, index) => {

@@ -1,16 +1,15 @@
-import { Avatar, Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import clsx from 'clsx'
 import browse from '../../Asset/images/browse.gif'
-import { width } from '@mui/system'
 
 interface Props extends React.PropsWithChildren {
-  id: number,
+  id: string,
   className?: string,
   onClick?: () =>void,
   display?: React.ReactNode,
   displayStyle: React.CSSProperties,
   headerStyle: React.CSSProperties,
-  onCellClick: (id: number) => void
+  onCellClick: (value: string) => void
  }
  /* style == 1 ? {backgroundColor: "#99cccc"} : {backgroundColor: "#9abce1", color: "#0067fe"} */
 const CellFlight: React.FC<Props> = ({ id,headerStyle={backgroundColor: "#9abce1", color: "#0067fe"} ,children,className,onCellClick ,onClick,display=<>{'Flight Error'}</>,displayStyle}) => {
@@ -22,10 +21,10 @@ const CellFlight: React.FC<Props> = ({ id,headerStyle={backgroundColor: "#9abce1
       <Grid style={headerStyle} height={'30%'} width={'100%'} item sm={12}>
       {children}
       </Grid>
-      <Grid height={'70%'} width={'100%'} item sm={12} style={displayStyle} >
+      <Grid height={'70%'} width={'100%'} item sm={12} style={displayStyle}>
         <>
         {display}
-        <img src={browse} style={{margin:"auto",width: "2.2em" , height: "2.2em"}}/>
+        <img src={browse} style={{margin:"auto",width: "2.2em" , height: "2.2em"}} onClick={(event) => onCellClick(id)}/>
         </>
       
       </Grid>
