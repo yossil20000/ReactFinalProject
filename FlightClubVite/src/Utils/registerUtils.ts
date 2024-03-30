@@ -34,7 +34,7 @@ export function IsPasswordValid(password : string) : boolean{
 }
 
 export function IsUsernaaameValid(username: string) : boolean{
-  return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,12}$/.test(username)
+  return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,}$/.test(username)
 }
 
 export  function checkUsername(username:string ) : IValidation {

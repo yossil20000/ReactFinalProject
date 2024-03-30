@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, FormHelperText, Grid, IconButton, InputLabel, OutlinedInput, Paper, Typography } from '@mui/material';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -24,6 +24,10 @@ function Register({ numPage, page, setPage, formData, setFormData}: IPageNavigat
     const [verifiedPassword, setVerifiedPassword] = useState("");
     const [isPasswordValid, setIsPasswordValid] = useState<IValidation>(defaultCheckPassword);
     const [isusernameValid, setIsUsernameValid] = useState<IValidation>(defaultCheckPassword);
+    useEffect(() => {
+        if(formData?.username)
+        setIsUsernameValid(checkUsername(formData?.username))
+    },[formData])
     const handleChange = (prop: any) => (event: any) => {
 
         if (prop == "verified_password") {
@@ -90,19 +94,9 @@ function Register({ numPage, page, setPage, formData, setFormData}: IPageNavigat
                                 type={true ? 'text' : 'password'}
                                 value={formData.username}
                                 onChange={handleChange('username')}
+                                
                                 error={!isusernameValid.valid}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPasssword}
-                                            onMouseDown={handleClickShowPasssword}
-                                            edge="end"
-                                        >
-                                            {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
+
                                 label="Username"
                             />
                             <FormHelperText id="outlined-weight-helper-text">{isusernameValid.validation.join(" , ")}</FormHelperText>

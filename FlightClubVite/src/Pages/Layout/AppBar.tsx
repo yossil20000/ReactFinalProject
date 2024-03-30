@@ -43,9 +43,11 @@ const ResponsiveAppBar = () => {
     { name: "WAB", route: "WAB" },
     { name: "Account", route: "account" },
     { name: 'Admin', route: 'admin' },
+    { name: `Register`, route: "registration" },
     { name: 'Contacts', route: 'members' },
     { name: 'Gallery', route: 'gallery' },
     { name: `Login ${remainLogin}`, route: "login" },
+   
 
   ];
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {

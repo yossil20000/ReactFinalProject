@@ -112,7 +112,7 @@ export function PagesRouter() {
           <Route path="/logout" element={<LogoutPage></LogoutPage>} />
 
           <Route path='change_password' element={<ChangePassword></ChangePassword>} />
-          <Route path='registration' element={<RegistrationPage></RegistrationPage>} />
+          <Route path='/registration' element={<RegistrationPage></RegistrationPage>} />
           <Route path="/profile" element={<ProfilePage></ProfilePage>} />
           <Route path='/members' element={<MembersTablePage></MembersTablePage>} />
           <Route path='/flights' element={<FlightPage></FlightPage>} />

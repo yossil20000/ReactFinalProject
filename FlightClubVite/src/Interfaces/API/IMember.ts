@@ -33,6 +33,9 @@ export interface IFlightSummary {
     total: number;
     _id: string;
 }
+export interface ILastId {
+    last_id: string
+}
 export interface IMemberBase {
     member_id: string
     id_number: string

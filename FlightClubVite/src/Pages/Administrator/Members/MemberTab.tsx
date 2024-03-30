@@ -16,6 +16,8 @@ import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
 import AddresesTab from './AddresesTab';
 import GeneralTab from './GeneralTab';
 import PermissionsTab from './PermissionsTab';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../../Types/Urls';
 
 const items: ScrollableTabsItem[] = [
   { id: 0, label: "General" },
@@ -25,6 +27,7 @@ const items: ScrollableTabsItem[] = [
 ];
 
 function MemberTab() {
+  const navigate = useNavigate();
   const { setSelectedItem, selectedItem, members } = useContext(MembersContext) as MembersContextType;
   const [selecteMembership, setSelecteMembership] = useState<IMembership | null>();
   const [value, setValue] = React.useState(0);
@@ -33,7 +36,7 @@ function MemberTab() {
   const [updateMember] = useUpdateMemberMutation();
   const { refetch } = useFetcAllMembersQuery();
   const { data: memberships, isError, isLoading, isFetching, isSuccess, error } = useFetchAllMembershipQuery();
-  const [isSave,setIsSaved] = useState(false)
+  const [isSave, setIsSaved] = useState(false)
 
 
   useEffect(() => {
@@ -147,7 +150,7 @@ function MemberTab() {
     catch (error) {
       console.error("DeviceTab/OnSave/error", error);
       setValidationAlert(getValidationFromError(error, onValidationAlertClose));
-      
+
     }
     finally {
       refetch();
@@ -165,6 +168,9 @@ function MemberTab() {
       case EAction.SAVE:
         onSave()
         break;
+      case EAction.ADD:
+        navigate("registration")
+        break;
     }
   }
 
@@ -174,6 +180,9 @@ function MemberTab() {
         <div className='header'>
           <Box marginTop={1}>
             <Grid container columns={12}>
+{/*               <Grid item xs={12} md={6}>
+              <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} display={[{ key: EAction.ADD, value: "Add Member" }]} disable={[{ key: EAction.SAVE, value: isSave }]} />
+              </Grid> */}
               <Grid item xs={12} md={6}>
                 <MembersCombo onChanged={handleMemberChange} source={"source"} filter={{}} />
               </Grid>
@@ -217,7 +226,7 @@ function MemberTab() {
             ))}
           </Grid>
           <Box className='yl__action_button'>
-            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} disable={[{ key: EAction.SAVE, value: isSave }]}/>
+            <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item={""} disable={[{ key: EAction.SAVE, value: isSave }]} />
           </Box>
 
         </div>

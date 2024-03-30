@@ -7,7 +7,7 @@ import IMemberInfo from "../../Interfaces/IMemberInfo";
 import { RootState } from "../../app/userStor";
 import IMemberUpdate from "../../Interfaces/IMemberInfo";
 import IMemberCreate from "../../Interfaces/IMemberCreate";
-import { Gender, IMemberAdmin, IMemberCombo, IMemberComboFilter, IMemberFlightSummary, IMemberStatus, Status } from "../../Interfaces/API/IMember";
+import { Gender, ILastId, IMemberAdmin, IMemberCombo, IMemberComboFilter, IMemberFlightSummary, IMemberStatus, Status } from "../../Interfaces/API/IMember";
 import { IFlightSummaryFilter } from "../../Interfaces/API/IFilter";
 
 
@@ -133,6 +133,12 @@ export const apiSlice = createApi({
                     method: "GET"
                 })
             }),
+            fetchMembersLastId : builder.query<IResultBaseSingle<ILastId>,void>({
+                query: () => ({
+                    url: `/${URLS.MEMBER_LAST_ID}`,
+                    method: "GET"
+                })
+            }),
             updateStatus: builder.mutation<IResultBaseSingle<IMemberInfo>,IMemberStatus>({
                 query: (status) => ({
                     url: `/${URLS.MEMBERS_STATUS}`,
@@ -163,7 +169,8 @@ export const {
     useFetchMembersComboQuery,
     useFetchMembersAdminQuery,
     useUpdateStatusMutation,
-    useFlightSummaryMutation
+    useFlightSummaryMutation,
+    useFetchMembersLastIdQuery
  } = apiSlice
 
 

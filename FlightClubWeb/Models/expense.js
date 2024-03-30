@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 const {OrderTypeSchema} = require('./orderType');
 const Member = require('./member');
 const constants = require('../Models/constants');

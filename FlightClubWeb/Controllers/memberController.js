@@ -2,6 +2,7 @@ const Member = require('../Models/member');
 const Flight = require('../Models/flight')
 const FlightReservation = require('../Models/flightReservation');
 const { ApplicationError } = require('../middleware/baseErrors');
+const { CValidationError } = require('../Utils/CValidationError');
 const async = require('async');
 const log = require('debug-level').log('MemberController');
 const mail = require("../Services/mailService");
@@ -10,6 +11,7 @@ require('../Types/date.extensions')
 var { body, validationResult } = require('express-validator');
 const { path } = require('../app');
 const member = require('../Models/member');
+const { getLastMemberId } = require('../Services/memberService');
 
 exports.member_flight_summary = async function (req, res, next) {
     try {
@@ -44,8 +46,9 @@ exports.member_flight_summary = async function (req, res, next) {
         return next(new ApplicationError("member_list", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
-exports.member_list = function (req, res, next) {
+exports.member_list = async function (req, res, next) {
     try {
+        
         log.info("member_list");
         Member.find()
             .populate("membership")
@@ -58,6 +61,19 @@ exports.member_list = function (req, res, next) {
     }
     catch (error) {
         return next(new ApplicationError("member_list", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+}
+
+exports.member_lastId = async function (req, res, next) {
+    try {
+        
+        log.info("member_list");
+        const lastId = await getLastMemberId()
+        res.status(201).json({ success: true, errors: [], data: {last_id: lastId} });
+        
+    }
+    catch (error) {
+        return next(new ApplicationError("member_lastId", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", error }));
     }
 }
 exports.combo = function (req, res, next) {
@@ -216,8 +232,8 @@ exports.member_create = [
     body('contact.email').trim().isEmail().withMessage('email is invalid'),
     body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601(),
     body('date_of_join', 'Invalid date_of_join').optional({ checkFalsy: true }).isISO8601(),
-    body('username', `8-12 characters,  at list one digit lower & upper case. not include ( <>?$&*%()+- )`).custom((value) => {
-        return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,12}$/.test(value);
+    body('username', `min 8 characters,  at list one digit lower & upper case. not include ( <>?$&*%()+- )`).custom((value) => {
+        return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,}$/.test(value);
     }),
     body('password', `min 8 characters,  at list one digit lower & upper case. not include ( <>?$&*%()+- )`).custom((value) => {
         return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@_])[^<>?$&*%()+-]{8,}$/.test(value);
@@ -235,7 +251,7 @@ exports.member_create = [
                 Member.findOne({ "username": user.username }, (err, member) => {
 
                     if (member) {
-                        return res.status(400).json({ success: false, errors: ["username already registered"], message: "email already registered" });
+                        return next(new ApplicationError("account_create", 400, "CONTROLLER.MEMBER.CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body.member_id, `member already exist`, 'member_id', "DB.Member")).validationResult.errors }));
                     }
                     else {
                         const member = new Member(
@@ -243,7 +259,7 @@ exports.member_create = [
                                 first_name: user.first_name,
                                 family_name: user.family_name,
                                 member_id: req.body.member_id,
-                                id_number: req.body.id_number,
+                                id_number: (req.body.id_number === undefined || req.body.id_number === '') ? '0000000' : req.body.id_number ,
                                 date_of_birth: user.date_of_birth === undefined ? new Date() : user.date_of_birth,
                                 date_of_join: user.date_of_join === undefined ? new Date() : user.date_of_join,
                                 password: user.password,
@@ -255,17 +271,17 @@ exports.member_create = [
                             log.info("membertosave", member);
                         member.save((err, result) => {
                             if (err) {
-                                return res.status(400).json({ success: false, errors: [err], message: "Failed To Save", data: member })
+                                return next(new ApplicationError("account_create", 400, "CONTROLLER.MEMBER.CREATE.VALIDATION", { name: "Validator", errors: (new CValidationError(req.body.member_id, `Failed to save member`, 'member_id', "DB.Member")).validationResult.errors }));
                             }
                             if (result) {
                                 log.info("membertosave/Result", result);
                                 log.info("member.contact.email", member.contact.email)
-                                mail.SendMail(user.contact.email, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
+                                mail.SendMail(process.env.SITE_MAIL, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
                                     .then(() => {
                                         log.info("Send Mail to:", user.contact.email);
                                         res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail", data: member })
                                     }).catch((err => {
-                                        res.status(400).json({ success: false, errors: [err], message: "Failed To send Initial passwors to your mail", data: member })
+                                        return next(new ApplicationError("member_create", 400, "CONTROLLER.MEMBER.STATUS.EXCEPTION", { name: "EXCEPTION", err }));
                                     }));
                             }
 

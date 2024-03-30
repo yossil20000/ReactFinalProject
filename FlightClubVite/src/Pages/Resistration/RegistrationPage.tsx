@@ -1,5 +1,5 @@
 import { Box, Grid, Step, StepLabel, Stepper } from '@mui/material';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PersonalInfo from './PersonalInfo';
 import Register from './Register';
 import SubmitRegistration from './SubmitRegistration';
@@ -8,10 +8,12 @@ import ShippingAddress from './ShippingAddress';
 import { useAppSelector } from '../../app/hooks';
 import { Gender, Role } from '../../Interfaces/API/IMember';
 import IMemberCreate from '../../Interfaces/IMemberCreate';
-import { INotification, newNotification } from '../../Interfaces/API/INotification';
+import { useFetchMembersLastIdQuery } from '../../features/Users/userSlice';
 
 function RegistrationPage() {
   const login = useAppSelector((state) => state.authSlice);
+  const { data: lastId } = useFetchMembersLastIdQuery();
+  CustomLogger.info("RegistrationPage/last_id", lastId?.data.last_id)
   const initialForm: IMemberCreate = {
     _id: '',
     member_id: '',
@@ -58,10 +60,18 @@ function RegistrationPage() {
     '100%',
     'Submit',
   ];
+  
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState<IMemberCreate>(initialForm);
   CustomLogger.log("formData", login.member)
   const numPage = 5;
+  useEffect(() => {
+    const member_id = lastId?.data.last_id
+    if(member_id){
+      const username = member_id.replace(/^0+/, "");
+      setFormData((prev) => ({...prev, member_id: member_id,username: `User${username}@` }))
+    }
+  },[lastId])
   const componentList = [
     <Register numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,
     <PersonalInfo numPage={numPage} page={page} setPage={setPage} formData={formData} setFormData={setFormData} />,

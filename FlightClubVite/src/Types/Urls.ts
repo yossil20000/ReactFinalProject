@@ -5,7 +5,8 @@ export enum ROUTES{
     Flight = "flights",
     LOGIN = "login",
     CHANGE_PASSWORD = "change_password",
-    MEMBERS = "members"
+    MEMBERS = "members",
+    REGISTRATION = "registration"
 }
 
 export enum URLS {
