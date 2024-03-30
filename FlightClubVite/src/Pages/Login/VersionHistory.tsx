@@ -33,6 +33,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 12,version: "2.0.10.0",date: new Date(2024,1,17).getDisplayDate() , "description" : "Fix version history. Add Payment with referance to Recipe, no Recipe yet. Transaction Table hide column"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 13,version: "2.0.11.0",date: new Date(2024,3,23).getDisplayDate() , "description" : "Add Reservation Month View (as previous site)"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 14,version: "2.0.11.1",date: new Date(2024,3,23).getDisplayDate() , "description" : "Month view show only the selected day items"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 15,version: "2.0.11.2",date: new Date(2024,3,30).getDisplayDate() , "description" : "Add registration page"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     
   ]
   function CustomToolbar() {
