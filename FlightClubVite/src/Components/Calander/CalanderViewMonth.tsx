@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { Box, Theme, ThemeProvider, createTheme } from "@mui/system"
+import { Box, Theme, ThemeProvider, createTheme, fontSize } from "@mui/system"
 import Cell from "./Cell"
 import CellFlight from './CellFlight';
 import { useTheme } from '@mui/material/styles';
@@ -61,16 +61,16 @@ const CalanderViewMonth: React.FC<Props> = ({ value = new Date(), onChange, cell
     
       <Box sx={{ width: "100%", height: "100%" }}>
         <Grid container sx={{ width: "100%", height: "100%" }}>
-          <Grid item sx={{ width: "100%", height: "100%" ,fontSize:{xxs: "6px",xs:"8px",sm:"12px"},md:"14px",lg:"16px",xl:"18px"}} >
-            <div style={{ width: "100%" }} className="font-bold border-t border-l grid grid-cols-7  items-center justify-center text-center;" >
-              <Cell onClick={prevYear}>{'<<'}</Cell>
-              <Cell onClick={prevMonth}>{'<'}</Cell>
-              <Cell onClick={() => onChange && onChange(new Date())} className="col-span-3">{`${value.toLocaleString('default', { month: 'long' })} ${value.getFullYear()}`}</Cell>
-              <Cell onClick={nextMonth}>{'>'}</Cell>
-              <Cell onClick={nextYear}>{'>>'}</Cell>
+          <Grid item sx={{ width: "100%", height: "100%" ,fontSize:{xs:"0.562rem",sm:"0.75rem",md:"0.875rem",lg:"1rem",xl:"1.125rem"}}} >
+            <div style={{ width: "100%"}} className="font-bold border-t border-l grid grid-cols-7  items-center justify-center text-center;" >
+              <Cell onClick={prevYear} sx={{fontSize:{xs:"1rem",sm:"1.5rem"}}}>{'<<'}</Cell>
+              <Cell onClick={prevMonth} sx={{fontSize:{xs:"1rem",sm:"1.5rem"}}}>{'<'}</Cell>
+              <Cell onClick={() => onChange && onChange(new Date())} className="col-span-3" sx={{fontSize:{xs:"1rem",sm:"1.5rem"}}}>{`${value.toLocaleString('default', { month: 'long' })} ${value.getFullYear()}`}</Cell>
+              <Cell onClick={nextMonth} sx={{fontSize:{xs:"1rem",sm:"1.5rem"}}}>{'>'} </Cell>
+              <Cell onClick={nextYear} sx={{fontSize:{xs:"1rem",sm:"1.5rem"}}}>{'>>'}</Cell>
 
               {daysOfWeek.map((day) => (
-                <Cell style={{ backgroundColor: "#9abce1", color: "#0067fe", height: "100%" }} key={day} className="text-sm font-bold">{day}</Cell>
+                <Cell sx={{fontSize:{xs:"1rem",sm:"1.2rem"}, lineHeight:{xs:"1rem",sm:"1.4rem"}}}style={{ backgroundColor: "#9abce1", color: "#0067fe", height: "100%" }} key={day} className="text-sm font-bold">{day}</Cell>
               ))}
               {Array.from({ length: prefixDays === 7 ? 0 : prefixDays }).map((_, index) => {
                 return (<Cell className={'cell_header'}></Cell>)

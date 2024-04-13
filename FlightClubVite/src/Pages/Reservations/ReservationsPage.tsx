@@ -245,7 +245,10 @@ function ReservationsPage() {
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
-
+ useEffect(() => {
+  CustomLogger.info("useEffect/filterDate", filterDate)
+  refetch()
+ },[filterDate])
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ItableData) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -334,6 +337,7 @@ function ReservationsPage() {
         break;
 
     }
+    
   }
   const onFilterModePrev = () => {
     switch (filterMode) {
@@ -356,7 +360,7 @@ function ReservationsPage() {
 
     const newFilter = SetProperty(filterDate, key, new Date(value));
     setFilterDate(newFilter)
-    refetch()
+    /* refetch() */
   }
   const OnMonthViewDateChange = (date: Date) => {
     CustomLogger.log("ReservationPage/OnMonthViewDateChange", date)
@@ -367,7 +371,7 @@ function ReservationsPage() {
       currentOffset: 0
     }
     setFilterDate(newFilter)
-    refetch()
+    /* refetch() */
     CustomLogger.log("ReservationPage/OnMonthViewDateChange_newFilter", newFilter)
   }
   const onTodayChanged = () => {
@@ -429,6 +433,7 @@ function ReservationsPage() {
       setViewMode(newView);
     if (newView === EviewMode.E_VM_MONTH) {
       setFilterMode(EfilterMode.E_FM_MONTH)
+      OnMonthViewDateChange(dateRef)
     }
   };
  const getMonthReservations = () : IDisplayCell[] => {

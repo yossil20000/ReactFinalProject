@@ -13,6 +13,7 @@ const { CValidationError } = require('../Utils/CValidationError');
 const constants = require('../Models/constants');
 const Expense = require('../Models/expense');
 const { send_recipe } = require('../Services/payReciepPdf');
+const { expensedb_fix , transactiondb_fix,accountsTransactionb_fix} = require('../Services/expeseService');
 
 
 const transactionOptions = {
@@ -1140,4 +1141,30 @@ exports.convert_transaction = [
     }
   }
 
+]
+
+exports.expense_fix = [
+  query('find').trim().isLength({ min: 1 }).escape().withMessage('find must be include'),
+  async (req, res, next) => {
+    
+    try {
+      
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(new ApplicationError("expense_fix", 400, "CONTROLLER.CLUB_FIX.VALIDATION", { name: "ExpressValidator", errors }));
+      }
+
+      /* const results = await expensedb_fix(req.query.find,req.query.replace); */
+      /* const results = await transactiondb_fix(req.query.find,req.query.replace); */
+      /* const results = await accountsTransactionb_fix(req.query.find,req.query.replace); */
+      
+      if (results == "") {
+        return res.status(201).json({ success: true, data: results });
+      }
+      /* return next(new ApplicationError("expense_fix", 400, "CONTROLLER.CLUB_FIX.VALIDATION", { name: "Validator", errors: (new CValidationError(results, "Expense Fix Failed", '', "DB")).validationResult.errors })); */
+    }
+    catch (error) {
+      return next(new ApplicationError("expense_fix", 400, "CONTROLLER.CLUB.FIX.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
 ]
