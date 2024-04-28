@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 const { DataTime } = require('luxon');
 
 var Schema = mongoose.Schema;
-
+//#region FlightSchema
 var FlightSchema = new Schema({
     description: {type: String},
     date: {type: Date, required: true, default: Date.now},
@@ -17,7 +17,7 @@ var FlightSchema = new Schema({
     duration: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     timeOffset: {type: Schema.Types.Decimal128,get: getDecimal}
 },{toJSON: {getters: true}});
-
+//#endregion
 function getDecimal(value) {
     if (typeof value !== 'undefined') {
        return parseFloat(value.toString());

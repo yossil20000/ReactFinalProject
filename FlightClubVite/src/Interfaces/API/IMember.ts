@@ -111,16 +111,22 @@ export interface IMemberCombo{
     status: Status
   }
   export interface IMemberFlightSummary {
-    flights: [{
+    member_flights_size: number,
+    member_flight_filter: {
+        from: Date,
+        to: Date
+    },
+    member_flights: [{
         _id: string,
         totalHours: number
     }],
-    members: [{
+    annual_summary_flights_size: number,
+    annual_summary_flights: [{
         _id: string,
         member_id: string,
         id_number: string,
         family_name: string,
         first_name: string,
-    }],
-    flights_summary: [IFlightSummary]
+        flights_summary: [IFlightSummary]
+    }]
   }

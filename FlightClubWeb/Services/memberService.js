@@ -15,4 +15,15 @@ const getLastMemberId = async () => {
     console.error(err)
   }
 }
+const findMembers = async (membersId) => {
+
+  try {
+      const members = await Member.find({_id: {"$in" : membersId}})
+      console.log(members);
+  } 
+  catch(error){
+    console.error(error)
+  }
+}
 exports.getLastMemberId = getLastMemberId;
+exports.findMembers = findMembers;
