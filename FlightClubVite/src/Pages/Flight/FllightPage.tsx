@@ -627,10 +627,10 @@ const FlightPage = () => {
                                 </Grid>
                                 <Grid item xs={6} >
                                   <Typography>
-                                    {`Engien Start: ${row.engien_start}`}
+                                    {`Engine Start: ${row.engien_start}`}
                                   </Typography>
                                   <Typography>
-                                    {`Engien Stop: ${row.engien_stop}`}
+                                    {`Engine Stop: ${row.engien_stop}`}
                                   </Typography>
                                 </Grid>
                                 {

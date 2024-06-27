@@ -17,11 +17,11 @@ var DeviceSchema = new Schema({
     device_type: {type: Schema.Types.ObjectId , ref: 'DeviceType' },
     description: {type: String, maxLength: 200},
     available: {type: Boolean, default: false},
-    device_status: {type:String, 
-        enum:[CE.DEVICE_STATUS[0],CE.DEVICE_STATUS[1],CE.DEVICE_STATUS[2],CE.DEVICE_STATUS[3]], default: CE.DEVICE_STATUS[0]},
+    device_status: {type:String,enum:[CE.DEVICE_STATUS[0],CE.DEVICE_STATUS[1],CE.DEVICE_STATUS[2],CE.DEVICE_STATUS[3]], default: CE.DEVICE_STATUS[0]},
     due_date: {type: Date, default: new Date()},
     hobbs_meter: {type: mongoose.Decimal128, get: getDecimal},
     engien_meter: {type: mongoose.Decimal128, get: getDecimal},
+    engien_start_meter: {type: mongoose.Decimal128,default: 771.7, get: getDecimal},
     maintanance: {
         type : {type: String, enum:[CE.DEVICE_MT[0],CE.DEVICE_MT[1],CE.DEVICE_MT[2]] , default: CE.DEVICE_MT[0]},
         next_meter:{type: mongoose.Decimal128, get: getDecimal},

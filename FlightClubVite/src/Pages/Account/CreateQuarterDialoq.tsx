@@ -11,6 +11,8 @@ import DevicesCombo from '../../Components/Devices/DevicesCombo'
 import Item from '../../Components/Item'
 import { useCreateQuarterOrderMutation } from '../../features/Account/accountApiSlice'
 import { getValidationFromError } from '../../Utils/apiValidation.Parser'
+import MultiOptionCombo from '../../Components/Buttons/MultiOptionCombo'
+import MembersOptionCombo from '../../Components/Members/MembersOptionCombo'
 const source: string = "CreateQuarterDialoq"
 export interface ICreateQuarterDialoqProps {
   onClose: () => void;
@@ -119,6 +121,7 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
                 <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"active_only"} checked={requestAllItems} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Select All" />
               </Grid>
               <Grid item xs={9}>
+              <MembersOptionCombo/>
                 <DeviceMemberCombo requestItems={requestAllItems} getAllItems={getAllMembers} title='Select All Members' onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
                 <Divider light />
               </Grid>

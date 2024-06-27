@@ -142,7 +142,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
               name="engien_start"
-              label="Engien start"
+              label="Engine start"
               value={flightCreate.engien_start}
               onChange={handleFligtChange}
               InputLabelProps={{ shrink: true }}
@@ -153,7 +153,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
               name="engien_stop"
-              label="Engien stop"
+              label="Engine stop"
               value={flightCreate.engien_stop}
               onChange={handleFligtChange}
               InputLabelProps={{ shrink: true }}

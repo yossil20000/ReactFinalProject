@@ -27,6 +27,7 @@ function newDevice(): IDevice {
     due_date: new Date(),
     hobbs_meter: 0,
     engien_meter: 0,
+    engien_start_meter: 0,
     maintanance: {
       type: DEVICE_MT['50hr'],
       next_meter: 0,

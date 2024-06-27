@@ -72,6 +72,7 @@ interface IDeviceBase {
     device_status: DEVICE_STATUS
     hobbs_meter: number
     engien_meter: number
+    engien_start_meter: number
     due_date: Date
     maintanance: {
         type: DEVICE_MT
@@ -150,6 +151,7 @@ export interface IDeviceReport {
         available: boolean;
         device_status: DEVICE_STATUS;
         engien_meter: number
+        engien_start_meter:number
         due_date: Date
         maintanance: {
             type: DEVICE_MT

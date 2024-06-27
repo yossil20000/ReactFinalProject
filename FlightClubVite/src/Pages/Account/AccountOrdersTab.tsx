@@ -22,8 +22,8 @@ import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { MemberType, Role } from '../../Interfaces/API/IMember';
 
 function AccountOrdersTab() {
-  const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
-  
+  const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
+
   const [openFilter, setOpenFilter] = useState(false)
   const [openAddQuarter, setOpenAddQuarter] = useState(false)
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
@@ -40,8 +40,8 @@ function AccountOrdersTab() {
   }
   const onDateChanged = (key: string, value: Date | null) => {
     CustomLogger.log("AccountOrdersTab/onDateChanged", key, value)
-    if(value == null)
-    return;
+    if (value == null)
+      return;
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter)
   }
@@ -80,7 +80,10 @@ function AccountOrdersTab() {
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} includesType={[MemberType.Club]} />
               </Grid >
               <Grid item xs={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{key: EAction.ADD,value: isAuthorized}]} />
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
+              </Grid>
+              <Grid item xs={3}>
+                <ActionButtons OnAction={onAction} show={[EAction.ORDER]} item="" display={[{ key: EAction.ORDER, value: "Expense" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
               </Grid>
             </Grid>
           </Box>

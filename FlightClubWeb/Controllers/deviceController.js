@@ -153,7 +153,7 @@ exports.device_report = [
              */    
                let query = Flight.find({path: 'device',device_id: "4XCGC"}).sort({engien_stop: -1}).limit(1)
                /* .populate({path: 'device', select: '-can_reservs -flights -flight_reservs -details.image'}) */
-               .populate({path: 'device', select: 'maintanance available device_status engien_meter status device_id due_date'})
+               .populate({path: 'device', select: 'engien_start_meter maintanance available device_status engien_meter status device_id due_date'})
                /* .populate({path:"member", select: '-password -flights -flight_reservs -image'}) */
                .populate({path: 'member', select: 'member_id family_name first_name'})
                .exec(function (err, results) {
