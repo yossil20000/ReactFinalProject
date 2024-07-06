@@ -14,7 +14,8 @@ export  const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
 
 const filterCombo : IMemberComboFilter = {
   filter: {
-    status: Status.Active
+    status: Status.Active,
+    _id: ""
   }
   }
   

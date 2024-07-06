@@ -98,6 +98,7 @@ interface IDeviceBase {
     location_zone: string
     status: Status
     has_hobbs: boolean
+    account_owner:string
 }
 
 export interface IDeviceCreate extends IDeviceBase {

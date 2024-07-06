@@ -9,7 +9,8 @@ import ControledCombo, { ComboProps, IClubAccountProps, InputComboItem } from '.
 
 const filterCombo: IMemberComboFilter = {
   filter: {
-    status: Status.Active
+    status: Status.Active,
+    _id: ""
   }
 }
 

@@ -4,7 +4,8 @@ import IFlightReservation from "./IFlightReservation"
 import IMembership from "./IMembership"
 export interface IMemberComboFilter extends IFilter{
     filter?:{
-        status: Status
+        status: Status,
+        _id: string
     }
 }
 export enum Gender {

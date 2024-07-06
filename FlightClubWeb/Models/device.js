@@ -3,6 +3,8 @@ const { DataTime } = require('luxon');
 
 const constants = require('../Models/constants');
 const CE = require('../Models/constants');
+const account = require('./account');
+require('../Models/clubAccount')
 var Schema = mongoose.Schema;
 var DeviceServicesSchema = new Schema( {
         date: {type: Date, default: new Date()},
@@ -47,7 +49,8 @@ var DeviceSchema = new Schema({
     can_reservs:[{type: Schema.ObjectId, ref: 'Member'}],
     flights: [{type: Schema.ObjectId,ref: 'Flight'}],
     flight_reservs: [{type: Schema.ObjectId, ref: 'FlightReservation'}],
-    has_hobbs: {type: Boolean, default: false}
+    has_hobbs: {type: Boolean, default: false},
+    account_owner: {type: Schema.ObjectId, ref: 'ClubAccount'}
 },{toJSON: {getters: true}});
 
 function getDecimal(value) {

@@ -4,6 +4,7 @@ const { body, param, validationResult } = require('express-validator');
 
 const Device = require('../Models/device');
 const Flight = require('../Models/flight');
+require('../Models/clubAccount')
 const DeviceType = require('../Models/deviceType');
 const { ApplicationError } = require('../middleware/baseErrors');
 const { query } = require('express');
@@ -12,7 +13,8 @@ exports.device_list = function (req, res, next) {
     try {
         log.info('device_list', req.body.filter);
         Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
-            .populate("device_type maintanance.services")
+            .populate( {path: "account_owner",model: "ClubAccount",select:{"transactions": 0}})
+            .populate("maintanance.services")
             .select(req.body.select === undefined ? "" : req.body.select)
             .sort([['device_id', 'ascending']])
             .exec(function (err, list_devices) {
@@ -33,6 +35,7 @@ exports.device_combo = function (req, res, next) {
         log.info("combo", req.body);
         Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
             .populate("device_type")
+            .populate( {path: "account_owner",model: "ClubAccount",select:{"transactions": 0,"account_saving":0,"accounts":0,"contact": 0 }})
             .select('_id device_id engien_meter maintanance has_hobbs available')
             .sort([['device_id', 'ascending']])
             .exec(function (err, list_combo) {
@@ -69,7 +72,7 @@ exports.can_reserv = [
 exports.device = function (req, res, next) {
     try {
         Device.findById(req.params._id)
-            .populate("device_type")
+            .populate("device_type account_owner")
             .exec(function (err, device) {
                 if (err) { log.debug(err); return next(err); }
                 else {

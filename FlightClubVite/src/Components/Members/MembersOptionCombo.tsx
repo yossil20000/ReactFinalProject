@@ -1,5 +1,4 @@
-import { useContext, useMemo, useState } from "react";
-import { DevicesContext, DevicesContextType } from "../../app/Context/DevicesContext";
+import { useMemo, useState } from "react";
 import MultiOptionCombo, { LabelType } from "../Buttons/MultiOptionCombo"
 import { blue } from "@mui/material/colors";
 import IDevice from "../../Interfaces/API/IDevice";
@@ -7,18 +6,19 @@ import { SetProperty } from "../../Utils/setProperty";
 import { useAppDispatch } from "../../app/hooks";
 import { setDirty } from "../../features/Admin/adminPageSlice";
 import { useFetchMembersComboQuery } from "../../features/Users/userSlice";
+import { MemberType } from "../../Interfaces/API/IMember";
 
 export interface IMembersOptionComboProps {
-
+  OnSelectedChanged: (selected: LabelType[]) => void
 }
 const source: string = "MembersOptionCombo"
-function MembersOptionCombo(props: IMembersOptionComboProps ) {
+function MembersOptionCombo({OnSelectedChanged}: IMembersOptionComboProps ) {
   const [selectedItem,setSelectedItem] = useState<IDevice | null | undefined>()
   const setDirtyDispatch = useAppDispatch()
   const { data: membersCombo } = useFetchMembersComboQuery({});
   //const { setSelectedItem, selectedItem, membersCombo } = useContext(DevicesContext) as DevicesContextType;
   const memberCanReserve = useMemo((): (LabelType[]) => {
-    const labels: (LabelType[] | undefined) = membersCombo?.data?.map((item) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
+    const labels: (LabelType[] | undefined) = membersCombo?.data?.filter((i) => i.member_type == MemberType.Member).map((item) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
     CustomLogger.info("memberCanReserve/labels", labels)
     if (labels === undefined || labels === null)
       return []
@@ -57,9 +57,10 @@ function MembersOptionCombo(props: IMembersOptionComboProps ) {
     CustomLogger.info("onSelecteCanReserv/CanReserve/newObj", newObj);
     setSelectedItem(newObj)
     SetDirtyFlage();
+    OnSelectedChanged(items)
   }
   return (
-    <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={getSelectedCanreserve()} items={memberCanReserve} onSelected={onSelecteCanReserv} />
+    <MultiOptionCombo property={"can_reservs"} label={"Select Members"} selectedItems={getSelectedCanreserve()} items={memberCanReserve} onSelected={onSelecteCanReserv} />
   )
 }
 

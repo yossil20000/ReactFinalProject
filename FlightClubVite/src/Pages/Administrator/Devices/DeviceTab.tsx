@@ -60,7 +60,8 @@ function newDevice(): IDevice {
     flights: [],
     flight_reservs: [],
     status: Status.Suspended,
-    has_hobbs: false
+    has_hobbs: false,
+    account_owner: ""
   }
   return newDevice;
 }

@@ -11,7 +11,7 @@ import DevicesCombo from '../../Components/Devices/DevicesCombo'
 import Item from '../../Components/Item'
 import { useCreateQuarterOrderMutation } from '../../features/Account/accountApiSlice'
 import { getValidationFromError } from '../../Utils/apiValidation.Parser'
-import MultiOptionCombo from '../../Components/Buttons/MultiOptionCombo'
+import MultiOptionCombo, { LabelType } from '../../Components/Buttons/MultiOptionCombo'
 import MembersOptionCombo from '../../Components/Members/MembersOptionCombo'
 const source: string = "CreateQuarterDialoq"
 export interface ICreateQuarterDialoqProps {
@@ -38,10 +38,10 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
     setSelectedDevice(item)
     setSelectedMembers(prev => ({ ...prev, all: false, device_Id: item._id }))
   }
-  const onMemberChanged = (item: InputComboItem) => {
-    CustomLogger.log("CreateQuarterDialoq/item", item)
+  const onMemberChanged = (items: LabelType[]) => {
+    CustomLogger.log("CreateQuarterDialoq/item", items)
     let members = new Array();
-    members.push(item._id)
+    members = items.map((item) =>  item._id)
     CustomLogger.info("CreateQuarterDialoq/members", members, selectedMembers)
     setSelectedMembers(prev => ({ ...prev, all: false, members_Id: members }))
   }
@@ -101,6 +101,10 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
     newDate.setSeconds(0, 0);
     setSelectedMembers(prev => ({ ...prev, date: newDate }))
   };
+  const OnSelectedChanged = (selectedMembers: LabelType[]) => {
+    CustomLogger.log("CreateQuarterDialoq/OnSelectedChanged",selectedMembers)
+    onMemberChanged(selectedMembers)
+  }
   return (
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "100%", maxHeight: "auto" } }}
@@ -112,34 +116,34 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
         <Card variant="outlined">
           <CardContent>
             <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
-              <Grid item xs={12}>
-                <Item>
+              <Grid item xs={6}>
+{/*                 <Item> */}
                   <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
-                </Item>
+                {/* </Item> */}
               </Grid>
-              <Grid item xs={3}>
-                <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"active_only"} checked={requestAllItems} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Select All" />
-              </Grid>
-              <Grid item xs={9}>
-              <MembersOptionCombo/>
-                <DeviceMemberCombo requestItems={requestAllItems} getAllItems={getAllMembers} title='Select All Members' onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
-                <Divider light />
-              </Grid>
-              <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
-                <Item sx={{ marginLeft: "0px" }}>
+              <Grid item sx={{ marginLeft: "px" }} xs={6}  >
+               {/*  <Item sx={{ marginLeft: "0px" }}> */}
                   <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                     <ThemeProvider theme={theme}>
                       <MobileDateTimePicker
+                      sx={{width:"100%",paddingLeft:"1ch"}}
                         label="Date"
                         value={DateTime.fromJSDate(selectedMembers.date)}
                         onChange={handleDateChange}
                       />
                     </ThemeProvider>
                   </LocalizationProvider>
-                </Item>
+                {/* </Item> */}
               </Grid>
+{/*               <Grid item xs={3}>
+                <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"active_only"} checked={requestAllItems} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Select All" />
+              </Grid> */}
               <Grid item xs={12}>
+              <MembersOptionCombo OnSelectedChanged={OnSelectedChanged}/> 
+                <Divider light />
+              </Grid>
 
+              <Grid item xs={12}>
                 <TextField
                   type={"text"}
                   sx={{ marginLeft: "0px", width: "100%", fontSize: 25 }}

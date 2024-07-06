@@ -7,7 +7,8 @@ import ControledCombo, { InputComboItem, newInputComboItem, SelectComboProps } f
 
 const filterCombo: IMemberComboFilter = {
   filter: {
-    status: Status.Active
+    status: Status.Active,
+    _id: ""
   }
 }
 
