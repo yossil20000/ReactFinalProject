@@ -12,11 +12,10 @@ export interface IMembersOptionComboProps {
   OnSelectedChanged: (selected: LabelType[]) => void
 }
 const source: string = "MembersOptionCombo"
-function MembersOptionCombo({OnSelectedChanged}: IMembersOptionComboProps ) {
-  const [selectedItem,setSelectedItem] = useState<IDevice | null | undefined>()
+function MembersOptionCombo({ OnSelectedChanged }: IMembersOptionComboProps) {
+  const [selectedItem, setSelectedItem] = useState<IDevice | null | undefined>()
   const setDirtyDispatch = useAppDispatch()
   const { data: membersCombo } = useFetchMembersComboQuery({});
-  //const { setSelectedItem, selectedItem, membersCombo } = useContext(DevicesContext) as DevicesContextType;
   const memberCanReserve = useMemo((): (LabelType[]) => {
     const labels: (LabelType[] | undefined) = membersCombo?.data?.filter((i) => i.member_type == MemberType.Member).map((item) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
     CustomLogger.info("memberCanReserve/labels", labels)

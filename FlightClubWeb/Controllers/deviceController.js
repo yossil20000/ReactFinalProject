@@ -14,7 +14,7 @@ exports.device_list = function (req, res, next) {
         log.info('device_list', req.body.filter);
         Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
             .populate( {path: "account_owner",model: "ClubAccount",select:{"transactions": 0}})
-            .populate("maintanance.services")
+            .populate("maintanance.services device_type")
             .select(req.body.select === undefined ? "" : req.body.select)
             .sort([['device_id', 'ascending']])
             .exec(function (err, list_devices) {

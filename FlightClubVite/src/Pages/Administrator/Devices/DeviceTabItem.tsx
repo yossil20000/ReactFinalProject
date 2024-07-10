@@ -181,8 +181,8 @@ function DeviceTabItem() {
     if (foundItem && foundItem !== null) {
       setSelectedDeviceTypes(foundItem);
       CustomLogger.info("onDeviceTypeChanged/foundItem", foundItem)
-      const newObj: IDevice = SetProperty(selectedItem, "device_type", foundItem._id) as IDevice;
-
+      const newObj: IDevice = SetProperty(selectedItem, "device_type", foundItem) as IDevice;
+      
       setSelectedItem(newObj)
       SetDirtyFlage();
     }
@@ -231,7 +231,7 @@ function DeviceTabItem() {
                 <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 4 }}>
 
                   <Grid item xs={1} >
-                    <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source} selectedItem={deviceTypeToItemCombo(selectedItem?.device_type)} />
+                    <DeviceTypesCombo onChanged={onDeviceTypeChanged} source={source} selectedItem={deviceTypeToItemCombo(selectedItem?.device_type as IDeviceType)} />
                   </Grid>
                   <Grid item xs={1}>
                     <TextField fullWidth={true} onChange={handleChange} id="device_id" name="device_id"

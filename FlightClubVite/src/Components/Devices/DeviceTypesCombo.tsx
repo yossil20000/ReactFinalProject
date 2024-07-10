@@ -5,7 +5,7 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import IDeviceType from '../../Interfaces/API/IDeviceType';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 
-export const deviceTypeToItemCombo = (input: IDeviceType | any): InputComboItem => {
+export const deviceTypeToItemCombo = (input: IDeviceType): InputComboItem => {
   CustomLogger.log("DeviceTypesCombo/deviceTypeToItemCombo", input)
   return { lable: input?.name, _id: input?._id, description: input?.name } as InputComboItem
 }
