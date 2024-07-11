@@ -22,6 +22,7 @@ import { Checkbox, FormControlLabel, IconButton, InputAdornment } from '@mui/mat
 import { VisibilityOff, Visibility } from '@mui/icons-material';
 import VersionHistory, { IVersionHistoryProps } from './VersionHistory';
 import { width } from '@mui/system';
+import FullScreenLoader from '../../Components/FullScreenLoader';
 
 
 function Copyright({ show: showVersion }: IVersionHistoryProps) {
@@ -53,6 +54,7 @@ export default function LoginPage() {
   let { from } = location.state || { from: { pathname: "/home" } };
 
   const [loginError, setLoginError] = React.useState<string[]>([]);
+  const [isLoggin, setIsLogging] = React.useState(false)
   const [showPassword, setShowPassword] = React.useState(false);
   const [showVersion, setShowVersion] = React.useState(false);
   const id = useAppSelector((state) => state.authSlice.member._id);
@@ -74,6 +76,7 @@ export default function LoginPage() {
       /* resend: data.get('resend')?.toString()  === undefined ? false : true */
     }
     try {
+      setIsLogging(true);
       const payload = await loging(loginProps)
         .unwrap()
         .then((payload) => {
@@ -83,12 +86,13 @@ export default function LoginPage() {
           dispatch(setCredentials(payload.data));
           /* setLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO, payload.data); */
           loging_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
-
+          setIsLogging(false)
           CustomLogger.info("localStorage", loging_info);
           /* navigate(`/${ROUTES.HOME}`); */
           navigate(from, { replace: true })
         })
         .catch((err) => {
+          setIsLogging(false)
           CustomLogger.error("rejected", err);
           setLoginError(err.data.errors);
           CustomLogger.error("loginerr", loginError);
@@ -96,6 +100,7 @@ export default function LoginPage() {
         });
     }
     catch (err) {
+      setIsLogging(false)
       CustomLogger.error("submitForm/login: err");
     }
   };
@@ -128,6 +133,7 @@ export default function LoginPage() {
                   alignItems: 'center',
                 }}
               >
+
                 <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                   <LockOutlinedIcon />
                 </Avatar>
@@ -180,15 +186,17 @@ export default function LoginPage() {
               control={<Checkbox value={true} color="primary" name='resend' />}
               label="Resend"
             /> */}
+                  {isLoggin == true ? (<FullScreenLoader height='auto'/>) : (
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      sx={{ mt: 3, mb: 2 }}
+                    >
+                      Sign In
+                    </Button>
+                  )}
 
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Sign In
-                  </Button>
                   <Grid container>
                     <Grid item xs={12}>
                       <Link href="/reset" variant="body2">
