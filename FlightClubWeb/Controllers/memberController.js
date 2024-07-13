@@ -80,7 +80,7 @@ exports.combo = function (req, res, next) {
     try {
         log.info("combo/filter", req.body);
         Member.find(req?.body?.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
-            .select('family_name _id member_id first_name member_type id_number')
+            .select('family_name _id member_id first_name member_type id_number status')
             .sort([['family_name', 'ascending']])
             .exec(function (err, list_members) {
                 if (err) { return next(err); }

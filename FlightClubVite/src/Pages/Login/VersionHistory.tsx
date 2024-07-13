@@ -35,7 +35,8 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 14,version: "2.0.11.1",date: new Date(2024,3,23).getDisplayDate() , "description" : "Month view show only the selected day items"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 15,version: "2.0.11.2",date: new Date(2024,3,30).getDisplayDate() , "description" : "Add registration page"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 16,version: "2.0.11.3",date: new Date(2024,4,13).getDisplayDate() , "description" : "Convert inner DB"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
-    {id: 17,version: "2.0.11.4",date: new Date(2024,4,13).getDisplayDate() , "description" : "Fix DeviceType in DeviceTab"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 17,version: "2.0.11.4",date: new Date(2024,7,11).getDisplayDate() , "description" : "Fix DeviceType in DeviceTab"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 18,version: "2.0.11.5",date: new Date(2024,7,24).getDisplayDate() , "description" : "Members filter by member state. Reciept add description"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     
   ]
   function CustomToolbar() {

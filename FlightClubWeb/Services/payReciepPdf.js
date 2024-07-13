@@ -57,7 +57,7 @@ exports.send_recipe = async function (email, transaction) {
     row = doc.lastAutoTable.finalY + 10
     doc.text(`Description : ${ref.description}`,0,nextRow());
     doc.save(savedFile); // will save the file in the current working directory
-    await mail.SendMailRecipe(email, "Payment Recipe", "a4.pdf",savedFile)
+    await mail.SendMailRecipe(email, `Payment Recipe ${new Date(ref.date).toDateString()}`, "a4.pdf",savedFile)
                                     
   }
   catch (err) {

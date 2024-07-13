@@ -105,6 +105,7 @@ export interface IMemberCombo{
     family_name: string;
     first_name: string;
     member_type: MemberType
+    status: Status
   }
 
   export interface IMemberStatus {

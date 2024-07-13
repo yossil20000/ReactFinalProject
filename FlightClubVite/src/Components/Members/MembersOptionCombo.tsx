@@ -6,7 +6,7 @@ import { SetProperty } from "../../Utils/setProperty";
 import { useAppDispatch } from "../../app/hooks";
 import { setDirty } from "../../features/Admin/adminPageSlice";
 import { useFetchMembersComboQuery } from "../../features/Users/userSlice";
-import { MemberType } from "../../Interfaces/API/IMember";
+import { MemberType, Status } from "../../Interfaces/API/IMember";
 
 export interface IMembersOptionComboProps {
   OnSelectedChanged: (selected: LabelType[]) => void
@@ -17,7 +17,7 @@ function MembersOptionCombo({ OnSelectedChanged }: IMembersOptionComboProps) {
   const setDirtyDispatch = useAppDispatch()
   const { data: membersCombo } = useFetchMembersComboQuery({});
   const memberCanReserve = useMemo((): (LabelType[]) => {
-    const labels: (LabelType[] | undefined) = membersCombo?.data?.filter((i) => i.member_type == MemberType.Member).map((item) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
+    const labels: (LabelType[] | undefined) = membersCombo?.data?.filter((i) => i.member_type == MemberType.Member && (i.status == Status.Active || i.status == Status.Suspended) ).map((item) => ({ _id: item._id, name: `${item.family_name} ${item.member_id}`, description: "", color: blue[700] }));
     CustomLogger.info("memberCanReserve/labels", labels)
     if (labels === undefined || labels === null)
       return []

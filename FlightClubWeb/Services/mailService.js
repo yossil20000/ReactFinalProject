@@ -23,15 +23,17 @@ let mailOption = {
     from:  process.env.SITE_MAIL,
     to: "",
     subject: "",
-    text: ""
+    text: "",
+    html:'<h1>Hello</h1>'
 }
 
 
-function SendMail(to,subject,text){
+function SendMail(to,subject,text,html='<h1>Hello Club Member</h1>'){
     return new Promise((resolve, reject) => {
         mailOption.to = `yos.1965@gmail.com;${to};${process.env.SITE_MAIL}`;
         mailOption.subject = subject;
         mailOption.text = text;
+        mailOption.html = html;
         transporter.sendMail(mailOption, function(err,success) {
             log.info(sender);
             if(err){
@@ -72,6 +74,7 @@ async function SendMailRecipe(to, subject,text,pdf, callback){
     mailOption.to = to;
     mailOption.subject = subject;
     mailOption.text = text;
+    mailOption.html = `<h1>Hello ${to}</h1><h1>Attached  File: ${pdf}</h1>`
     mailOption.attachments =[
         {
             filename: pdf, // <= Here: made sure file name match
