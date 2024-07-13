@@ -19,7 +19,7 @@ function DeviceMemberCombo(props: ComboPropsEx) {
   useEffect(() => {
     CustomLogger.log("DeviceMemberCombo/ Devices.data", data?.data)
     let items: InputComboItem[] = []
-    data?.data.map((item) => item.can_reservs.map((can_reserv) => (items.push(({ lable: `${can_reserv.family_name} ${can_reserv.member_id}`, _id: can_reserv._id, description: "" }) as InputComboItem))));
+    data?.data.map((item) => item.can_reservs.map((can_reserv) => (items.push(({ lable: `${can_reserv.family_name}.${can_reserv.first_name.at(0)} ${can_reserv.member_id}`, _id: can_reserv._id, description: "" }) as InputComboItem))));
     /* let items  =   devicesToItemCombo(data?.data[0] === undefined ? [] : data?.data[0]); */
     CustomLogger.info("DeviceMemberCombo/ DeviceItem", items)
     if (items !== undefined)
