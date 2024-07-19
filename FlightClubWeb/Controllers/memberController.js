@@ -276,7 +276,7 @@ exports.member_create = [
                             if (result) {
                                 log.info("membertosave/Result", result);
                                 log.info("member.contact.email", member.contact.email)
-                                mail.SendMail(process.env.SITE_MAIL, "Create New user", `Your temporary paassword is ${user.password} Please Login with your maile`)
+                                mail.SendMail(process.env.SITE_MAIL, "Create New user", `Your paassword is ${user.password} Please Login with your email`)
                                     .then(() => {
                                         log.info("Send Mail to:", user.contact.email);
                                         res.status(201).json({ success: true, errors: [], message: "You Initial passwors was sent to your mail", data: member })

@@ -11,6 +11,7 @@ import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase
 import { getUrlWithParams } from "../../Utils/url"
 import { IDateFilter } from "../../Interfaces/IDateFilter"
 import { ICreateQuarterExpense } from "../../Pages/Account/CreateQuarterDialoq"
+import { ICreateOrderExpense } from "../../Pages/Account/CreateOrderExpenseDialoq"
 
 export const accountApiSlice = createApi({
   reducerPath: "accountApiSlice",
@@ -131,6 +132,14 @@ export const accountApiSlice = createApi({
       createQuarterOrder: builder.mutation<IResultBaseSingle<IOrder>, ICreateQuarterExpense>({
         query: (order) => ({
           url: `/${URLS.ORDERS_QUARTER_CREATE}`,
+          method: 'POST',
+          body: order
+        }),
+        invalidatesTags: [{ type: "Orders" }]
+      }),
+      createExpenseOrder: builder.mutation<IResultBaseSingle<IOrder>, ICreateOrderExpense>({
+        query: (order) => ({
+          url: `/${URLS.ORDERS_EXPESE_CREATE}`,
           method: 'POST',
           body: order
         }),
@@ -285,6 +294,7 @@ export const {
   useFetchTypesQuery,
   useFetchTransactionQuery,
   useCreateQuarterOrderMutation,
+  useCreateExpenseOrderMutation,
   useFetchAccountSavingQuery,
   useUpdateAccountSavingMutation
 } = accountApiSlice;

@@ -58,6 +58,7 @@ export  enum URLS{
   ORDERS_UPDATE = 'api/orders/update',
   ORDERS_CREATE = 'api/orders/create',
   ORDERS_QUARTER_CREATE = 'api/orders/create/quarter_expense',
+  ORDERS_EXPESE_CREATE = 'api/orders/create/general_expense',
   CLUB = 'api/club_account',
   CLUB_COMBO = 'api/club_account/combo',
   CLUB_ADD_ACCOUNT = 'api/club_account/add_account',

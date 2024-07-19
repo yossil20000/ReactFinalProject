@@ -20,12 +20,14 @@ import OrderStatusCombo from '../../Components/Buttons/OrderStatusCombo';
 import { OrderStatus } from '../../Interfaces/API/IAccount';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { MemberType, Role } from '../../Interfaces/API/IMember';
+import CreateOrderExpenseDialoq, { ICreateOrderExpense, ICreateOrderExpenseDialoqProps } from './CreateOrderExpenseDialoq';
 
 function AccountOrdersTab() {
   const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
 
   const [openFilter, setOpenFilter] = useState(false)
   const [openAddQuarter, setOpenAddQuarter] = useState(false)
+  const [openAddExpense, setOpenAddExpense] = useState(false)
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
   const [selectedMember, setSelectedMember] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedMember", null)
   const [filter, setFilter] = useState<IOrderTableFilter>({ ...from_to_year_Filter(new Date()), orderStatus: OrderStatus.CREATED });
@@ -53,12 +55,19 @@ function AccountOrdersTab() {
         //setOpenFlightAdd(true);
         setOpenAddQuarter(true)
         break;
+      case EAction.ORDER:
+        setOpenAddExpense(true);
+        break;
     }
   }
   function handleAddOnClose() {
     setOpenAddQuarter(false);
+    setOpenAddExpense(false)
   }
   function handleAddOnSave(item: ICreateQuarterExpense) {
+    CustomLogger.log("AccountOrdersTab/item", item)
+  }
+  function handleAddOnSaveExpense(item: ICreateOrderExpense) {
     CustomLogger.log("AccountOrdersTab/item", item)
   }
   const onOrderStatusChanged = (item: InputComboItem) => {
@@ -91,6 +100,7 @@ function AccountOrdersTab() {
         <ContainerPageMain>
           <>
             {openAddQuarter && <CreateQuarterDialoq onClose={handleAddOnClose} open={openAddQuarter} onSave={handleAddOnSave} />}
+            {openAddExpense && <CreateOrderExpenseDialoq onClose={handleAddOnClose} open={openAddExpense} onSave={handleAddOnSaveExpense} />}
             <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
               <List sx={{ display: 'flex', flexDirection: 'column' }}>
                 <ListItem key={"fromDate"} disablePadding>

@@ -207,6 +207,63 @@ exports.order_quarter_create = [
     }
   }
 ]
+
+exports.order_expense_create = [
+  
+  async function (req, res, next) {
+    const session = await mongoose.startSession();
+    const amount = req.body.amount;
+    const members = req.body.members_Id;
+    const description = req.body.description;
+    const date = req.body.date;
+    try {
+
+      session.startTransaction();
+      
+      let promises = [];
+      if (Array.isArray(members)) {
+        promises = members.map(async (member) => {
+          
+          let order = new Order({
+            order_date: new Date(date),
+            units: 1,
+            pricePeUnit: amount,
+            amount: amount,
+            orderType: {
+              operation: "Credit",
+              referance: "Expense"
+            },
+            description: description,
+            status: constants.OrderStatus.CREATED,
+            member: member
+          });
+          log.info("Expense for:", order._doc);
+          order.save((err, results) => {
+            if (err) {
+              session.abortTransaction();
+              log.error("order_expense_create.Save", err)
+              let appError = new ApplicationError("add_account", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_ACCOUNT.DB", err);
+              return next(appError);
+            }
+            else {
+              log.info("order_expense_create.Save", results)
+              /* return res.status(201).json({ success: true, errors: [], data: results }) */
+            }
+          })
+        })
+      }
+      await Promise.all(promises)
+      return res.status(201).json({ success: true, errors: [], data: [] })
+    }
+    catch (error) {
+      await session.abortTransaction();
+      return next(new ApplicationError("order_expense_create", 400, "CONTROLLER.ORDER.ORDER_EXPENSE_CREATE.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+    finally {
+      await session.endSession();
+    }
+  }
+]
 exports.order_update = [
   body("_id").isLength({ min: 24, max: 24 }).withMessage("_id must be 24 characters"),
   body("product").isLength({ min: 24, max: 24 }).withMessage("product must be 24 characters"),

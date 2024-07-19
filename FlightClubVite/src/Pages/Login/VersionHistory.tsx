@@ -36,7 +36,8 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 15,version: "2.0.11.2",date: new Date(2024,3,30).getDisplayDate() , "description" : "Add registration page"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 16,version: "2.0.11.3",date: new Date(2024,4,13).getDisplayDate() , "description" : "Convert inner DB"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 17,version: "2.0.11.4",date: new Date(2024,7,11).getDisplayDate() , "description" : "Fix DeviceType in DeviceTab"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
-    {id: 18,version: "2.0.11.5",date: new Date(2024,7,24).getDisplayDate() , "description" : "Members filter by member state. Reciept add description"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 18,version: "2.0.11.5",date: new Date(2024,7,12).getDisplayDate() , "description" : "Members filter by member state. Reciept add description"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 19,version: "2.0.12.0",date: new Date(2024,7,19).getDisplayDate() , "description" : "Add Order Expense Dialog, fix Member Account view"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     
   ]
   function CustomToolbar() {

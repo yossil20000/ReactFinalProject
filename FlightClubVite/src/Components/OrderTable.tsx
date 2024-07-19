@@ -23,8 +23,8 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   const { data: orders ,isLoading,error} = useGetOrderSearchQuery(filter);
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
-  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , id: string ,amount: number,description: string) : IAddTransaction => {
-    CustomLogger.log("OrderTable/getTransaction/input",sourseId,destinationId,id)
+  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string) : IAddTransaction => {
+    CustomLogger.log("OrderTable/getTransaction/input",sourseId,destinationId,order_id)
     CustomLogger.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     let addTransaction : IAddTransaction = {
       source: {
@@ -38,7 +38,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       amount: amount,
       type: Transaction_Type.CREDIT,
       order: {
-        _id: id,
+        _id: order_id,
         type: Transaction_OT.ORDER
       },
       payment:{

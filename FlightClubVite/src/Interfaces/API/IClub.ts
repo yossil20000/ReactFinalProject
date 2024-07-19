@@ -168,12 +168,12 @@ export class CTransaction {
 
   static getAmount = (item: ITransaction, accountId: string | undefined, balance: boolean = false): number => {
     if (item.calculation_type == Transaction_Calc_type.AMOUNT)
-      return balance ? Number(item.source_balance.toFixed(2)) : Number(item.amount.toFixed(2))
+      return balance ? Number(item.destination_balance.toFixed(2)) : Number(item.amount.toFixed(2))
     if (item.type.toLocaleUpperCase() === Transaction_Type.TRANSFER.toLocaleUpperCase())
       return item.amount;
     if (item.type.toLocaleUpperCase() === Transaction_Type.CREDIT.toLocaleUpperCase())
       return item.amount * -1
-    else if (accountId !== undefined && item.source.includes(accountId))
+    else if (accountId !== undefined && item.destination.includes(accountId))
       return item.amount * -1
     else
       return item.amount

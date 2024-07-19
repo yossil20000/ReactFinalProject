@@ -4,44 +4,38 @@ import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { DateTime } from 'luxon'
 import React, { useCallback, useState } from 'react'
-import { InputComboItem } from '../../Components/Buttons/ControledCombo'
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert'
-import DevicesCombo from '../../Components/Devices/DevicesCombo'
 import Item from '../../Components/Item'
-import { useCreateQuarterOrderMutation } from '../../features/Account/accountApiSlice'
+import { useCreateExpenseOrderMutation } from '../../features/Account/accountApiSlice'
 import { getValidationFromError } from '../../Utils/apiValidation.Parser'
 import { LabelType } from '../../Components/Buttons/MultiOptionCombo'
 import MembersOptionCombo from '../../Components/Members/MembersOptionCombo'
-const source: string = "CreateQuarterDialoq"
-export interface ICreateQuarterDialoqProps {
+import { SetProperty } from '../../Utils/setProperty'
+
+export interface ICreateOrderExpenseDialoqProps {
   onClose: () => void;
-  onSave: (value: ICreateQuarterExpense) => void;
+  onSave: (value: ICreateOrderExpense) => void;
   open: boolean;
 }
-export interface ICreateQuarterExpense {
+export interface ICreateOrderExpense {
   all: boolean;
   members_Id: string[];
-  device_Id: string;
+  amount: number;
   description: string;
   date: Date
 }
-function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarterDialoqProps) {
+function CreateOrderExpenseDialoq({ open, onClose, onSave, ...other }: ICreateOrderExpenseDialoqProps) {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-  const [selectedMembers, setSelectedMembers] = useState<ICreateQuarterExpense>({ all: true, members_Id: [], device_Id: "", description: "", date: new Date() });
+  const [selectedMembers, setSelectedMembers] = useState<ICreateOrderExpense>({ all: true, members_Id: [], amount: 0, description: "", date: new Date() });
   const [isSaved, setIsSaved] = useState(false);
-  const [requestAllItems, setRequestAllItems] = useState(false);
-  const [CreateQuarterOrder, { isError, isLoading }] = useCreateQuarterOrderMutation()
+  const [CreateExpenseOrder, { isError, isLoading }] = useCreateExpenseOrderMutation()
   const theme = useTheme()
-  const onDeviceChanged = (item: InputComboItem) => {
-    setSelectedDevice(item)
-    setSelectedMembers(prev => ({ ...prev, all: false, device_Id: item._id }))
-  }
+
   const onMemberChanged = (items: LabelType[]) => {
-    CustomLogger.log("CreateQuarterDialoq/item", items)
+    CustomLogger.log("CreateOrderExpenseDialoq/item", items)
     let members = new Array();
     members = items.map((item) => item._id)
-    CustomLogger.info("CreateQuarterDialoq/members", members, selectedMembers)
+    CustomLogger.info("CreateOrderExpenseDialoq/members", members, selectedMembers)
     setSelectedMembers(prev => ({ ...prev, all: false, members_Id: members }))
   }
   const handleOnCancel = () => {
@@ -50,24 +44,24 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
     onClose()
   }
   const handleOnSave = async () => {
-    CustomLogger.log("CreateQuarterDialoq/handleOnSave", selectedMembers)
+    CustomLogger.log("CreateOrderExpenseDialoq/handleOnSave", selectedMembers)
     try {
       setValidationAlert([])
       setIsSaved(false)
-      await CreateQuarterOrder(selectedMembers).unwrap().then((results) => {
-        CustomLogger.info("CreateQuarterDialoq/handleOnSave/result", results)
+      await CreateExpenseOrder(selectedMembers).unwrap().then((results) => {
+        CustomLogger.info("CreateOrderExpenseDialoq/handleOnSave/result", results)
         if (results.success) {
           setIsSaved(true)
         }
       }).catch((err) => {
         const validation = getValidationFromError(err, handleOnValidatiobClose);
         setValidationAlert(validation);
-        CustomLogger.error("CreateQuarterDialoq/handleOnSave/error", err)
+        CustomLogger.error("CreateOrderExpenseDialoq/handleOnSave/error", err)
       })
 
     }
     catch (error) {
-      CustomLogger.error("CreateQuarterDialoq/handleOnSave/error", error)
+      CustomLogger.error("CreateOrderExpenseDialoq/handleOnSave/error", error)
       const validation = getValidationFromError(error, handleOnValidatiobClose);
       setValidationAlert(validation);
 
@@ -77,19 +71,9 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
     setValidationAlert([])
 
   }, [])
-  const getAllMembers = (items: InputComboItem[]) => {
 
-    CustomLogger.log("CreateQuarterDialoq/getAllMembers", items, selectedMembers)
-    const members = items.map((item) => item._id)
-    setSelectedMembers(prev => ({ ...prev, all: true, members_Id: members }))
-  }
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    CustomLogger.log("CreateQuarterDialoq/handleBoolainChange", event.target.name, event.target.checked)
-    setRequestAllItems(event.target.checked)
-
-  };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    CustomLogger.log("CreateQuarterDialoq/handleChange", event.target.name, event.target.value)
+    CustomLogger.log("CreateOrderExpenseDialoq/handleChange", event.target.name, event.target.value)
     setSelectedMembers(prev => ({
       ...prev,
       [event.target.name]: event.target.value
@@ -101,26 +85,36 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
     setSelectedMembers(prev => ({ ...prev, date: newDate }))
   };
   const OnSelectedChanged = (selectedMembers: LabelType[]) => {
-    CustomLogger.log("CreateQuarterDialoq/OnSelectedChanged", selectedMembers)
+    CustomLogger.log("CreateOrderExpenseDialoq/OnSelectedChanged", selectedMembers)
     onMemberChanged(selectedMembers)
   }
+  const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+
+    const newObj: ICreateOrderExpense = SetProperty(selectedMembers, event.target.name, Number(event.target.value).setFix(2)) as ICreateOrderExpense;
+    CustomLogger.log("CreateOrderExpenseDialoq/handleNumberChange", event.target.name, event.target.value, newObj)
+    setSelectedMembers(newObj)
+  };
   return (
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "100%", maxHeight: "auto" } }}
       maxWidth="lg"
 
       open={open} {...other}>
-      <DialogTitle>Create Quarter Expense</DialogTitle>
+      <DialogTitle>Create Order Expense</DialogTitle>
       <DialogContent>
         <Card variant="outlined">
           <CardContent>
             <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12}>
-              <Grid item xs={12}>
-                {/*                 <Item> */}
-                <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
-                {/* </Item> */}
+              <Grid item xs={12} sm={12}>
+                <TextField fullWidth={true} onChange={handleNumberChange} id="amount" name="amount"
+
+                  type={"number"}
+                  label="Amount" placeholder="Amount" variant="standard"
+                  value={selectedMembers?.amount} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
-              <Grid item sx={{ marginLeft: "px", marginTop:"1ch"}} xs={12}  >
+              <Grid item sx={{ marginLeft: "0px" ,marginTop:"1ch"}} xs={12} sm={12}  >
                 {/*  <Item sx={{ marginLeft: "0px" }}> */}
                 <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                   <ThemeProvider theme={theme}>
@@ -134,14 +128,10 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
                 </LocalizationProvider>
                 {/* </Item> */}
               </Grid>
-              {/*               <Grid item xs={3}>
-                <FormControlLabel control={<Checkbox onChange={handleFilterChange} name={"active_only"} checked={requestAllItems} sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />} label="Select All" />
-              </Grid> */}
               <Grid item xs={12}>
                 <MembersOptionCombo OnSelectedChanged={OnSelectedChanged} />
                 <Divider light />
               </Grid>
-
               <Grid item xs={12}>
                 <TextField
                   type={"text"}
@@ -204,4 +194,4 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
   )
 }
 
-export default CreateQuarterDialoq
+export default CreateOrderExpenseDialoq

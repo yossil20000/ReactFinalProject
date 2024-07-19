@@ -82,7 +82,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
         referance: JSON.stringify(payInfo.recipe)
       },
       description: payInfo.selectedTransaction.description,
-      date: new Date()
+      date: payInfo.selectedTransaction.date
     }
     CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
     CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
