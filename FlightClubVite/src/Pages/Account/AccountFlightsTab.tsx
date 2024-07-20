@@ -1,14 +1,14 @@
 import '../../Types/date.extensions'
-import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, TablePagination } from '@mui/material';
+import { Box, duration, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, TablePagination } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { EAction } from '../../Components/Buttons/ActionButtons';
-import { InputComboItem, newInputComboItem } from '../../Components/Buttons/ControledCombo';
+import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable';
 import DevicesFlightCombo from '../../Components/Devices/DeviceFlightCombo';
 import { useGetAllFlightsSearchQuery } from '../../features/Flight/flightApi';
 import { COrderCreate, IOrderBase, orderDescription, OrderStatus, OT_OPERATION, OT_REF } from '../../Interfaces/API/IAccount';
 import { DEVICE_MET } from '../../Interfaces/API/IDevice';
-import IFlight, { FlightStatus } from '../../Interfaces/API/IFlight';
+import IFlight from '../../Interfaces/API/IFlight';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 import CreateFlightOrderDialog from './CreateFlightOrderDialog';
 import FullScreenLoader from '../../Components/FullScreenLoader';
@@ -28,6 +28,7 @@ interface IData {
   date: Date;
   hobbs_start: number
   hobbs_stop: number
+  duration: number
   engien_start: number
   engien_stop: number
   order_by: string
@@ -39,12 +40,13 @@ function createData(
   date: Date,
   hobbs_start: number,
   hobbs_stop: number,
+  duration:number,
   engien_start: number,
   engien_stop: number,
   order_by: string
 ): IData {
 
-  return { _id, date, hobbs_start, hobbs_stop, engien_start, engien_stop, order_by };
+  return { _id, date, hobbs_start, hobbs_stop,duration, engien_start, engien_stop, order_by };
 }
 
 const columns: Column[] = [
@@ -64,6 +66,14 @@ const columns: Column[] = [
   {
     id: 'engien_stop',
     label: 'EngienStop',
+    minWidth: 170,
+    align: 'center',
+    format: (value: number) => value.toLocaleString('en-US'),
+    isCell: true
+  },
+  {
+    id: 'duration',
+    label: 'Duration',
     minWidth: 170,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
@@ -159,7 +169,7 @@ function AccountFlightsTab() {
     return a.engien_start >= b.engien_start ? 1 : -1;
   }
   const getData = useMemo(() => {
-    let rows = data?.data.filter(filterFlight).map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
+    let rows = data?.data.filter(filterFlight).map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.duration == 0 ? row.engien_stop - row.engien_start : row.duration,row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
     CustomLogger.info("AccountFlight/Flight/getData", rows)
     rows = rows === undefined ? [] : rows;
     setCount(rows.length)

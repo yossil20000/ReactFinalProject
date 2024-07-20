@@ -39,6 +39,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 18,version: "2.0.11.5",date: new Date(2024,7,12).getDisplayDate() , "description" : "Members filter by member state. Reciept add description"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 19,version: "2.0.12.0",date: new Date(2024,7,19).getDisplayDate() , "description" : "Add Order Expense Dialog, fix Member Account view"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 20,version: "2.0.12.1",date: new Date(2024,7,20).getDisplayDate() , "description" : "Fix Transaction dialog, Switch D.Balance / S.Balance position"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 20,version: "2.0.12.2",date: new Date(2024,7,20).getDisplayDate() , "description" : "Add flight duration column to flight tab"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     
   ]
   function CustomToolbar() {

@@ -66,9 +66,19 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     CustomLogger.info("handleFligtChange", event.target.name, event.target.value)
+    let duration=0;
+    switch(event.target.name){
+      case "engien_start":
+        duration = flightCreate.engien_stop - Number(event.target.value)
+        break;
+      case "engien_stop":
+        duration = Number(event.target.value) - flightCreate.engien_start
+        break;
+    }
+    duration = Number(duration.toFixed(1))
     setFlightCreate(prev => ({
       ...prev,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value,duration: duration === 0 ? prev.duration : duration
     }));
   };
   const handleOnCancel = () => {
@@ -157,6 +167,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               value={flightCreate.engien_stop}
               onChange={handleFligtChange}
               InputLabelProps={{ shrink: true }}
+              helperText={`Duration: ${flightCreate.duration}`}
             />
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
