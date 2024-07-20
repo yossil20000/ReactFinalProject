@@ -56,7 +56,7 @@ export class CTransactionToReport {
           save:false
       }
       report.header=["Index","_id","Date","CalcType","Source","Destination",
-      "O.Type","O.Id","D.Balance","S.Balance","Amount","Type","Payment Method","Payment Referance","Description"]
+      "O.Type","O.Id","S.Balance","D.Balance","Amount","Type","Payment Method","Payment Referance","Description"]
       report.body = this.transaction?.map((transaction,i) => {
           console.info("CExpenseToReport/expense",transaction)
           return [i.toFixed(0),
@@ -67,8 +67,8 @@ export class CTransactionToReport {
             transaction.destination,
             transaction.order.type.toString(),
             transaction.order._id,
-            transaction.destination_balance.toFixed(2),
             transaction.source_balance.toFixed(2),
+            transaction.destination_balance.toFixed(2),
             transaction.amount.toFixed(2),
             transaction.type.toString(),
             transaction.payment.method.toString(),

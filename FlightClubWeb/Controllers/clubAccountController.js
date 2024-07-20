@@ -600,7 +600,7 @@ exports.add_transaction_Type = [
                 destinationAccount.transactions.push(destinationTransaction);
          */
         destinationAccount.transactions.push(sourceTransaction);
-        await destinationTransaction.save({ session });
+       /*  await destinationTransaction.save({ session }); */
         destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) - destinationAmount;
         /* if (type === constants.TransactionType.TRANSFER) {
           destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + destinationAmount;
