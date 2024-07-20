@@ -21,17 +21,12 @@ export interface IActionButtonsProps {
   item: string | any,
   display?: IActionDispaly<string>[],
   color?: IActionDispaly<ActionColor>[],
-  disable?: IActionDispaly<boolean>[],
-  lock?:boolean
+  disable?: IActionDispaly<boolean>[]
 }
 
 
-function ActionButtons({ OnAction, show, item = "", display ,color,disable,lock=false}: IActionButtonsProps) {
-  
-  function OnActionA(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
-     lock = true;
-    OnAction(action,event,item);
-   }
+function ActionButtons({ OnAction, show, item = "", display ,color,disable}: IActionButtonsProps) {
+  CustomLogger.error("ActionButtons/item",item)
   const getName = (findKey: EAction,defaultName: string): string => {
     CustomLogger.info("ActionButtons/getName/key_display",findKey,display)
     if (display !== undefined) {
@@ -70,7 +65,7 @@ function ActionButtons({ OnAction, show, item = "", display ,color,disable,lock=
       {show.includes(EAction.ADD) == true && <Button fullWidth disabled= {getDisable(EAction.ADD ,getDisable(EAction.ADD,false))} key={"Add"} variant='outlined' onClick={(event) => OnAction(EAction.ADD, undefined, item)} color={getColor(EAction.ADD,'success')} startIcon={<AddCircleOutlineIcon />}>{getName(EAction.ADD,"Add")}</Button>}
       {show.includes(EAction.EDIT) == true && <Button fullWidth disabled= {getDisable(EAction.EDIT,false)} key={"Edit"} variant='outlined' onClick={(event) => OnAction(EAction.EDIT, undefined, item)} color={getColor(EAction.EDIT,'primary')} startIcon={<EditIcon />}>{getName(EAction.EDIT,"Edit")}</Button>}
       {show.includes(EAction.DELETE) == true && <Button fullWidth disabled= {getDisable(EAction.DELETE ,false)} key={"Delete"} variant='outlined' onClick={(event) => OnAction(EAction.DELETE, undefined, item)} color={getColor(EAction.DELETE,'secondary')} startIcon={<DeleteIcon />}>{getName(EAction.DELETE,"Delete")}</Button>}
-      {show.includes(EAction.ORDER) == true && <Button fullWidth disabled= {getDisable(EAction.ORDER,getDisable(EAction.ORDER,false)) || lock} key={"Order"} variant='outlined' onClick={(event) => OnActionA(EAction.ORDER, undefined, item)} color={getColor(EAction.ORDER,'primary')} startIcon={<AddShoppingCartIcon />}>{getName(EAction.ORDER,"Order")}</Button>}
+      {show.includes(EAction.ORDER) == true && <Button fullWidth disabled= {getDisable(EAction.ORDER,getDisable(EAction.ORDER,false))} key={"Order"} variant='outlined' onClick={(event) => OnAction(EAction.ORDER, undefined, item)} color={getColor(EAction.ORDER,'primary')} startIcon={<AddShoppingCartIcon />}>{getName(EAction.ORDER,"Order")}</Button>}
       {show.includes(EAction.PAY) == true && <Button fullWidth disabled= {getDisable(EAction.PAY,false)}key={"Pay"} variant='outlined' onClick={(event) => OnAction(EAction.PAY, undefined, item)} color={getColor(EAction.PAY,'primary')} startIcon={<PaymentIcon />}>{getName(EAction.PAY,"Pay")}</Button>}
       {show.includes(EAction.CLOSE) == true && <Button fullWidth disabled= {getDisable(EAction.CLOSE,false)} key={"Close"} variant='outlined' onClick={(event) => OnAction(EAction.CLOSE, undefined, item)} color={getColor(EAction.CLOSE,'primary')} startIcon={<CloseIcon />}>{getName(EAction.CLOSE,"Close")}</Button>}
       {show.includes(EAction.SAVE) == true && <Button fullWidth disabled= {getDisable(EAction.SAVE,false)} key={"Save"} variant='outlined' onClick={(event) => OnAction(EAction.SAVE, undefined, item)} color={getColor(EAction.SAVE,'primary')} startIcon={<Save />}>{getName(EAction.SAVE,"Save")} </Button>}

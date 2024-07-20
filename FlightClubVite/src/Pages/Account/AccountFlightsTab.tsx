@@ -144,6 +144,7 @@ function AccountFlightsTab() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count, setCount] = useState(0);
   const [selectedMember, setSelectedMember] = useState<InputComboItem>()
+  const [lastItem,setLastItem] =useState<IOrderBase | null>(null)
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -169,12 +170,12 @@ function AccountFlightsTab() {
     return a.engien_start >= b.engien_start ? 1 : -1;
   }
   const getData = useMemo(() => {
-    let rows = data?.data.filter(filterFlight).map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.duration == 0 ? row.engien_stop - row.engien_start : row.duration,row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
+    let rows = data?.data.filter(filterFlight).filter((item) => lastItem != null ? lastItem.product != item._id : true).map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.duration == 0 ? row.engien_stop - row.engien_start : row.duration,row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
     CustomLogger.info("AccountFlight/Flight/getData", rows)
     rows = rows === undefined ? [] : rows;
     setCount(rows.length)
     return rows;
-  }, [data, selectedMember])
+  }, [data, selectedMember,lastItem])
 
   const getPrice = (flight: IFlight): [units: number, pricePeUnit: number, amount: number, discount: number] => {
     let units: number = 0, pricePeUnit: number = 0, discount: number = 0, amount: number = 0;
@@ -225,6 +226,7 @@ function AccountFlightsTab() {
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
     CustomLogger.log("AccountFlight/ActionButtons/onAction", event?.target, action, item)
+    setLastItem(null)
     switch (action) {
       case EAction.ORDER:
         if (item !== undefined) {
@@ -240,6 +242,7 @@ function AccountFlightsTab() {
   }
 
   const handleAddOnSave = (value: IOrderBase) => {
+    setLastItem(value)
     refetch();
     setOpenOrderAdd(false);
     CustomLogger.log("AccountFlightPage/handleAddOnSave/value", value);

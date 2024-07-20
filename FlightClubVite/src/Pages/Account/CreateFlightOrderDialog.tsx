@@ -75,18 +75,18 @@ function CreateFlightOrderDialog({ value, onClose, onSave, open, ...other }: Cre
 
   }, [])
   const handleOnSave = async () => {
-    CustomLogger.log("CreateFlightOrderDialog/onSave", orderCreate)
+    CustomLogger.log("CreateFlightOrderDialog/handleOnSave", orderCreate)
     let order = new COrderCreate();
     order.copy(orderCreate);
-    CustomLogger.log("CreateFlightOrderDialog/onSave/order", order)
-    CustomLogger.log("CreateFlightOrderDialog/onSave/date", orderCreate.order_date)
+    CustomLogger.log("CreateFlightOrderDialog/handleOnSave/order", order)
+    CustomLogger.log("CreateFlightOrderDialog/handleOnSave/date", orderCreate.order_date)
     await CreateOrder(orderCreate as IOrderBase).unwrap().then((data) => {
-      CustomLogger.info("CreateFlightOrderDialog/onSave/", data);
+      CustomLogger.info("CreateFlightOrderDialog/handleOnSave/", data);
       if(data.data._id !== undefined){
         setIsSaved(true)
       }
     }).catch((err) => {
-      CustomLogger.error("CreateFlightOrderDialog/onSave/error", err.data.errors);
+      CustomLogger.error("CreateFlightOrderDialog/handleOnSave/error", err.data.errors);
     });
   }
 
