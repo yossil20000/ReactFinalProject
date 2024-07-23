@@ -573,7 +573,9 @@ exports.add_transaction_Type = [
           date: source.date,
           description: description,
           payment: payment,
-          order: order
+          order: order,
+          source_balance: Number(sourceAccount.balance.toFixed(2)),
+          destination_balance: Number(destinationAccount.balance.toFixed(2))
         });
 
 
