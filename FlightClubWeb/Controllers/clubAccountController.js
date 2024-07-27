@@ -485,7 +485,7 @@ exports.add_transaction_Type = [
 
   async (req, res, next) => {
     try {
-      let { source, destination, amount, order, description, payment, type } = req.body;
+      let { source, destination, amount, order, description, payment, type,date} = req.body;
       type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -570,7 +570,7 @@ exports.add_transaction_Type = [
           balance: Number(sourceAccount.balance.toFixed(2)),
           type: type,
           calculation_type: constants.CalcType.AMOUNT,
-          date: source.date,
+          date: date,
           description: description,
           payment: payment,
           order: order,

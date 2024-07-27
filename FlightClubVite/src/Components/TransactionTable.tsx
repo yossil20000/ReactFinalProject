@@ -25,8 +25,8 @@ interface ITransactionTableProps {
 let initialState: GridInitialStateCommunity = {
   columns: {
     columnVisibilityModel: {
-      _id: true,
-      date: false
+      id: false,
+      date: true
     }
   },
   pagination: { paginationModel: { pageSize: 100 } },
@@ -65,7 +65,7 @@ const getData = useMemo(() => {
     const rows = transactions?.map((row: ITransaction) => ({
       id: row._id,
      /*  _id: row._id, */
-      date: new Date(row.date).getDisplayDate(),
+      date: new Date(row.date),
       source: row.source,
       destination: row.destination,
       source_balance: row.source_balance,
@@ -89,12 +89,12 @@ const getData = useMemo(() => {
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id',hideable: true },
     /* { field: '_id',hideable: true }, */
-    { field: 'date', hideable: true, headerName: 'Date', minWidth: 120,maxWidth: 120, flex: 1 },
+    { field: 'date', hideable: true, headerName: 'Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1},
     { field: 'source', headerName: 'Source', minWidth: 130, maxWidth:180 ,flex: 2 },
     { field: 'destination', headerName: 'Destination', minWidth: 130, maxWidth:180, flex: 2 },
     { field: 'order', headerName: 'Order', minWidth: 110, maxWidth:110, flex: 1 },
-    { field: 'source_balance', headerName: 'S.Balance', type: 'number', minWidth: 140, maxWidth:140, flex: 1 },
-    { field: 'destination_balance', headerName: 'D.Balance', type: 'number', minWidth: 140, maxWidth:140, flex: 1 },
+    { field: 'source_balance', headerName: 'S.PrevBalance', type: 'number', minWidth: 140, maxWidth:140, flex: 1 },
+    { field: 'destination_balance', headerName: 'D.PrevBalance', type: 'number', minWidth: 140, maxWidth:140, flex: 1 },
     { field: 'amount', headerName: 'Amount', type: 'number', minWidth: 120, maxWidth:120, flex: 1 },
     { field: 'transactionType', headerName: 'Type', type: 'number', minWidth: 100, maxWidth:100, flex: 1 },
     { field: 'paymentMethod', headerName: 'PayMethod', type: 'text', minWidth: 130, maxWidth:160, flex: 1 },

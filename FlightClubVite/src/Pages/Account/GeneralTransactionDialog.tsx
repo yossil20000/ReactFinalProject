@@ -1,5 +1,5 @@
 import '../../Types/Number.extensions'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
@@ -13,6 +13,9 @@ import { getValidationFromError } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { MemberType } from '../../Interfaces/API/IMember';
 import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo';
+import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { DateTime } from 'luxon';
 
 export interface GeneralTransactionDialogProps {
 
@@ -62,6 +65,7 @@ const getAccountType = (memberType: string | undefined): string => {
 }
 
 function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTransactionDialogProps) {
+  const theme = useTheme()
   const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionTypeMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
@@ -96,7 +100,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
         referance: selectedTransaction.payment.referance
       },
       description: selectedTransaction.description,
-      date: new Date()
+      date: selectedTransaction.date
     }
     CustomLogger.log("GeneralTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
     CustomLogger.log("GeneralTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
@@ -180,6 +184,13 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
     setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
     CustomLogger.log("GeneralTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
   }
+  const handleDateChange = (newValue: DateTime | null) => {
+    CustomLogger.info("GeneralTransactionDialog/handleDateChange", newValue)
+    let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+    newDate.setSeconds(0, 0);
+    const newObj = setProperty(selectedTransaction, "date", newDate)
+    setSelectedTransaction(newObj)
+  };
   return (
 
     <Dialog
@@ -202,11 +213,23 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
               <Grid item xs={12} sm={6}>
                 {RenderDestination()}
               </Grid>
-              <Grid item xs={6}>
+              <Grid item sx={{ marginLeft: "0px",marginTop:"0.6rem" }} xs={12} md={4}>
                 <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
                   selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item sx={{ marginLeft: "",marginTop:"0.6rem", paddingLeft: "0.2rem" ,paddingBottom:"1.2rem"}} xs={12} md={4}>
+                <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
+                  <ThemeProvider theme={theme}>
+                    <MobileDateTimePicker
+                      sx={{ width: '100%', paddingLeft: '0px' }}
+                      label="Date"
+                      value={DateTime.fromJSDate(selectedTransaction.date)}
+                      onChange={handleDateChange}
+                    />
+                  </ThemeProvider>
+                </LocalizationProvider>
+              </Grid>
+              <Grid item  sx={{ marginLeft: "0px",paddingLeft: "0.2rem" , marginTop:"0.6rem" }} xs={12} md={4}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"
@@ -214,7 +237,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
                   helperText="" error={false} InputLabelProps={{ shrink: true }}
                   inputProps={{ max: 10000000, min: 1 }} />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} >
                 <TextField fullWidth={true} onChange={handleChange} id="description" name="description"
                   multiline
                   label="Description" placeholder="Expense Description" variant="standard"

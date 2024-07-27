@@ -42,6 +42,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 21,version: "2.0.12.2",date: new Date(2024,7,20).getDisplayDate() , "description" : "Add flight duration column to flight tab"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 22,version: "2.0.12.3",date: new Date(2024,7,20).getDisplayDate() , "description" : "Fix clean display after Place Flight Order"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 23,version: "2.0.12.4",date: new Date(2024,7,23).getDisplayDate() , "description" : "accont/transaction/add transaction update previous balance"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
+    {id: 24,version: "2.0.12.5",date: new Date(2024,7,27).getDisplayDate() , "description" : "Fix Account/Transaction date filter, add time of transaction"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     
   ]
   function CustomToolbar() {
