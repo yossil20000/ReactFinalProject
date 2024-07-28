@@ -36,7 +36,9 @@ const OrderTypeReferance = {
     "Expense": "Expense",
     "Montly": "Montly",
     "Other": "Other",
-    "Transfer": "Transfer"
+    "Transfer": "Transfer",
+    "Refund": "Refund",
+    "Variable": "Variable"
 }
 const ERROR_TYPE = {
     DB: "DB",

@@ -92,7 +92,7 @@ function AccountOrdersTab() {
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
               </Grid>
               <Grid item xs={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.ORDER]} item="" display={[{ key: EAction.ORDER, value: "Expense" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
+                <ActionButtons OnAction={onAction} show={[EAction.ORDER]} item="" display={[{ key: EAction.ORDER, value: "Variable Expense" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
               </Grid>
             </Grid>
           </Box>

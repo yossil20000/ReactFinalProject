@@ -56,14 +56,7 @@ function AccountExpenseTab() {
     { id: '_id', label: 'id', minWidth: 50, isCell: false, align: 'left' },
     { id: 'date', label: 'Date', minWidth: 30, isCell: true, align: 'left', format: (value: Date) => new Date(value).getDisplayDate() },
     { id: 'units', label: 'Units', minWidth: 40, align: 'left', isCell: true },
-    {
-      id: 'pricePeUnit',
-      label: 'Per Unit',
-      minWidth: 90,
-      align: 'center',
-      format: (value: number) => value.toLocaleString('en-BR'),
-      isCell: true
-    },
+    { id: 'pricePeUnit', label: 'Per Unit', minWidth: 90, align: 'center', format: (value: number) => value.toLocaleString('en-BR'), isCell: true },
     { id: 'amount', label: 'Amount', minWidth: 70, align: 'left', isCell: true },
     { id: 'category', label: 'Category', minWidth: 70, align: 'left', isCell: true },
     { id: 'type', label: 'Type', minWidth: 70, align: 'left', isCell: true },

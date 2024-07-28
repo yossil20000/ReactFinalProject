@@ -158,7 +158,7 @@ exports.add_order_transaction = [
   body('payment.method').isLength({ min: 1 }).withMessage("Payment methos is missing"),
   async (req, res, next) => {
     try {
-
+      
       let { source, destination, amount, order, description, payment, type } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {

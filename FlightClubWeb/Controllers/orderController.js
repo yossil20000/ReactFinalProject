@@ -231,7 +231,7 @@ exports.order_expense_create = [
             amount: amount,
             orderType: {
               operation: "Credit",
-              referance: "Expense"
+              referance: "Variable"
             },
             description: description,
             status: constants.OrderStatus.CREATED,

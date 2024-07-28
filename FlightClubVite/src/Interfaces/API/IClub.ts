@@ -77,7 +77,8 @@ export enum Transaction_OT {
   MONTLY = "Montly",
   ORDER = 'Order',
   OTHER = "Other",
-  TRANSFER = "Transfer"
+  TRANSFER = "Transfer",
+  REFUND = "Refund"
 }
 export enum Transaction_Type {
   CREDIT = "Credit",

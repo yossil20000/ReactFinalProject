@@ -23,7 +23,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   const { data: orders ,isLoading,error} = useGetOrderSearchQuery(filter);
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
-  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string) : IAddTransaction => {
+  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string, product: Transaction_OT) : IAddTransaction => {
     CustomLogger.log("OrderTable/getTransaction/input",sourseId,destinationId,order_id)
     CustomLogger.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     let addTransaction : IAddTransaction = {
@@ -39,7 +39,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       type: Transaction_Type.CREDIT,
       order: {
         _id: order_id,
-        type: Transaction_OT.ORDER
+        type: product
       },
       payment:{
         method: PaymentMethod.NONE,
@@ -89,8 +89,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       orderBy: `${row.member?.family_name}/${row.member?.member_id}`,
       member: row.member === undefined ? undefined : row.member,
       status: row.status,
-      description: `${row.description}`
-      ,
+      description: `${row.description}`,
     }))
     if (rows !== undefined) {
       CustomLogger.info("OrderTable/orderRows/orders",rows,orders);
@@ -131,7 +130,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
  
          <TransactionAction {...{params,rowId,setRowId,orderId : params.row.product !== OT_REF.FLIGHT ? params.row.id : undefined  ,
           transaction: getTransaction(
-            selectedClubAccount?._id == undefined ? "" : selectedClubAccount?._id ,params.row.member._id,params.row.id, params.row.amount,params.row.description)}}/>
+            selectedClubAccount?._id == undefined ? "" : selectedClubAccount?._id ,params.row.member._id,params.row.id, params.row.amount,params.row.description,params.row.product)}}/>
 
         </Box>
       )

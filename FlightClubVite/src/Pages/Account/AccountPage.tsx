@@ -5,14 +5,12 @@ import AccountExpenseTab from "./AccountExpenseTab";
 import AccountFlightsTab from "./AccountFlightsTab";
 import AccountOrders from "./AccountOrdersTab";
 import AccountsTab from "./AccountsTab";
-import AccountTest from "./AccountTest";
 import AccountTransactionsTab from "./AccountTransactionsTab";
-import AccountExpenseGridTab from "./AccountExpenseGridTab";
 
 const items: ScrollableTabsItem[] = [
-  { id: 0, label: "Flights" },
-  { id: 1, label: "Orders" },
-  { id: 2, label: "Expense" },
+  { id: 0, label: "Member Flights" },
+  { id: 1, label: "Member Orders" },
+  { id: 2, label: "Club Expense" },
   { id: 3, label: "Transactions" },
   { id: 4, label: "Accounts" },
  /*  { id: 5, label: "ExpenseGrid" } */
