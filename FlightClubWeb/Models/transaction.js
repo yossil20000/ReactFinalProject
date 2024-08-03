@@ -28,7 +28,8 @@ var TransactionSchema = new Schema({
   destination_balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   order:  {
     _id: {type: String},
-    type: {type: String}
+    type: {type: String},
+    quarter: {type:String,enum: Object.values(constants.QuarterType),default: constants.QuarterType.NONE}
   },
   type: {type: String, enum: Object.values(constants.TransactionType), default: constants.TransactionType.CREDIT},
   calculation_type: {type: String, enum: Object.values(constants.CalcType), default: constants.CalcType.TRANSACTION},

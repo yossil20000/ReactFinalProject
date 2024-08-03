@@ -8,6 +8,7 @@ import { IOrder, OrderStatus, OT_REF } from '../Interfaces/API/IAccount';
 import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 import FullScreenLoader from './FullScreenLoader';
+import { QuarterType } from '../Utils/enums';
 
 
 interface IOrderTableProps {
@@ -23,7 +24,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   const { data: orders ,isLoading,error} = useGetOrderSearchQuery(filter);
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
-  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string, product: Transaction_OT) : IAddTransaction => {
+  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string, product: Transaction_OT,date:Date) : IAddTransaction => {
     CustomLogger.log("OrderTable/getTransaction/input",sourseId,destinationId,order_id)
     CustomLogger.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     let addTransaction : IAddTransaction = {
@@ -39,14 +40,15 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       type: Transaction_Type.CREDIT,
       order: {
         _id: order_id,
-        type: product
+        type: product,
+        quarter: QuarterType.NONE
       },
       payment:{
         method: PaymentMethod.NONE,
         referance: ""
       },
       description: description,
-      date: new Date()
+      date: new Date(date)
     }
     CustomLogger.info("OrderTable/getTransaction/addTransaction",addTransaction)
     return addTransaction;
@@ -130,7 +132,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
  
          <TransactionAction {...{params,rowId,setRowId,orderId : params.row.product !== OT_REF.FLIGHT ? params.row.id : undefined  ,
           transaction: getTransaction(
-            selectedClubAccount?._id == undefined ? "" : selectedClubAccount?._id ,params.row.member._id,params.row.id, params.row.amount,params.row.description,params.row.product)}}/>
+            selectedClubAccount?._id == undefined ? "" : selectedClubAccount?._id ,params.row.member._id,params.row.id, params.row.amount,params.row.description,params.row.product,params.row.date)}}/>
 
         </Box>
       )

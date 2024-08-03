@@ -79,6 +79,13 @@ const PaymentMethod = {
     TRANSFER: "TRANSFER",
     NONE: "NONE"
 }
+const QuarterType = {
+    NONE: "NONE",
+    Q1: "Q1",
+    Q2: "Q2",
+    Q3: "Q3",
+    Q4: "Q4"
+}
 const Utilizated = {
     HOURS_0000: "HOURS_0000",
     HOURS_0100: "HOURS_0100",
@@ -110,3 +117,4 @@ module.exports.MemberType = MemberType;
 module.exports.NotifyOn = NotifyOn;
 module.exports.OrderTypeReferance = OrderTypeReferance;
 module.exports.CalcType = CalcType;
+module.exports.QuarterType = QuarterType;

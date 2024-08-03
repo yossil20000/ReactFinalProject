@@ -33,3 +33,10 @@ export enum EQuarterOption {
   E_QO_Q3 =3,
   E_QO_Q4 = 4
 }
+export enum QuarterType {
+  NONE = "NONE",
+  Q1 = "Q1",
+  Q2 = "Q2",
+  Q3 = "Q3",
+  Q4 = "Q4"
+}

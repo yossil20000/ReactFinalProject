@@ -16,6 +16,8 @@ import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo'
 import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
+import Transaction_OTCombo from '../../Components/Buttons/Transaction_OTCombo';
+import { QuarterType } from '../../Utils/enums';
 
 export interface GeneralTransactionDialogProps {
 
@@ -36,7 +38,8 @@ let newTransaction: IAddTransaction = {
   type: Transaction_Type.CREDIT,
   order: {
     type: Transaction_OT.OTHER,
-    _id: ''
+    _id: '',
+    quarter: QuarterType.NONE
   },
   payment: {
     method: PaymentMethod.NONE,
@@ -92,8 +95,9 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
       amount: selectedTransaction.amount,
      
       order: {
-        type: Transaction_OT.OTHER,
-        _id: ''
+        type: selectedTransaction.order.type,
+        _id: '',
+        quarter: QuarterType.NONE
       },
       payment: {
         method: PaymentMethod.NONE,
@@ -213,15 +217,11 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
               <Grid item xs={12} sm={6}>
                 {RenderDestination()}
               </Grid>
-              <Grid item sx={{ marginLeft: "0px",marginTop:"0.6rem" }} xs={12} md={4}>
-                <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
-                  selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
-              </Grid>
-              <Grid item sx={{ marginLeft: "",marginTop:"0.6rem", paddingLeft: "0.2rem" ,paddingBottom:"1.2rem"}} xs={12} md={4}>
+              <Grid item sx={{ marginLeft: "",marginTop:"0.6rem", paddingLeft: "0.2rem" ,paddingBottom:"1.2rem"}} xs={12} md={3}>
                 <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                   <ThemeProvider theme={theme}>
                     <MobileDateTimePicker
-                      sx={{ width: '100%', paddingLeft: '0px' }}
+                      sx={{ width: '100%', paddingRight:{xs:'0px' , md:'1ch'}}}
                       label="Date"
                       value={DateTime.fromJSDate(selectedTransaction.date)}
                       onChange={handleDateChange}
@@ -229,7 +229,15 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
                   </ThemeProvider>
                 </LocalizationProvider>
               </Grid>
-              <Grid item  sx={{ marginLeft: "0px",paddingLeft: "0.2rem" , marginTop:"0.6rem" }} xs={12} md={4}>
+              <Grid item sx={{ marginLeft: "0px",marginTop:"0.6rem" ,paddingRight:{xs:'0px' , md:'1ch'}}} xs={12} md={3}>
+                <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
+                  selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
+              </Grid>
+              <Grid item sx={{ marginLeft: "0px",marginTop:"0.6rem",paddingRight:{xs:'0px' , md:'1ch'} }} xs={12} md={3}>
+                <Transaction_OTCombo onChanged={(item) => onComboChanged(item, "order.type")} source={""}
+                  selectedItem={{ lable: selectedTransaction.order.type === undefined ? "" : selectedTransaction.order.type.toString(), _id: "", description: "" }} />
+              </Grid>
+              <Grid item  sx={{ marginLeft: "0px", marginTop:"0.6rem" }} xs={12} md={3}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"

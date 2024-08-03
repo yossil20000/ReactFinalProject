@@ -12,6 +12,7 @@ import PaymentMethodCombo from '../../Components/Buttons/PaymentMethodCombo';
 import { setProperty } from '../../Utils/setProperty';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo';
+import { QuarterType } from '../../Utils/enums';
 interface filter {
   member: string[]
 }
@@ -36,7 +37,8 @@ const newTransaction: IAddTransaction = {
   type: Transaction_Type.DEBIT,
   order: {
     type: Transaction_OT.ORDER,
-    _id: ""
+    _id: "",
+    quarter: QuarterType.NONE
   },
   payment: {
     method: PaymentMethod.TRANSFER,
@@ -144,7 +146,8 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
           type: Transaction_Type.DEBIT,
           order: {
             type: Transaction_OT.EXPENSE,
-            _id: value._id
+            _id: value._id,
+            quarter: QuarterType.NONE
           },
           payment: {
             method: PaymentMethod.NONE,

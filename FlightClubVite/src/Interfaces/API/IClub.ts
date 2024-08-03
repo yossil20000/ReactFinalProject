@@ -1,6 +1,7 @@
 import { useDataGridProps } from "@mui/x-data-grid/DataGrid/useDataGridProps";
 import { IAccount } from "./IAccount";
 import { Status } from "./IStatus";
+import { QuarterType } from "../../Utils/enums";
 
 export interface IClubAccountBase {
 
@@ -114,7 +115,8 @@ export interface IAddTransaction {
   type: Transaction_Type,
   order: {
     type: Transaction_OT,
-    _id: string
+    _id: string,
+    quarter: QuarterType
   },
   payment: {
     method: PaymentMethod,
@@ -227,7 +229,8 @@ let newTransaction: IAddTransaction = {
   type: Transaction_Type.DEBIT,
   order: {
     type: Transaction_OT.TRANSFER,
-    _id: ''
+    _id: '',
+    quarter: QuarterType.NONE
   },
   payment: {
     method: PaymentMethod.TRANSFER,
@@ -243,6 +246,7 @@ export type PayInfo = {
 
 export const newPayInfo = () : PayInfo =>{
   const transaction = newTransaction;
+  transaction.order.type = Transaction_OT.TRANSFER
   const recipe =  getTransactionToPaymentReciept().getReciep(transaction)
   transaction.payment.referance = JSON.stringify(recipe)
   return {

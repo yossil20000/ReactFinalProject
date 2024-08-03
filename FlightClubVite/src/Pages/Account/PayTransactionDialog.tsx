@@ -18,6 +18,7 @@ import { DateTime } from 'luxon';
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
 import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo';
 import { GridExpandMoreIcon } from '@mui/x-data-grid';
+import { QuarterType } from '../../Utils/enums';
 export interface PayTransactionDialogProps {
 
   onClose: () => void;
@@ -75,7 +76,8 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
       amount: payInfo.selectedTransaction.amount,
       order: {
         type: payInfo.selectedTransaction.order.type,
-        _id: ''
+        _id: '',
+        quarter: QuarterType.NONE
       },
       payment: {
         method: payInfo.selectedTransaction.payment.method,
@@ -271,19 +273,23 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
               <Grid item xs={11} sm={5}>
                 {RenderDestination()}
               </Grid>
-              <Grid item xs={12} md={2}>
-                <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
-                  disabled
-                  label="Pay Method" placeholder="Payment Method" variant="standard"
-                  value={payInfo.selectedTransaction?.payment.method} required
-                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
+              <Grid item sx={{ marginLeft: "0px" }} xs={12}  md={3}>
+                <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
+                  <ThemeProvider theme={theme}>
+                    <MobileDatePicker
+                      sx={{ width: '100%', paddingLeft: '0px',paddingRight:{xs:'0px' , md:'1ch'} }}
+                      label="Date"
+                      value={DateTime.fromJSDate(payInfo.selectedTransaction.date)}
+                      onChange={handleDateChange}
+                    />
+                  </ThemeProvider>
+                </LocalizationProvider>
               </Grid>
-
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={3} sx={{paddingRight:{xs:'0px' , md:'1ch'} }}>
                 <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
                   selectedItem={{ lable: payInfo.selectedTransaction.type === undefined ? "" : payInfo.selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3} sx={{paddingRight:{xs:'0px' , md:'1ch'} }}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
                   type="number"
                   label="Amount" placeholder="Amount" variant="standard"
@@ -291,17 +297,12 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
                   helperText="" error={false} InputLabelProps={{ shrink: true }}
                   inputProps={{ max: 1000, min: 1 }} />
               </Grid>
-              <Grid item sx={{ marginLeft: "0px" }} xs={12} md={3}>
-                <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
-                  <ThemeProvider theme={theme}>
-                    <MobileDatePicker
-                      sx={{ width: '100%', paddingLeft: '0px' }}
-                      label="Date"
-                      value={DateTime.fromJSDate(payInfo.selectedTransaction.date)}
-                      onChange={handleDateChange}
-                    />
-                  </ThemeProvider>
-                </LocalizationProvider>
+              <Grid item xs={12} md={3}>
+                <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
+                  disabled
+                  label="Pay Method" placeholder="Payment Method" variant="standard"
+                  value={payInfo.selectedTransaction?.payment.method} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={12}>
                 <Accordion>
