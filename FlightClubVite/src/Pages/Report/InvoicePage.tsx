@@ -1,5 +1,5 @@
 import { PDFViewer } from '@react-pdf/renderer'
-import { IInvoiceTableData,IInvoiceTableHeader, InvoiceProps } from '../../Interfaces/IReport'
+import { InvoiceProps } from '../../Interfaces/IReport'
 import InvoiceReport from './InvoiceReport'
 
 

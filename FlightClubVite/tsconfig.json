@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["src","src/report"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "files": [
     "global.d.ts"
