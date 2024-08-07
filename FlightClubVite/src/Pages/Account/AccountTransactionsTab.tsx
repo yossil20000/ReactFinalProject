@@ -1,6 +1,6 @@
 
 import { Box, Grid, IconButton } from '@mui/material';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import TransactionTable, { ITransactionTableFilter } from '../../Components/TransactionTable';
@@ -11,15 +11,13 @@ import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFoo
 import React from 'react';
 import FilterDrawer from '../../Components/FilterDrawer';
 import { SetProperty } from '../../Utils/setProperty';
-import { IDateFilter, IFilterItems, fullYearFilter, newDateFilter } from '../../Interfaces/IDateFilter';
+import { IDateFilter, IFilterItems, fullYearFilter } from '../../Interfaces/IDateFilter';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import PayTransactionDialog from './PayTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import GeneralTransactionDialog from './GeneralTransactionDialog';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { MemberType, Role } from '../../Interfaces/API/IMember';
-import ReportDialog from '../../Components/Report/Exel/ReportDialog';
-import { CTransactionToReport } from '../../Interfaces/API/IAccountReport';
 
 const dateFilter: IDateFilter = fullYearFilter;
 
@@ -42,7 +40,7 @@ function AccountTransactionsTab() {
     setSelectedClubAccount(item);
 
   }
-
+  const [openSaveAsPDF, setOpenSaveAsPDF] = useState(false);
 
   const onFilterChanged = (key: string, value: any): void => {
     CustomLogger.log("onFilterChanged/key,value,filter", key, value, filter)
@@ -111,17 +109,32 @@ function AccountTransactionsTab() {
             </Grid>
           </Box>
         </ContainerPageHeader>
-        <ContainerPageMain>
-          <>
-          
-            {(openPayTransaction == true) ? (<PayTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openPayTransaction} />) : (null)}
-            {(openAddTransaction == true) ? (<GeneralTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
-            <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
-              <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} includesType={[MemberType.Club,MemberType.Member,MemberType.Supplier]} />
-            </FilterDrawer>
-            <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter}  transactionSave={openExpenseSave} setTransactionSave={setOpenExpenseSave}/>
-          </>
-        </ContainerPageMain>
+        {
+          (openSaveAsPDF === true) ? (
+            <ContainerPageMain>
+            <Fragment>
+              {(openPayTransaction == true) ? (<PayTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openPayTransaction} />) : (null)}
+              {(openAddTransaction == true) ? (<GeneralTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
+              <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
+                <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} includesType={[MemberType.Club,MemberType.Member,MemberType.Supplier]} />
+              </FilterDrawer>
+              <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter}  transactionSave={openExpenseSave} setTransactionSave={setOpenExpenseSave}/>
+            </Fragment>
+          </ContainerPageMain>
+          ) : (
+            <ContainerPageMain>
+            <Fragment>
+              {(openPayTransaction == true) ? (<PayTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openPayTransaction} />) : (null)}
+              {(openAddTransaction == true) ? (<GeneralTransactionDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
+              <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
+                <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} includesType={[MemberType.Club,MemberType.Member,MemberType.Supplier]} />
+              </FilterDrawer>
+              <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter}  transactionSave={openExpenseSave} setTransactionSave={setOpenExpenseSave}/>
+            </Fragment>
+          </ContainerPageMain>
+          )
+        }
+
         <ContainerPageFooter>
           <>
           </>

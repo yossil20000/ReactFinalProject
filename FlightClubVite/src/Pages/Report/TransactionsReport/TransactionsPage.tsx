@@ -7,11 +7,9 @@ import { ITransactionReportProps } from '../../../Interfaces/ITransactionsReport
 function TranasctionsPage(props:ITransactionReportProps)  {
 
   return (
-    <>
       <PDFViewer width={"1000"} height={"800"}>
-        <TransactionsReport />
+        <TransactionsReport transactionTitleHeader={props.transactionTitleHeader} />
       </PDFViewer>
-    </>
   )
 }
 
