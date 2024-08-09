@@ -44,7 +44,7 @@ useEffect(()=>{
 },[filter])
 const getData = useMemo(() => {
 
-  console.log("TransactionTable/getData", dataTransaction)
+  console.info("TransactionTable/getData", dataTransaction)
   if (dataTransaction?.success) {
     if (selectedClubAccount?.lable !== "") {
       console.log("TransactionTable/selectedClubAccount", dataTransaction.data,selectedClubAccount)

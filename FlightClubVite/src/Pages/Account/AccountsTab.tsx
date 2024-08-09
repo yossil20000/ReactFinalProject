@@ -122,7 +122,7 @@ function AccountsTab() {
       bankFound = bankAccounts?.data.find((bank) => (bank.club.brand === "BAZ" && bank.club.branch === "HAIFA"))
       setBank(bankFound)
     }
-    CustomLogger.log("AccountsTab/getData/bankAccounts,bank", bankAccounts, bank);
+    CustomLogger.info("AccountsTab/getData/bankAccounts,bank", bankAccounts, bank);
 
     const rows = data?.data.map((row) => {
       let bankRow: React.ReactNode = <><ActionButtons OnAction={onBankAction} show={[EAction.ADD]} item={row.account_id} /></>;

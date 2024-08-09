@@ -6,7 +6,10 @@ var Schema = mongoose.Schema;
 var ClubSchema = new Schema({
   account_id: { type: String, required: true, unique: true },
   brand: { type: String, required: true, default: "BAZ", uppercase: true },
-  branch: { type: String, required: true, default: "HAIFA", uppercase: true }
+  branch: { type: String, required: true, default: "HAIFA", uppercase: true },
+  bank_accoundt_id: { type: String, required: true, default: "18700031", uppercase: true },
+  bank_branch: { type: String, required: true, default: "CARMEL", uppercase: true },
+  bank_id: { type: String, required: true, default: "891", uppercase: true }
 })
 var AccountSavingSchema = new Schema({
   id: { type: String, required: true, unique: true ,uppercase: true, default: "ENGINE"},

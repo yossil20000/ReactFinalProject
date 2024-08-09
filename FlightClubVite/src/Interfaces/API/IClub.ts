@@ -14,6 +14,9 @@ export interface IClubAccountBase {
     account_id: string,
     brand: string,
     branch: string,
+    bank_accoundt_id: string,
+    bank_branch: string,
+    bank_id: string
   },
   contact: {
     address: {
