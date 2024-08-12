@@ -21,7 +21,8 @@ function TransactionsReport(props: ITransactionReportProps) {
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
-        <TransactionsReportTitle header={props.transactionTitleHeader} />
+        <TransactionsReportTitle header={props.transactionTitleHeader} isTitle={true}/>
+        <TransactionsReportTitle header={props.transactionTitleHeader} isTitle={false}/>
       </Page>
     </Document>
   )

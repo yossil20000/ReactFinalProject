@@ -3,7 +3,7 @@ import { Box, Grid, IconButton } from '@mui/material';
 import { Fragment, useMemo, useState } from 'react';
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
-import TransactionTable, { ITransactionTableFilter } from '../../Components/TransactionTable';
+import { ITransactionTableFilter } from '../../Components/TransactionTable';
 
 import useLocalStorage from '../../hooks/useLocalStorage';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
@@ -13,14 +13,16 @@ import FilterDrawer from '../../Components/FilterDrawer';
 import { SetProperty } from '../../Utils/setProperty';
 import { IDateFilter, IFilterItems, fullYearFilter } from '../../Interfaces/IDateFilter';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
-import PayTransactionDialog from './PayTransactionDialog';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import GeneralTransactionDialog from './GeneralTransactionDialog';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { MemberType, Role } from '../../Interfaces/API/IMember';
 import { useClubAccountQuery } from '../../features/Account/accountApiSlice';
-import { IClubAccount } from '../../Interfaces/API/IClub';
+import { IClubAccount, ITransaction } from '../../Interfaces/API/IClub';
 import { IAccount } from '../../Interfaces/API/IAccount';
+import TransactionsReport from '../Report/TransactionsReport/TransactionsReport';
+import { bankTitleHeader } from '../../Interfaces/ITransactionsReport';
+import TranasctionsPage from '../Report/TransactionsReport/TransactionsPage';
+import { destination } from '@turf/turf';
 
 const dateFilter: IDateFilter = fullYearFilter;
 
@@ -72,7 +74,7 @@ function AccountReportsTab() {
         }
         break;
       case EAction.SAVE:
-        setOpenExpenseSave(!openExpenseSave);
+        setOpenSaveAsPDF(!openSaveAsPDF)
         break;
     }
   }
@@ -110,7 +112,24 @@ function AccountReportsTab() {
       return row
       //return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
     })
-    CustomLogger.info("AccountReportsTab/getData", rows)
+    
+    if(rows !== undefined){
+      let group = Object.groupBy(rows,({destination}) => destination)
+      let l = Object.values(group);
+      let b: ITransaction[][] = []
+      CustomLogger.info("AccountReportsTab/groupby/b,group.length",group.length);
+      for(let i=0;  i < Number(group.length) ; i++){
+        
+        let p = group[i]
+        if(p !== undefined){
+          
+          CustomLogger.info("AccountReportsTab/groupby",Object.groupBy(p,({order}) => order.type ) );
+        }
+        
+      }
+
+    }
+    
     return rows === undefined ? [] : rows;
   }, [bankAccounts])
   return (
@@ -134,10 +153,11 @@ function AccountReportsTab() {
           </Box>
         </ContainerPageHeader>
         {
-          (openSaveAsPDF === true) ? (
+          (openSaveAsPDF === false) ? (
             <ContainerPageMain>
               <Fragment>
-
+                <TranasctionsPage transactionTitleHeader={bankTitleHeader.header} ></TranasctionsPage>
+               {/*  <TransactionsReport transactionTitleHeader={bankTitleHeader.header}/> */}
               </Fragment>
             </ContainerPageMain>
           ) : (
