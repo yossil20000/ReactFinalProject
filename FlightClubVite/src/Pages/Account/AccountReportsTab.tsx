@@ -17,7 +17,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { MemberType, Role } from '../../Interfaces/API/IMember';
 import { useClubAccountQuery } from '../../features/Account/accountApiSlice';
-import { IClubAccount, ITransaction } from '../../Interfaces/API/IClub';
+import { IClubAccount, ITransaction, Transaction_OT } from '../../Interfaces/API/IClub';
 import { IAccount } from '../../Interfaces/API/IAccount';
 import TransactionsReport from '../Report/TransactionsReport/TransactionsReport';
 import { bankTitleHeader } from '../../Interfaces/ITransactionsReport';
@@ -114,19 +114,43 @@ function AccountReportsTab() {
     })
     
     if(rows !== undefined){
+      CustomLogger.info("AccountReportsTab/rows",rows);
       let group = Object.groupBy(rows,({destination}) => destination)
-      let l = Object.values(group);
-      let b: ITransaction[][] = []
-      CustomLogger.info("AccountReportsTab/groupby/b,group.length",group.length);
-      for(let i=0;  i < Number(group.length) ; i++){
-        
-        let p = group[i]
-        if(p !== undefined){
+      
+      let values = Object.values(group);
+      let keys = Object.keys(group);
+      CustomLogger.info("AccountReportsTab/b.length,b,keys",values.length,values,keys);
+      if(values){
+        CustomLogger.info("AccountReportsTab/group[keys[0]]",group[keys[0]]);
+        keys.forEach(element => {
+          CustomLogger.info("AccountReportsTab/group[element]",element,group[element]);
+          if(group[element])
+          {
+
+            let orderGroup =  Object.groupBy(group[element],({order}) => {return order.type.toLocaleUpperCase()} )
+            CustomLogger.info("AccountReportsTab/orderGroup",orderGroup);
+            let orderValues = Object.values(orderGroup);
+            let orderKeys = Object.keys(orderGroup);
+            CustomLogger.info("AccountReportsTab/orderValues,orderKeys",orderValues,orderKeys);
+          }
           
-          CustomLogger.info("AccountReportsTab/groupby",Object.groupBy(p,({order}) => order.type ) );
-        }
+          let elementKeys = Object.keys(element);
+          elementKeys.forEach(elementKey => {
+            /* CustomLogger.info("AccountReportsTab/elementKey,elementKeys",elementKey,elementKeys); */
+          })
+        });
+        /* for(let i=0;  i < Number(values.length) ; i++){
         
+          let p = values[i]
+          if(p){
+            
+            CustomLogger.info("AccountReportsTab/groupby2",Object.groupBy(p,({order}) => order.type ) );
+          }
+          
+        } */
+       
       }
+
 
     }
     
