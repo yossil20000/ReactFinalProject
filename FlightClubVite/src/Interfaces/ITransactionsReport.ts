@@ -1,4 +1,5 @@
 import "../Types/date.extensions"
+import { ITransaction } from "./API/IClub";
 
 
 export interface ITransactionReportHeader {
@@ -20,7 +21,8 @@ export interface ITransactionTableRow {
   row: ITransactionReportTableCell[]
 }
 export interface ITransactionReportProps {
-  transactionTitleHeader: ITransactionReportHeader[]
+  transactionTitleHeader: ITransactionReportHeader[];
+  transactons: ITransaction[]
   }
   export interface ITransactionTableData {
     rows: ITransactionTableRow[];

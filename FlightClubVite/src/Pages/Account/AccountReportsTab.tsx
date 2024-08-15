@@ -39,7 +39,7 @@ function AccountReportsTab() {
   const [dateTo, setDateTo] = useState(dateFilter.to)
   const [dateFrom, setDateFrom] = useState(dateFilter.from)
   const [filter, setFilter] = useState<ITransactionTableFilter>({ dateFilter: dateFilter } as ITransactionTableFilter);
-
+  const [transactions,setTransactions] = useState<ITransaction[]>([])
   /*   const [openAddCredit, setOpenAddCredit] = useState(false);
     const [openAddDebit, setOpenAddDebit] = useState(false); */
   const OnSelectedClubAccount = (item: InputComboItem): void => {
@@ -95,7 +95,7 @@ function AccountReportsTab() {
       setBank(bankFound)
     }
     CustomLogger.info("AccountReportsTab/getData/bankAccounts,bank", bankAccounts, bank,bankFound);
-
+    let transaction: ITransaction[] =[]
     const rows = bankFound?.transactions.map((row) => {
 
       let foundAccount: IAccount | undefined = undefined
@@ -112,8 +112,10 @@ function AccountReportsTab() {
       return row
       //return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
     })
-    
-    if(rows !== undefined){
+    if(rows) 
+      transaction = rows;
+    setTransactions(transaction)
+/*     if(rows){
       CustomLogger.info("AccountReportsTab/rows",rows);
       let group = Object.groupBy(rows,({destination}) => destination)
       
@@ -126,33 +128,20 @@ function AccountReportsTab() {
           CustomLogger.info("AccountReportsTab/group[element]",element,group[element]);
           if(group[element])
           {
-
+            CustomLogger.info("AccountReportsTab/element",element)
             let orderGroup =  Object.groupBy(group[element],({order}) => {return order.type.toLocaleUpperCase()} )
             CustomLogger.info("AccountReportsTab/orderGroup",orderGroup);
             let orderValues = Object.values(orderGroup);
             let orderKeys = Object.keys(orderGroup);
-            CustomLogger.info("AccountReportsTab/orderValues,orderKeys",orderValues,orderKeys);
+            orderKeys.forEach(order => {
+              const amount = orderGroup[order]?.reduce((accumulator,current) => {return current.amount + accumulator },0)
+            CustomLogger.info("AccountReportsTab/order,orderGroup[order],amount",order,orderGroup[order],amount)  
+            })
+            CustomLogger.info("AccountReportsTab/element,orderValues,orderKeys",element,orderValues,orderKeys);
           }
-          
-          let elementKeys = Object.keys(element);
-          elementKeys.forEach(elementKey => {
-            /* CustomLogger.info("AccountReportsTab/elementKey,elementKeys",elementKey,elementKeys); */
-          })
         });
-        /* for(let i=0;  i < Number(values.length) ; i++){
-        
-          let p = values[i]
-          if(p){
-            
-            CustomLogger.info("AccountReportsTab/groupby2",Object.groupBy(p,({order}) => order.type ) );
-          }
-          
-        } */
-       
       }
-
-
-    }
+    } */
     
     return rows === undefined ? [] : rows;
   }, [bankAccounts])
@@ -180,7 +169,7 @@ function AccountReportsTab() {
           (openSaveAsPDF === false) ? (
             <ContainerPageMain>
               <Fragment>
-                <TranasctionsPage transactionTitleHeader={bankTitleHeader.header} ></TranasctionsPage>
+                <TranasctionsPage transactionTitleHeader={bankTitleHeader.header} transactons={transactions} ></TranasctionsPage>
                {/*  <TransactionsReport transactionTitleHeader={bankTitleHeader.header}/> */}
               </Fragment>
             </ContainerPageMain>
