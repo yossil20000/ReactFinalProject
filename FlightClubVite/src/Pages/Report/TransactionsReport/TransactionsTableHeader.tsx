@@ -4,16 +4,15 @@ import { ITransactionReportTableHeader } from '../../../Interfaces/ITransactions
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    marginTop:0,
+    flexDirection: 'row',
     borderBottomColor: '#bff0fd',
-    
+    backgroundColor: '#bff0fd',
     borderBottomWidth: 1,
     alignItems: 'center',
     height: 24,
-   
+    textAlign: 'center',
     fontStyle: 'bold',
-    
+    flexGrow: 1
   }
 })
 let stylesArray:Array<{style: {}}>=[
@@ -22,8 +21,7 @@ let stylesArray:Array<{style: {}}>=[
     width: '13%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
+    borderRightWidth: 1
   }
 }),
 StyleSheet.create({
@@ -31,8 +29,7 @@ StyleSheet.create({
     width: '57%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
+    borderRightWidth: 1
   }
 }),
 StyleSheet.create({
@@ -40,8 +37,7 @@ StyleSheet.create({
     width: '15%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
+    borderRightWidth: 1
   }
 }),
 StyleSheet.create({
@@ -49,8 +45,7 @@ StyleSheet.create({
     width: '15%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
+    borderRightWidth: 1
   }
 }),
 StyleSheet.create({
@@ -58,26 +53,21 @@ StyleSheet.create({
     width: '15%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
+    borderRightWidth: 1
   }
 })
 ] 
-console.info("TransactionsReportTitle/stylesArray",stylesArray)
-function TransactionsReportTitle({header,isTitle}: ITransactionReportTableHeader) {
-  console.info("TransactionsReportTitle/header",header)
+console.info("TransactionsTableHeader/stylesArray",stylesArray)
+function TransactionsTableHeader({header}: ITransactionReportTableHeader) {
+  console.info("TransactionsTableHeader/header",header)
   return (
     <View style={styles.container}>
-      {header.map((i,j) => {
-        let s : any = stylesArray[j].style;
-        s.width = i.width;
-        /* s.backgroundColor =  isTitle == false ? '#bff0fd' :  '#d2cfe6'; */
-        return (
-      <Text style={s}>{isTitle ? i.title : i.data}</Text>  
-      )})}
+      {header.map((i,j) => (
+      <Text style={stylesArray[j].style}>{i.title}</Text>  
+      ))}
       
     </View>
   )
 }
 
-export default TransactionsReportTitle
+export default TransactionsTableHeader

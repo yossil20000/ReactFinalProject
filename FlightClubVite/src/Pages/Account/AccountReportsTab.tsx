@@ -169,7 +169,7 @@ function AccountReportsTab() {
           (openSaveAsPDF === false) ? (
             <ContainerPageMain>
               <Fragment>
-                <TranasctionsPage transactionTitleHeader={bankTitleHeader.header} transactons={transactions} ></TranasctionsPage>
+                <TranasctionsPage transactionTitleHeader={bankTitleHeader.header} transaction={transactions} ></TranasctionsPage>
                {/*  <TransactionsReport transactionTitleHeader={bankTitleHeader.header}/> */}
               </Fragment>
             </ContainerPageMain>

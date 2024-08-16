@@ -8,7 +8,7 @@ function TranasctionsPage(props:ITransactionReportProps)  {
 
   return (
       <PDFViewer width={"1000"} height={"800"}>
-        <TransactionsReport transactionTitleHeader={props.transactionTitleHeader} transactons={props.transactons}/>
+        <TransactionsReport transactionTitleHeader={props.transactionTitleHeader} transaction={props.transaction}/>
       </PDFViewer>
   )
 }

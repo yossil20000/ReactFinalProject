@@ -22,7 +22,7 @@ export interface ITransactionTableRow {
 }
 export interface ITransactionReportProps {
   transactionTitleHeader: ITransactionReportHeader[];
-  transactons: ITransaction[]
+  transaction: ITransaction[]
   }
   export interface ITransactionTableData {
     rows: ITransactionTableRow[];
@@ -40,4 +40,15 @@ export interface ITransactionReportProps {
       {title: "Bank Number", toolTip: "Bank number", data: "891", width: "20%"}
     ],
     isTitle:true
+  }
+  export const transactionTableItemHeader : ITransactionReportTableHeader = {
+    header: [
+      {title: "Date", toolTip: "Date", data: "18700031", width: "10%"},
+      {title: "Tach", toolTip: "Bank account number", data: "18700031", width: "10%"},
+      {title: "Start", toolTip: "Bank account number", data: "18700031", width: "20%"},
+      {title: "Stop", toolTip: "Bank account number", data: "18700031", width: "30%"},
+      {title: "Amount", toolTip: "Bank account number", data: "18700031", width: "30%"},
+
+    ],
+    isTitle: true
   }
