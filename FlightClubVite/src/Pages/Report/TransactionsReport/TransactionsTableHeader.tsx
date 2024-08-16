@@ -10,15 +10,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     alignItems: 'center',
     height: 24,
-    textAlign: 'center',
+    textAlign: 'left',
     fontStyle: 'bold',
-    flexGrow: 1
+    flexGrow: 1,
   }
 })
 let stylesArray:Array<{style: {}}>=[
   StyleSheet.create({
   style: {
-    width: '13%',
+    width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1
@@ -26,7 +26,7 @@ let stylesArray:Array<{style: {}}>=[
 }),
 StyleSheet.create({
   style: {
-    width: '57%',
+    width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1
@@ -34,7 +34,7 @@ StyleSheet.create({
 }),
 StyleSheet.create({
   style: {
-    width: '15%',
+    width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1
@@ -42,7 +42,7 @@ StyleSheet.create({
 }),
 StyleSheet.create({
   style: {
-    width: '15%',
+    width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1
@@ -62,9 +62,12 @@ function TransactionsTableHeader({header}: ITransactionReportTableHeader) {
   console.info("TransactionsTableHeader/header",header)
   return (
     <View style={styles.container}>
-      {header.map((i,j) => (
-      <Text style={stylesArray[j].style}>{i.title}</Text>  
-      ))}
+      {header.map((i,j) => {
+        let s : any = stylesArray[j].style;
+        s.width = i.width;
+        return (
+      <Text style={s}>{i.title}</Text>  
+      )})}
       
     </View>
   )

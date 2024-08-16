@@ -43,11 +43,20 @@ export interface ITransactionReportProps {
   }
   export const transactionTableItemHeader : ITransactionReportTableHeader = {
     header: [
-      {title: "Date", toolTip: "Date", data: "18700031", width: "10%"},
-      {title: "Tach", toolTip: "Bank account number", data: "18700031", width: "10%"},
-      {title: "Start", toolTip: "Bank account number", data: "18700031", width: "20%"},
-      {title: "Stop", toolTip: "Bank account number", data: "18700031", width: "30%"},
-      {title: "Amount", toolTip: "Bank account number", data: "18700031", width: "30%"},
+      {title: "Date", toolTip: "Date of order", data: "18700031", width: "20%"},
+      {title: "Description", toolTip: "Order Desription", data: "18700031", width: "60%"},
+      {title: "Amount", toolTip: "Amount Charged", data: "18700031", width: "20%"},
+
+    ],
+    isTitle: true
+  }
+  export const transactionTableFlightItemHeader : ITransactionReportTableHeader = {
+    header: [
+      {title: "Date", toolTip: "Date of flight", data: "18700031", width: "10%"},
+      {title: "Start", toolTip: "Engine Start", data: "18700031", width: "20%"},
+      {title: "Stop", toolTip: "Engine Stop", data: "18700031", width: "30%"},
+      {title: "Total", toolTip: "Total Flight", data: "18700031", width: "10%"},
+      {title: "Amount", toolTip: "Fligh amount charged", data: "18700031", width: "30%"},
 
     ],
     isTitle: true

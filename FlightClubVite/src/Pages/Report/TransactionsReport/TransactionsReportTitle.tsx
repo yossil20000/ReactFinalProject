@@ -9,9 +9,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#bff0fd',
     
     borderBottomWidth: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     height: 24,
-   
+    textAlign: 'left',
     fontStyle: 'bold',
     
   }

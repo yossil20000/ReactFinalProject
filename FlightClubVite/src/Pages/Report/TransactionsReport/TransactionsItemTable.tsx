@@ -11,7 +11,7 @@ function TransactionsItemTable({items,headers}: ITransactionTableRowProps) {
     tableContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      marginTop: 40,
+      marginTop: 10,
       borderWidth: 1,
       borderColor: '#bff0fd',
       marginRight: 10,
@@ -21,7 +21,7 @@ function TransactionsItemTable({items,headers}: ITransactionTableRowProps) {
     <View style={styles.tableContainer} key={"treansaction_item"}>
       <TransactionsTableHeader key={"ti_Header"} header={headers.header} isTitle={true}/>
       <TransactionsTableData key={"ti_data"} items={items} headers={headers}/>
-      <TransactionsTableBlackLines key={"ti_bl"} rowCounts={1}/>
+      
      
     </View>
   )
