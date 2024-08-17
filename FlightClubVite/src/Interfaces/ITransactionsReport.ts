@@ -31,6 +31,9 @@ export interface ITransactionReportProps {
   export interface ITransactionTableRowProps {
     items: ITransactionTableData
     headers: ITransactionReportTableHeader;
+    addTotalRow: boolean,
+    total: string;
+    totalRowHEader : ITransactionReportTableHeader
   }
   export const bankTitleHeader :ITransactionReportTableHeader ={
     header:[
@@ -44,7 +47,9 @@ export interface ITransactionReportProps {
   export const transactionTableItemHeader : ITransactionReportTableHeader = {
     header: [
       {title: "Date", toolTip: "Date of order", data: "18700031", width: "20%"},
-      {title: "Description", toolTip: "Order Desription", data: "18700031", width: "60%"},
+      {title: "Description", toolTip: "Order Desription", data: "18700031", width: "20%"},
+      {title: "", toolTip: "Order Desription", data: "18700031", width: "20%"},
+      {title: "", toolTip: "Order Desription", data: "18700031", width: "20%"},
       {title: "Amount", toolTip: "Amount Charged", data: "18700031", width: "20%"},
 
     ],
@@ -52,12 +57,23 @@ export interface ITransactionReportProps {
   }
   export const transactionTableFlightItemHeader : ITransactionReportTableHeader = {
     header: [
-      {title: "Date", toolTip: "Date of flight", data: "18700031", width: "10%"},
+      {title: "Date", toolTip: "Date of flight", data: "18700031", width: "20%"},
       {title: "Start", toolTip: "Engine Start", data: "18700031", width: "20%"},
-      {title: "Stop", toolTip: "Engine Stop", data: "18700031", width: "30%"},
-      {title: "Total", toolTip: "Total Flight", data: "18700031", width: "10%"},
-      {title: "Amount", toolTip: "Fligh amount charged", data: "18700031", width: "30%"},
+      {title: "Stop", toolTip: "Engine Stop", data: "18700031", width: "20%"},
+      {title: "Duration", toolTip: "Total Flight", data: "18700031", width: "20%"},
+      {title: "Amount", toolTip: "Fligh amount charged", data: "18700031", width: "20%"},
 
     ],
     isTitle: true
+  }
+  export  function transactionTableFlightTotal(totalDuration: string,total:string) : ITransactionReportTableHeader  {
+return {    header: [
+      {title: "", toolTip: "Date of flight", data: "18700031", width: "20%"},
+      {title: "", toolTip: "Engine Start", data: "18700031", width: "20%"},
+      {title: "Total", toolTip: "Engine Stop", data: "18700031", width: "20%"},
+      {title: `${totalDuration}`, toolTip: "Total Flight", data: "18700031", width: "20%"},
+      {title: `${total}`, toolTip: "Fligh amount charged", data: "18700031", width: "20%"},
+
+    ],
+    isTitle: true}
   }

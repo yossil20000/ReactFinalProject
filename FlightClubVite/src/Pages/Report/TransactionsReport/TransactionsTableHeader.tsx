@@ -1,5 +1,5 @@
 /* https://react-pdf.org/styling#stylesheet-api */
-import { View, Text, StyleSheet } from '@react-pdf/renderer'
+import ReactPDF, { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { ITransactionReportTableHeader } from '../../../Interfaces/ITransactionsReport'
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#bff0fd',
     backgroundColor: '#bff0fd',
     borderBottomWidth: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     height: 24,
     textAlign: 'left',
     fontStyle: 'bold',
@@ -21,12 +21,13 @@ let stylesArray:Array<{style: {}}>=[
     width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1
+    borderRightWidth: 1,
+
   }
 }),
 StyleSheet.create({
   style: {
-    width: '20%',
+    width: '60%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1
@@ -50,7 +51,7 @@ StyleSheet.create({
 }),
 StyleSheet.create({
   style: {
-    width: '15%',
+    width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1
@@ -58,13 +59,18 @@ StyleSheet.create({
 })
 ] 
 console.info("TransactionsTableHeader/stylesArray",stylesArray)
-function TransactionsTableHeader({header}: ITransactionReportTableHeader) {
+function TransactionsTableHeader({header,isTitle}: ITransactionReportTableHeader) {
   console.info("TransactionsTableHeader/header",header)
   return (
     <View style={styles.container}>
       {header.map((i,j) => {
+        let style : ReactPDF.Styles= StyleSheet.create({
+          style: {...stylesArray[j].style,width: i.width}
+        })
+       
         let s : any = stylesArray[j].style;
         s.width = i.width;
+        console.info("TransactionsTableHeader/style, s",style,s);
         return (
       <Text style={s}>{i.title}</Text>  
       )})}

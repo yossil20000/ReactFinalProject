@@ -9,41 +9,18 @@ const styles = StyleSheet.create({
     borderBottomColor: '#bff0fd',
     backgroundColor: '#bee0fd',
     borderBottomWidth: 1,
+    alignItems: 'flex-start',
     height: 24,
     textAlign: 'left',
     fontStyle: 'bold',
 
-  },
-  date: {
-    width: '13%',
-    borderRightColor: borderColor,
-    borderRightWidth: 1
-  },
-  description: {
-    width: '47%',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
-    textAlign: 'left',
-  },
-  qyt: {
-    width: '10%',
-    borderRightColor: borderColor,
-    borderRightWidth: 1
-  },
-  rate: {
-    width: '15%',
-    borderRightColor: borderColor,
-    borderRightWidth: 1
-  },
-  amount: {
-    width: '15%'
-  },
+  }
 })
 
 let stylesArray: Array<{ style: {} }> = [
   StyleSheet.create({
     style: {
-      width: '13%',
+      width: '20%',
       borderRightColor: borderColor,
       borderRightWidth: 1,
       height: "20px",
@@ -52,7 +29,7 @@ let stylesArray: Array<{ style: {} }> = [
   }),
   StyleSheet.create({
     style: {
-      width: '57%',
+      width: '20%',
       borderRightColor: borderColor,
       borderRightWidth: 1,
       height: "20px"
@@ -60,7 +37,7 @@ let stylesArray: Array<{ style: {} }> = [
   }),
   StyleSheet.create({
     style: {
-      width: '15%',
+      width: '20%',
       borderRightColor: borderColor,
       borderRightWidth: 1,
       height: "20px"
@@ -68,7 +45,7 @@ let stylesArray: Array<{ style: {} }> = [
   }),
   StyleSheet.create({
     style: {
-      width: '15%',
+      width: '20%',
       borderRightColor: borderColor,
       borderRightWidth: 1,
       height: "20px"
@@ -76,7 +53,7 @@ let stylesArray: Array<{ style: {} }> = [
   }),
   StyleSheet.create({
     style: {
-      width: '15%',
+      width: '20%',
       borderRightColor: borderColor,
       borderRightWidth: 1,
       height: "20px"
@@ -88,7 +65,7 @@ function TransactionsTableData(items: ITransactionTableRowProps) {
     <View style={styles.row} key={index}>
       {item.row.map((i, j) => {
         let s : any = stylesArray[j].style;
-        s.width = i.width;
+        /* s.width = i.width; */
         return (
         
         <Text style={s} key={`col${j}`}>{i.data}</Text>

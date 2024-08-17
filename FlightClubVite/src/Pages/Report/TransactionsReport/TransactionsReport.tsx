@@ -1,6 +1,6 @@
 import '../../../Types/date.extensions';
 import { Page, Document, StyleSheet } from "@react-pdf/renderer";
-import { ITransactionReportProps, ITransactionReportTableCell, ITransactionTableData, ITransactionTableRow, ITransactionTableRowProps, transactionTableFlightItemHeader, transactionTableItemHeader } from "../../../Interfaces/ITransactionsReport";
+import { ITransactionReportProps, ITransactionReportTableCell, ITransactionTableData, ITransactionTableRow, ITransactionTableRowProps, transactionTableFlightItemHeader, transactionTableFlightTotal, transactionTableItemHeader } from "../../../Interfaces/ITransactionsReport";
 import TransactionsReportTitle from "./TransactionsReportTitle";
 import { useEffect, useState } from "react";
 import TransactionsItemTable from "./TransactionsItemTable";
@@ -8,6 +8,7 @@ import { ITransaction, Transaction_OT } from "../../../Interfaces/API/IClub";
 import { current } from '@reduxjs/toolkit';
 import IFlight from '../../../Interfaces/API/IFlight';
 import { orderDescription } from '../../../Interfaces/API/IAccount';
+import TransactionsTableHeader from './TransactionsTableHeader';
 
 const styles = StyleSheet.create({
   page: {
@@ -84,11 +85,71 @@ function GetTransactionCells(item: ITransaction) : ITransactionReportTableCell[]
     const description: ITransactionReportTableCell = {
       data: item.description,
       toolTip: "",
+      width: "20%"
+    }
+    cells[1] =  description
+    const empty: ITransactionReportTableCell = {
+      data: "",
+      toolTip: "",
+      width: "20%"
+    }
+    cells[2] =  empty
+    cells[3] =  empty
+    const amount: ITransactionReportTableCell = {
+      data: item.amount.toFixed(2),
+      toolTip: "",
+      width: "20%"
+    }
+    cells[4] =  amount 
+  }
+  
+ 
+  return cells
+}
+function GetTransactionTotalCells(isFlight:boolean,total:number,totalFlight: number) : ITransactionReportTableCell[] {
+  let cells: ITransactionReportTableCell[] =[]
+  const dateCell: ITransactionReportTableCell = {
+    data: "",
+    toolTip: "",
+    width: "20%"
+  }
+  cells[0] =  dateCell
+  if(isFlight){
+    
+    const start: ITransactionReportTableCell = {
+      data: "",
+      toolTip: "",
+      width: "20%"
+    }
+    cells[1] =  start 
+    const stop: ITransactionReportTableCell = {
+      data: "",
+      toolTip: "",
+      width: "20%"
+    }
+    cells[2] =  stop 
+    const duration: ITransactionReportTableCell = {
+      data: "Total",
+      toolTip: "",
+      width: "20%"
+    }
+    cells[3] =  duration
+    const amount: ITransactionReportTableCell = {
+      data: "",
+      toolTip: "",
+      width: "20%"
+    }
+    cells[4] =  amount  
+  }
+  else{
+    const description: ITransactionReportTableCell = {
+      data: "Total",
+      toolTip: "",
       width: "60%"
     }
     cells[1] =  description
     const amount: ITransactionReportTableCell = {
-      data: item.amount.toFixed(2),
+      data: total.toFixed(2),
       toolTip: "",
       width: "20%"
     }
@@ -97,9 +158,6 @@ function GetTransactionCells(item: ITransaction) : ITransactionReportTableCell[]
   
  
   return cells
-}
-interface ISortTransactions {
-  members: string[]
 }
 
 function TransactionsReport({ transactionTitleHeader, transaction }: ITransactionReportProps) {
@@ -172,11 +230,27 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
         {transactionData.map((member) =>
           <>
             <TransactionsReportTitle key={`tr_title_${member.memberKey}`} header={[{ title: `${member.memberKey}`, toolTip: "For Member", data: `${member.memberKey}`, width: "100%" }]} isTitle={false} />
-            {member.orders.map((order) =>
-              <>
-              <TransactionsReportTitle key={`tr_title_${order.orderKey}`} header={[{ title: `${order.orderKey}`, toolTip: "For Member", data: `${order.orderKey}`, width: "100%" }]} isTitle={false} />
-              <TransactionsItemTable key={`tr_ti${order.orderKey}`} items={order.data} headers={order.orderKey.toLocaleUpperCase() === Transaction_OT.FLIGHT.toLocaleUpperCase() ?  transactionTableFlightItemHeader : transactionTableItemHeader} />
-              </>
+            {
+            member.orders.map((order) => {
+              
+              const isFlight = order.orderKey.toLocaleUpperCase() === Transaction_OT.FLIGHT.toLocaleUpperCase();
+              const totalCell = GetTransactionTotalCells(isFlight,order.data.total,0);
+              const tableRows: ITransactionTableRow[] =[ {
+                row: totalCell
+              }]
+              const totalData: ITransactionTableData = {
+                rows: tableRows,
+                total: 0
+              }
+              return (              <>
+                <TransactionsReportTitle key={`tr_title_${order.orderKey}`} header={[{ title: `${order.orderKey}`, toolTip: "For Member", data: `${order.orderKey}`, width: "100%" }]} isTitle={false} />
+                <TransactionsItemTable key={`tr_ti${order.orderKey}`} items={order.data} headers={ isFlight == true ?  transactionTableFlightItemHeader : transactionTableItemHeader} 
+                addTotalRow={true} total={order.data.total.toFixed(2)} totalRowHEader={transactionTableFlightTotal("",order.data.total.toFixed(1))}/>
+                {/* <TransactionsTableHeader key={"ti_Header"} header={transactionTableFlightTotal("",order.data.total.toFixed(1)).header} isTitle={true}/> */}
+                {/* <TransactionsItemTable key={`tr_ti${order.orderKey}`} items={totalData} headers={isFlight ?  transactionTableFlightItemHeader : transactionTableItemHeader} /> */}
+                </>)
+            }
+
     
             )}
           </>

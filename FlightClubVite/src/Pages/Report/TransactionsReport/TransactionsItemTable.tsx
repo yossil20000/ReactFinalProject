@@ -2,11 +2,10 @@ import { View, StyleSheet } from '@react-pdf/renderer'
 
 import TransactionsTableHeader from './TransactionsTableHeader'
 import TransactionsTableData from './TransactionsTableData'
-import TransactionsTableBlackLines from './TransactionsTableBlackLines'
 import { ITransactionTableRowProps } from '../../../Interfaces/ITransactionsReport'
 
 
-function TransactionsItemTable({items,headers}: ITransactionTableRowProps) {
+function TransactionsItemTable({items,headers,addTotalRow,total,totalRowHEader}: ITransactionTableRowProps) {
   const styles = StyleSheet.create({
     tableContainer: {
       flexDirection: 'row',
@@ -20,8 +19,8 @@ function TransactionsItemTable({items,headers}: ITransactionTableRowProps) {
   return (
     <View style={styles.tableContainer} key={"treansaction_item"}>
       <TransactionsTableHeader key={"ti_Header"} header={headers.header} isTitle={true}/>
-      <TransactionsTableData key={"ti_data"} items={items} headers={headers}/>
-      
+      <TransactionsTableData key={"ti_data"} items={items} headers={headers} addTotalRow={addTotalRow} total={total} totalRowHEader={totalRowHEader}/>
+      {addTotalRow === true ? (<TransactionsTableHeader key={"ti_Header"} header={totalRowHEader.header} isTitle={true}/>): (<></>)}
      
     </View>
   )
