@@ -1,14 +1,14 @@
 import '../../../Types/date.extensions';
-import { Page, Document, StyleSheet } from "@react-pdf/renderer";
-import { ITransactionReportProps, ITransactionReportTableCell, ITransactionTableData, ITransactionTableRow, ITransactionTableRowProps, transactionTableFlightItemHeader, transactionTableFlightTotal, transactionTableItemHeader } from "../../../Interfaces/ITransactionsReport";
+import { Page, Document, StyleSheet ,Text} from "@react-pdf/renderer";
+import { bankTitleHeader, ITransactionReportProps, ITransactionReportTableCell, ITransactionTableData, ITransactionTableRow, transactionTableFlightItemHeader, transactionTableFlightTotal, transactionTableItemHeader } from "../../../Interfaces/ITransactionsReport";
 import TransactionsReportTitle from "./TransactionsReportTitle";
 import { useEffect, useState } from "react";
 import TransactionsItemTable from "./TransactionsItemTable";
 import { ITransaction, Transaction_OT } from "../../../Interfaces/API/IClub";
-import { current } from '@reduxjs/toolkit';
-import IFlight from '../../../Interfaces/API/IFlight';
 import { orderDescription } from '../../../Interfaces/API/IAccount';
+import TransactionsFlightTable from './TransactionsFlightTable';
 import TransactionsTableHeader from './TransactionsTableHeader';
+import InvoiceClubInfo from './InvoiceClubInfo';
 
 const styles = StyleSheet.create({
   page: {
@@ -85,22 +85,15 @@ function GetTransactionCells(item: ITransaction) : ITransactionReportTableCell[]
     const description: ITransactionReportTableCell = {
       data: item.description,
       toolTip: "",
-      width: "20%"
+      width: "60%"
     }
     cells[1] =  description
-    const empty: ITransactionReportTableCell = {
-      data: "",
-      toolTip: "",
-      width: "20%"
-    }
-    cells[2] =  empty
-    cells[3] =  empty
     const amount: ITransactionReportTableCell = {
       data: item.amount.toFixed(2),
       toolTip: "",
       width: "20%"
     }
-    cells[4] =  amount 
+    cells[2] =  amount 
   }
   
  
@@ -225,11 +218,13 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
-        <TransactionsReportTitle key={"tr_title_h"} header={transactionTitleHeader} isTitle={true} />
-        <TransactionsReportTitle key={"tr_title_d"} header={transactionTitleHeader} isTitle={false} />
+        <TransactionsReportTitle key={"tr_title_h"} title='BAZ Haifa Club' />
+        <InvoiceClubInfo/>
+        <Text break/>
         {transactionData.map((member) =>
           <>
-            <TransactionsReportTitle key={`tr_title_${member.memberKey}`} header={[{ title: `${member.memberKey}`, toolTip: "For Member", data: `${member.memberKey}`, width: "100%" }]} isTitle={false} />
+            <TransactionsReportTitle key={`tr_title_${member.memberKey}`} title={`${member.memberKey}`}/>
+            
             {
             member.orders.map((order) => {
               
@@ -243,9 +238,15 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
                 total: 0
               }
               return (              <>
-                <TransactionsReportTitle key={`tr_title_${order.orderKey}`} header={[{ title: `${order.orderKey}`, toolTip: "For Member", data: `${order.orderKey}`, width: "100%" }]} isTitle={false} />
-                <TransactionsItemTable key={`tr_ti${order.orderKey}`} items={order.data} headers={ isFlight == true ?  transactionTableFlightItemHeader : transactionTableItemHeader} 
+                <TransactionsReportTitle key={`tr_title_${order.orderKey}`} title={`${order.orderKey}`}/>
+                
+                {isFlight === true ? (
+                  <TransactionsFlightTable key={`tr_ti${order.orderKey}`} items={order.data} headers={ transactionTableFlightItemHeader} 
                 addTotalRow={true} total={order.data.total.toFixed(2)} totalRowHEader={transactionTableFlightTotal("",order.data.total.toFixed(1))}/>
+                ) : (
+                  <TransactionsItemTable key={`tr_ti${order.orderKey}`} items={order.data} headers={ transactionTableItemHeader} 
+                addTotalRow={true} total={order.data.total.toFixed(2)} totalRowHEader={transactionTableFlightTotal("",order.data.total.toFixed(1))}/>
+                )}
                 {/* <TransactionsTableHeader key={"ti_Header"} header={transactionTableFlightTotal("",order.data.total.toFixed(1)).header} isTitle={true}/> */}
                 {/* <TransactionsItemTable key={`tr_ti${order.orderKey}`} items={totalData} headers={isFlight ?  transactionTableFlightItemHeader : transactionTableItemHeader} /> */}
                 </>)
@@ -253,6 +254,7 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
 
     
             )}
+            <Text break/>
           </>
 
 

@@ -1,0 +1,30 @@
+import { View, StyleSheet } from '@react-pdf/renderer'
+
+import TransactionsTableHeader from './TransactionsTableHeader'
+import TransactionsTableData from './TransactionsTableData'
+import { ITransactionTableRowProps } from '../../../Interfaces/ITransactionsReport'
+import TransactionsFlightTableData from './TransactionsFlightTableData'
+
+
+function TransactionsFlightTable({items,headers,addTotalRow,total,totalRowHEader}: ITransactionTableRowProps) {
+  const styles = StyleSheet.create({
+    tableContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      marginTop: 10,
+      borderWidth: 1,
+      borderColor: '#bff0fd',
+      marginRight: 10,
+    }
+  })
+  return (
+    <View style={styles.tableContainer} key={"treansaction_item"}>
+      <TransactionsTableHeader key={"ti_Header"} header={headers.header} isTitle={true}/>
+      <TransactionsFlightTableData key={"ti_data"} items={items} headers={headers} addTotalRow={addTotalRow} total={total} totalRowHEader={totalRowHEader}/>
+      {addTotalRow === true ? (<TransactionsTableHeader key={"ti_Header"} header={totalRowHEader.header} isTitle={true}/>): (<></>)}
+     
+    </View>
+  )
+}
+
+export default TransactionsFlightTable

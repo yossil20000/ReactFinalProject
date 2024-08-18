@@ -4,6 +4,7 @@ import InvoiceTableBlackLines from './InvoiceTableBlackLines'
 import InvoiceTableFooter from './InvoiceTableFooter'
 import InvoiceTableData from './InvoiceTableRow'
 import InvoiceTableHeader from './InvoiceTableHeader'
+import InvoiceTableBlackLinesShort from './InvoiceTableBlackLinesShort'
 
 function InvoiceItemTable({items,headers}: ITableRowProps) {
   const styles = StyleSheet.create({
@@ -22,6 +23,7 @@ function InvoiceItemTable({items,headers}: ITableRowProps) {
       <InvoiceTableData key={""} items={items} headers={headers}/>
       <InvoiceTableBlackLines rowCounts={1}/>
       <InvoiceTableFooter total={items.total}/>
+      <InvoiceTableBlackLinesShort rowCounts={1}/>
     </View>
   )
 }

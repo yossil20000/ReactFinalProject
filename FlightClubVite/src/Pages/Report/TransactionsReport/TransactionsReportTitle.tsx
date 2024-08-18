@@ -1,81 +1,35 @@
-/* https://react-pdf.org/styling#stylesheet-api */
-import { View, Text, StyleSheet } from '@react-pdf/renderer'
-import { ITransactionReportTableHeader } from '../../../Interfaces/ITransactionsReport'
-const borderColor = '#90e5fc'
+import { View , Text,StyleSheet,Image} from '@react-pdf/renderer'
+import invoiceLogo from '../../../../src/Asset/images/favicon_baz.jpg'
+type title = {
+  title: string
+}
 const styles = StyleSheet.create({
-  container: {
+  titleContainer: {
     flexDirection: "row",
-    marginTop:0,
-    borderBottomColor: '#bff0fd',
-    
-    borderBottomWidth: 1,
-    alignItems: 'flex-start',
-    height: 24,
-    textAlign: 'left',
-    fontStyle: 'bold',
-    
+    marginTop:0
+  },
+  reportTitle: {
+    color: '#61dafb',
+    letterSpacing: 4,
+    fontSize: 35,
+    margin: 'auto',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    textDecoration: 'underline'
+  },
+  logo: {
+    width: 35,
+    height: 35,
+   
+    margin: 'auto'
   }
 })
-let stylesArray:Array<{style: {}}>=[
-  StyleSheet.create({
-  style: {
-    width: '13%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
-  }
-}),
-StyleSheet.create({
-  style: {
-    width: '57%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
-  }
-}),
-StyleSheet.create({
-  style: {
-    width: '15%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
-  }
-}),
-StyleSheet.create({
-  style: {
-    width: '15%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
-  }
-}),
-StyleSheet.create({
-  style: {
-    width: '15%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
-    backgroundColor: '#bff0fd',
-  }
-})
-] 
-console.info("TransactionsReportTitle/stylesArray",stylesArray)
-function TransactionsReportTitle({header,isTitle}: ITransactionReportTableHeader) {
-  console.info("TransactionsReportTitle/header",header)
+function TransactionsReportTitle({title} : title) {
   return (
-    <View style={styles.container}>
-      {header.map((i,j) => {
-        let s : any = stylesArray[j].style;
-        s.width = i.width;
-        /* s.backgroundColor =  isTitle == false ? '#bff0fd' :  '#d2cfe6'; */
-        return (
-      <Text style={s}>{isTitle ? i.title : i.data}</Text>  
-      )})}
-      
+    <View style={styles.titleContainer}>
+      <Image style={styles.logo} src={invoiceLogo} />
+      <Text style={styles.reportTitle}>{title}</Text>
+      <Image style={styles.logo} src={invoiceLogo} />
     </View>
   )
 }

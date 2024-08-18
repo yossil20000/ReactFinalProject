@@ -38,7 +38,7 @@ let stylesArray: Array<{ style: {} }> = [
   }),
   StyleSheet.create({
     style: {
-      width: '60%',
+      width: '20%',
       borderRightColor: borderColor,
       borderRightWidth: borderRightWidth,
       height: "20px"
@@ -61,19 +61,19 @@ let stylesArray: Array<{ style: {} }> = [
     }
   })
 ]
-function TransactionsTableData(items: ITransactionTableRowProps) {
+function TransactionsFlightTableData(items: ITransactionTableRowProps) {
   const rows = items.items.rows.map((item: ITransactionTableRow, index: number) => 
     <View style={styles.row} key={index}>
       {item.row.map((i, j) => {
-        let s : any = {...stylesArray[j]};
+        let s : any = {...stylesArray[j],width: i.width};
         
         return (
         
-        <Text style={stylesArray[j].style} key={`col${j}`}>{i.data}</Text>
+        <Text style={s} key={`col${j}`}>{i.data}</Text>
     )})}
     </View>
   )
-  { console.log("TransactionsTableData/rows", rows,items) }
+  { console.log("TransactionsFlightTableData/rows", rows,items) }
   return (
     <>
       {rows}
@@ -81,4 +81,4 @@ function TransactionsTableData(items: ITransactionTableRowProps) {
   )
 }
 
-export default TransactionsTableData
+export default TransactionsFlightTableData

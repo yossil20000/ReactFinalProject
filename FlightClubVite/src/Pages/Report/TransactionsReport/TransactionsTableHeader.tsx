@@ -5,6 +5,7 @@ const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    marginTop:0,
     borderBottomColor: '#bff0fd',
     backgroundColor: '#bff0fd',
     borderBottomWidth: 1,
@@ -12,49 +13,52 @@ const styles = StyleSheet.create({
     height: 24,
     textAlign: 'left',
     fontStyle: 'bold',
-    flexGrow: 1,
   }
 })
 let stylesArray:Array<{style: {}}>=[
   StyleSheet.create({
   style: {
-    width: '20%',
+    width: '100%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1,
-
+    backgroundColor: '#bff0fd',
   }
 }),
 StyleSheet.create({
   style: {
-    width: '60%',
+    width: '57%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1
+    borderRightWidth: 1,
+    backgroundColor: '#bff0fd',
   }
 }),
 StyleSheet.create({
   style: {
-    width: '20%',
+    width: '15%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1
+    borderRightWidth: 1,
+    backgroundColor: '#bff0fd',
   }
 }),
 StyleSheet.create({
   style: {
-    width: '20%',
+    width: '15%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1
+    borderRightWidth: 1,
+    backgroundColor: '#bff0fd',
   }
 }),
 StyleSheet.create({
   style: {
-    width: '20%',
+    width: '15%',
     height: 'auto',
     borderRightColor: borderColor,
-    borderRightWidth: 1
+    borderRightWidth: 1,
+    backgroundColor: '#bff0fd',
   }
 })
 ] 
@@ -64,15 +68,11 @@ function TransactionsTableHeader({header,isTitle}: ITransactionReportTableHeader
   return (
     <View style={styles.container}>
       {header.map((i,j) => {
-        let style : ReactPDF.Styles= StyleSheet.create({
-          style: {...stylesArray[j].style,width: i.width}
-        })
-       
         let s : any = stylesArray[j].style;
         s.width = i.width;
-        console.info("TransactionsTableHeader/style, s",style,s);
+        console.info("TransactionsTableHeader/header,s",header,s);
         return (
-      <Text style={s}>{i.title}</Text>  
+      <Text style={stylesArray[j].style}>{isTitle ? i.title : i.data}</Text>  
       )})}
       
     </View>

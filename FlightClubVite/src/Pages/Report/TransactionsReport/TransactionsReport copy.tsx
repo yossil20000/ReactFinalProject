@@ -1,4 +1,4 @@
-import { Page, Document, StyleSheet } from "@react-pdf/renderer";
+import { Page, Document, StyleSheet,Text } from "@react-pdf/renderer";
 import { ITransactionReportProps, ITransactionTableData, ITransactionTableRow, ITransactionTableRowProps, transactionTableItemHeader } from "../../../Interfaces/ITransactionsReport";
 import TransactionsReportTitle from "./TransactionsReportTitle";
 import { useEffect, useState } from "react";
@@ -43,9 +43,9 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
 
   useEffect(() => {
     if (transaction) {
-      let membersProps : string[] = [];
-      let rowsProps: ITransactionTableRowProps[] = [];
-      let itemProps: ITransactionTableRowProps = {
+/*       let membersProps : string[] = [];
+      let rowsProps: ITransactionTableRowProps[] = []; */
+   /*    let itemProps: ITransactionTableRowProps = {
         items: {
           rows: [],
           total: 0
@@ -54,7 +54,7 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
           header: [],
           isTitle: true
         }
-      }
+      } */
       CustomLogger.info("TransactionsReport/transactons", transaction);
       let group = Object.groupBy(transaction, ({ destination }) => destination)
 
@@ -65,7 +65,7 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
       if (values) {
         CustomLogger.info("TransactionsReport/group[keys[0]]", group[keysMembers[0]]);
         keysMembers.forEach(element => {
-          let transactionRows : ITransactionTableRow[]=[]
+          /* let transactionRows : ITransactionTableRow[]=[] */
           CustomLogger.info("TransactionsReport/group[element]", element, group[element]);
           if (group[element]) {
             CustomLogger.info("TransactionsReport/element", element)
@@ -87,15 +87,14 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
-        <TransactionsReportTitle key={"tr_title_h"} header={transactionTitleHeader} isTitle={true} />
-        <TransactionsReportTitle key={"tr_title_d"} header={transactionTitleHeader} isTitle={false} />
+        <TransactionsReportTitle key={"tr_title_h"} title="BAZ Flight Club"/>
+  
         {transactionData.map((member) =>
           <>
-            <TransactionsReportTitle key={`tr_title_${member.memberKey}`} header={[{ title: `${member.memberKey}`, toolTip: "For Member", data: `${member.memberKey}`, width: "100%" }]} isTitle={false} />
+            
             {member.orders.map((order) =>
               <>
-              <TransactionsReportTitle key={`tr_title_${order.orderKey}`} header={[{ title: `${order.orderKey}`, toolTip: "For Member", data: `${order.orderKey}`, width: "100%" }]} isTitle={false} />
-              <TransactionsItemTable key={`tr_ti${order.orderKey}`} items={order.data} headers={transactionTableItemHeader} />
+              <Text key={`tr_title_${order.orderKey}`}>`${order.orderKey}`</Text>
               </>
     
             )}
