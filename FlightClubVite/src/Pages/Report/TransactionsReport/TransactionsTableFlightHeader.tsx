@@ -21,32 +21,49 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     backgroundColor: '#bff0fd',
   },
-  desription: {
-    width: '60%',
+  start: {
+    width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1,
     backgroundColor: '#bff0fd',
   },
-  total: {
+  stop: {
+    width: '20%',
+    height: 'auto',
+    borderRightColor: borderColor,
+    borderRightWidth: 1,
+    backgroundColor: '#bff0fd',
+  },
+  duration: {
+    width: '20%',
+    height: 'auto',
+    borderRightColor: borderColor,
+    borderRightWidth: 1,
+    backgroundColor: '#bff0fd',
+  },
+  amount: {
     width: '20%',
     height: 'auto',
     borderRightColor: borderColor,
     borderRightWidth: 1,
     backgroundColor: '#bff0fd',
   }
+
 })
 
-console.info("TransactionsTableHeader/stylesArray",styles)
-function TransactionsTableHeader({header,isTitle}: ITransactionReportTableHeader) {
-  console.info("TransactionsTableHeader/header",header)
+console.info("TransactionsTableFlightHeader/stylesArray",styles)
+function TransactionsTableFlightHeader({header,isTitle}: ITransactionReportTableHeader) {
+  console.info("TransactionsTableFlightHeader/header",header)
   return (
     <View style={styles.container}>
       <Text style={styles.date}>Date</Text>  
-      <Text style={styles.desription}>Description</Text>
-      <Text style={styles.total}>Total</Text>
+      <Text style={styles.start}>Engeine Start</Text>
+      <Text style={styles.stop}>Engeine Stop</Text>
+      <Text style={styles.duration}>Duration</Text>
+      <Text style={styles.amount}>Amount</Text>
     </View>
   )
 }
 
-export default TransactionsTableHeader
+export default TransactionsTableFlightHeader

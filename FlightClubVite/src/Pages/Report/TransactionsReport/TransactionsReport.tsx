@@ -9,6 +9,7 @@ import { orderDescription } from '../../../Interfaces/API/IAccount';
 import TransactionsFlightTable from './TransactionsFlightTable';
 import TransactionsTableHeader from './TransactionsTableHeader';
 import InvoiceClubInfo from './InvoiceClubInfo';
+import TransactionsReportTitles from './TransactionsReportTitles';
 
 const styles = StyleSheet.create({
   page: {
@@ -223,7 +224,7 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
         <Text break/>
         {transactionData.map((member) =>
           <>
-            <TransactionsReportTitle key={`tr_title_${member.memberKey}`} title={`${member.memberKey}`}/>
+            <TransactionsReportTitles key={`tr_titles_${member.memberKey}`} title={`${member.memberKey}`} style={{width: "40%"}}/>
             
             {
             member.orders.map((order) => {
@@ -238,7 +239,7 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
                 total: 0
               }
               return (              <>
-                <TransactionsReportTitle key={`tr_title_${order.orderKey}`} title={`${order.orderKey}`}/>
+                <TransactionsReportTitles key={`tr_title_${order.orderKey}`} title={`${order.orderKey}`} style={{width: "100%",marginLeft: 0, marginRight: 10, marginTop:10}}/>
                 
                 {isFlight === true ? (
                   <TransactionsFlightTable key={`tr_ti${order.orderKey}`} items={order.data} headers={ transactionTableFlightItemHeader} 

@@ -6,6 +6,7 @@ import { ITransactionTableRowProps } from '../../../Interfaces/ITransactionsRepo
 
 
 function TransactionsItemTable({items,headers,addTotalRow,total,totalRowHEader}: ITransactionTableRowProps) {
+ const borderColor = '#90e5fc'
   const styles = StyleSheet.create({
     tableContainer: {
       flexDirection: 'row',
@@ -20,7 +21,7 @@ function TransactionsItemTable({items,headers,addTotalRow,total,totalRowHEader}:
     <View style={styles.tableContainer} key={"treansaction_item"}>
       <TransactionsTableHeader key={"ti_Header"} header={headers.header} isTitle={true}/>
       <TransactionsTableData key={"ti_data"} items={items} headers={headers} addTotalRow={addTotalRow} total={total} totalRowHEader={totalRowHEader}/>
-      {addTotalRow === true ? (<TransactionsTableHeader key={"ti_Header"} header={totalRowHEader.header} isTitle={true}/>): (<></>)}
+     
      
     </View>
   )
