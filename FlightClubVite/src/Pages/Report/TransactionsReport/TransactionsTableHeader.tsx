@@ -1,7 +1,7 @@
 /* https://react-pdf.org/styling#stylesheet-api */
 import ReactPDF, { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { ITransactionReportTableHeader } from '../../../Interfaces/ITransactionsReport'
-const borderColor = '#90e5fc'
+const borderColor = '#000000'
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -16,23 +16,23 @@ const styles = StyleSheet.create({
   },
   date: {
     width: '20%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
   },
   desription: {
     width: '60%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
   },
   total: {
     width: '20%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
   }
 })

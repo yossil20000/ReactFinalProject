@@ -1,7 +1,8 @@
 /* https://react-pdf.org/styling#stylesheet-api */
 import ReactPDF, { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { ITransactionReportTableHeader } from '../../../Interfaces/ITransactionsReport'
-const borderColor = '#90e5fc'
+import { center } from '@turf/turf'
+const borderColor = '#000000'
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -9,44 +10,45 @@ const styles = StyleSheet.create({
     borderBottomColor: '#bff0fd',
     backgroundColor: '#bff0fd',
     borderBottomWidth: 1,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     height: 24,
     textAlign: 'left',
-    fontStyle: 'bold',
+    fontStyle: 'bold'
   },
   date: {
     width: '20%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
+    justifyContent: 'center'
   },
   start: {
     width: '20%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
   },
   stop: {
     width: '20%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
   },
   duration: {
     width: '20%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
   },
   amount: {
     width: '20%',
-    height: 'auto',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
+    height: '100%',
+    borderBottomColor: borderColor,
+    borderBottomWidth: 1,
     backgroundColor: '#bff0fd',
   }
 
