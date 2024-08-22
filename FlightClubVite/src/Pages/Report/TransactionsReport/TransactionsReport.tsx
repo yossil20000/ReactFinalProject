@@ -11,6 +11,8 @@ import TransactionsTableHeader from './TransactionsTableHeader';
 import InvoiceClubInfo from './InvoiceClubInfo';
 import TransactionsReportTitles from './TransactionsReportTitles';
 
+import { groupBy } from "lodash";
+
 const styles = StyleSheet.create({
   page: {
     fontFamily: 'Helvetica',
@@ -153,7 +155,9 @@ function GetTransactionTotalCells(isFlight:boolean,total:number,totalFlight: num
  
   return cells
 }
+function f() {
 
+}
 function TransactionsReport({ transactionTitleHeader, transaction }: ITransactionReportProps) {
   const [transactionData, setTransactionData] = useState<ITransactionData[]>(initTransactionData)
 
@@ -161,12 +165,12 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
     let transactionDataInner: ITransactionData[] =[]
     if (transaction) {
       CustomLogger.info("TransactionsReport/transactons", transaction);
-      let group = Object.groupBy(transaction, ({ destination }) => destination)
+      let group = groupBy(transaction, tr => tr.destination)
 
       let values = Object.values(group);
       let keysMembers = Object.keys(group);
-      CustomLogger.info("TransactionsReport/values.length,values,keys", values.length, values, keysMembers);
-      if (values) {
+      CustomLogger.info("TransactionsReport/values.length,values,keys,group", values.length, values, keysMembers,group);
+      if (keysMembers && keysMembers.length > 0) {
         keysMembers.forEach(element => {
           let current: ITransactionData = {
             memberKey: element,
@@ -176,7 +180,7 @@ function TransactionsReport({ transactionTitleHeader, transaction }: ITransactio
           CustomLogger.info("TransactionsReport/group[element]", element, group[element]);
           if (group[element]) {
             CustomLogger.info("TransactionsReport/element", element)
-            let orderGroup = Object.groupBy(group[element], ({ order }) => { return order.type.toLocaleUpperCase() })
+            let orderGroup = groupBy(group[element], order => order.order.type)
             CustomLogger.info("TransactionsReport/orderGroup", orderGroup);
             let orderValues = Object.values(orderGroup);
             let orderKeys = Object.keys(orderGroup);
