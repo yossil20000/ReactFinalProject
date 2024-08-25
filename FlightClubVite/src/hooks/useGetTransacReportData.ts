@@ -1,5 +1,5 @@
 import { groupBy } from "lodash";
-import { StyleSheet} from "@react-pdf/renderer";
+import { StyleSheet } from "@react-pdf/renderer";
 import { CCustomLogger } from '../../src/customLogging';
 import { useClubAccountQuery, useFetchTransactionQuery } from "../features/Account/accountApiSlice";
 import { ITransactionTableFilter } from "../Components/TransactionTable";
@@ -31,143 +31,91 @@ const styles = StyleSheet.create({
   }
 });
 interface ITransactionOrders {
-  data:ITransactionTableData,
+  data: ITransactionTableData,
   orderKey: string
 }
 interface ITransactionData {
-  
+
   memberKey: string,
   orders: ITransactionOrders[]
+  totalAmount: number
 }
 let initTransactionData: ITransactionData[] = [{
   memberKey: "Yossi",
+  totalAmount: 0,
   orders: [{
     data: {
       rows: [],
       total: 0
     },
-    orderKey: "Other"
+    orderKey: "Other",
+
   }]
 }]
-function GetTransactionCells(item: ITransaction) : ITransactionReportTableCell[] {
-  let cells: ITransactionReportTableCell[] =[]
-  try{
+function GetTransactionCells(item: ITransaction): ITransactionReportTableCell[] {
+  let cells: ITransactionReportTableCell[] = []
+  try {
     const dateCell: ITransactionReportTableCell = {
       data: new Date(item.date).getDisplayDate(),
       toolTip: "",
       width: "20%"
     }
-    cells[0] =  dateCell
-    if(item.order.type.toLocaleUpperCase() == Transaction_OT.FLIGHT.toLocaleUpperCase()){
-      const flight =JSON.parse(item.description) as orderDescription
+    cells[0] = dateCell
+    if (item.order.type.toLocaleUpperCase() == Transaction_OT.FLIGHT.toLocaleUpperCase()) {
+      const flight = JSON.parse(item.description) as orderDescription
       console.info("GetTransactionCells/flight", flight)
       const start: ITransactionReportTableCell = {
         data: flight.engien_start.toFixed(1),
         toolTip: "",
         width: "20%"
       }
-      cells[1] =  start 
+      cells[1] = start
       const stop: ITransactionReportTableCell = {
         data: flight.engien_stop.toFixed(1),
         toolTip: "",
         width: "20%"
       }
-      cells[2] =  stop 
+      cells[2] = stop
       const duration: ITransactionReportTableCell = {
         data: Number(flight.total).toFixed(1),
         toolTip: "",
         width: "20%"
       }
-      cells[3] =  duration
+      cells[3] = duration
       const amount: ITransactionReportTableCell = {
         data: Number(item.amount).toFixed(2),
         toolTip: "",
         width: "20%"
       }
-      cells[4] =  amount  
+      cells[4] = amount
     }
-    else{
+    else {
+      let itemDescription = item.description;
+      if (item.order.type.toLocaleUpperCase() === Transaction_OT.EXPENSE.toLocaleUpperCase()) {
+        let items = item.description.split("|")
+        itemDescription = items.slice(0,items.length-2).join(" ")
+      }
       const description: ITransactionReportTableCell = {
-        data: item.description,
+        data: itemDescription,
         toolTip: "",
         width: "60%"
       }
-      cells[1] =  description
+      cells[1] = description
       const amount: ITransactionReportTableCell = {
         data: Number(item.amount).toFixed(2),
         toolTip: "",
         width: "20%"
       }
-      cells[2] =  amount 
+      cells[2] = amount
     }
-    
-   
   }
-  catch(error){
-    CustomLogger.error("GetTransactionCells:  error",error)
+  catch (error) {
+    CustomLogger.error("GetTransactionCells:  error", error)
   }
   return cells
 }
-function GetTransactionTotalCells(isFlight:boolean,total:number,totalFlight: number) : ITransactionReportTableCell[] {
-  let cells: ITransactionReportTableCell[] =[]
-  const dateCell: ITransactionReportTableCell = {
-    data: "",
-    toolTip: "",
-    width: "20%"
-  }
-  cells[0] =  dateCell
-  if(isFlight){
-    
-    const start: ITransactionReportTableCell = {
-      data: "",
-      toolTip: "",
-      width: "20%"
-    }
-    cells[1] =  start 
-    const stop: ITransactionReportTableCell = {
-      data: "",
-      toolTip: "",
-      width: "20%"
-    }
-    cells[2] =  stop 
-    const duration: ITransactionReportTableCell = {
-      data: "Total",
-      toolTip: "",
-      width: "20%"
-    }
-    cells[3] =  duration
-    const amount: ITransactionReportTableCell = {
-      data: "",
-      toolTip: "",
-      width: "20%"
-    }
-    cells[4] =  amount  
-  }
-  else{
-    const description: ITransactionReportTableCell = {
-      data: "Total",
-      toolTip: "",
-      width: "60%"
-    }
-    cells[1] =  description
-    const amount: ITransactionReportTableCell = {
-      data: "total.toFixed(2)",
-      toolTip: "",
-      width: "20%"
-    }
-    cells[2] =  amount 
-  }
-  
- 
-  return cells
-}
-const filter : IDateFilter = {
-  from: new Date(),
-  to: new Date(),
-  currentOffset: 0
-}
-/* function useGetTransacReportData({filter,account}: IGetTransacReportDataProps) : [ITransactionData[],string] { */
-function useGetTransacReportData(transactions: IResultBase<ITransaction> | undefined,bankAccounts:IResultBase<IClubAccount> | undefined) : [ITransactionData[],string] {
+
+function useGetTransacReportData(transactions: IResultBase<ITransaction> | undefined, bankAccounts: IResultBase<IClubAccount> | undefined): [ITransactionData[], string] {
 
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const [transactionData, setTransactionData] = useState<ITransactionData[]>([])
@@ -175,15 +123,15 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
     let bankFound: IClubAccount | undefined = undefined;
     if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
       bankFound = bankAccounts?.data.find((bank) =>
-         (bank.club.brand === "BAZ" && bank.club.branch === "HAIFA"))
-      if(bankFound === undefined && bankAccounts?.data.length == 1)
+        (bank.club.brand === "BAZ" && bank.club.branch === "HAIFA"))
+      if (bankFound === undefined && bankAccounts?.data.length == 1)
         bankFound = bankAccounts.data[0]
       setBank(bankFound)
     }
   }, [bankAccounts])
 
-   useEffect(() => {
-    let transactionDataInner: ITransactionData[] =[]
+  useEffect(() => {
+    let transactionDataInner: ITransactionData[] = []
     if (transactions && transactions.data) {
       const dataTransaction = transactions.data
       CustomLogger.info("TransactionsReport/transactons", dataTransaction);
@@ -191,14 +139,17 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
 
       let values = Object.values(group);
       let keysMembers = Object.keys(group);
-      CustomLogger.info("TransactionsReport/values.length,values,keys,group", values.length, values, keysMembers,group);
+      CustomLogger.info("TransactionsReport/values.length,values,keys,group", values.length, values, keysMembers, group);
+
       if (keysMembers && keysMembers.length > 0) {
+        let totalAmount: number = 0
         keysMembers.forEach(element => {
           let current: ITransactionData = {
             memberKey: element,
-            orders: []
+            orders: [],
+            totalAmount: 0
           }
-          let transactionRows : ITransactionTableRow[]=[]
+          let transactionRows: ITransactionTableRow[] = []
           CustomLogger.info("TransactionsReport/group[element]", element, group[element]);
           if (group[element]) {
             CustomLogger.info("TransactionsReport/element", element)
@@ -213,42 +164,45 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
                 rows: [],
                 total: 0
               }
-              let currentOrder : ITransactionOrders = {
+              let currentOrder: ITransactionOrders = {
                 data: memberOrders,
                 orderKey: order
               }
-              orderGroup[order]?.map((item)=> {
-                const row : ITransactionTableRow = {
+              orderGroup[order]?.map((item) => {
+                const row: ITransactionTableRow = {
                   row: GetTransactionCells(item)
                 }
-                
+
                 memberOrders.rows.push(row)
               })
-              
+
               const amount = orderGroup[order]?.reduce((accumulator, current) => { return current.amount + accumulator }, 0)
-              if(amount)
-                memberOrders.total = amount
+              if (amount) {
+                memberOrders.total = amount;
+                totalAmount += amount;
+              }
               currentOrder.data = memberOrders
               ordersForMember.push(currentOrder)
               current.orders = ordersForMember
               CustomLogger.info("TransactionsReport/order,orderGroup[order],amount", order, orderGroup[order], amount)
-              CustomLogger.info("TransactionsReport/currentOrder",currentOrder)
+              CustomLogger.info("TransactionsReport/currentOrder", currentOrder)
             })
+            current.totalAmount = totalAmount;
             transactionDataInner.push(current)
             CustomLogger.info("TransactionsReport/current", current);
           }
         });
       }
       CustomLogger.info("TransactionsReport/transactionDataInner", transactionDataInner);
-      if(transactionDataInner)
+      if (transactionDataInner)
         setTransactionData(transactionDataInner)
     }
   }, [transactions])
-  
-  if(transactionData && bank)
-    return [transactionData,bank.club.account_id]
+
+  if (transactionData && bank)
+    return [transactionData, bank.club.account_id]
   else
-    return [[],""]
+    return [[], ""]
 }
 
 export default useGetTransacReportData

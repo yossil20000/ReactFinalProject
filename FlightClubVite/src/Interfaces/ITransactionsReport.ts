@@ -55,7 +55,7 @@ export const bankTitleHeader: ITransactionReportTableHeader = {
 export const transactionTableItemHeader: ITransactionReportTableHeader = {
   header: [
     { title: "Date", toolTip: "Date of order", data: "18700031", width: "20%" },
-    { title: "Description", toolTip: "Order Desription", data: "18700031", width: "60%" },
+    { title: "Description123456789", toolTip: "Order Desription", data: "18700031", width: "60%" },
     { title: "Amount", toolTip: "Amount Charged", data: "18700031", width: "20%" },
 
   ],

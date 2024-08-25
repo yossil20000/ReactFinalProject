@@ -170,7 +170,7 @@ exports.add_order_transaction = [
   async (req, res, next) => {
     try {
 
-      let { source, destination, amount, order, description, type } = req.body;
+      let { source, destination, amount, order, description, type ,date} = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
@@ -248,6 +248,7 @@ exports.add_order_transaction = [
         log.info("tDestination", tDestination)
 
         let sourceTransaction = new Transaction({
+          date: new Date(date),
           source: tSource,
           destination: tDestination,
           amount: -Number(Number(amount).toFixed(2)),

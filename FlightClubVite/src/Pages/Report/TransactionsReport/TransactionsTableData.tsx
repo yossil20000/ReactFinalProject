@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     height: 24,
     textAlign: 'left',
     fontStyle: 'bold',
-
+    textOverflow: 'ellipsis'
   }
 })
 
@@ -32,7 +32,8 @@ let stylesArray: Array<{ style: {} }> = [
       width: '60%',
       borderRightColor: borderColor,
       borderRightWidth: borderRightWidth,
-      height: "20px"
+      height: "20px",
+      
     }
   }),
   StyleSheet.create({
