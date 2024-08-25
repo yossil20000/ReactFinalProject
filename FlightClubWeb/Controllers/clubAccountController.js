@@ -1,28 +1,20 @@
 const mongoose = require('mongoose');
 require('../Types/date.extensions')
 const fs = require('fs')
-var getDirName = require('path').dirname;
 const log = require('debug-level').log('ClubAccountController');
 const { body, param, validationResult, query } = require('express-validator');
 const ClubAccount = require('../Models/clubAccount');
 const Order = require('../Models/order');
 const { Account } = require('../Models/account');
-const { Transaction, TransactionSchema } = require('../Models/transaction')
+const { Transaction } = require('../Models/transaction')
 const { ApplicationError } = require('../middleware/baseErrors');
 const { CValidationError } = require('../Utils/CValidationError');
 const constants = require('../Models/constants');
 const Expense = require('../Models/expense');
 const { send_recipe } = require('../Services/payReciepPdf');
-const { expensedb_fix , transactiondb_fix,accountsTransactionb_fix} = require('../Services/expeseService');
+require('../Services/expeseService');
 
-
-const transactionOptions = {
-  readPreference: 'primary',
-  readConcern: { level: 'local' },
-  writeConcern: { w: 'majority' }
-};
-
-exports.club = async function (req, res, next) {
+exports.club = async function (req, res) {
 
   try {
     log.info("club/req.params", req.params);
@@ -30,8 +22,27 @@ exports.club = async function (req, res, next) {
     log.info("club/req.params", req.params.include_accounts);
     const filter = `${include_accounts == "true" ? 'accounts ' : ''}contact`;
     const clubAccount = await ClubAccount.find().populate(filter).exec();
+/*     const clubAccount1 = await ClubAccount.find().populate(filter).exec().aggregate(
+      [      {$unwind: "$transactions"},
+            {$match: {
+              $expr: { $gte: ["$transactions.date" , "$$from"  ]}
+            }}],
+            {let: {from: new Date(2024,7,1)}}
+          ) */
+/*     const clubAccount1 = await ClubAccount.aggregate(
+ [ {$match: {$expr:{ $eq:["$club.account_id", "BC001001"]}}},    
+   {$unwind: "$transactions"},
+      {$match: {
+        $expr: { $gte: ["$transactions.date" , "$$from"  ]}
+      }}],
+      {let: {from: new Date(2024,7,1)}} 
+    )
+    const tr = clubAccount1.map((i) =>  i.transactions)
+    if(clubAccount1 && clubAccount1.length > 0){
+      clubAccount1[0].transactions = tr;
+    } */
     if (clubAccount) {
-      return res.status(201).json({ success: true, errors: [], data: clubAccount });
+      return res.status(201).json({ success: true, errors: [], data: clubAccount/* [clubAccount1[0]] */ });
     }
     return res.status(400).json({ success: false, errors: ["club not exist"], data: [] });
 
@@ -159,7 +170,7 @@ exports.add_order_transaction = [
   async (req, res, next) => {
     try {
 
-      let { source, destination, amount, order, description, payment, type } = req.body;
+      let { source, destination, amount, order, description, type } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
@@ -1003,53 +1014,12 @@ exports.account_saving_update = [
 ]
 async function writeDumpFile(path, contents) {
   try {
-    const dir = fs.mkdirSync(getDirName(path), { recursive: true })
     fs.writeFileSync(path, contents);
 
   }
   catch (error) {
     console.error("WriteFile error", error)
   }
-}
-const  writeFilePromiss =  (filePath, fileContent) => {
-  return new Promise((resolve, reject) => {
-    try {
-      fs.writeFileSync(filePath,fileContent)
-      
-      if(exist)
-        resolve(exist);
-      else
-      reject("Failed")
-
-      /* fs.mkdirSync(filePath, { recursive: true })  */
-      /* fs.writeFile(filePath, fileContent,(err) => {
-        if(err){
-          reject(err);    
-        }
-        const exist = fs.existsSync(filePath)
-        resolve(exist);
-
-      })*/
-      
-    }
-    catch (err) {
-      reject(err);
-    } 
-  });
-}
-function writeAuthFile(data, success, fail) {
-  var fs = require('fs');
-  fs.writeFile('auth.json', JSON.stringify(data), function(error) {
-    if(error) { 
-      console.log('[write auth]: ' + err);
-        if (fail)
-          fail(error);
-    } else {
-      console.log('[write auth]: success');
-        if (success)
-          success();
-    }
-  });
 }
 exports.dump_club_account = [
   async (req,res,next) => {

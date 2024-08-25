@@ -25,7 +25,7 @@ function AccountTransactionsTab() {
   const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
-  const [openExpenseSave, setOpenExpenseSave] = useState(false);
+  const [openExportSave, setOpenExportSave] = useState(false);
   /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dateFilter.to)
   const [dateFrom,setDateFrom] = useLocalStorage("_filter/dateFrom", dateFilter.from) */
   const [dateTo, setDateTo] = useState(dateFilter.to)
@@ -36,14 +36,14 @@ function AccountTransactionsTab() {
 /*   const [openAddCredit, setOpenAddCredit] = useState(false);
   const [openAddDebit, setOpenAddDebit] = useState(false); */
   const OnSelectedClubAccount = (item: InputComboItem): void => {
-    CustomLogger.info("OnSelectedClubAccount/item",item)
+    CustomLogger.info("AccountTransactionsTab/OnSelectedClubAccount/item",item)
     setSelectedClubAccount(item);
 
   }
 
 
   const onFilterChanged = (key: string, value: any): void => {
-    CustomLogger.log("onFilterChanged/key,value,filter", key, value, filter)
+    CustomLogger.info("AccountTransactionsTab/onFilterChanged/key,value,filter", key, value, filter)
     const newKey = key == 'fromDate' ? "from" : key == 'toDate' ? 'to' : "";
     if (newKey == "") { CustomLogger.log("onFilterChanged/ value not set", key); return }
 
@@ -56,7 +56,7 @@ function AccountTransactionsTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.info("AccountTransactionsTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
       switch(item) {
@@ -70,7 +70,7 @@ function AccountTransactionsTab() {
       }
       break;
       case EAction.SAVE:
-        setOpenExpenseSave(!openExpenseSave);
+        setOpenExportSave(!openExportSave);
         break;
     }
   }
@@ -116,7 +116,7 @@ function AccountTransactionsTab() {
             <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
               <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} includesType={[MemberType.Club,MemberType.Member,MemberType.Supplier]} />
             </FilterDrawer>
-            <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter}  transactionSave={openExpenseSave} setTransactionSave={setOpenExpenseSave}/>
+            <TransactionTable selectedClubAccount={selectedClubAccount} filter={filter}  transactionSave={openExportSave} setTransactionSave={setOpenExportSave}/>
           </Fragment>
         </ContainerPageMain>
         <ContainerPageFooter>

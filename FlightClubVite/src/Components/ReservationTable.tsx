@@ -22,12 +22,12 @@ let reservationUpdateIntitial: IReservationUpdate = {
 
 
 export interface IReservationTableFilter {
-  dateFilter : IDateFilter
+  dateFilter: IDateFilter
 }
 interface IReservationTableProps {
   hideAction?: boolean;
   filter?: IReservationTableFilter;
-  
+
 }
 export interface IReservationTable extends IReservation {
   validOperation: CanDo
@@ -37,34 +37,34 @@ export default function ReservationTable({ hideAction = false, filter = {} as IR
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(reservationUpdateIntitial);
   const { data: dataReservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery(filter.dateFilter);
-  const [openUpdate,setOpenUpdate] = useState(false)
-  const [openDelete,setOpenDelete] = useState(false)
+  const [openUpdate, setOpenUpdate] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
   const [rowId, setRowId] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(20);
   const [page, setPage] = useState(1);
-  
-  const [reservations, setReservations] = useState<IReservation[]>();
-useEffect(()=>{
-  CustomLogger.info("ReservationTable/filter", filter)
-},[filter])
 
-useEffect(() => {
-  CustomLogger.info("ReservationTable/useEffect", dataReservations)
-  if(dataReservations?.data)
-   setReservations(dataReservations.data)
-},[isLoading])
+  const [reservations, setReservations] = useState<IReservation[]>();
+  useEffect(() => {
+    CustomLogger.info("ReservationTable/filter", filter)
+  }, [filter])
+
+  useEffect(() => {
+    CustomLogger.info("ReservationTable/useEffect", dataReservations)
+    if (dataReservations?.data)
+      setReservations(dataReservations.data)
+  }, [isLoading])
 
   const transactionRows = () => {
-  
+
     const rows = reservations?.map((row: IReservation) => ({
-      
+
       id: row._id,
       device: row.device.device_id,
       date_from: row.date_from.getDisplayDate(),
       date_to: "",
       name: row.member.family_name,
       member_id: row.member.member_id,
-      validOperation : GeneralCanDo(row.member._id, login.member._id, login.member.roles)
+      validOperation: GeneralCanDo(row.member._id, login.member._id, login.member.roles)
     }))
     if (rows !== undefined) {
       CustomLogger.info("ReservationTable/rows", rows, reservations);
@@ -74,15 +74,15 @@ useEffect(() => {
 
 
   }
-  const getCanDoAction = (canDo : CanDo) : EAction[] => {
-    CustomLogger.log("ReservationTable/getCanDoAction",canDo)
-    let actions : EAction[] = []
+  const getCanDoAction = (canDo: CanDo): EAction[] => {
+    CustomLogger.log("ReservationTable/getCanDoAction", canDo)
+    let actions: EAction[] = []
 
-    if(canDo & CanDo.Edit)
-       actions.push(EAction.EDIT)
-    if(canDo & CanDo.Delete)
+    if (canDo & CanDo.Edit)
+      actions.push(EAction.EDIT)
+    if (canDo & CanDo.Delete)
       actions.push(EAction.DELETE)
-    CustomLogger.info("ReservationTable/getCanDoAction/actions",actions)
+    CustomLogger.info("ReservationTable/getCanDoAction/actions", actions)
     return actions;
   }
   const columns: GridColDef[] = useMemo(() => [
@@ -94,22 +94,22 @@ useEffect(() => {
     { field: 'member_id', headerName: 'Id Number', minWidth: 100, flex: 1 },
     {
       field: 'actions',
-      flex:1,
+      flex: 1,
       headerName: 'Actions',
       minWidth: 140,
       type: 'actions',
       hide: hideAction,
       renderCell: (params: GridRenderCellParams) => (
         <Box display={'flex'} flexDirection={'row'} gap={1} height={"5ch"} >
-         {params.row.validOperation === CanDo.Edit}
-         <ActionButtons OnAction={onAction} show={getCanDoAction(params.row.validOperation)} item={params.row.id} display={[{ key: EAction.EDIT, value: "" },{ key: EAction.DELETE, value: "" } ]} />
-         
+          {params.row.validOperation === CanDo.Edit}
+          <ActionButtons OnAction={onAction} show={getCanDoAction(params.row.validOperation)} item={params.row.id} display={[{ key: EAction.EDIT, value: "" }, { key: EAction.DELETE, value: "" }]} />
+
         </Box>
       )
 
     },
 
-  ], [rowId, hideAction,reservations]);
+  ], [rowId, hideAction, reservations]);
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
     CustomLogger.log("ReservationTable/onAction", event?.target, action, item)
@@ -122,7 +122,7 @@ useEffect(() => {
         }
         break;
       case EAction.DELETE:
-        if(item !== undefined){
+        if (item !== undefined) {
           setOpenDelete(true);
         }
     }
@@ -131,36 +131,31 @@ useEffect(() => {
     setOpenDelete(false);
     setOpenUpdate(false);
   }
- const getReservationUpdate = (item: string) : any => {
-  const reservation = reservations?.find((i) => i._id == item) 
-  if(reservation !== undefined)
-  {
-    const updateReservation = new ReservationUpdate();
-    updateReservation.copyReservation(reservation);
-    setReservationUpdate(updateReservation as IReservationUpdate)
-    return updateReservation as unknown as IReservationUpdate
+  const getReservationUpdate = (item: string): any => {
+    const reservation = reservations?.find((i) => i._id == item)
+    if (reservation !== undefined) {
+      const updateReservation = new ReservationUpdate();
+      updateReservation.copyReservation(reservation);
+      setReservationUpdate(updateReservation as IReservationUpdate)
+      return updateReservation as unknown as IReservationUpdate
+    }
+    return new ReservationUpdate() as IReservationUpdate
   }
-  
-
-  
-  return new ReservationUpdate() as IReservationUpdate
- }
   return (
     <div style={{ height: "100%", width: '100%' }}>
       {openUpdate && <UpdateReservationDialog onClose={handleOnClose} value={reservationUpdate} open={openUpdate} onSave={handleOnClose} />}
       <DataGrid
-      columnVisibilityModel={{id:false}}
+        columnVisibilityModel={{ id: false }}
         rows={transactionRows()}
         columns={columns}
-        pageSizeOptions={[5, 10, 15, 20,50,100]}
-        paginationModel={{page,pageSize}}
-        onPaginationModelChange={(newPageSize) => {setPageSize(newPageSize.pageSize),setPage(newPageSize.page) }}
+        pageSizeOptions={[5, 10, 15, 20, 50, 100]}
+        paginationModel={{ page, pageSize }}
+        onPaginationModelChange={(newPageSize) => { setPageSize(newPageSize.pageSize), setPage(newPageSize.page) }}
         checkboxSelection={false}
         getRowId={(row) => row.id}
         disableRowSelectionOnClick
         onCellEditStop={(params, event) => setRowId(params.id.toString())}
       /* rowHeight={123} */
-
       />
     </div>
   );

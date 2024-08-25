@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { ITransactionTableRow, ITransactionTableRowProps } from '../../../Interfaces/ITransactionsReport'
-import { textAlign, width } from '@mui/system'
 
 const borderColor = '#90e5fc'
 const borderRightWidth = 1

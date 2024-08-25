@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useGetOrderSearchQuery } from '../features/Account/accountApiSlice';
 import { Box } from '@mui/material';
 import TransactionAction from './Accounts/TransactionAction';
-import { IOrder, OrderStatus, OT_REF } from '../Interfaces/API/IAccount';
+import { IOrder, OT_REF } from '../Interfaces/API/IAccount';
 import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transaction_Type } from '../Interfaces/API/IClub';
 import { InputComboItem } from './Buttons/ControledCombo';
 import FullScreenLoader from './FullScreenLoader';
@@ -19,7 +19,7 @@ interface IOrderTableProps {
 }
 export default function OrderTable({selectedMember, hideAction=false,filter={},selectedClubAccount}: IOrderTableProps) {
   const [rowId, setRowId] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(20);
   const [page, setPage] = useState(1);
   const { data: orders ,isLoading,error} = useGetOrderSearchQuery(filter);
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)

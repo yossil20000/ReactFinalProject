@@ -1,5 +1,4 @@
 import { View, StyleSheet,Text } from '@react-pdf/renderer'
-
 import TransactionsTableHeader from './TransactionsTableHeader'
 import TransactionsTableData from './TransactionsTableData'
 import { ITransactionTableRowProps } from '../../../Interfaces/ITransactionsReport'

@@ -35,7 +35,7 @@ export default function TransactionTable({transactionSave,setTransactionSave, hi
   console.log("TransactionTable/filter", filter)
   const { data: dataTransaction , isLoading,error } = useFetchTransactionQuery(filter.dateFilter)
   const [rowId, setRowId] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(20);
   const [page, setPage] = useState(1);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   
@@ -47,9 +47,9 @@ const getData = useMemo(() => {
   console.info("TransactionTable/getData", dataTransaction)
   if (dataTransaction?.success) {
     if (selectedClubAccount?.lable !== "") {
-      console.log("TransactionTable/selectedClubAccount", dataTransaction.data,selectedClubAccount)
+      console.info("TransactionTable/selectedClubAccount", dataTransaction.data,selectedClubAccount)
       const filterAccount = dataTransaction.data.filter((item) => (item.source == selectedClubAccount?.lable) || (item.destination == selectedClubAccount?.lable))
-      console.log("TransactionTable/filterAccount", filterAccount)
+      console.info("TransactionTable/filterAccount", filterAccount)
       setTransactions(filterAccount);
     }
     else {
