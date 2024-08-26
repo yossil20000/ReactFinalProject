@@ -1,6 +1,6 @@
 
-import { Box, Grid, IconButton } from '@mui/material';
-import { Fragment, useState } from 'react';
+import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import { Fragment, useEffect, useState } from 'react';
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { ITransactionTableFilter } from '../../Components/TransactionTable';
@@ -17,6 +17,10 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import { MemberType, Role } from '../../Interfaces/API/IMember';
 import TranasctionsReportPage from '../Report/TransactionsReport/TranasctionsReportPage';
+import QuarterButtons, { IQuarterFilter } from '../../Components/Buttons/QuarterButtons';
+import { DateRangeIcon } from '@mui/x-date-pickers';
+import DatePickerDate from '../../Components/Buttons/DatePickerDate';
+import GeneralDrawer from '../../Components/GeneralDrawer';
 
 const dateFilter: IDateFilter = fullYearFilter;
 
@@ -31,14 +35,14 @@ function AccountReportsTab() {
   /*   const [openAddCredit, setOpenAddCredit] = useState(false);
     const [openAddDebit, setOpenAddDebit] = useState(false); */
   const OnSelectedClubAccount = (item: InputComboItem): void => {
-    CustomLogger.info("OnSelectedClubAccount/item", item)
+    CustomLogger.info("AccountReportsTab/OnSelectedClubAccount/item", item)
     setSelectedClubAccount(item);
 
   }
   const [openSaveAsPDF, setOpenSaveAsPDF] = useState(false);
 
   const onFilterChanged = (key: string, value: any): void => {
-    CustomLogger.info("onFilterChanged/key,value,filter", key, value, filter)
+    CustomLogger.info("AccountReportsTab/onFilterChanged/key,value,filter", key, value, filter)
     const newKey = key == 'fromDate' ? "from" : key == 'toDate' ? 'to' : "";
     if (newKey == "") { CustomLogger.log("onFilterChanged/ value not set", key); return }
 
@@ -52,7 +56,7 @@ function AccountReportsTab() {
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
-    CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item)
+    CustomLogger.log("AccountReportsTab/onAction", event?.target, action, item)
     switch (action) {
       case EAction.ADD:
         switch (item) {
@@ -66,6 +70,25 @@ function AccountReportsTab() {
         setOpenSaveAsPDF(!openSaveAsPDF)
         break;
     }
+  }
+  const OnQuarterFilterChanged = (quarterFilter: IQuarterFilter) => {
+    console.log("AccountReportsTab/OnQuarterFilterChanged/filter", filter)
+    let from: Date = (new Date()).getStartQuarterDate(quarterFilter.year, quarterFilter.quarter);
+    let to: Date = (new Date()).getEndQuarterDate(quarterFilter.year, quarterFilter.quarter);
+    let newFilter : ITransactionTableFilter= {
+      dateFilter: {
+        from: from,
+        to: to,
+        currentOffset:  from.getTimezoneOffset()
+      }
+    }
+    setFilter(newFilter);
+  }
+  const onDateChanged = (key: string, value: Date | null) => {
+    CustomLogger.info("UserAccountTab/onDateChanged", key, value, filter)
+    if (value === null) return;
+    const newFilter = SetProperty(filter, `dateFilter.${key}`, new Date(value));
+    setFilter(newFilter)
   }
 
   return (
@@ -95,14 +118,37 @@ function AccountReportsTab() {
           ) : (
             <ContainerPageMain>
               <Fragment>
-                <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
+                {/*                 <FilterDrawer open={openFilter} setOpen={setOpenFilter} onFilterChanged={onFilterChanged} items={getItems()}>
+                  <QuarterButtons quarterFilter={{ quarter: (new Date()).getQuarter(), year: (new Date()).getFullYear() }} onChange={OnQuarterFilterChanged} />
                   <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} includesType={[MemberType.Club, MemberType.Member, MemberType.Supplier]} />
-                </FilterDrawer>
+                </FilterDrawer> */}
+                <GeneralDrawer open={openFilter} setOpen={setOpenFilter}>
+                  <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <ListItem key={"fromDate"} disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <DateRangeIcon />
+                        </ListItemIcon>
+                        <DatePickerDate value={filter.dateFilter.from === undefined ? new Date() : new Date(filter.dateFilter.from)} param="from" lable='From Date' onChange={onDateChanged} />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"toDate"} disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <DateRangeIcon />
+                        </ListItemIcon>
+                        <DatePickerDate value={filter.dateFilter.to === undefined ? new Date() : new Date(filter.dateFilter.to)} param={"to"} lable='To Date' onChange={onDateChanged} />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"qurater"}>
+                      <QuarterButtons quarterFilter={{ quarter: (new Date()).getQuarter(), year: (new Date()).getFullYear() }} onChange={OnQuarterFilterChanged} />
+                    </ListItem>
+                  </List>
+                </GeneralDrawer>
               </Fragment>
             </ContainerPageMain>
           )
         }
-
         <ContainerPageFooter>
           <>
           </>
