@@ -49,11 +49,11 @@ Date.prototype.getEndMonth = function() : Date{
 }
 
 Date.prototype.getStartOfYear = function() : Date{
-   return this.getFirstDateOfMonth(this.getFullYear(),0)
+   return new Date(this.getFullYear(),0,1,0,0)
 
 }
 Date.prototype.getEndOfYear = function() : Date{
-   return this.getLastDateOfMonth(this.getFullYear(),11)
+   return new Date(this.getFullYear(),11,31,23,59)
 }
 
 Date.prototype.getQuarter = function() : number {

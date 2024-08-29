@@ -28,6 +28,7 @@ export enum EfilterMode {
   E_FM_MONTH
 }
 export enum EQuarterOption {
+  E_QO_Q0 = 0,
   E_QO_Q1 = 1,
   E_QO_Q2 =2,
   E_QO_Q3 =3,

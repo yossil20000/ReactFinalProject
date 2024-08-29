@@ -19,11 +19,13 @@ import InvoicePage from '../Report/InvoicePage';
 import { IInvoiceTableData, IInvoiceTableHeader, IInvoiceTableRow, InvoiceProps, defaultInvoiceDetailes, defaultInvoiceMember, defaultInvoiceProps } from '../../Interfaces/IReport';
 import QuarterButtons, { IQuarterFilter } from '../../Components/Buttons/QuarterButtons';
 import UserAccountTable from '../../Components/Tables/UserAccountTable';
+import { EQuarterOption } from '../../Utils/enums';
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)
-  const [accountFilter, setAccountFilter] = useState({ member: login.member._id,from: (new Date()).getStartQuarterDate().toLocaleString() ,to: (new Date()).getEndQuarterDate().toLocaleString()}) 
-  const { data, isLoading, isError, error } = useFetchAccountSearchQuery(accountFilter);
+  const [accountFilter, setAccountFilter] = useState({ member: login.member._id,from: (new Date()).getStartQuarterDate().toLocaleString() ,to: (new Date()).getEndQuarterDate().toLocaleString(),quarter:  (new Date()).getQuarter()}) 
+ 
+  const { data, isLoading, isError, error } = useFetchAccountSearchQuery({});
   /* const [filter, setFilter] = useState<IOrderTableFilter>(Current_Quarter_Filter()); */
   const [openSaveAsPDF, setOpenSaveAsPDF] = useState(false);
   const [changeView, setChangeView] = useState(true);
@@ -36,12 +38,7 @@ function UserAccountTab() {
   let date_e = (new Date()).getEndQuarterDate(2023, 4);
   console.log("getStartQuarterDate/end", date_e.toLocaleString()) */
   
-  const OnQuarterFilterChanged = (filter: IQuarterFilter) => {
-    console.log("OnQuarterFilterChanged/filter", filter)
-    let from: Date = (new Date()).getStartQuarterDate(filter.year, filter.quarter);
-    let to: Date = (new Date()).getEndQuarterDate(filter.year, filter.quarter);
-    setAccountFilter((prev) => ({...prev, from : from.toLocaleString(), to: to.toLocaleString() }))
-  }
+
  
   useEffect(() => {
     if (account !== undefined && transcations.length >= 0) {
@@ -113,10 +110,31 @@ function UserAccountTab() {
   }, [data, accountFilter])
 
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.info("UserAccountTab/onDateChanged", key, value, accountFilter)
+    CustomLogger.info("UserAccountTab/Filter/onDateChanged", key, value, accountFilter)
     if (value === null) return;
-    const newFilter = SetProperty(accountFilter, key, new Date(value));
+    let newFilter = SetProperty(accountFilter, key, new Date(value));
+    newFilter = SetProperty(accountFilter, 'quarter', EQuarterOption.E_QO_Q0);
+
     setAccountFilter(newFilter)
+    CustomLogger.info("UserAccountTab/Filter/onDateChanged/newFilter",newFilter)
+  }
+
+  const OnQuarterFilterChanged = (filter: IQuarterFilter) => {
+    console.log("UserAccountTab/Filter/OnQuarterFilterChanged/filter", filter)
+    let to: Date = (new Date())
+    let from: Date = (new Date())
+    if(filter.quarter !== EQuarterOption.E_QO_Q0)
+    {
+      from = to.getStartQuarterDate(filter.year, filter.quarter);
+      to  = from.getEndQuarterDate(filter.year, filter.quarter);
+    
+    }
+    else {
+      from = from.getStartOfYear();
+      to = to.getEndOfYear();
+      console.log("UserAccountTab/Filter/OnQuarterFilterChanged/filter", filter)
+    }
+    setAccountFilter((prev) => ({...prev, from : from.toLocaleString(), to: to.toLocaleString() ,quarter:  filter.quarter}))
   }
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
@@ -164,7 +182,7 @@ function UserAccountTab() {
                             </ListItemButton>
                           </ListItem>
                           <ListItem key={"qurater"}>
-                            <QuarterButtons quarterFilter={{ quarter: (new Date()).getQuarter(), year: (new Date()).getFullYear() }} onChange={OnQuarterFilterChanged} />
+                            <QuarterButtons quarterFilter={{ quarter: accountFilter.quarter, year: (new Date()).getFullYear() }} onChange={OnQuarterFilterChanged} />
                           </ListItem>
                         </List>
                       </GeneralDrawer>
