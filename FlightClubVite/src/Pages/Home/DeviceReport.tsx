@@ -38,7 +38,7 @@ function DeviceReport() {
             <div>Flight Info:</div>
             <div>{`Flight by ${report.member.family_name} ${report.member.first_name}`}</div>
             <div>{`Engine ${report.engien_start} - ${report.engien_stop}`}</div>
-            
+            <div>{`Flight Time ${report.flight_time == 0 ?  report.engien_stop - report.engien_start : report.flight_time}`}</div>
           </Grid>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
             <div>{`${report.device.device_id} Info:`}</div>

@@ -16,7 +16,7 @@ exports.signin = function (req, res, next) {
     const username = req.body.username;
     log.info(`login: ${email} ${password} ${username}`);
 
-    Member.findOne({ "username": username, "contact.email": email }, (err, member) => {
+    Member.findOne({$or:[{"username": username},{"contact.email": email}] }, (err, member) => {
         if (err) {
             log.error(`${email} Access Denied ${err}`)
         }
@@ -31,7 +31,7 @@ exports.signin = function (req, res, next) {
                     log.info(`${member.date_of_birth_formatted}`)
 
                     const payLoad = authJWT.payload;
-                    payLoad.email = email;
+                    payLoad.email = member.contact.email;
                     payLoad.userId = member._id.toString();
                     payLoad.roles = member.role.roles;
                     //payLoad.id = member._id;

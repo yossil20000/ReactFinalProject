@@ -66,8 +66,8 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
 
   const handleFligtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     CustomLogger.info("handleFligtChange", event.target.name, event.target.value)
-    let duration=0;
-    switch(event.target.name){
+    let duration = 0;
+    switch (event.target.name) {
       case "engien_start":
         duration = flightCreate.engien_stop - Number(event.target.value)
         break;
@@ -78,7 +78,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     duration = Number(duration.toFixed(1))
     setFlightCreate(prev => ({
       ...prev,
-      [event.target.name]: event.target.value,duration: duration === 0 ? prev.duration : duration
+      [event.target.name]: event.target.value, duration: duration === 0 ? prev.duration : duration
     }));
   };
   const handleOnCancel = () => {
@@ -127,11 +127,12 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} md={6} xl={6}>
             <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
           </Grid>
-          <Grid item sx={{ marginLeft: "0px" }} xs={12}  >
-            <Box sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item sx={{ marginLeft: "0px" , width: "100%"}}  xs={12} md={6}  >
+            <Box sx={{ marginLeft: "0px", marginTop: '2ch' , width: "100%"}}>
               <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
+                    sx={{width: "100%"}}
                     views={['year', 'month', 'day']}
                     label="Date"
                     value={DateTime.fromJSDate(flightCreate.date)}
@@ -140,13 +141,19 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 </ThemeProvider>
               </LocalizationProvider>
             </Box>
+            
           </Grid>
-          {/*     <Grid item xs={12}>
-      <Item>
-      {isLoading && <CircularProgress size='1rem' color='primary' />}
-        <TransitionAlert {...dateErrorAlert}/>
-      </Item>
-    </Grid> */}
+          <Grid item  xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <TextField
+              type={"number"}
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="flight_time"
+              label="Flight Time"
+              value={flightCreate.flight_time}
+              onChange={handleFligtChange}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}

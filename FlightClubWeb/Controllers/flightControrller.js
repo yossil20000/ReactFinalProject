@@ -113,6 +113,7 @@ exports.flight_update = [
         description: req.body.description === undefined ? flightToUpdate.description : req.body.description,
         reuired_hobbs: req.body.reuired_hobbs,
         duration: req.body.duration,
+        flight_time: req.body.flight_time
       }
       log.info("updateFlight", updateFlight);
 
@@ -233,6 +234,7 @@ exports.flight_create = [
         description: req.body.description,
         reuired_hobbs: req.body.reuired_hobbs,
         duration: req.body.duration,
+        flight_time: req.body.flight_time
       })
       log.info("newReservation", newFlight._doc);
 
