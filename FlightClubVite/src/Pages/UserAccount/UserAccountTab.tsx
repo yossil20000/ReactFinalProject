@@ -17,9 +17,10 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import InvoicePage from '../Report/InvoicePage';
 import { IInvoiceTableData, IInvoiceTableHeader, IInvoiceTableRow, InvoiceProps, defaultInvoiceDetailes, defaultInvoiceMember, defaultInvoiceProps } from '../../Interfaces/IReport';
-import QuarterButtons, { IQuarterFilter } from '../../Components/Buttons/QuarterButtons';
+import QuarterButtons from '../../Components/Buttons/QuarterButtons';
 import UserAccountTable from '../../Components/Tables/UserAccountTable';
 import { EQuarterOption } from '../../Utils/enums';
+import { IQuarterFilter } from '../../Interfaces/IDateFilter';
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)

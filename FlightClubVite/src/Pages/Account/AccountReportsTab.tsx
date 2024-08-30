@@ -1,7 +1,6 @@
 
 import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
-import { Fragment, useEffect, useState } from 'react';
-import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
+import { Fragment, useState } from 'react';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { ITransactionTableFilter } from '../../Components/TransactionTable';
 
@@ -9,29 +8,30 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 
 import React from 'react';
-import FilterDrawer from '../../Components/FilterDrawer';
 import { SetProperty } from '../../Utils/setProperty';
-import { IDateFilter, IFilterItems, fullYearFilter } from '../../Interfaces/IDateFilter';
+import { IFilterItems, IQuarterDateFilter, IQuarterFilter, newQuarterDateFilter } from '../../Interfaces/IDateFilter';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { UseIsAuthorized } from '../../Components/RequireAuth';
-import { MemberType, Role } from '../../Interfaces/API/IMember';
+import { Role } from '../../Interfaces/API/IMember';
 import TranasctionsReportPage from '../Report/TransactionsReport/TranasctionsReportPage';
-import QuarterButtons, { IQuarterFilter } from '../../Components/Buttons/QuarterButtons';
+import QuarterButtons from '../../Components/Buttons/QuarterButtons';
 import { DateRangeIcon } from '@mui/x-date-pickers';
 import DatePickerDate from '../../Components/Buttons/DatePickerDate';
 import GeneralDrawer from '../../Components/GeneralDrawer';
+import { EQuarterOption } from '../../Utils/enums';
 
-const dateFilter: IDateFilter = fullYearFilter;
+
+const quarterDateFilter: IQuarterDateFilter = newQuarterDateFilter;
 
 function AccountReportsTab() {
   const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
   const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
 
-  const [dateTo, setDateTo] = useState(dateFilter.to)
-  const [dateFrom, setDateFrom] = useState(dateFilter.from)
-  const [filter, setFilter] = useState<ITransactionTableFilter>({ dateFilter: dateFilter } as ITransactionTableFilter);
+  const [dateTo, setDateTo] = useState(quarterDateFilter.to)
+  const [dateFrom, setDateFrom] = useState(quarterDateFilter.from)
+  const [filter, setFilter] = useState<IQuarterDateFilter>(quarterDateFilter);
   /*   const [openAddCredit, setOpenAddCredit] = useState(false);
     const [openAddDebit, setOpenAddDebit] = useState(false); */
   const OnSelectedClubAccount = (item: InputComboItem): void => {
@@ -71,26 +71,50 @@ function AccountReportsTab() {
         break;
     }
   }
-  const OnQuarterFilterChanged = (quarterFilter: IQuarterFilter) => {
+  const OnQuarterFilterChanged = (filter: IQuarterFilter) => {
     console.log("AccountReportsTab/OnQuarterFilterChanged/filter", filter)
-    let from: Date = (new Date()).getStartQuarterDate(quarterFilter.year, quarterFilter.quarter);
-    let to: Date = (new Date()).getEndQuarterDate(quarterFilter.year, quarterFilter.quarter);
-    let newFilter : ITransactionTableFilter= {
-      dateFilter: {
-        from: from,
-        to: to,
-        currentOffset:  from.getTimezoneOffset()
-      }
+    let to: Date = (new Date())
+    let from: Date = (new Date())
+    if (filter.quarter !== EQuarterOption.E_QO_Q0) {
+      from = to.getStartQuarterDate(filter.year, filter.quarter);
+      to = from.getEndQuarterDate(filter.year, filter.quarter);
+
+    }
+    else {
+      from = from.getStartOfYear();
+      to = to.getEndOfYear();
+      console.log("AccountReportsTab/Filter/OnQuarterFilterChanged/filter", filter)
+    }
+    const newFilter : IQuarterDateFilter = {
+      quarterFilter: {
+        quarter: filter.quarter,
+        year: filter.year
+      },
+      from: from,
+      to: to,
+      currentOffset: from.getTimezoneOffset()
     }
     setFilter(newFilter);
   }
   const onDateChanged = (key: string, value: Date | null) => {
-    CustomLogger.info("UserAccountTab/onDateChanged", key, value, filter)
+    CustomLogger.info("AccountReportsTab/Filter/onDateChanged", key, value, filter)
     if (value === null) return;
-    const newFilter = SetProperty(filter, `dateFilter.${key}`, new Date(value));
+    let newFilter = SetProperty(filter, `${key}`, new Date(value));
+    newFilter = SetProperty(filter, 'quarterFilter.quarter', EQuarterOption.E_QO_Q0);
     setFilter(newFilter)
   }
+  
+  function getTransactionFilter(quarterFilter: IQuarterDateFilter) : ITransactionTableFilter {
+    const filter :ITransactionTableFilter = {
+      dateFilter: {
+        from: quarterFilter.from,
+        to: quarterFilter.to,
+        currentOffset: quarterFilter.currentOffset
+      }
 
+    }
+    return filter;
+  }
   return (
     <ContainerPage>
       <>
@@ -112,7 +136,7 @@ function AccountReportsTab() {
           (openSaveAsPDF === true) ? (
             <ContainerPageMain>
               <Fragment>
-                <TranasctionsReportPage filter={filter} ></TranasctionsReportPage>
+                <TranasctionsReportPage filter={getTransactionFilter(filter)} ></TranasctionsReportPage>
               </Fragment>
             </ContainerPageMain>
           ) : (
@@ -129,7 +153,7 @@ function AccountReportsTab() {
                         <ListItemIcon>
                           <DateRangeIcon />
                         </ListItemIcon>
-                        <DatePickerDate value={filter.dateFilter.from === undefined ? new Date() : new Date(filter.dateFilter.from)} param="from" lable='From Date' onChange={onDateChanged} />
+                        <DatePickerDate value={filter?.from === undefined ? new Date() : new Date(filter.from)} param="from" lable='From Date' onChange={onDateChanged} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem key={"toDate"} disablePadding>
@@ -137,11 +161,11 @@ function AccountReportsTab() {
                         <ListItemIcon>
                           <DateRangeIcon />
                         </ListItemIcon>
-                        <DatePickerDate value={filter.dateFilter.to === undefined ? new Date() : new Date(filter.dateFilter.to)} param={"to"} lable='To Date' onChange={onDateChanged} />
+                        <DatePickerDate value={filter?.to === undefined ? new Date() : new Date(filter.to)} param={"to"} lable='To Date' onChange={onDateChanged} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem key={"qurater"}>
-                      <QuarterButtons quarterFilter={{ quarter: (new Date()).getQuarter(), year: (new Date()).getFullYear() }} onChange={OnQuarterFilterChanged} />
+                      <QuarterButtons quarterFilter={{ quarter: filter?.quarterFilter.quarter, year: (new Date()).getFullYear() }} onChange={OnQuarterFilterChanged} />
                     </ListItem>
                   </List>
                 </GeneralDrawer>
