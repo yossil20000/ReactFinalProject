@@ -45,8 +45,9 @@ function HomePage() {
 
     <div className='main'>
       <Box marginTop={2} display={'flex'} flexDirection={'column'}>
+      <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
         <DeviceReport/>
-        <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
+        
         <Box sx={{ width: "100%", height: "50vh" }}>
           <Box><Typography sx={{ height: "4ex", textAlign: "center" }}>Galllery</Typography></Box>
           <Box sx={{ width: "100%", height: "50vh", overflowY: 'scroll' }}>

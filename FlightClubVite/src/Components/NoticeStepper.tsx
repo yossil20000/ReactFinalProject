@@ -71,13 +71,13 @@ export default function NoticeStepper({header ,steppers,editMode,role,children} 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => (prevActiveStep - 1) < 0 ? maxSteps-1 : prevActiveStep - 1);
   };
- 
+  CustomLogger.info("NoticeStepper/stepper/,",maxSteps,activeStep,steppers)
   return (
     <Box sx={{ width: '100%', flexGrow: 1}}>
-      <Typography sx={{ height: "4ex", textAlign: "center" }}>{header}</Typography>
+      <Typography sx={{ height: "3ex", textAlign: "center" }}>{header}</Typography>
       <Paper
         square
-        elevation={10}
+        elevation={2}
         sx={{
           display: 'flex',
           flexDirection: 'row',
@@ -92,17 +92,17 @@ export default function NoticeStepper({header ,steppers,editMode,role,children} 
        
         
       </Paper>
-      <Box sx={{ minHeight: "15ex", width: '100%', p: 2 }}>
+      <Box sx={{  height: "auto" ,width: '100%', p: 2 ,"-webkit-text-fill-color": "#000000"}}>
       <TextField
             variant="standard"
-            sx={{ marginLeft: "0px", width: "100%" ,height:"100%" , "& .Mui-disabled": {
+            sx={{ marginLeft: "0px", width: "100%" ,height:"100%" ,"-webkit-text-fill-color": "#000000", "& .Mui-disabled": {
               color: '#500DB0' // (default alpha is 0.38)
             },"& .MuiInputBase-input-MuiInput-input.Mui-disabled":{color: '#5A0DB0'}}}
             name="description"
             
-            helperText={`Issue: ${steppers[activeStep]?.issue_date.getDisplayDate()} Due: ${steppers[activeStep]?.due_date.getDisplayDate()}`}
+            helperText={`Issue Date: ${steppers[activeStep]?.issue_date ?  steppers[activeStep]?.issue_date.getDisplayDate() : "-----"} , Due Date: ${steppers[activeStep]?.due_date ? steppers[activeStep]?.due_date.getDisplayDate() : "-----"}`}
             value={steppers[activeStep]?.description}
-            disabled
+            
             multiline
             fullWidth
             
