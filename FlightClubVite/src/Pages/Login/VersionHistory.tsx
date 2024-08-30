@@ -45,7 +45,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 24,version: "2.0.12.5",date: new Date(2024,7,27).getDisplayDate() , "description" : "Fix Account/Transaction date filter, add time of transaction"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 25,version: "2.0.13.0",date: new Date(2024,8,24).getDisplayDate() , "description" : "Add Account.Transactions report to PDF"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 26,version: "2.0.13.1",date: new Date(2024,8,24).getDisplayDate() , "description" : "Add Account.Transactions report Quarter Button as filter"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
-    
+    {id: 27,version: "2.0.13.2",date: new Date(2024,8,30).getDisplayDate() , "description" : "Fix Quarter Button display and filter"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
   ]
   function CustomToolbar() {
     return (
