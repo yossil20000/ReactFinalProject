@@ -38,17 +38,16 @@ const ResponsiveAppBar = () => {
   const dispatch = useAppDispatch();
   const pages: page[] = [
     { name: 'Home', route: ROUTES.HOME },
+    { name: "WAB", route: "WAB" },
+    { name: `Links`, route: 'links'},
     { name: 'Reservations', route: ROUTES.RESERVATION },
     { name: 'Flight', route: ROUTES.Flight },
-    { name: "WAB", route: "WAB" },
     { name: "Account", route: "account" },
     { name: 'Admin', route: 'admin' },
     { name: `Register`, route: "registration" },
     { name: 'Contacts', route: 'members' },
     { name: 'Gallery', route: 'gallery' },
-    { name: `Login ${remainLogin}`, route: "login" },
-   
-
+    { name: `Login ${remainLogin}`, route: "login" } 
   ];
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     CustomLogger.info("ResponsiveAppBar/handleOpenNavMenu:event", event.currentTarget)

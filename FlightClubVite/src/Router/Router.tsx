@@ -19,8 +19,6 @@ import ReservationsPage from '../Pages/Reservations/ReservationsPage'
 import RegistrationPage from '../Pages/Resistration/RegistrationPage'
 import NotificationPage from '../Pages/UserAccount/Notification'
 import MyAccount from '../Pages/UserAccount/UserAccount'
-import CalnanderViewDay from '../Components/Calander/CalnanderViewDay'
-import CalanderViewMonth from '../Components/Calander/CalanderViewMonth'
 import AccountReport from '../Pages/Report/AccountReport.jsx'
 import InvoicePage from '../Pages/Report/InvoicePage'
 import { IInvoiceTableData, IInvoiceTableHeader, InvoiceProps } from '../Interfaces/IReport'
@@ -28,6 +26,7 @@ import ExportExelTable from '../Components/Report/Exel/ExportExelTable'
 import WOBPage from '../Pages/Aircraft/WABPage'
 import { useState } from 'react'
 import '../Types/date.extensions'
+import LinksPage from '../Pages/Links'
 
 export function PagesRouter() {
   /*   const dispatch = useAppDispatch();
@@ -91,6 +90,7 @@ export function PagesRouter() {
       <Route path='/' element={<Layout />}>
         <Route path="/WAB" element={<WOBPage />} />
         <Route path="/home" element={<HomePage></HomePage>} />
+        <Route path="/links" element={<LinksPage/>}/>
         {/* <Route path="/calander" element={<CalanderViewMonth value={date} onChange={setDate}/>} /> */}
         <Route path="/exel" element={<ExportExelTable file={'./test'} sheet={'flight'} title={'Flight Table'} header={["Date", "Flight", "From", "To description"]} body={[["b1", "b2", "b3", "b4"], ["c1", "c2", "c3", "b5"], ["b1", "b2", "b3", "b4"], ["c1", "c2", "c3", "b5"]]} save={false} />} />
         <Route path="/report" element={<AccountReport />} />
