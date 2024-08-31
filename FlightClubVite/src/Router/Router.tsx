@@ -90,13 +90,12 @@ export function PagesRouter() {
     <Routes>
       <Route path='/' element={<Layout />}>
         <Route path="/WAB" element={<WOBPage />} />
+        <Route path="/home" element={<HomePage></HomePage>} />
         {/* <Route path="/calander" element={<CalanderViewMonth value={date} onChange={setDate}/>} /> */}
         <Route path="/exel" element={<ExportExelTable file={'./test'} sheet={'flight'} title={'Flight Table'} header={["Date", "Flight", "From", "To description"]} body={[["b1", "b2", "b3", "b4"], ["c1", "c2", "c3", "b5"], ["b1", "b2", "b3", "b4"], ["c1", "c2", "c3", "b5"]]} save={false} />} />
         <Route path="/report" element={<AccountReport />} />
         <Route path='/invoice' element={<InvoicePage invoiceItems={invoiceProps.invoiceItems} invoiceDetailes={invoiceProps.invoiceDetailes} invoiceHeader={invoiceProps.invoiceHeader} />} />
-        <Route element={<RequireAuth roles={[Role.guest, Role.user, Role.desk, Role.admin, Role.account]} />}>
-          <Route path="/home" element={<HomePage></HomePage>} />
-        </Route>
+
         <Route element={<RequireAuth roles={[Role.admin]} />}>
           <Route path="/admin" element={<AdminPage></AdminPage>} />
 

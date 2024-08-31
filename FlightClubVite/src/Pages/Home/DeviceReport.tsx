@@ -35,13 +35,13 @@ function DeviceReport() {
       return (
         <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
-            <div>Flight Info:</div>
+            <div style={{textDecoration: "underline" , fontWeight: "bold"}}>Flight Info:</div>
             <div>{`Flight by ${report.member.family_name} ${report.member.first_name}`}</div>
             <div>{`Engine ${report.engien_start} - ${report.engien_stop}`}</div>
             <div>{`Flight Time ${report.flight_time == 0 ?  report.engien_stop - report.engien_start : report.flight_time}`}</div>
           </Grid>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
-            <div>{`${report.device.device_id} Info:`}</div>
+            <div style={{textDecoration: "underline", fontWeight: "bold"}}>{`${report.device.device_id} Info:`}</div>
             <div>{`The airplane is ${report.device.status} , ${report.device.available ? "Available" : "Not Available"} and ${report.device.device_status}`}</div>
             <div>{`Next Service ${report.device.maintanance.type} on ${report.device.maintanance.next_meter}`}</div>
             <div>{`Annual on ${new Date(report.device.due_date).getDisplayDate()}`}</div>
@@ -55,7 +55,7 @@ function DeviceReport() {
   return (
 
     <Accordion>
-      <AccordionSummary expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>
+      <AccordionSummary style={{fontWeight: "bold"}} expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>
         {getSummary()}
       </AccordionSummary>
       <AccordionDetails>{getDetailes()}</AccordionDetails>
