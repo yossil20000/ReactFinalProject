@@ -47,7 +47,8 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 26,version: "2.0.13.1",date: new Date(2024,8,24).getDisplayDate() , "description" : "Add Account.Transactions report Quarter Button as filter"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},
     {id: 27,version: "2.0.13.2",date: new Date(2024,8,30).getDisplayDate() , "description" : "Fix Quarter Button display and filter"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 28,version: "2.0.13.3",date: new Date(2024,8,30).getDisplayDate() , "description" : "Add Flight Time Field support loging email or userId"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
-    {id: 29,version: "2.0.13.4",date: new Date(2024,8,31).getDisplayDate() , "description" : "Change Home DEviceInfo. Add Links Tab"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 29,version: "2.0.13.4",date: new Date(2024,8,31).getDisplayDate() , "description" : "Change Home DeviceInfo. Add Links Tab"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 30,version: "2.0.13.5",date: new Date(2024,9,5).getDisplayDate() , "description" : "Add Fuel Start field to flight information"  ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
   ]
   function CustomToolbar() {
     return (
