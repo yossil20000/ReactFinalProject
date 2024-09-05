@@ -147,6 +147,7 @@ export interface IDeviceReport {
     reuired_hobbs: boolean;
     duration: number;
     flight_time: number;
+    fuel_start: number;
     device: {
         _id: string;
         device_id: string;

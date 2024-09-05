@@ -127,7 +127,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} md={6} xl={6}>
             <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
           </Grid>
-          <Grid item sx={{ marginLeft: "0px" , width: "100%"}}  xs={12} md={6}  >
+          <Grid item sx={{ marginLeft: "0px" , width: "100%"}}  xs={12} md={4}  >
             <Box sx={{ marginLeft: "0px", marginTop: '2ch' , width: "100%"}}>
               <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
@@ -143,13 +143,24 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
             </Box>
             
           </Grid>
-          <Grid item  xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item  xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
               name="flight_time"
               label="Flight Time"
               value={flightCreate.flight_time}
+              onChange={handleFligtChange}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item  xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <TextField
+              type={"number"}
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="fuel_start"
+              label="Start Fuel"
+              value={flightCreate.fuel_start}
               onChange={handleFligtChange}
               InputLabelProps={{ shrink: true }}
             />
@@ -218,6 +229,13 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
+          {validationAlert.map((item) => (
+            <Grid item xs={12}>
+              <Item>
+                <ValidationAlert {...item} />
+              </Item>
+            </Grid>
+          ))}
           <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
             <Button variant="outlined" sx={{ width: "100%" }}
               onClick={handleOnCancel}>
@@ -230,13 +248,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               Save
             </Button>
           </Grid>
-          {validationAlert.map((item) => (
-            <Grid item xs={12}>
-              <Item>
-                <ValidationAlert {...item} />
-              </Item>
-            </Grid>
-          ))}
+
         </Grid>
       </DialogContent>
     </Dialog>

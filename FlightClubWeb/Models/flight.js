@@ -16,6 +16,7 @@ var FlightSchema = new Schema({
     reuired_hobbs: {type: Schema.Types.Boolean, default: false},
     duration: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     flight_time: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
+    fuel_start: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
     timeOffset: {type: Schema.Types.Decimal128,get: getDecimal}
 },{toJSON: {getters: true}});
 //#endregion

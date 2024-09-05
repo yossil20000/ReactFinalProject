@@ -57,7 +57,7 @@ function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
     name: flight.member.family_name, device_id: flight.device.device_id,
     date: new Date(flight.date), member_id: flight.member.member_id,
     hobbs_start: flight.hobbs_start, hobbs_stop: flight.hobbs_stop, engien_start: flight.engien_start, engien_stop: flight.engien_stop, status: flight.status,
-    validOperation: validOperation, duration: flight.duration,flight_time: flight.flight_time, reuired_hobbs: flight.reuired_hobbs, timeOffset: flight.timeOffset
+    validOperation: validOperation, duration: flight.duration,flight_time: flight.flight_time, fuel_start: flight.fuel_start,reuired_hobbs: flight.reuired_hobbs, timeOffset: flight.timeOffset
   }
 }
 
@@ -106,6 +106,7 @@ let flightUpdateIntitial: IFlightUpdate = {
   reuired_hobbs: false,
   duration: 0,
   flight_time: 0,
+  fuel_start:0,
   timeOffset: 0
 }
 let flightAddIntitial: IFlightCreate = {
@@ -123,6 +124,7 @@ let flightAddIntitial: IFlightCreate = {
   reuired_hobbs: false,
   duration: 0,
   flight_time:0,
+  fuel_start: 0,
   timeOffset: 0
 }
 const FlightPage = () => {
@@ -638,6 +640,11 @@ const FlightPage = () => {
                                 <Grid item xs={12} >
                                   <Typography>
                                     {`Flight Time: ${row.flight_time}`}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12} >
+                                  <Typography>
+                                    {`Fuel Start: ${row.fuel_start}`}
                                   </Typography>
                                 </Grid>
                                 {

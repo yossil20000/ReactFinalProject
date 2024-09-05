@@ -36,9 +36,10 @@ function DeviceReport() {
         <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
             <div style={{textDecoration: "underline" , fontWeight: "bold"}}>Flight Info:</div>
-            <div>{`Flight by ${report.member.family_name} ${report.member.first_name}`}</div>
-            <div>{`Engine ${report.engien_start} - ${report.engien_stop}`}</div>
-            <div>{`Flight Time ${report.flight_time == 0 ?  report.engien_stop - report.engien_start : report.flight_time}`}</div>
+            <div>{`Flight by: ${report.member.family_name} ${report.member.first_name}`}</div>
+            <div>{`Engine: ${report.engien_stop} - ${report.engien_start} = ${report.engien_stop - report.engien_start} Hour`}</div>
+            <div>{`Flight Time: ${report.flight_time == 0 ?  report.engien_stop - report.engien_start : report.flight_time} Hour`}</div>
+            <div>{`Fuel Start: ${report.fuel_start} Galon`}</div>
           </Grid>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
             <div style={{textDecoration: "underline", fontWeight: "bold"}}>{`${report.device.device_id} Info:`}</div>
