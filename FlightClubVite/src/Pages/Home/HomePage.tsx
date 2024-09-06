@@ -4,14 +4,14 @@ import NoticeStepper from '../../Components/NoticeStepper'
 import { Role } from '../../Interfaces/API/IMember';
 import IClubNotice from '../../Interfaces/API/IClubNotice';
 import { useFetchAllNoticesQuery } from '../../features/clubNotice/noticeApiSlice';
-import { Box, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material';
 import QuiltedImageList from '../../Components/Masonry/QuiltedImageList';
 import { useFetchAllImagesQuery } from '../../features/image/imageApiSlice';
 import { IImageDisplay } from '../../Interfaces/API/IImage';
 import { useAppSelector } from '../../app/hooks';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import DeviceReport from './DeviceReport';
-
+import { GridExpandMoreIcon } from '@mui/x-data-grid';
 
 function HomePage() {
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
@@ -43,18 +43,23 @@ function HomePage() {
 
   return (
 
-    <div className='main'>
-      <Box marginTop={2} display={'flex'} flexDirection={'column'}>
-      <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
-        <DeviceReport/>
-        
-        <Box sx={{ width: "100%", height: "50vh" }}>
-          <Box><Typography sx={{ height: "4ex", textAlign: "center" }}>Galllery</Typography></Box>
-          <Box sx={{ width: "100%", height: "50vh", overflowY: 'scroll' }}>
+    <div className='main' style={{overflowY:"auto"}}>
+      <Box marginTop={2} display={'flex'} flexDirection={'column'} >
+        <Accordion defaultExpanded>
+          <AccordionSummary style={{ fontWeight: "bold" }} expandIcon={<GridExpandMoreIcon />} aria-control="club_messages" id='club_messages'>
+            Club Messages
+          </AccordionSummary>
+          <AccordionDetails>
+            <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
+          </AccordionDetails>
+        </Accordion>
+        <DeviceReport />
+        <Accordion >
+          <AccordionSummary style={{ fontWeight: "bold" }} expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>Galllery</AccordionSummary>
+          <AccordionDetails >
             <QuiltedImageList images={getFilterImage() as IImageDisplay[]} onEdit={() => { }} onDelete={() => { }} readOnly={true} />
-          </Box>
-        </Box>
-
+          </AccordionDetails>
+        </Accordion>
 
       </Box>
 

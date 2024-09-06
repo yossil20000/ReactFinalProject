@@ -1,5 +1,5 @@
 import "../../Types/date.extensions"
-import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
 import { GridExpandMoreIcon } from '@mui/x-data-grid'
 import { useFetchDeviceReportQuery } from '../../features/Device/deviceApiSlice'
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace'
@@ -35,18 +35,30 @@ function DeviceReport() {
       return (
         <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
-            <div style={{textDecoration: "underline" , fontWeight: "bold"}}>Flight Info:</div>
-            <div>{`Flight by: ${report.member.family_name} ${report.member.first_name}`}</div>
-            <div>{`Engine: ${report.engien_stop} - ${report.engien_start} = ${report.engien_stop - report.engien_start} Hour`}</div>
-            <div>{`Flight Time: ${report.flight_time == 0 ?  report.engien_stop - report.engien_start : report.flight_time} Hour`}</div>
-            <div>{`Fuel Start: ${report.fuel_start} Galon`}</div>
+            <Card variant="outlined" sx={{height:"100%"}}>
+              <CardHeader avatar={<Avatar alt="Baz" src="src\Asset\images\favicon_baz.jpg" />} title="Flight Info" />
+              <CardContent>
+                <Typography variant="h6" component={"div"}>
+                  {`Flight by: ${report.member.family_name} ${report.member.first_name}`}
+                  <div>{`Engine: ${report.engien_stop} - ${report.engien_start} = ${report.engien_stop - report.engien_start} Hour`}</div>
+                  <div>{`Flight Time: ${report.flight_time == 0 ? report.engien_stop - report.engien_start : report.flight_time} Hour`}</div>
+                  <div>{`Fuel Start: ${report.fuel_start} Galon`}</div>
+                </Typography>
+              </CardContent>
+            </Card>
           </Grid>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
-            <div style={{textDecoration: "underline", fontWeight: "bold"}}>{`${report.device.device_id} Info:`}</div>
-            <div>{`The airplane is ${report.device.status} , ${report.device.available ? "Available" : "Not Available"} and ${report.device.device_status}`}</div>
-            <div>{`Next Service ${report.device.maintanance.type} on ${report.device.maintanance.next_meter}`}</div>
-            <div>{`Annual on ${new Date(report.device.due_date).getDisplayDate()}`}</div>
-            <div>{`Engine Replace on ${(report.device.engien_start_meter + data?.data[0].device.engien_meter).toFixed(1)}`}</div>
+            <Card variant="outlined" sx={{height:"100%"}}>
+              <CardHeader avatar={<Avatar alt="Baz" src="src\Asset\images\IMG-CGC-1.jpg" />} title={`${report.device.device_id} Info:`} />
+              <CardContent>
+                <Typography variant="h6" component={"div"}>
+                  <div>{`The airplane is ${report.device.status} , ${report.device.available ? "Available" : "Not Available"} and ${report.device.device_status}`}</div>
+                  <div>{`Next Service ${report.device.maintanance.type} on ${report.device.maintanance.next_meter}`}</div>
+                  <div>{`Annual on ${new Date(report.device.due_date).getDisplayDate()}`}</div>
+                  <div>{`Engine Replace on ${(report.device.engien_start_meter + data?.data[0].device.engien_meter).toFixed(1)}`}</div>
+                </Typography>
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
       )
@@ -56,7 +68,7 @@ function DeviceReport() {
   return (
 
     <Accordion>
-      <AccordionSummary style={{fontWeight: "bold"}} expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>
+      <AccordionSummary style={{ fontWeight: "bold" }} expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>
         {getSummary()}
       </AccordionSummary>
       <AccordionDetails>{getDetailes()}</AccordionDetails>
