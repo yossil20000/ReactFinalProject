@@ -1,13 +1,10 @@
 import { groupBy } from "lodash";
 import { StyleSheet } from "@react-pdf/renderer";
-import { CCustomLogger } from '../../src/customLogging';
-import { useClubAccountQuery, useFetchTransactionQuery } from "../features/Account/accountApiSlice";
 import { ITransactionTableFilter } from "../Components/TransactionTable";
 import { useEffect, useMemo, useState } from "react";
 import { IClubAccount, ITransaction, Transaction_OT } from "../Interfaces/API/IClub";
-import { IAccount, orderDescription } from "../Interfaces/API/IAccount";
+import { orderDescription } from "../Interfaces/API/IAccount";
 import { ITransactionReportTableCell, ITransactionTableData, ITransactionTableRow } from "../Interfaces/ITransactionsReport";
-import { IDateFilter } from "../Interfaces/IDateFilter";
 import IResultBase from "../Interfaces/API/IResultBase";
 export interface IGetTransacReportDataProps {
   filter: ITransactionTableFilter,
@@ -93,7 +90,7 @@ function GetTransactionCells(item: ITransaction): ITransactionReportTableCell[] 
       let itemDescription = item.description;
       if (item.order.type.toLocaleUpperCase() === Transaction_OT.EXPENSE.toLocaleUpperCase()) {
         let items = item.description.split("|")
-        itemDescription = items.slice(0,items.length-2).join(" ")
+        itemDescription = items.slice(0, items.length - 2).join(" ")
       }
       const description: ITransactionReportTableCell = {
         data: itemDescription,
@@ -149,6 +146,7 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
             orders: [],
             totalAmount: 0
           }
+          totalAmount = 0;
           let transactionRows: ITransactionTableRow[] = []
           CustomLogger.info("TransactionsReport/group[element]", element, group[element]);
           if (group[element]) {
@@ -175,10 +173,21 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
 
                 memberOrders.rows.push(row)
               })
+              let totalTransaction: number = 0
+              const amount = orderGroup[order]?.reduce((accumulator, current) => {
+                if (current.order.type !== Transaction_OT.TRANSFER) { return current.amount + accumulator }
+                else {
+                  totalTransaction += current.amount
+                  return accumulator
+                }
+              }, 0)
+              CustomLogger.info("TransactionsReport/order,orderGroup[order],reduce/,amount,totalAmount ", amount, totalAmount)
+              if (amount !== undefined) {
 
-              const amount = orderGroup[order]?.reduce((accumulator, current) => { return current.amount + accumulator }, 0)
-              if (amount) {
-                memberOrders.total = amount;
+                if (orderGroup[order].length > 0 && orderGroup[order][0].order.type.toLocaleUpperCase() == Transaction_OT.TRANSFER.toLocaleUpperCase())
+                  memberOrders.total = totalTransaction
+                else
+                  memberOrders.total = amount;
                 totalAmount += amount;
               }
               currentOrder.data = memberOrders

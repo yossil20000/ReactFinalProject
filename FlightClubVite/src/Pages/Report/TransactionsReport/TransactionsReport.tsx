@@ -72,7 +72,7 @@ function TransactionsReport({ transactions, bankAccount }: ITransactionReportPro
               
               member.orders.map((order) => {
                 const isFlight = order.orderKey.toLocaleUpperCase() === Transaction_OT.FLIGHT.toLocaleUpperCase();
-                
+                {CustomLogger.info("member.orders/order",order)}
                 return (<>
                   <TransactionsReportTitles key={`tr_title_${order.orderKey}`} title={`${order.orderKey}`} style={{ width: "100%", marginLeft: 0, marginRight: 10, marginTop: 10 }} />
 
@@ -90,7 +90,7 @@ function TransactionsReport({ transactions, bankAccount }: ITransactionReportPro
             <View style={styles.tableContainer}>
               <Text style={styles.blank} />
               <Text style={styles.desription}>{`Total for ${member.memberKey}`}</Text>
-              <Text style={styles.total}>{member.totalAmount}</Text>
+              <Text style={styles.total}>{member.totalAmount.toFixed(2)}</Text>
             </View>
             <Text break />
           </>

@@ -1,4 +1,6 @@
 import "../../Types/date.extensions"
+import baz from '/src/Asset/images/favicon_baz.jpg'
+import cgc from '/src/Asset/images/IMG-CGC-1.jpg'
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
 import { GridExpandMoreIcon } from '@mui/x-data-grid'
 import { useFetchDeviceReportQuery } from '../../features/Device/deviceApiSlice'
@@ -36,12 +38,12 @@ function DeviceReport() {
         <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
             <Card variant="outlined" sx={{height:"100%"}}>
-              <CardHeader avatar={<Avatar alt="Baz" src="src\Asset\images\favicon_baz.jpg" />} title="Flight Info" />
+              <CardHeader avatar={<Avatar alt="Baz" src={baz} />} title="Flight Info" />
               <CardContent>
                 <Typography variant="h6" component={"div"}>
                   {`Flight by: ${report.member.family_name} ${report.member.first_name}`}
-                  <div>{`Engine: ${report.engien_stop} - ${report.engien_start} = ${report.engien_stop - report.engien_start} Hour`}</div>
-                  <div>{`Flight Time: ${report.flight_time == 0 ? report.engien_stop - report.engien_start : report.flight_time} Hour`}</div>
+                  <div>{`Engine: ${report.engien_stop} - ${report.engien_start} = ${(report.engien_stop - report.engien_start).toFixed(1)} Hour`}</div>
+                  <div>{`Flight Time: ${report.flight_time == 0 ? (report.engien_stop - report.engien_start).toFixed(1) : report.flight_time.toFixed(1)} Hour`}</div>
                   <div>{`Fuel Start: ${report.fuel_start} Galon`}</div>
                 </Typography>
               </CardContent>
@@ -49,7 +51,7 @@ function DeviceReport() {
           </Grid>
           <Grid item xs={12} md={6} display={'flex'} flexDirection={'column'}>
             <Card variant="outlined" sx={{height:"100%"}}>
-              <CardHeader avatar={<Avatar alt="Baz" src="src\Asset\images\IMG-CGC-1.jpg" />} title={`${report.device.device_id} Info:`} />
+              <CardHeader avatar={<Avatar alt="Baz" src={cgc} />} title={`${report.device.device_id} Info:`} />
               <CardContent>
                 <Typography variant="h6" component={"div"}>
                   <div>{`The airplane is ${report.device.status} , ${report.device.available ? "Available" : "Not Available"} and ${report.device.device_status}`}</div>
