@@ -80,18 +80,18 @@ function AccountOrdersTab() {
         <ContainerPageHeader>
           <Box marginTop={2}>
             <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
-              <Grid item xs={2}>
+              <Grid item xs={3} >
                 <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
                   <FilterListIcon fontSize="inherit" />
                 </IconButton>
               </Grid>
-              <Grid item xs={4}  >
+              <Grid item xs={9}  >
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} includesType={[MemberType.Club]} />
               </Grid >
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 <ActionButtons OnAction={onAction} show={[EAction.ORDER]} item="" display={[{ key: EAction.ORDER, value: "Variable Expense" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
               </Grid>
             </Grid>

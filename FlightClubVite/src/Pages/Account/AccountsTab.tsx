@@ -294,7 +294,7 @@ function AccountsTab() {
                 <AccountsCombo onChanged={onAccountChange} source={"_accounts"} filter={filteAccountsCombo} />
               </Grid >
               <Grid item xs={12} md={6}>
-                <Box display={'flex'} justifyContent={'space-between'}>
+                <Box display={'flex'} justifyContent={'center'} flexWrap={'wrap'}>
                   <Fragment>
                     <FormControlLabel control={<Checkbox onChange={handleFilterChange}
                       name={"active_only"} checked={filterData?.active_only}
