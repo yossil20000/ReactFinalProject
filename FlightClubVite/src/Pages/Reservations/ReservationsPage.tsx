@@ -442,7 +442,7 @@ function ReservationsPage() {
   const today  :Date = new Date()
   Array.from({ length: numOfDays }).map((_,index) => {
     const date = index +1
-    const viewDayReservation = reservations?.data.filter((element) => new Date(element.date_from).isSameDate(new Date(dateRef.getFullYear(), dateRef.getMonth(),date)))
+    const viewDayReservation = reservations?.data.filter((element) => new Date(new Date(dateRef.getFullYear(), dateRef.getMonth(),date)).isIntersec(new Date(element.date_from),new Date(element.date_to)))
     let displayStyle : React.CSSProperties  = {backgroundColor: '#cce3f6', fontWeight: 'bold'}
     if(today.isSameDate(new Date(dateRef.getFullYear(),dateRef.getMonth(),index+1))) displayStyle = {backgroundColor: '#dfecf6'}
     monthViewDisplay[date] = { 
@@ -454,8 +454,9 @@ function ReservationsPage() {
   return monthViewDisplay
  }
   const getViewDayReservations = (): IReservation[] => {
-    CustomLogger.log("ReservationPage/getViewDayReservations/dateRef", dateRef)
-    const viewDayReservation = reservations?.data.filter((element) => new Date(element.date_from).isSameDate(dateRef))
+    
+    const viewDayReservation = reservations?.data.filter((element) => dateRef.isIntersec(new Date(element.date_from),new Date(element.date_to)))
+    CustomLogger.info("ReservationPage/getViewDayReservations/dateRef,viewDayReservation", dateRef,viewDayReservation)
     if (viewDayReservation !== undefined)
       return viewDayReservation;
     return []
@@ -686,7 +687,7 @@ function ReservationsPage() {
                             
                             if(filterMode == EfilterMode.E_FM_DAY)
                             {
-                              const sameDateRef : boolean =  new Date(r.date_from).isSameDate(dateRef)
+                              const sameDateRef : boolean =  dateRef.isIntersec(new Date(r.date_from),new Date(r.date_to))
                               if(sameDateRef == false) return false;
                             }
                             if (!isFilterOwner) return true
@@ -725,7 +726,7 @@ function ReservationsPage() {
                       /* if (!isInDateRange(r)) return false; */
                       if(filterMode == EfilterMode.E_FM_DAY)
                       {
-                        const sameDateRef : boolean =  new Date(r.date_from).isSameDate(dateRef)
+                        const sameDateRef : boolean =  dateRef.isIntersec(new Date(r.date_from),new Date(r.date_to))
                         if(sameDateRef == false) return false;
                       }
                       if (!isFilterOwner) return true

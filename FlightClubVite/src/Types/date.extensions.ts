@@ -36,6 +36,7 @@ declare global {
       getQuarter() : number
       getStartOfYear(): Date
       getEndOfYear(): Date
+      isIntersec(from:Date,to:Date) : boolean
    }
 }
 
@@ -104,12 +105,15 @@ Date.prototype.compareTime = function (date: Date) : number {
 }
 Date.prototype.compareDate = function (date: Date) : number {
    const deltaY = this.getFullYear() - date.getFullYear() 
+   const deltaM = this.getMonth() - date.getMonth();
+   const deltaD = this.getDate() - date.getDate();
+   /* CustomLogger.log("compareDate/deltaY,deltaM,deltaD",this,date,deltaY,deltaM,deltaD) */
    if(deltaY > 0) return 1;
    else if(deltaY < 0) return -1
-   const deltaM = this.getMonth() - date.getMonth();
+   
    if(deltaM > 0) return 1
    else if(deltaM < 0) return -1
-   const deltaD = this.getDay() - date.getDay();
+   
    if(deltaD > 0) return 1
    else if(deltaD < 0) return -1
    return 0;
@@ -214,4 +218,9 @@ Date.prototype.getDisplayDate = function () : string {
 
 Date.prototype.getDisplayDateTime = function () : string {
    return dateTimeFormat.format(this)
+}
+
+Date.prototype.isIntersec = function(from:Date,to:Date) : boolean {
+   /* CustomLogger.info("isIntersec/this,from,to,this(from),this(to)",this,from,to,this.compareDate(from),this.compareDate(to)) */
+   return this.compareDate(from) >= 0 && this.compareDate(to) <= 0
 }
