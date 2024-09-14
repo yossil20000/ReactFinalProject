@@ -106,6 +106,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                     label="Date"
                     value={DateTime.fromJSDate(flightUpdate.date)}
                     onChange={handleFromDateFilterChange}
+                    sx={{width: "100%"}}
                   />
 
                 </ThemeProvider>
@@ -128,7 +129,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
               </Item>
             </Grid>
           ))}
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={6} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
                 type={"number"}
@@ -140,7 +141,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
               />
             </Item>
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={6} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField
                 type={"number"}
@@ -152,7 +153,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
               />
             </Item>
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", display:"none"}}>
             <Item>
               <TextField
                 type={"number"}
@@ -168,7 +169,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
               />
             </Item>
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" ,display:"none"}}>
             <Item>
               <TextField
                 type={"number"}
