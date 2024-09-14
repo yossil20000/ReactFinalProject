@@ -27,6 +27,7 @@ import WOBPage from '../Pages/Aircraft/WABPage'
 import { useState } from 'react'
 import '../Types/date.extensions'
 import LinksPage from '../Pages/Links'
+import Signup from '../Pages/testValidation'
 
 export function PagesRouter() {
   /*   const dispatch = useAppDispatch();
@@ -88,6 +89,7 @@ export function PagesRouter() {
     
     <Routes>
       <Route path='/' element={<Layout />}>
+        <Route path="/TestValidation" element={<Signup />}/>
         <Route path="/WAB" element={<WOBPage />} />
         <Route path="/home" element={<HomePage></HomePage>} />
         <Route path="/links" element={<LinksPage/>}/>

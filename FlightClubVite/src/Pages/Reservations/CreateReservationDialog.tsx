@@ -16,6 +16,7 @@ import { useAppSelector } from "../../app/hooks";
 import { Role } from "../../Interfaces/API/IMember";
 import { UseIsAuthorized } from "../../Components/RequireAuth";
 import { GridExpandMoreIcon } from "@mui/x-data-grid";
+import { fontSize } from "@mui/system";
 const source: string = "CreateReservation"
 
 export interface CreateReservationDialogProps {
@@ -43,7 +44,11 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-
+type Inputs = {
+  date_from: Date | undefined,
+  date_to: Date | undefined,
+}
+type validationError = Partial<Record<keyof Inputs,string>>
 function CreateReservationDialog({ value, onClose, onSave, open, ...other }: CreateReservationDialogProps) {
   const login = useAppSelector((state) => state.authSlice);
   const isAuthorized = UseIsAuthorized({ roles: [Role.admin] })
@@ -56,6 +61,42 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [deviceDescription, setDeviceDescription] = useState("");
   const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
   const [selectedMember, setSelectedMember] = useState<InputComboItem>({} as InputComboItem)
+  const [validator,setValidator] = useState<validationError>({
+    date_from: "",
+    date_to: "",
+  })
+  const [inputValid,setInputValid] = useState(true)
+
+  const validate = (inputs: Inputs) : validationError => {
+    const diffDaysLimit = 2
+    const error : validationError = {
+      date_from: "",
+      date_to: "",
+    }
+    if(inputs.date_from && inputs.date_to){
+      const diffAbs = (inputs.date_from.getTime() - new Date().getTime()) / 3600000
+      const diffTo = (inputs.date_from.getTime() - inputs.date_to.getTime() )
+      const diffDays = Math.round((inputs.date_to.getTime() - inputs.date_from.getTime()) / 3600000/24)
+      CustomLogger.info("CreateFlightDialog/validate/from,to,diffAbs,diffDuration",inputs.date_from,inputs.date_to,diffAbs,diffTo, diffDays)
+      if(diffAbs< -1)
+      {
+        error.date_from = "date_from not less then current time"
+      }
+      if(diffTo >= 0){
+        error.date_to = "date_to must be greater then date_from"
+      }
+      if(diffDays > diffDaysLimit)
+      {
+        error.date_to += `, date_to must be less then ${diffDaysLimit +1} days`
+      }
+    }
+    setInputValid(error.date_from == "" && error.date_to == "")
+    setValidator(error)
+    CustomLogger.info("CreateFlightDialog/validate/error",error)
+    return error;
+  }
+
+
   useEffect(() => {
 
     CustomLogger.info("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
@@ -75,6 +116,8 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     newDate.setSeconds(0, 0)
     let date_to = new Date(newDate).addHours(1)
     setReservationCreate(prev => ({ ...prev, date_from: newDate, date_to: date_to }))
+    const errors = validate({date_from: newDate, date_to:date_to })
+    setValidator(errors)
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     CustomLogger.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
@@ -83,6 +126,8 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", newDate);
     setReservationCreate(prev => ({ ...prev, date_to: newDate }))
     CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
+    const errors = validate({date_from: reservationCreate.date_from  , date_to: newDate })
+    setValidator(errors)
   };
 
   /*   useEffect(() => {
@@ -145,6 +190,11 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                     label="From Date"
                     value={DateTime.fromJSDate(reservationCreate?.date_from == undefined ? new Date() : reservationCreate?.date_from)}
                     onChange={handleFromDateFilterChange}
+                    slotProps={inputValid == false ? { 
+                      textField: { color: "error" ,
+                        helperText: validator.date_from
+                      },
+                    }: {}}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -158,8 +208,14 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                     sx={{ width: "100%" }}
                     ampm={false}
                     label="To Date"
-                    value={DateTime.fromJSDate(reservationCreate.date_to)}
+                    value={DateTime.fromJSDate(reservationCreate?.date_to == undefined ? new Date() : reservationCreate?.date_to)}
                     onChange={handleToDateFilterChange}
+                    
+                    slotProps={inputValid == false ? {
+                      textField: { color: "error",
+                        helperText: validator.date_to,
+                      },
+                    }: {}}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -214,7 +270,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
             </Button>
           </Grid>
           <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
-            <Button variant="outlined" sx={{ width: "100%" }}
+            <Button variant="outlined" sx={{ width: "100%" }} disabled={!inputValid} 
               onClick={handleOnSave}>
               Save
             </Button>

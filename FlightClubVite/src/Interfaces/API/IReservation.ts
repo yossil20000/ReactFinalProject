@@ -84,7 +84,16 @@ export interface IReservationCreateApi {
     _id_member: string;
     _id_device: string;
 }
-
+export function GetInitReservationAdd() : IReservationCreateApi {
+    let reservationAddIntitial: IReservationCreateApi = {
+        date_from: new Date(),
+        date_to: new Date().addHours(1),
+        _id_member: "",
+        _id_device: ""
+      }
+      return reservationAddIntitial
+    
+} 
 export function CreateReservationToApi(reservation: IReservationCreate): IReservationCreateApi {
     let reservationApi: IReservationCreateApi = {
         date_from: reservation.date_from,

@@ -18,7 +18,7 @@ import { useAppSelector } from '../../app/hooks';
 
 
 import { ILoginResult } from "../../Interfaces/API/ILogin.js";
-import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
+import IReservation, { GetInitReservationAdd, IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation.js";
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
@@ -106,6 +106,7 @@ function EnhancedTableHead(props: IEnhancedTableHeadProps) {
   const createSortHandler = (property: keyof ItableData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
+
   return (
 
     <TableHead style={{ minWidth: "320px" }}>
@@ -182,12 +183,7 @@ let reservationUpdateIntitial: IReservationUpdate = {
 
 }
 
-let reservationAddIntitial: IReservationCreateApi = {
-  date_from: new Date(),
-  date_to: new Date(),
-  _id_member: "",
-  _id_device: ""
-}
+
 
 function ReservationsPage() {
   const theme = useTheme();
@@ -537,7 +533,7 @@ function ReservationsPage() {
       <div className='header'>
         <Box sx={{ width: '100%' }}>
           {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
-          {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={reservationAddIntitial} open={openReservationAdd} onSave={handleAddOnSave} />}
+          {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={GetInitReservationAdd()} open={openReservationAdd} onSave={handleAddOnSave} />}
           {viewMode === EviewMode.E_VM_MONTH ?
             (
               <Typography variant="h6" align="center">{`Reservations`}</Typography>
