@@ -38,6 +38,8 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
+
+
 function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFlightDialogProps) {
   const isAuthorized = UseIsAuthorized({ roles: [Role.admin] })
   const [showAllMemebers, setShowAllMembers] = useState(false)
@@ -48,7 +50,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-  
+
   useEffect(() => {
     CustomLogger.info("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -124,16 +126,16 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       <DialogTitle>Flight Create</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
-          <Grid item xs={12} md={isAuthorized ? 5 : 6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={12} sm={isAuthorized ? 5 : 6} sx={{ marginLeft: "0px" }}>
             <DevicesFlightCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
 
-          <Grid item xs={12} md={isAuthorized ? 5 : 6} >
+          <Grid item xs={isAuthorized ? 10 : 12} sm={isAuthorized ? 5 : 6} >
             <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={{ showAllMemebers: showAllMemebers }} selectedDepended={selectedDevice} />
           </Grid>
 
           {isAuthorized === true ? (
-            <Grid xs={12} md={isAuthorized ? 2 : 0}>
+            <Grid xs={isAuthorized ? 2 : 0} sm={isAuthorized ? 2 : 6}>
               <ToggleButton sx={{ width: "100%" }} value='check' selected={showAllMemebers} onChange={() => { setShowAllMembers((prev) => !prev) }}>ADMIN</ToggleButton >
             </Grid>
           ) : (<></>)}
@@ -155,7 +157,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
             </Box>
 
           </Grid>
-          <Grid item xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={6} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -166,7 +168,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={6} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -177,7 +179,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={6} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -188,7 +190,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={6} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -200,7 +202,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               helperText={`Duration: ${flightCreate.duration}`}
             />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' ,display:"none"}}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -215,7 +217,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               error={!flightCreate.reuired_hobbs}
             />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }} display={"none"}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
