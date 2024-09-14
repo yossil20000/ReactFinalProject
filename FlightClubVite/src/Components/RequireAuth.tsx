@@ -12,8 +12,9 @@ export  const UseIsAuthorized = (allowedRoles: IRequireAuthProps): boolean => {
   const login = useAppSelector((state) => state.authSlice);
   const [ref,setRef] = useState(false)
   useEffect(()=> {
-    setRef(login.member.roles.find(role => allowedRoles?.roles?.includes(role)) ? false : true)
-  },[login.member.roles])
+    let found = login.member.roles.find(role => allowedRoles?.roles?.includes(role));
+    setRef(found === undefined ? false : true)
+  },[login.member.roles,allowedRoles])
   if(allowedRoles === undefined || allowedRoles.roles === undefined){
     setRef(false);
       }

@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box, ToggleButton } from "@mui/material";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
@@ -11,6 +11,8 @@ import DeviceMemberCombo from "../../Components/Devices/DeviceMemberCombo";
 import { useCreateFlightMutation } from "../../features/Flight/flightApi"
 import { CFlightCreate, IFlightCreate, IFlightCreateApi } from "../../Interfaces/API/IFlight";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
+import { UseIsAuthorized } from "../../Components/RequireAuth";
+import { Role } from "../../Interfaces/API/IMember";
 const source: string = "CreateFlight"
 
 export interface CreateFlightDialogProps {
@@ -37,7 +39,8 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   onClose: () => { }
 }
 function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFlightDialogProps) {
-
+  const isAuthorized = UseIsAuthorized({ roles: [Role.admin] })
+  const [showAllMemebers, setShowAllMembers] = useState(false)
   CustomLogger.info("CreateFlightDialog/value", value)
 
   const [CreateFlight, { isError, isLoading, error, isSuccess }] = useCreateFlightMutation();
@@ -45,7 +48,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-
+  
   useEffect(() => {
     CustomLogger.info("CreateFlightDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
@@ -121,18 +124,27 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
       <DialogTitle>Flight Create</DialogTitle>
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center">
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px" }}>
+          <Grid item xs={12} md={isAuthorized ? 5 : 6} sx={{ marginLeft: "0px" }}>
             <DevicesFlightCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} />
+
+          <Grid item xs={12} md={isAuthorized ? 5 : 6} >
+            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={{ showAllMemebers: showAllMemebers }} selectedDepended={selectedDevice} />
           </Grid>
-          <Grid item sx={{ marginLeft: "0px" , width: "100%"}}  xs={12} md={4}  >
-            <Box sx={{ marginLeft: "0px", marginTop: '2ch' , width: "100%"}}>
+
+          {isAuthorized === true ? (
+            <Grid xs={12} md={isAuthorized ? 2 : 0}>
+              <ToggleButton sx={{ width: "100%" }} value='check' selected={showAllMemebers} onChange={() => { setShowAllMembers((prev) => !prev) }}>ADMIN</ToggleButton >
+            </Grid>
+          ) : (<></>)}
+
+
+          <Grid item sx={{ marginLeft: "0px", width: "100%" }} xs={12} md={4}  >
+            <Box sx={{ marginLeft: "0px", marginTop: '2ch', width: "100%" }}>
               <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
-                    sx={{width: "100%"}}
+                    sx={{ width: "100%" }}
                     views={['year', 'month', 'day']}
                     label="Date"
                     value={DateTime.fromJSDate(flightCreate.date)}
@@ -141,9 +153,9 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
                 </ThemeProvider>
               </LocalizationProvider>
             </Box>
-            
+
           </Grid>
-          <Grid item  xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -154,7 +166,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item  xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={12} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -170,7 +182,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
               name="engien_start"
-              label="Engine start"
+              label="TACH start"
               value={flightCreate.engien_start}
               onChange={handleFligtChange}
               InputLabelProps={{ shrink: true }}
@@ -181,7 +193,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
               name="engien_stop"
-              label="Engine stop"
+              label="TACH stop"
               value={flightCreate.engien_stop}
               onChange={handleFligtChange}
               InputLabelProps={{ shrink: true }}

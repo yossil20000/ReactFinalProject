@@ -64,8 +64,8 @@ export const transactionTableItemHeader: ITransactionReportTableHeader = {
 export const transactionTableFlightItemHeader: ITransactionReportTableHeader = {
   header: [
     { title: "Date", toolTip: "Date of flight", data: "18700031", width: "20%" },
-    { title: "Start", toolTip: "Engine Start", data: "18700031", width: "20%" },
-    { title: "Stop", toolTip: "Engine Stop", data: "18700031", width: "20%" },
+    { title: "Start", toolTip: "TAC Start", data: "18700031", width: "20%" },
+    { title: "Stop", toolTip: "TACH Stop", data: "18700031", width: "20%" },
     { title: "Duration", toolTip: "Total Flight", data: "18700031", width: "20%" },
     { title: "Amount", toolTip: "Fligh amount charged", data: "18700031", width: "20%" },
 
@@ -76,8 +76,8 @@ export function transactionTableFlightTotal(totalDuration: string, total: string
   return {
     header: [
       { title: "", toolTip: "Date of flight", data: "18700031", width: "20%" },
-      { title: "", toolTip: "Engine Start", data: "18700031", width: "20%" },
-      { title: "Total", toolTip: "Engine Stop", data: "18700031", width: "20%" },
+      { title: "", toolTip: "TACH Start", data: "18700031", width: "20%" },
+      { title: "Total", toolTip: "TACH Stop", data: "18700031", width: "20%" },
       { title: `${totalDuration}`, toolTip: "Total Flight", data: "18700031", width: "20%" },
       { title: `${total}`, toolTip: "Fligh amount charged", data: "18700031", width: "20%" },
 

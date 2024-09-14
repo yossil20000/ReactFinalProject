@@ -134,7 +134,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 type={"number"}
                 sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_start"
-                label="Engien start"
+                label="TACH start"
                 value={flightUpdate.engien_start}
                 onChange={handleFligtChange}
               />
@@ -146,7 +146,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
                 type={"number"}
                 sx={{ marginLeft: "0px", width: "100%" }}
                 name="engien_stop"
-                label="Engien stop"
+                label="TACH stop"
                 value={flightUpdate.engien_stop}
                 onChange={handleFligtChange}
               />

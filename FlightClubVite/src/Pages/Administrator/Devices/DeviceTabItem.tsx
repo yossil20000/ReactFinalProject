@@ -254,8 +254,8 @@ function DeviceTabItem() {
                       value={selectedItem?.hobbs_meter} InputLabelProps={{ shrink: true }} />
                   </Grid>
                   <Grid item xs={1}>
-                    <TextField disabled fullWidth onChange={handleChange} id="engien_meter" label="Engine"
-                      name="engien_meter" placeholder="Engien meter" variant="standard"
+                    <TextField disabled fullWidth onChange={handleChange} id="engien_meter" label="TACH"
+                      name="engien_meter" placeholder="TACH meter" variant="standard"
                       value={selectedItem?.engien_meter} InputLabelProps={{ shrink: true }} />
                   </Grid>
 

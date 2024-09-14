@@ -19,7 +19,7 @@ function DeviceReport() {
     if (data?.data && data.data.length == 1) {
       return (
         <>
-          {`${data?.data[0].device.device_id} last flight: ${new Date(data?.data[0].date).getDisplayDate()} current Engine: ${data?.data[0].device.engien_meter} next service: ${data?.data[0].device.maintanance.next_meter}`}
+          {`${data?.data[0].device.device_id} last flight: ${new Date(data?.data[0].date).getDisplayDate()} current TACH: ${data?.data[0].device.engien_meter} next service: ${data?.data[0].device.maintanance.next_meter}`}
         </>
       )
     }
@@ -57,7 +57,7 @@ function DeviceReport() {
                   <div>{`The airplane is ${report.device.status} , ${report.device.available ? "Available" : "Not Available"} and ${report.device.device_status}`}</div>
                   <div>{`Next Service ${report.device.maintanance.type} on ${report.device.maintanance.next_meter}`}</div>
                   <div>{`Annual on ${new Date(report.device.due_date).getDisplayDate()}`}</div>
-                  <div>{`Engine Replace on ${(report.device.engien_start_meter + data?.data[0].device.engien_meter).toFixed(1)}`}</div>
+                  <div>{`Engine Current TACH ${(report.device.engien_start_meter + data?.data[0].device.engien_meter).toFixed(1)}`}</div>
                 </Typography>
               </CardContent>
             </Card>

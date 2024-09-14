@@ -83,10 +83,10 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
   }
 
   const handleOnSave = async () => {
-    CustomLogger.log("UpdateReserationDialog/onSave", reservationUpdate)
+    CustomLogger.info("UpdateReserationDialog/onSave", reservationUpdate)
     let reservation = new ReservationUpdate();
     reservation.copy(reservationUpdate);
-    CustomLogger.info("UpdateReserationDialog/onSave/reservation", reservation,reservationUpdate)
+    CustomLogger.info("UpdateReserationDialog/onSave/reservation", reservation, reservationUpdate)
     if (!reservation.IsValid()) {
       setdateErrorAlert((prev) => ({ ...prev, alertTitle: "Date Input Error", alertMessage: "Date_to must be greater then date_from", open: true, onClose: onCloseDateError }))
       return;
@@ -112,7 +112,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
             <Item sx={{ marginLeft: "0px" }}>
               <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon} >
                 <ThemeProvider theme={defaultMaterialThem}>
-                  <MobileDateTimePicker 
+                  <MobileDateTimePicker
                     label="From Date"
                     value={DateTime.fromJSDate(reservationUpdate.date_from)}
                     onChange={handleFromDateFilterChange}
@@ -170,8 +170,8 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
               </Item>
             </Grid>
           ))}
-          <Grid item xs={12} md={6} xl={6}>
-            <Item><Button variant="outlined" sx={{ width: "100%" }}
+          <Grid item xs={12} md={6} xl={6} height={"100%"}>
+            <Item><Button variant="outlined" sx={{ marginTop: 1 , marginBottom : 1, width: "100%" }}
               onClick={handleOnCancel}>
               Close
             </Button></Item>
@@ -179,26 +179,26 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
 
           <Grid item xs={12} md={6} xl={6}>
             <Item>
-            <Box sx={{ m: 1, position: 'relative' }}>
-            {isLoading && (
-          <CircularProgress
-            size={24}
-            sx={{
-              color: green[500],
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              marginTop: '-12px',
-              marginLeft: '-12px',
-            }}
-          />
-          
-        )}
-              <Button disabled={isLoading} variant="outlined" sx={{ width: "100%" }}
-              onClick={handleOnSave}>
-              Save
-            </Button>
-            </Box>
+              <Box sx={{ m: 1, position: 'relative' }}>
+                {isLoading && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      color: green[500],
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-12px',
+                      marginLeft: '-12px',
+                    }}
+                  />
+
+                )}
+                <Button disabled={isLoading} variant="outlined" sx={{ width: "100%" }}
+                  onClick={handleOnSave}>
+                  Save
+                </Button>
+              </Box>
             </Item>
           </Grid>
         </Grid>

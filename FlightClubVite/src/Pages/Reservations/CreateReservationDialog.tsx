@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box, ToggleButton, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
@@ -13,6 +13,9 @@ import { useCreateReservationMutation } from "../../features/Reservations/reserv
 import { IReservationCreateApi } from "../../Interfaces/API/IReservation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import { useAppSelector } from "../../app/hooks";
+import { Role } from "../../Interfaces/API/IMember";
+import { UseIsAuthorized } from "../../Components/RequireAuth";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 const source: string = "CreateReservation"
 
 export interface CreateReservationDialogProps {
@@ -43,6 +46,8 @@ let transitionAlertInitial: ITransitionAlrertProps = {
 
 function CreateReservationDialog({ value, onClose, onSave, open, ...other }: CreateReservationDialogProps) {
   const login = useAppSelector((state) => state.authSlice);
+  const isAuthorized = UseIsAuthorized({ roles: [Role.admin] })
+  const [showAllMemebers, setShowAllMembers] = useState(false)
   CustomLogger.log("CreateReservationDialog/value", value)
   const [CreateReservation, { isError, isLoading, error, isSuccess }] = useCreateReservationMutation();
   const [reservationCreate, setReservationCreate] = useState<IReservationCreateApi>(value);
@@ -50,9 +55,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [deviceDescription, setDeviceDescription] = useState("");
   const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-  const [selectedMember,setSelectedMember] = useState<InputComboItem>({} as InputComboItem)
+  const [selectedMember, setSelectedMember] = useState<InputComboItem>({} as InputComboItem)
   useEffect(() => {
-    
+
     CustomLogger.info("CreateReservationDialog/useEffect", isError, isSuccess, isLoading)
     if (isSuccess) {
       setAlert((prev) => ({ ...prev, alertTitle: "Reservation Create", alertMessage: "Reserva Create Successfully", open: true, onClose: onClose, severity: "success" }))
@@ -64,12 +69,12 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     }
 
   }, [isLoading])
- 
+
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
     let date_to = new Date(newDate).addHours(1)
-    setReservationCreate(prev => ({ ...prev, date_from: newDate ,date_to: date_to}))
+    setReservationCreate(prev => ({ ...prev, date_from: newDate, date_to: date_to }))
   };
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     CustomLogger.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
@@ -80,18 +85,18 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     CustomLogger.info("CreateFlightDialoq/handleToDateFilterChange/", reservationCreate);
   };
 
-/*   useEffect(() => {
-    login.member._id
-    let defaultMember:InputComboItem = {
-      _id: login.member._id,
-      lable: `${login.member.family_name} ${login.member.member_id}`,
-      description: ""
-    }
-    setSelectedMember(defaultMember)
-    onMemberChanged(defaultMember)
-    setReservationCreate(prev => ({ ...prev, _id_member: login.member._id }))
-    CustomLogger.info("CreateReservationDialog/useEffect/setReservationCreate",login.member._id)
-   },[value]) */
+  /*   useEffect(() => {
+      login.member._id
+      let defaultMember:InputComboItem = {
+        _id: login.member._id,
+        lable: `${login.member.family_name} ${login.member.member_id}`,
+        description: ""
+      }
+      setSelectedMember(defaultMember)
+      onMemberChanged(defaultMember)
+      setReservationCreate(prev => ({ ...prev, _id_member: login.member._id }))
+      CustomLogger.info("CreateReservationDialog/useEffect/setReservationCreate",login.member._id)
+     },[value]) */
 
   const handleOnCancel = () => {
     setValidationAlert([])
@@ -131,11 +136,12 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center" >
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
-            <Box sx={{ marginLeft: "0px", marginTop: '1ch' }}>
-              <LocalizationProvider  adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
+            <Box sx={{ marginLeft: "0px", marginTop: '1ch', width: "100%" }}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
-                  ampm={false}
+                    sx={{ width: "100%" }}
+                    ampm={false}
                     label="From Date"
                     value={DateTime.fromJSDate(reservationCreate?.date_from == undefined ? new Date() : reservationCreate?.date_from)}
                     onChange={handleFromDateFilterChange}
@@ -149,7 +155,8 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon} >
                 <ThemeProvider theme={defaultMaterialThem}>
                   <MobileDateTimePicker
-                  ampm={false}
+                    sx={{ width: "100%" }}
+                    ampm={false}
                     label="To Date"
                     value={DateTime.fromJSDate(reservationCreate.date_to)}
                     onChange={handleToDateFilterChange}
@@ -164,12 +171,17 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
         <TransitionAlert {...dateErrorAlert}/>
       </Item>
     </Grid> */}
-          <Grid item xs={12} md={6} xl={6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={12} sm={isAuthorized ? 5 : 6} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <DevicesCombo onChanged={onDeviceChanged} source={source} filter={true} />
           </Grid>
-          <Grid item xs={12} md={6} xl={6} sx={{ marginTop: '2ch' }}>
-            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={true} selectedDepended={selectedDevice} selectedItem={selectedMember}/>
+          <Grid item xs={isAuthorized ? 10 : 12} sm={isAuthorized ? 5 : 6} sx={{ marginTop: '2ch' }}>
+            <DeviceMemberCombo onChanged={onMemberChanged} source={source} filter={{ showAllMemebers: showAllMemebers }} selectedDepended={selectedDevice} selectedItem={selectedMember} />
           </Grid>
+          {isAuthorized === true ? (
+            <Grid xs={isAuthorized ? 2 : 0} sm={isAuthorized ? 2 : 6} sx={{ marginTop: '2ch' }}>
+              <ToggleButton sx={{ width: "100%" }} value='check' selected={showAllMemebers} onChange={() => { setShowAllMembers((prev) => !prev) }}>ADMIN</ToggleButton >
+            </Grid>
+          ) : (<></>)}
           <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
             <TextField
               disabled
@@ -181,9 +193,15 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               multiline
             />
           </Grid>
-          <Grid item xs={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
-            <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id} />
-          </Grid>
+          <Accordion sx={{width: "100%"}}>
+            <AccordionSummary style={{ height: "48px" }} expandIcon={<GridExpandMoreIcon />} aria-controls="general-content" id="general-header">Device Detailes</AccordionSummary>
+            <AccordionDetails>
+              <Grid item xs={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
+                <DeviceDetailes id_device={selectedDevice?._id === undefined ? "" : selectedDevice?._id} />
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+
           {validationAlert.map((item) => (
             <Grid item xs={12} sx={{ marginTop: '2ch' }}>
               <ValidationAlert {...item} />
