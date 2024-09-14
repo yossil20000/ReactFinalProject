@@ -1,6 +1,7 @@
-import { Alert, AlertColor, AlertTitle, Collapse, IconButton } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, AlertColor, AlertTitle, Collapse, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { IValidation } from "../../Interfaces/IValidation";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 export interface IAlertAction {
   open: boolean;
@@ -46,7 +47,7 @@ export function getValidationAlertMessages(alerts: IValidationAlertProps[]): str
 
 export default function TransitionAlert(props: ITransitionAlrertProps) {
   const { severity, alertTitle, alertMessage, open, onClose } = props;
-  CustomLogger.log("ValidationAlert/alertMessage,open", severity, alertTitle, alertMessage, open, onClose)
+  CustomLogger.info("ValidationAlert/alertMessage,open", severity, alertTitle, alertMessage, open, onClose)
   return (
     <Collapse in={open}>
       <Alert severity={severity} action={
@@ -54,8 +55,14 @@ export default function TransitionAlert(props: ITransitionAlrertProps) {
           <CloseIcon fontSize="inherit" />
         </IconButton>
       }>
-        <AlertTitle>{alertTitle}</AlertTitle>
-        {alertMessage}
+        <Accordion defaultExpanded={false} sx={{width:"100%"}}>
+          <AccordionSummary expandIcon={<GridExpandMoreIcon />}><AlertTitle>{alertTitle}</AlertTitle></AccordionSummary>
+          <AccordionDetails >
+            {alertMessage}
+          </AccordionDetails>
+        </Accordion>
+
+
       </Alert>
     </Collapse>
   )

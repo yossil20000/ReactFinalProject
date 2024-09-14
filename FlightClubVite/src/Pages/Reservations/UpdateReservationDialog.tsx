@@ -9,6 +9,7 @@ import { useUpdateReservationMutation } from "../../features/Reservations/reserv
 import { IReservationUpdate, ReservationUpdate } from "../../Interfaces/API/IReservation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import { green } from "@mui/material/colors";
+import { Inputs, validationError } from "../../Types/Validation";
 
 
 export interface UpdateReservationDialogProps {
@@ -41,6 +42,39 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
   const [updateReservation, { isError, isLoading, error, isSuccess }] = useUpdateReservationMutation();
   const [reservationUpdate, setReservationUpdate] = useState<IReservationUpdate>(value);
   const [dateErrorAlert, setdateErrorAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
+  const [validator,setValidator] = useState<validationError>({
+    date_from: "",
+    date_to: "",
+  })
+  const [inputValid,setInputValid] = useState(true)
+  const validate = (inputs: Inputs) : validationError => {
+    const diffDaysLimit = 2
+    const error : validationError = {
+      date_from: "",
+      date_to: "",
+    }
+    if(inputs.date_from && inputs.date_to){
+      const diffAbs = (inputs.date_from.getTime() - new Date().getTime()) / 3600000
+      const diffTo = (inputs.date_from.getTime() - inputs.date_to.getTime() )
+      const diffDays = Math.round((inputs.date_to.getTime() - inputs.date_from.getTime()) / 3600000/24)
+      CustomLogger.info("CreateFlightDialog/validate/from,to,diffAbs,diffDuration",inputs.date_from,inputs.date_to,diffAbs,diffTo, diffDays)
+      if(diffAbs< -1)
+      {
+        error.date_from = "date_from not less then current time"
+      }
+      if(diffTo >= 0){
+        error.date_to = "date_to must be greater then date_from"
+      }
+      if(diffDays > diffDaysLimit)
+      {
+        error.date_to += `, date_to must be less then ${diffDaysLimit +1} days`
+      }
+    }
+    setInputValid(error.date_from == "" && error.date_to == "")
+    setValidator(error)
+    CustomLogger.info("CreateFlightDialog/validate/error",error)
+    return error;
+  }
   const onCloseDateError = () => {
     setdateErrorAlert((prev) => ({ ...prev, open: false }))
   }
@@ -69,13 +103,18 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
   const handleFromDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
+    let date_to = new Date(newDate).addHours(1)
     setReservationUpdate(prev => ({ ...prev, date_from: newDate }))
+    const errors = validate({date_from: newDate, date_to:date_to })
+    setValidator(errors)
   };
 
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
     setReservationUpdate(prev => ({ ...prev, date_to: newDate }))
+    const errors = validate({date_from: reservationUpdate.date_from  , date_to: newDate })
+    setValidator(errors)
   };
 
   const handleOnCancel = () => {
@@ -117,6 +156,11 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
                     value={DateTime.fromJSDate(reservationUpdate.date_from)}
                     onChange={handleFromDateFilterChange}
                     ampm={false}
+                    slotProps={inputValid == false ? { 
+                      textField: { color: "error" ,
+                        helperText: validator.date_from
+                      },
+                    }: {}}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -131,6 +175,11 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
                     ampm={false}
                     value={DateTime.fromJSDate(reservationUpdate.date_to)}
                     onChange={handleToDateFilterChange}
+                    slotProps={inputValid == false ? {
+                      textField: { color: "error",
+                        helperText: validator.date_to,
+                      },
+                    }: {}}
                   />
                 </ThemeProvider>
               </LocalizationProvider>
@@ -194,7 +243,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
                   />
 
                 )}
-                <Button disabled={isLoading} variant="outlined" sx={{ width: "100%" }}
+                <Button disabled={isLoading || !inputValid} variant="outlined" sx={{ width: "100%" }} 
                   onClick={handleOnSave}>
                   Save
                 </Button>

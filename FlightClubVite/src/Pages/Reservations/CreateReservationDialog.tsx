@@ -16,7 +16,7 @@ import { useAppSelector } from "../../app/hooks";
 import { Role } from "../../Interfaces/API/IMember";
 import { UseIsAuthorized } from "../../Components/RequireAuth";
 import { GridExpandMoreIcon } from "@mui/x-data-grid";
-import { fontSize } from "@mui/system";
+import { validationError, Inputs } from "../../Types/Validation";
 const source: string = "CreateReservation"
 
 export interface CreateReservationDialogProps {
@@ -44,11 +44,7 @@ let transitionAlertInitial: ITransitionAlrertProps = {
   open: false,
   onClose: () => { }
 }
-type Inputs = {
-  date_from: Date | undefined,
-  date_to: Date | undefined,
-}
-type validationError = Partial<Record<keyof Inputs,string>>
+
 function CreateReservationDialog({ value, onClose, onSave, open, ...other }: CreateReservationDialogProps) {
   const login = useAppSelector((state) => state.authSlice);
   const isAuthorized = UseIsAuthorized({ roles: [Role.admin] })
@@ -209,8 +205,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
                     ampm={false}
                     label="To Date"
                     value={DateTime.fromJSDate(reservationCreate?.date_to == undefined ? new Date() : reservationCreate?.date_to)}
-                    onChange={handleToDateFilterChange}
-                    
+                    onChange={handleToDateFilterChange}       
                     slotProps={inputValid == false ? {
                       textField: { color: "error",
                         helperText: validator.date_to,
