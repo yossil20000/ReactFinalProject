@@ -36,10 +36,27 @@ exports.reservation_list = function (req, res, next) {
 		log.info('reservation_list/params', req.query);
 		let from = new Date(req.query.from);
 		let to = new Date(req.query.to);
-		let filter = { date_from: { $gte: from, $lte: to } };
+		let filter = { 
+			$or: [
+				{date_to: { $gte: from, $lte: to }},
+				{date_from: { $gte: from, $lte: to }},
+			] };
 		if (isNaN(from) || isNaN(to)) {
 			filter = {}
 		}
+/* 		const found = FlightReservation.find({
+			$and: [
+				{ device: newReservation.device },
+				{
+					date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) }
+
+					$or: [
+						{ $and: [{ data_to: { $lte: new Date(to) } }, { date_to: { $gte: new Date(from) } }] },
+						{ $and: [{ data_from: { $lte: newReservation._doc.date_from } }, { date_to: { $gte: newReservation._doc.date_from } }] }
+					] 
+				}
+			]
+		}).exec(); */
 		FlightReservation.find(filter)
 			.populate('device')
 			.populate({ path: "member", select: "-password" })

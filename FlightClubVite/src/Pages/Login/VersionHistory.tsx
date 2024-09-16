@@ -53,6 +53,8 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 32,version: "2.0.14.1",date: new Date(2024,9,9).getDisplayDate() , "description" : "Fix Report Calculation" ,"known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 33,version: "2.0.15.0",date: new Date(2024,9,14).getDisplayDate() , "description" : "Fix: Update Flight,Add reservation Multidays,Change Engine to TACH, Member Selection According to loging, Admin has option to see all members by button","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 34,version: "2.0.15.1",date: new Date(2024,9,14).getDisplayDate() , "description" : "Create Reservation: add rulls. not allowed reservation an hour befor current time. date_from not after date_to. not allowed more then 3 days in one reservation","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 35,version: "2.0.15.2",date: new Date(2024,9,14).getDisplayDate() , "description" : "Update Reservation: add rulls. not allowed reservation an hour befor current time. date_from not after date_to. not allowed more then 3 days in one reservation","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 36,version: "2.0.15.3",date: new Date(2024,9,16).getDisplayDate() , "description" : "Fix display reservation from end month to next month","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
   ]
   function CustomToolbar() {
     return (
