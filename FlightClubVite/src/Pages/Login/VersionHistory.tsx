@@ -55,6 +55,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 34,version: "2.0.15.1",date: new Date(2024,9,14).getDisplayDate() , "description" : "Create Reservation: add rulls. not allowed reservation an hour befor current time. date_from not after date_to. not allowed more then 3 days in one reservation","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 35,version: "2.0.15.2",date: new Date(2024,9,14).getDisplayDate() , "description" : "Update Reservation: add rulls. not allowed reservation an hour befor current time. date_from not after date_to. not allowed more then 3 days in one reservation","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 36,version: "2.0.15.3",date: new Date(2024,9,16).getDisplayDate() , "description" : "Fix display reservation from end month to next month","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 37,version: "2.0.15.4",date: new Date(2024,9,21).getDisplayDate() , "description" : "Remove Admin / Accounts Role Tabs from user","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
   ]
   function CustomToolbar() {
     return (
