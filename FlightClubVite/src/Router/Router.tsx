@@ -28,8 +28,10 @@ import { useState } from 'react'
 import '../Types/date.extensions'
 import LinksPage from '../Pages/Links'
 import Signup from '../Pages/testValidation'
+import { useAppSelector } from '../app/hooks'
 
 export function PagesRouter() {
+  const login = useAppSelector((state) => state.authSlice);
   /*   const dispatch = useAppDispatch();
     useEffect(() => {
         let login_info = getFromLocalStorage<ILoginResult>(LOCAL_STORAGE.LOGIN_INFO);
@@ -84,7 +86,7 @@ export function PagesRouter() {
   }
   const [date,setDate] = useState<Date>()
   console.log("CalanderViewMonth/setDate",date)
-  
+
   return (
     
     <Routes>
@@ -102,7 +104,7 @@ export function PagesRouter() {
           <Route path="/admin" element={<AdminPage></AdminPage>} />
 
         </Route>
-        <Route element={<RequireAuth roles={[Role.user, Role.desk, Role.admin, Role.account]} />}>
+        <Route element={<RequireAuth roles={[Role.desk, Role.admin, Role.account]} />}>
 
           <Route path="/account" element={<AccountPage></AccountPage>} />
         </Route>

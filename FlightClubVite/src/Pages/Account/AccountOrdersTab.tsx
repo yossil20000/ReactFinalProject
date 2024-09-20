@@ -89,10 +89,10 @@ function AccountOrdersTab() {
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountOrder/selectedClubAccoun"} includesType={[MemberType.Club]} />
               </Grid >
               <Grid item xs={6}>
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="" display={[{ key: EAction.ADD, value: "Quarter" }]} disable={[{ key: EAction.ADD, value: !isAuthorized }]} />
               </Grid>
               <Grid item xs={6}>
-                <ActionButtons OnAction={onAction} show={[EAction.ORDER]} item="" display={[{ key: EAction.ORDER, value: "Variable Expense" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
+                <ActionButtons OnAction={onAction} show={[EAction.ORDER]} item="" display={[{ key: EAction.ORDER, value: "Variable Expense" }]} disable={[{ key: EAction.ORDER, value: !isAuthorized }]} />
               </Grid>
             </Grid>
           </Box>

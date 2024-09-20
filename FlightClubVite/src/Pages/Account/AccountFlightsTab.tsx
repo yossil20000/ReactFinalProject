@@ -120,22 +120,10 @@ const columns: Column[] = [
   },
 ];
 
-const allowedRoles: IRequireAuthProps = {
-  roles: [Role.desk, Role.admin, Role.account]
-}
 function AccountFlightsTab() {
   const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
   const [openFilter, setOpenFilter] = useState(false)
   const [filter, setFilter] = useState<IDateFilter>({ ...from_to_year_Filter(new Date()) });
-
-  const login = useAppSelector((state) => state.authSlice);
-  const [ref, setRef] = useState(false)
-  useEffect(() => {
-    setRef(login.member.roles.find(role => allowedRoles?.roles?.includes(role)) ? false : true)
-  }, [login.member.roles])
-  if (allowedRoles === undefined || allowedRoles.roles === undefined) {
-    setRef(false);
-  }
   const [openOrderAdd, setOpenOrderAdd] = useState(false);
   const [order, setOrder] = useState<IOrderBase>(new COrderCreate());
   const [accountFlightFilter, setaccountFlightFilter] = useState<IAccountFlightFilter>(getAccountFlightFilter())
@@ -337,7 +325,7 @@ function AccountFlightsTab() {
                 </ListItem>
               </List>
             </GeneralDrawer>
-            <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "", disable: [{ key: EAction.ORDER, value: isAuthorized }] }} />
+            <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.sort(sort)} columns={columns} header={[]} action={{ show: [EAction.ORDER], OnAction: onAction, item: "", disable: [{ key: EAction.ORDER, value: !isAuthorized }] }} />
           </>
         </ContainerPageMain>
         <ContainerPageFooter>

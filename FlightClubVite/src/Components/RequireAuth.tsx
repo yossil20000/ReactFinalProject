@@ -13,11 +13,11 @@ export  const UseIsAuthorized = (allowedRoles: IRequireAuthProps): boolean => {
   const [ref,setRef] = useState(false)
   useEffect(()=> {
     let found = login.member.roles.find(role => allowedRoles?.roles?.includes(role));
+    CustomLogger.log("UseIsAuthorized/allowd,found,ref",allowedRoles,found,found === undefined ? false : true)
+    
     setRef(found === undefined ? false : true)
   },[login.member.roles,allowedRoles])
-  if(allowedRoles === undefined || allowedRoles.roles === undefined){
-    setRef(false);
-      }
+
   return ref
 }
 function RequireAuth(allowedRoles: IRequireAuthProps) {

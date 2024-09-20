@@ -152,7 +152,7 @@ export default function TransactionAction(props: ITransactionActionProps) {
               </Fab>
             )}
 
-            <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading || isAuthorized} onClick={() => handleConfirmation("ADD_TRANSACTION")} >
+            <Fab color='primary' sx={{ width: 40, height: 40 }} disabled={/* params.id !== rowId */ isSuccess || isloading || !isAuthorized} onClick={() => handleConfirmation("ADD_TRANSACTION")} >
               <Tooltip title={"Place Transaction"}>
                 <PaymentIcon />
               </Tooltip>

@@ -19,9 +19,11 @@ import UserIcon from '../../Components/Buttons/UserIcon';
 import { Avatar } from '@mui/material';
 import useGetExpiredLogin from '../../hooks/useGetExpiredLogin'
 import RefreshTokenDialog from '../../Components/RefreshTokenDialog';
+import { Role } from '../../Interfaces/API/IMember';
 type page = {
   name: string,
-  route: string
+  route: string,
+  roles: Role[];
 }
 
 const settings = ['Profile', 'MyAccount', 'Notification', 'Dashboard', 'change_password', 'Logout'];
@@ -37,17 +39,17 @@ const ResponsiveAppBar = () => {
   const login = useAppSelector((state) => state.authSlice);
   const dispatch = useAppDispatch();
   const pages: page[] = [
-    { name: 'Home', route: ROUTES.HOME },
-    { name: "WAB", route: "WAB" },
-    { name: `Links`, route: 'links'},
-    { name: 'Reservations', route: ROUTES.RESERVATION },
-    { name: 'Flight', route: ROUTES.Flight },
-    { name: "Account", route: "account" },
-    { name: 'Admin', route: 'admin' },
-    { name: `Register`, route: "registration" },
-    { name: 'Contacts', route: 'members' },
-    { name: 'Gallery', route: 'gallery' },
-    { name: `Login ${remainLogin}`, route: "login" } 
+    { name: 'Home', route: ROUTES.HOME ,roles:[]},
+    { name: "WAB", route: "WAB" ,roles:[]},
+    { name: `Links`, route: 'links' , roles:[]},
+    { name: 'Reservations', route: ROUTES.RESERVATION, roles:[Role.user, Role.desk, Role.admin, Role.account] },
+    { name: 'Flight', route: ROUTES.Flight , roles:[Role.user, Role.desk, Role.admin, Role.account] },
+    { name: "Account", route: "account" ,roles:[Role.desk, Role.admin, Role.account]},
+    { name: 'Admin', route: 'admin' ,roles:[Role.admin]},
+    { name: `Register`, route: "registration" , roles:[Role.admin]},
+    { name: 'Contacts', route: 'members' ,roles:[Role.user, Role.desk, Role.admin, Role.account]},
+    { name: 'Gallery', route: 'gallery' ,roles:[Role.user, Role.desk, Role.admin, Role.account]},
+    { name: `Login ${remainLogin}`, route: "login",roles:[] } 
   ];
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     CustomLogger.info("ResponsiveAppBar/handleOpenNavMenu:event", event.currentTarget)
@@ -193,15 +195,20 @@ const ResponsiveAppBar = () => {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
-            {pages.map((page, index) => (
+            {pages.map((page, index) => 
+             page.roles.length == 0 || login.member.roles.find(role => page?.roles.includes(role)) ? (
               <Button
-                key={index}
-                onClick={(e) => handleSettingNavMenu(e, page.route)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name}
-              </Button>
-            ))}
+              key={index}
+              onClick={(e) => handleSettingNavMenu(e, page.route)}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              {page.name}
+            </Button>
+             ) : (
+              <></>
+             )
+
+            )}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

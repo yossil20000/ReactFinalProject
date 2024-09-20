@@ -103,7 +103,7 @@ function AccountsTab() {
       label: '',
       minWidth: 170,
       align: 'center',
-      render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{ key: EAction.ADD, value: isAuthorized }]} /></>),
+      render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{ key: EAction.ADD, value: !isAuthorized }]} /></>),
       isCell: true
     }
   ];

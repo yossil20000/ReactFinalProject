@@ -65,7 +65,7 @@ function AccountExpenseTab() {
     { id: 'status', label: 'Status', minWidth: 70, align: 'left', format: (value: Status) => value.toLocaleUpperCase(), isCell: true },
     { id: 'source', label: 'Source', minWidth: 170, align: 'left', isCell: true },
     { id: 'destination', label: 'Destination', minWidth: 170, align: 'left', isCell: true },
-    { id: 'render', label: '', minWidth: 70, align: 'center', render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD, EAction.SAVE]} display={[{ key: EAction.SAVE, value: "Export" }]} item={""} disable={[{ key: EAction.ADD, value: isAuthorized }]} /></>), isCell: true }
+    { id: 'render', label: '', minWidth: 70, align: 'center', render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD, EAction.SAVE]} display={[{ key: EAction.SAVE, value: "Export" }]} item={""} disable={[{ key: EAction.SAVE, value: !isAuthorized }]} /></>), isCell: true }
   ];
 
 
@@ -95,9 +95,9 @@ function AccountExpenseTab() {
       return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
         <>{row.status == OrderStatus.CREATED ? (<>
           <Box display={'flex'} flexDirection={'column'} gap={1}>
-            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT, value: isAuthorized }]} />
-            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY, value: isAuthorized }]} />
-            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE, value: isAuthorized }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT, value: !isAuthorized }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY, value: !isAuthorized }]} />
+            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE, value: !isAuthorized }]} />
           </Box>
         </>) : (<></>)}
         </>)

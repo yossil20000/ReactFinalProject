@@ -95,13 +95,13 @@ function AccountTransactionsTab() {
                 </IconButton>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <ActionButtons  OnAction={onAction} show={[EAction.ADD]} item="TRANSACTION" display={[{ key: EAction.ADD, value: "Transaction" }]} disable={[{key: EAction.ADD,value: isAuthorized}]}/>
+                <ActionButtons  OnAction={onAction} show={[EAction.ADD]} item="TRANSACTION" display={[{ key: EAction.ADD, value: "Transaction" }]} disable={[{key: EAction.ADD,value: !isAuthorized}]}/>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="PAY" display={[{ key: EAction.ADD, value: "Payment" }]} disable={[{key: EAction.ADD,value: isAuthorized}]}/>
+                <ActionButtons OnAction={onAction} show={[EAction.ADD]} item="PAY" display={[{ key: EAction.ADD, value: "Payment" }]} disable={[{key: EAction.ADD,value: !isAuthorized}]}/>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export" }]} disable={[{key: EAction.SAVE,value: isAuthorized}]}/>
+                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export" }]} disable={[{key: EAction.SAVE,value: !isAuthorized}]}/>
               </Grid>
 {/*               <Grid item xs={12} sm={6}>
                 <ClubAccountsCombo onChanged={OnSelectedClubAccount} source={"_accountTransaction/selectedClubAccoun"} />
