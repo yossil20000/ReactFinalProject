@@ -25,18 +25,17 @@ function DeviceMemberCombo(props: ComboPropsEx) {
     /* let items  =   devicesToItemCombo(data?.data[0] === undefined ? [] : data?.data[0]); */
     CustomLogger.info("DeviceMemberCombo/ DeviceItem", items)
     if (items !== undefined)
+    {
       setDeviceCanreservItems(items);
+      
+    }
     if (isError) {
       CustomLogger.error("DeviceMemberCombo/error", error)
     }
   }, [data?.data, isError,filter])
   useEffect(() => {
-    setSelectedDeviceCanreserv({
-      _id: "",
-      lable: "",
-      description: ""
-    } as InputComboItem)
-  }, [selectedDepended])
+    setSelectedDeviceCanreserv(deviceCanreservItems[0])
+  }, [selectedDepended,deviceCanreservItems])
 
   useEffect(() => {
     if(selectedItem)
