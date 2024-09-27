@@ -168,15 +168,15 @@ exports.change_password = function (req, res, next) {
             return res.status(400).json(
                 {
                     success: false,
-                    errors: [],
+                    errors: ["Input data not valid"],
                     message: passwordRequirement,
                     data: {}
                 });
         }
         Member.findOne({ username: username }, (err, member) => {
             if (err) {
-                log.error(`${email} Not Found ${err}`)
-                return res.status(400).json({ success: false, errors: [err], message: `${email} Not Found` });
+                log.error(`${username} Not Found ${err}`)
+                return res.status(400).json({ success: false, errors: [err], message: `Bad Request Data` });
             }
     
             if (member) {
@@ -198,14 +198,14 @@ exports.change_password = function (req, res, next) {
                                         {
                                             success: true,
                                             errors: [],
-                                            message: "password renew",
+                                            message: "Password Changed",
                                             data: { newPassword: newPassword }
                                         });
                                 }
     
                                 ).catch((err => {
                                     log.error("Send Mail");
-                                    return res.status(201).json({ success: false, errors: [err], message: "password renew", data: { newPassword: newPassword } });
+                                    return res.status(201).json({ success: false, errors: [...err,"Password Changed, Send Mail failed"], message: "Password Changed Send Mail failed", data: { newPassword: newPassword } });
                                 })
     
                                 );
@@ -218,12 +218,12 @@ exports.change_password = function (req, res, next) {
                         return res.status(400).json({ success: false, errors: [err] });
                     }
                     else {
-                        return res.status(400).json({ success: false, errors: ["Unknown error"] });
+                        return res.status(400).json({ success: false, errors: ["Input data not valid"] });
                     }
                 })
             }
             else {
-                return res.status(400).json({ success: false, errors: [err], message: `${member} Not Found` });
+                return res.status(400).json({ success: false, errors: ["Input data not valid"], message: `Bad Request Data` });
             }
         })
 
