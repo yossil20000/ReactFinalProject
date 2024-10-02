@@ -83,7 +83,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       }
       if(diffDays > diffDaysLimit)
       {
-        error.date_to += `, date_to must be less then ${diffDaysLimit +1} days`
+        error.date_to += `, date_to must be ${diffDaysLimit +1} days max`
       }
     }
     setInputValid(error.date_from == "" && error.date_to == "")
@@ -148,7 +148,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   }
   const handleOnSave = async () => {
     setValidationAlert([])
-    CustomLogger.log("CreateReservationDialog/onSave", reservationCreate)
+    CustomLogger.info("CreateReservationDialog/onSave", reservationCreate)
     CustomLogger.log("CreateReservationDialog/onSave/date_from", reservationCreate.date_from?.toUTCString())
 
     await CreateReservation(reservationCreate as IReservationCreateApi).unwrap().then((data) => {

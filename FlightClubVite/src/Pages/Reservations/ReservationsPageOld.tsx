@@ -105,7 +105,10 @@ function ReservationPage() {
     date_from: new Date(),
     date_to: new Date(),
     _id_member: "",
-    _id_device: ""
+    _id_device: "",
+    timeOffset: 0,
+    time_from: 0,
+    time_to: 0
   }
   return (
     <>

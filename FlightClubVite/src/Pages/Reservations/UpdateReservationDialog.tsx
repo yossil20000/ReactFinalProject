@@ -123,6 +123,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
 
   const handleOnSave = async () => {
     CustomLogger.info("UpdateReserationDialog/onSave", reservationUpdate)
+    setValidationAlert([])
     let reservation = new ReservationUpdate();
     reservation.copy(reservationUpdate);
     CustomLogger.info("UpdateReserationDialog/onSave/reservation", reservation, reservationUpdate)

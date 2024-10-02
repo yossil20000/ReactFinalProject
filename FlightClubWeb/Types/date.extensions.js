@@ -186,3 +186,19 @@ Date.prototype.getEndQuarterDate = function(year ,quarter) {
    console.log("QuarterDate",step,month,lastDay)
    return lastDay;
 }
+Date.prototype.isIntersec = function(from,to)  {
+   /* CustomLogger.info("isIntersec/this,from,to,this(from),this(to)",this,from,to,this.compareDate(from),this.compareDate(to)) */
+   return this.compareDate(from) >= 0 && this.compareDate(to) <= 0
+}
+
+Date.prototype.dateWithoutTimezone = function ()  {
+   const tzoffset = this.getTimezoneOffset() * 60000; //offset in milliseconds
+   const withoutTimezone = new Date(this.valueOf() - tzoffset)
+     .toISOString()
+     .slice(0, -1);
+   return withoutTimezone;
+ };
+
+ Date.prototype.toGMT = function() {
+   return new Date(this.toLocaleString('en', {timeZone: 'GMT'}))
+ }

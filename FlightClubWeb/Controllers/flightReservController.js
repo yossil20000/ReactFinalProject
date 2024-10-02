@@ -215,24 +215,27 @@ exports.reservation_create = [
 				res.status(400).json({ success: false, errors: ["Member or Device Not Exist"], data: [] });
 				return;
 			}
+			
 			let newReservation = new FlightReservation({
 				date_from: new Date(req.body.date_from),
 				date_to: new Date(req.body.date_to),
 				member: req.body._id_member,
 				device: req.body._id_device,
-				timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset())
+				timeOffset: Number((new Date(req.body.date_from)).getTimezoneOffset()),
+				time_from: (new Date(req.body.date_from)).getTime(),
+				time_to: (new Date(req.body.date_to)).getTime()
 			});
 			log.info("newReservation", newReservation._doc);
 			const found = await FlightReservation.findOne({
 				$and: [
 					{ device: newReservation.device },
 					{
-						date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) }
+						/* date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } */
 
-						/* $or: [
-							{ $and: [{ data_from: { $lte: newReservation._doc.date_to } }, { date_to: { $gte: newReservation._doc.date_to } }] },
-							{ $and: [{ data_from: { $lte: newReservation._doc.date_from } }, { date_to: { $gte: newReservation._doc.date_from } }] }
-						] */
+						 $or: [
+							{date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) }},
+							{time_from: { "$lte": new Date(newReservation._doc.date_to.getTime()) }, time_to: { "$gte": new Date(newReservation._doc.date_from).getTime() }}
+						] 
 					}
 				]
 			}).exec();
@@ -270,7 +273,7 @@ exports.reservation_create = [
 			}
 			else {
 				log.info("Create/else_found", found?._doc);
-				return next(new ApplicationError("reservation_create", 400, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError(newReservation._id, `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist (${found?._doc.date_from.toLocaleString()} -${found?._doc.date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
+				return next(new ApplicationError("reservation_create", 400, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist (${found?._doc.date_from.toLocaleString()} -${found?._doc.date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
 
 			}
 		}
@@ -307,7 +310,10 @@ exports.reservation_update = [
 					$and: [
 						{ device: deviceFound._id },
 						{
-							date_from: { "$lte": new Date(req.body.date_to) }, date_to: { "$gte": new Date(req.body.date_from) }
+							$or: [
+								{date_from: { "$lte": new Date(req.body.date_to) }, date_to: { "$gte": new Date(req.body.date_from) }},
+								{time_from: { "$lte": new Date(req.body.date_to).getTime() }, time_to: { "$gte": new Date(req.body.date_from).getTime() }}
+							] 
 						}
 					]
 				}).lean().exec();
@@ -320,7 +326,7 @@ exports.reservation_update = [
 				}
 				else {
 					log.info("Update/else_found", found);
-					return next(new ApplicationError("reservation_update", 400, "CONTROLLER.FLIGHT_RESERV.UPDATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError(found[0]._id.toString(), `Flight from:${req.body.date_from.toLocaleString()} to:${req.body.date_to.toLocaleString()}  already exist (${found[0].date_from.toLocaleString()} -${found[0].date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
+					return next(new ApplicationError("reservation_update", 400, "CONTROLLER.FLIGHT_RESERV.UPDATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${req.body.date_from.toLocaleString()} to:${req.body.date_to.toLocaleString()}  already exist (${found[0].date_from.toLocaleString()} -${found[0].date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
 
 				}
 

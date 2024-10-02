@@ -16,8 +16,10 @@ let reservationUpdateIntitial: IReservationUpdate = {
   date_to: new Date(),
   _id: "",
   device_name: "",
-  member_name: ""
-
+  member_name: "",
+  timeOffset: 0,
+  time_from: 0,
+  time_to: 0
 }
 
 

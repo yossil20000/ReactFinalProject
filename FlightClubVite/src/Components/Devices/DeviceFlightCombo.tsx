@@ -30,7 +30,7 @@ function DevicesFlightCombo(props : IDeviceFlightComboProps) {
      if(device)
      {
       CustomLogger.info("getDeviceDetailed/dvice",device)
-      return `engien_meter: ${device.engien_meter} next_meter: ${device.maintanance.next_meter}`
+      return `Current TACH: ${device.engien_meter} Next Service: ${device.maintanance.next_meter}`
      }
      return "";
   }

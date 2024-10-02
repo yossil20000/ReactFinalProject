@@ -11,8 +11,9 @@ var FlightReservationSchema = new Schema({
     },
     member: {type: Schema.Types.ObjectId, ref: 'Member', required: true},
     device: {type: Schema.Types.ObjectId, ref: 'Device', required: true},
-    timeOffset: {type: Schema.Types.Decimal128,get: getDecimal}
-    
+    timeOffset: {type: Schema.Types.Decimal128,get: getDecimal},
+    time_from: {type: Schema.Types.Number,default: new Date(1970,1,1).getTime()},
+    time_to: {type: Schema.Types.Number,default: new Date(1970,1,1).getTime()}
 },{timestamps: true,toJSON: {getters: true}});
 
 function getDecimal(value) {

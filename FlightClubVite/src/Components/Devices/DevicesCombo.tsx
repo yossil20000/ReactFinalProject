@@ -22,7 +22,7 @@ function DevicesCombo(props: ComboProps) {
     const device: IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
     if (device) {
       CustomLogger.info("getDeviceDetailed/device", device)
-      return `engien_meter: ${device.engien_meter} next_meter: ${device.maintanance.next_meter}`
+      return `Current TACH: ${device.engien_meter} Next Service: ${device.maintanance.next_meter}`
     }
     return "";
   }

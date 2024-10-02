@@ -12,6 +12,9 @@ export default interface IFlightReservation{
     },
     member: IMember
     device: IDevice
+    timeOffset:number
+    time_from: number
+    time_to: number
 }
 export interface IReservationFilterDate extends IDateFilter {
 

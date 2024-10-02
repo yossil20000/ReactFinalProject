@@ -114,7 +114,8 @@ exports.flight_update = [
         reuired_hobbs: req.body.reuired_hobbs,
         duration: req.body.duration,
         flight_time: req.body.flight_time,
-        fuel_start: req.body.fuel_start
+        fuel_start: req.body.fuel_start,
+        timeOffset: Number((new Date(req.body.date)).getTimezoneOffset()),
       }
       log.info("updateFlight", updateFlight);
 
@@ -236,7 +237,8 @@ exports.flight_create = [
         reuired_hobbs: req.body.reuired_hobbs,
         duration: req.body.duration,
         flight_time: req.body.flight_time,
-        fuel_start: req.body.fuel_start
+        fuel_start: req.body.fuel_start,
+        timeOffset: Number((new Date(req.body.date)).getTimezoneOffset()),
       })
       log.info("newReservation", newFlight._doc);
 

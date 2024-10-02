@@ -233,7 +233,7 @@ function MembersTablePage() {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ItableData) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -405,7 +405,7 @@ function MembersTablePage() {
       </div>
       <div className='footer'>
         <TablePagination style={{ overflowX: 'auto', height: 'auto' }}
-          rowsPerPageOptions={[1, 5, 10, 25]}
+          rowsPerPageOptions={[1, 5, 10, 25,100]}
           component="div"
           count={rows ? rows.length : 0}
           rowsPerPage={rowsPerPage}

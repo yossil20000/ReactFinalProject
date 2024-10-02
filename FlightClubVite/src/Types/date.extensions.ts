@@ -37,6 +37,8 @@ declare global {
       getStartOfYear(): Date
       getEndOfYear(): Date
       isIntersec(from:Date,to:Date) : boolean
+      dateWithoutTimezone() : string 
+      getOffsetDate(offset: number) : Date
    }
 }
 
@@ -224,3 +226,16 @@ Date.prototype.isIntersec = function(from:Date,to:Date) : boolean {
    /* CustomLogger.info("isIntersec/this,from,to,this(from),this(to)",this,from,to,this.compareDate(from),this.compareDate(to)) */
    return this.compareDate(from) >= 0 && this.compareDate(to) <= 0
 }
+
+Date.prototype.dateWithoutTimezone = function () :string {
+   const tzoffset = this.getTimezoneOffset() * 60000; //offset in milliseconds
+   const withoutTimezone = new Date(this.valueOf() - tzoffset)
+     .toISOString()
+     .slice(0, -1);
+   return withoutTimezone;
+ };
+
+ Date.prototype.getOffsetDate = function(offset: number) : Date {
+  const totalOffset : number = (this.getTimezoneOffset() - offset) * 60000
+  return new Date(this.valueOf() - totalOffset) 
+ }
