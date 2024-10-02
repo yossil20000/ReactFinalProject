@@ -34,8 +34,9 @@ function DeviceMemberCombo(props: ComboPropsEx) {
     }
   }, [data?.data, isError,filter])
   useEffect(() => {
-    setSelectedDeviceCanreserv(deviceCanreservItems[0])
-  }, [selectedDepended,deviceCanreservItems])
+    if(!selectedDeviceCanreserv?._id)
+      setSelectedDeviceCanreserv(deviceCanreservItems[0])
+  }, [deviceCanreservItems])
 
   useEffect(() => {
     if(selectedItem)
