@@ -415,7 +415,7 @@ exports.add_transaction = [
           destination_balance: Number(destinationAccount.balance.toFixed(2)),
           type: type,
           calculation_type: constants.CalcType.AMOUNT,
-          date: date,
+          date: new Date(date),
           description: description,
           payment: payment,
           order: order
@@ -582,7 +582,7 @@ exports.add_transaction_Type = [
           balance: Number(sourceAccount.balance.toFixed(2)),
           type: type,
           calculation_type: constants.CalcType.AMOUNT,
-          date: date,
+          date: new Date(date),
           description: description,
           payment: payment,
           order: order,
@@ -676,7 +676,7 @@ exports.add_transaction_payment = [
 
   async (req, res, next) => {
     try {
-      let { source, destination, amount, order, description, payment, type } = req.body;
+      let { source, destination, amount, order, description, payment, type,date } = req.body;
       type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -764,7 +764,7 @@ exports.add_transaction_payment = [
           destination_balance: Number(destinationAccount.balance.toFixed(2)),
           type: type,
           calculation_type: constants.CalcType.AMOUNT,
-          date: source.date,
+          date: new Date(date),
           description: description,
           payment: payment,
           order: order
