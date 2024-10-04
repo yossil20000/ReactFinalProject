@@ -57,6 +57,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 36,version: "2.0.15.3",date: new Date(2024,9,16).getDisplayDate() , "description" : "Fix display reservation from end month to next month","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 37,version: "2.0.15.4",date: new Date(2024,9,21).getDisplayDate() , "description" : "Remove Admin / Accounts Role Tabs from user","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 38,version: "2.0.15.5",date: new Date(2024,9,27).getDisplayDate() , "description" : "Change Password add colors to butto, add error text. Member combo set default","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 39,version: "2.0.15.6",date: new Date(2024,10,4).getDisplayDate() , "description" : "Fix transaction date. Fix REPORT","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     
   ]
   function CustomToolbar() {
