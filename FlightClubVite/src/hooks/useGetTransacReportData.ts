@@ -90,7 +90,7 @@ function GetTransactionCells(item: ITransaction): ITransactionReportTableCell[] 
       let itemDescription = item.description;
       if (item.order.type.toLocaleUpperCase() === Transaction_OT.EXPENSE.toLocaleUpperCase()) {
         let items = item.description.split("|")
-        itemDescription = items.slice(0, items.length - 2).join(" ")
+        itemDescription = items?.length == 1 ? item.description :  items.slice(0, items.length - 2).join(" ")
       }
       const description: ITransactionReportTableCell = {
         data: itemDescription,
@@ -142,7 +142,7 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
         let totalAmount: number = 0
         keysMembers.forEach(element => {
           let current: ITransactionData = {
-            memberKey: element,
+            memberKey: element.toLocaleUpperCase(),
             orders: [],
             totalAmount: 0
           }
@@ -151,7 +151,7 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
           CustomLogger.info("TransactionsReport/group[element]", element, group[element]);
           if (group[element]) {
             CustomLogger.info("TransactionsReport/element", element)
-            let orderGroup = groupBy(group[element], order => order.order.type)
+            let orderGroup = groupBy(group[element], order => order.order.type.toUpperCase())
             CustomLogger.info("TransactionsReport/orderGroup", orderGroup);
             let orderValues = Object.values(orderGroup);
             let orderKeys = Object.keys(orderGroup);

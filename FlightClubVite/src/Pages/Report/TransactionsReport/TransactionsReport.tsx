@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
 function TransactionsReport({ transactions, bankAccount }: ITransactionReportProps) {
   const [transactionData, bankAccounts] = useGetTransacReportData(transactions, bankAccount)
   let flightDurationTotal : number =0
-  CustomLogger.log("TransactionsReport/props", transactionData, bankAccounts)
+  CustomLogger.info("TransactionsReport/props", transactionData, bankAccounts)
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>

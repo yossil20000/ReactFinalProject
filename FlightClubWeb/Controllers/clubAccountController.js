@@ -175,7 +175,7 @@ exports.add_order_transaction = [
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
       }
-      const orderDoc = await Order.findById(order._id).select("member").lean().exec();
+      const orderDoc = await Order.findById(order._id).select("member order_date").lean().exec();
       var destinationAccount = await Account.findOne({ "member": orderDoc.member }).populate('member').exec();
       /* 
       log.info("Find member", orderDoc);
@@ -248,7 +248,7 @@ exports.add_order_transaction = [
         log.info("tDestination", tDestination)
 
         let sourceTransaction = new Transaction({
-          date: new Date(date),
+          date: new Date(orderDoc.order_date),
           source: tSource,
           destination: tDestination,
           amount: -Number(Number(amount).toFixed(2)),
@@ -415,7 +415,7 @@ exports.add_transaction = [
           destination_balance: Number(destinationAccount.balance.toFixed(2)),
           type: type,
           calculation_type: constants.CalcType.AMOUNT,
-          date: new Date(date),
+          date: new Date(expense.date),
           description: description,
           payment: payment,
           order: order
