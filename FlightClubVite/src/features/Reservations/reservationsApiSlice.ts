@@ -1,3 +1,4 @@
+import "../../Types/date.extensions"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/userStor";
 import { getServerAddress } from "../../Enums/Routers";
@@ -5,6 +6,8 @@ import { URLS } from "../../Enums/Urls";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
 import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
+import { map } from "lodash";
+import { customLogger } from "../../customLogging";
 
 
 export const reservationApiSlice = createApi({
@@ -32,8 +35,9 @@ export const reservationApiSlice = createApi({
                 }),
                 providesTags: ["Reservation"],
                 transformResponse: (response : IResultBase<IReservation>) => {
-                    CustomLogger.info("fetchAllReservations/response", response);
-                    CustomLogger.info("fetchAllReservations/clientOffset",new Date().getTimezoneOffset() );
+                    CustomLogger.info("FixReservationDaySavingTime/response", response);
+                    CustomLogger.info("FixReservationDaySavingTime/clientOffset",new Date(),new Date().getTimezoneOffset() );
+                    response.data = FixDaySavingTime(response.data)
                     return response;
                   }
             }),
@@ -70,6 +74,15 @@ export const reservationApiSlice = createApi({
     }
     
 });
+const FixDaySavingTime = (reservations: IReservation[]) : IReservation[]=> {
+    const fixedResrvations = reservations.map((item) => {
+        item.date_from = new Date(item.date_from).getOffsetDate(item.timeOffset)
+        item.date_to = new Date(item.date_to).getOffsetDate(item.timeOffset)
+        return item
+    })
+    customLogger.log("FixDaySavingTime/fixedResrvations",reservations,fixedResrvations)
+    return fixedResrvations
 
+}
 export const {useFetchAllReservationsQuery, useDeleteReservationMutation, useCreateReservationMutation, useUpdateReservationMutation} = reservationApiSlice;
 

@@ -1,3 +1,4 @@
+import "../../Types/date.extensions"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
 import { getServerAddress } from "../../Enums/Routers";
@@ -28,18 +29,36 @@ export const flightApi = createApi({
           url:`/${URLS.FLIGHT_SEARCH}/date?from=${filter.from}&to=${filter.to}`,
           method: "GET"
         }),
+        transformResponse: (response : IResultBase<IFlight>) => {
+          CustomLogger.info("FixDaySavingTime/response", response);
+          CustomLogger.info("FixDaySavingTime/clientOffset",new Date(),new Date().getTimezoneOffset() );
+          response.data =  FixDaySavingTime(response.data)
+          return response;
+        }
       }),
       getAllFlightsSearch: builder.query<IResultBase<IFlight>,{[key: string]: string} | any>({
         query: (filter) => ({
           url:getUrlWithParams(`/${URLS.FLIGHT_SEARCH}/filter`,filter) ,
           method: "GET"
         }),
+        transformResponse: (response : IResultBase<IFlight>) => {
+          CustomLogger.info("FixDaySavingTime/response", response);
+          CustomLogger.info("FixDaySavingTime/clientOffset",new Date(),new Date().getTimezoneOffset() );
+          response.data =  FixDaySavingTime(response.data)
+          return response;
+        }
       }),
       getAllFlightsParams: builder.query<IResultBase<IFlight>,IParams[]>({
         query: (filter) => ({
           url:getUrlWithParamsArray(`/${URLS.FLIGHT_SEARCH}/filter`,filter) ,
           method: "GET"
         }),
+        transformResponse: (response : IResultBase<IFlight>) => {
+          CustomLogger.info("FixDaySavingTime/response", response);
+          CustomLogger.info("FixDaySavingTime/clientOffset",new Date(),new Date().getTimezoneOffset() );
+          response.data =  FixDaySavingTime(response.data)
+          return response;
+        }
       }),
       createFlight: builder.mutation<IFlight,IFlightCreateApi>({
         query: (flight) =>( {
@@ -81,7 +100,17 @@ export const flightApi = createApi({
     
   }
 });
+const FixDaySavingTime = (flights: IFlight[]) : IFlight[]=> {
+  CustomLogger.info("FixDaySavingTime/fixedflights/flights",flights)
+  const fixedflights = flights.map((item) => {
+      item.date = new Date(item.date).getOffsetDate(item.timeOffset)
+      CustomLogger.info("FixDaySavingTime/fixedflights/dateFixed",item)
+      return item
+  })
+  CustomLogger.info("FixDaySavingTime/fixedflights/flights,fixedflights",flights,fixedflights)
+  return flights
 
+}
 export const {
 useCreateFlightMutation,
 useGetAllFlightsQuery,

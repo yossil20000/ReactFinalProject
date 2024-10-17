@@ -16,7 +16,7 @@ function DeviceMemberCombo(props: ComboPropsEx) {
 
   const [deviceCanreservItems, setDeviceCanreservItems] = useState<InputComboItem[]>([]);
   const [selectedDeviceCanreserv, setSelectedDeviceCanreserv] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceCanreserv`, undefined);
-
+  
   CustomLogger.log("DeviceMemberCombo/selectedDevice", selectedDepended)
   useEffect(() => {
     CustomLogger.log("DeviceMemberCombo/ Devices.data", data?.data)

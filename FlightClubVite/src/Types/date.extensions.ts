@@ -236,6 +236,10 @@ Date.prototype.dateWithoutTimezone = function () :string {
  };
 
  Date.prototype.getOffsetDate = function(offset: number) : Date {
+  if(!offset){
+   offset = this.getTimezoneOffset()
+  }
   const totalOffset : number = (this.getTimezoneOffset() - offset) * 60000
-  return new Date(this.valueOf() - totalOffset) 
+  CustomLogger.info("getOffsetDate/offset,totalOffset",offset,totalOffset)
+  return new Date(this.valueOf() + totalOffset) 
  }
