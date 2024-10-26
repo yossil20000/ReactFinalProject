@@ -22,7 +22,7 @@ import IReservation, { GetInitReservationAdd, IReservationCreateApi, IReservatio
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
-import { IDateFilter, newDateFilter } from "../../Interfaces/IDateFilter.js";
+import { fullMonthFilter, IDateFilter } from "../../Interfaces/IDateFilter.js";
 import { getDayFilter, getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering.js";
 import DatePickerDate from "../../Components/Buttons/DatePickerDate.js";
 import GeneralDrawer from "../../Components/GeneralDrawer.js";
@@ -47,7 +47,7 @@ import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/Co
 import CalanderViewMonth, { IDisplayCell } from "../../Components/Calander/CalanderViewMonth";
 import { DateTime } from "luxon";
 
-const dateFilter: IDateFilter = newDateFilter;
+const dateFilter: IDateFilter = fullMonthFilter;
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
   device_name: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;

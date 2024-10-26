@@ -23,6 +23,11 @@ export const fullYearFilter: IDateFilter = {
   to: (new Date()).getEndOfYear(),
   currentOffset: 0
 }
+export const fullMonthFilter: IDateFilter = {
+  from: (new Date()).getStartMonth(),
+  to: (new Date()).getEndMonth(),
+  currentOffset: 0
+}
 export const newQuarterDateFilter: IQuarterDateFilter = {
   from: (new Date()).getStartOfYear(),
   to: (new Date()).getEndOfYear(),
