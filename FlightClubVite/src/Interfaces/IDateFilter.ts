@@ -24,8 +24,8 @@ export const fullYearFilter: IDateFilter = {
   currentOffset: 0
 }
 export const fullMonthFilter: IDateFilter = {
-  from: (new Date()).getStartMonth(),
-  to: (new Date()).getEndMonth(),
+  from: (new Date()).getStartMonth().addDays(-1),
+  to: (new Date()).getEndMonth().addDays(4),
   currentOffset: 0
 }
 export const newQuarterDateFilter: IQuarterDateFilter = {
