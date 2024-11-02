@@ -14,7 +14,6 @@ import LogoutPage from '../Pages/Login/LogoutPage'
 import ResetPage from '../Pages/Login/ResetPage'
 import MembersTablePage from '../Pages/Members/MembersTablePage'
 import ProfilePage from '../Pages/Profile/ProfilePage'
-import ReservationsPageOld from '../Pages/Reservations/ReservationsPageOld'
 import ReservationsPage from '../Pages/Reservations/ReservationsPage'
 import RegistrationPage from '../Pages/Resistration/RegistrationPage'
 import NotificationPage from '../Pages/UserAccount/Notification'
@@ -109,7 +108,7 @@ export function PagesRouter() {
           <Route path="/account" element={<AccountPage></AccountPage>} />
         </Route>
         <Route element={<RequireAuth roles={[Role.user, Role.desk, Role.admin, Role.account]} />}>
-          <Route path="/reservationsOld" element={<ReservationsPageOld></ReservationsPageOld>} />
+          {/* <Route path="/reservationsOld" element={<ReservationsPageOld></ReservationsPageOld>} /> */}
           <Route path="/reservations" element={<ReservationsPage></ReservationsPage>} />
           <Route path='gallery' element={<GalleryPage></GalleryPage>} />
           <Route path="/logout" element={<LogoutPage></LogoutPage>} />

@@ -104,7 +104,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
     let date_to = new Date(newDate).addHours(1)
-    setReservationUpdate(prev => ({ ...prev, date_from: newDate }))
+    setReservationUpdate(prev => ({ ...prev, date_from: newDate,timeOffset: newDate.getTimezoneOffset(),time_from: newDate.getTime() }))
     const errors = validate({date_from: newDate, date_to:date_to })
     setValidator(errors)
   };
@@ -112,8 +112,8 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
   const handleToDateFilterChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
-    setReservationUpdate(prev => ({ ...prev, date_to: newDate }))
-    const errors = validate({date_from: reservationUpdate.date_from  , date_to: newDate })
+    setReservationUpdate(prev => ({ ...prev, date_to: newDate, time_to: newDate.getTime()}))
+    const errors = validate({date_from: reservationUpdate.date_from  , date_to: newDate})
     setValidator(errors)
   };
 

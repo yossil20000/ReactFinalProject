@@ -212,6 +212,9 @@ function ReservationsPage() {
       reservationUpdateIntitial.date_to = reservation[0].date_to;
       reservationUpdateIntitial.device_name = reservation[0].device_name;
       reservationUpdateIntitial.member_name = `${reservation[0].name} ${reservation[0].member_id}`
+      reservationUpdateIntitial.time_from = reservation[0].date_from.getTime()
+      reservationUpdateIntitial.timeOffset = reservation[0].date_from.getTimezoneOffset()
+      reservationUpdateIntitial.time_to = reservation[0].date_to.getTime()
       setReservationUpdate(reservationUpdateIntitial);
     }
   }
@@ -783,7 +786,7 @@ function ReservationsPage() {
       </div>
       <div className='footer' style={{ overflow: 'hidden', height: 'auto' }}>
         <TablePagination
-          rowsPerPageOptions={[1, 5, 10, 25]}
+          rowsPerPageOptions={[25, 50, 100]}
           component="div"
           count={rows ? rows.length : 0}
           rowsPerPage={rowsPerPage}
