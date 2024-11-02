@@ -319,7 +319,7 @@ exports.reservation_update = [
 				}).lean().exec();
 				if (found.length == 0 || (found.length == 1 && found[0]._id.toString() == results._id)) {
 
-					const results = await FlightReservation.findOneAndUpdate({ _id: req.body._id }, { date_from: req.body.date_from, date_to: req.body.date_to, timeOffset: req.body.timeOffset }).populate('device member')
+					const results = await FlightReservation.findOneAndUpdate({ _id: req.body._id }, { date_from: req.body.date_from, date_to: req.body.date_to, timeOffset: req.body.timeOffset,time_from: req.body.time_from,time_to: req.body.time_to }).populate('device member')
 					notifyMessage = `Flight from: ${results.date_from} to: ${results.date_to} \n Changed to Flight From: ${req.body.date_from} To: ${req.body.date_to}\n on device: ${results.device.device_id} by: ${results.member.full_name}`
 					await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CHANGED, notifyMessage)
 					return res.status(201).json({ success: true, errors: [], data: [] });
