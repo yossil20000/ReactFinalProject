@@ -34,11 +34,11 @@ function DeviceMemberCombo(props: ComboPropsEx) {
     }
   }, [data?.data, isError,filter])
   useEffect(() => {
-    if(deviceCanreservItems && deviceCanreservItems.length > 0 && selectedDeviceCanreserv && !selectedDeviceCanreserv?._id)
+    if(deviceCanreservItems && deviceCanreservItems.length > 0)
       {
         setSelectedDeviceCanreserv(deviceCanreservItems[0])
-        if(deviceCanreservItems[0]._id.length > 0)
-          onChanged(deviceCanreservItems[0])
+       /*  if(deviceCanreservItems[0]._id.length > 0) */
+         /*  onSelectedItem(deviceCanreservItems[0]) */
       }
   }, [deviceCanreservItems])
 
