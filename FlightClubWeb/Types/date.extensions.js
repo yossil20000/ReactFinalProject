@@ -202,3 +202,11 @@ Date.prototype.dateWithoutTimezone = function ()  {
  Date.prototype.toGMT = function() {
    return new Date(this.toLocaleString('en', {timeZone: 'GMT'}))
  }
+ Date.prototype.getOffsetDate = function(offset)  {
+   if(!offset){
+    offset = this.getTimezoneOffset()
+   }
+   const totalOffset  = (this.getTimezoneOffset() - offset) * 60000
+   console.log("getOffsetDate/offset,totalOffset",offset,totalOffset)
+   return new Date(this.valueOf() + totalOffset) 
+  }

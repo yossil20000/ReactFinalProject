@@ -15,7 +15,7 @@ const sendNotification =  async (event,notifyWhen,message) => {
       const results = await aggregate.unwind('$notify').match(filter.filter).project(filter.select)
       .exec();
       results.forEach((item) => {
-        mail.SendMail(item.member.email,`Notification: ${event} ${notifyWhen}` ,`Hello ${item.member.fullName} \n ${message}` )
+        mail.SendMail(item.member.email,`Notification: ${event} ${notifyWhen}` ,``,`<h1>Hello ${item.member.fullName}</h1>${message}` )
         .then(() => {
           log.info("Send Mail to:", item.member.email);
            

@@ -1,3 +1,4 @@
+require('../Types/date.extensions')
 const Device = require('../Models/device');
 const Member = require('../Models/member');
 const constants = require('../Models/constants')
@@ -36,27 +37,28 @@ exports.reservation_list = function (req, res, next) {
 		log.info('reservation_list/params', req.query);
 		let from = new Date(req.query.from);
 		let to = new Date(req.query.to);
-		let filter = { 
+		let filter = {
 			$or: [
-				{date_to: { $gte: from, $lte: to }},
-				{date_from: { $gte: from, $lte: to }},
-			] };
+				{ date_to: { $gte: from, $lte: to } },
+				{ date_from: { $gte: from, $lte: to } },
+			]
+		};
 		if (isNaN(from) || isNaN(to)) {
 			filter = {}
 		}
-/* 		const found = FlightReservation.find({
-			$and: [
-				{ device: newReservation.device },
-				{
-					date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) }
-
-					$or: [
-						{ $and: [{ data_to: { $lte: new Date(to) } }, { date_to: { $gte: new Date(from) } }] },
-						{ $and: [{ data_from: { $lte: newReservation._doc.date_from } }, { date_to: { $gte: newReservation._doc.date_from } }] }
-					] 
-				}
-			]
-		}).exec(); */
+		/* 		const found = FlightReservation.find({
+					$and: [
+						{ device: newReservation.device },
+						{
+							date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) }
+		
+							$or: [
+								{ $and: [{ data_to: { $lte: new Date(to) } }, { date_to: { $gte: new Date(from) } }] },
+								{ $and: [{ data_from: { $lte: newReservation._doc.date_from } }, { date_to: { $gte: newReservation._doc.date_from } }] }
+							] 
+						}
+					]
+				}).exec(); */
 		FlightReservation.find(filter)
 			.populate('device')
 			.populate({ path: "member", select: "-password" })
@@ -170,8 +172,13 @@ exports.reservation_delete = function (req, res, next) {
 								res.status(400).json({ success: false, errors: [err], data: doc });
 							}
 							else {
-								const notifyMessage = `Flight from: ${doc.date_from} to: ${doc.date_to} \n on device: ${doc.device.device_id} by: ${doc.member.full_name}`
-								sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.DELETED, notifyMessage)
+								const message = `<div>
+								<h3><b><u>Flight Reservation Deleted</u></b></h3>
+								<p><b><u>Airplane:</u></b> ${doc.device.device_id}</p>
+								<p><b><u>From:</u></b> ${new Date(doc.date_from).getOffsetDate(doc.timeOffset)}</p>
+								<p><b><u>To:</u></b> ${new Date(doc.date_to).getOffsetDate(doc.timeOffset)}</p>
+								<p><b><u>By:</u></b> ${doc.member.full_name}</p></div>`
+								sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.DELETED, message)
 								res.status(201).json({ success: true, errors: ["delete"], data: doc });
 							}
 							return;
@@ -215,7 +222,7 @@ exports.reservation_create = [
 				res.status(400).json({ success: false, errors: ["Member or Device Not Exist"], data: [] });
 				return;
 			}
-			
+
 			let newReservation = new FlightReservation({
 				date_from: new Date(req.body.date_from),
 				date_to: new Date(req.body.date_to),
@@ -232,10 +239,10 @@ exports.reservation_create = [
 					{
 						/* date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } */
 
-						 $or: [
-							{date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) }},
-							{time_from: { "$lte": new Date(newReservation._doc.date_to.getTime()) }, time_to: { "$gte": new Date(newReservation._doc.date_from).getTime() }}
-						] 
+						$or: [
+							{ date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } },
+							{ time_from: { "$lte": new Date(newReservation._doc.date_to.getTime()) }, time_to: { "$gte": new Date(newReservation._doc.date_from).getTime() } }
+						]
 					}
 				]
 			}).exec();
@@ -264,8 +271,14 @@ exports.reservation_create = [
 					}
 				}); */
 				const memberSave = await member.save()
+				const message = `<div>
+    <h3><b><u>Flight Reservation Created</u></b></h3>
+    <p><b><u>Airplane:</u></b> ${device.device_id}</p>
+    <p><b><u>From:</u></b> ${new Date(newReservation.date_from).getOffsetDate(newReservation.timeOffset)}</p>
+    <p><b><u>To:</u></b> ${new Date(newReservation.date_to).getOffsetDate(newReservation.timeOffset)}</p>
+    <p><b><u>By:</u></b> ${member.full_name}</p></div>`
 
-				const notifyResult = await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CREATED, `Flight from: ${newReservation.date_from} to: ${newReservation.date_to} \n on device: ${device.device_id} by: ${member.full_name}`);
+				const notifyResult = await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CREATED, message);
 				log.info("FindSameFlight/end/flightNotification", newReservation.flightNotification);
 				res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
 				log.info("FindSameFlight/end/created", newReservation.flightNotification);
@@ -311,17 +324,28 @@ exports.reservation_update = [
 						{ device: deviceFound._id },
 						{
 							$or: [
-								{date_from: { "$lte": new Date(req.body.date_to) }, date_to: { "$gte": new Date(req.body.date_from) }},
-								{time_from: { "$lte": new Date(req.body.date_to).getTime() }, time_to: { "$gte": new Date(req.body.date_from).getTime() }}
-							] 
+								{ date_from: { "$lte": new Date(req.body.date_to) }, date_to: { "$gte": new Date(req.body.date_from) } },
+								{ time_from: { "$lte": new Date(req.body.date_to).getTime() }, time_to: { "$gte": new Date(req.body.date_from).getTime() } }
+							]
 						}
 					]
 				}).lean().exec();
 				if (found.length == 0 || (found.length == 1 && found[0]._id.toString() == results._id)) {
 
-					const results = await FlightReservation.findOneAndUpdate({ _id: req.body._id }, { date_from: req.body.date_from, date_to: req.body.date_to, timeOffset: req.body.timeOffset,time_from: req.body.time_from,time_to: req.body.time_to }).populate('device member')
+					const results = await FlightReservation.findOneAndUpdate({ _id: req.body._id }, { date_from: req.body.date_from, date_to: req.body.date_to, timeOffset: req.body.timeOffset, time_from: req.body.time_from, time_to: req.body.time_to }).populate('device member')
 					notifyMessage = `Flight from: ${results.date_from} to: ${results.date_to} \n Changed to Flight From: ${req.body.date_from} To: ${req.body.date_to}\n on device: ${results.device.device_id} by: ${results.member.full_name}`
-					await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CHANGED, notifyMessage)
+					const message = `<div>
+    <h3><b><u>Flight Reservation Changed</u></b></h3>
+    <p><b><u>Airplane:</u></b> ${results.device.device_id}</p>
+		<p><b><u>Flight:</u></b></p>
+    <p><b><u>From:</u></b> ${new Date(results.date_from).getOffsetDate(results.timeOffset)}</p>
+    <p><b><u>To:</u></b> ${new Date(results.date_to).getOffsetDate(results.timeOffset)}</p>
+		<p><b><u>Flight Updated to:</u></b></p>
+		<p><b><u>From:</u></b> ${new Date(req.body.date_from).getOffsetDate(results.timeOffset)}</p>
+    <p><b><u>To:</u></b> ${new Date(req.body.date_to).getOffsetDate(results.timeOffset)}</p>
+    <p><b><u>By:</u></b> ${results.member.full_name}</p></div>`
+
+					await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CHANGED, message)
 					return res.status(201).json({ success: true, errors: [], data: [] });
 				}
 				else {
