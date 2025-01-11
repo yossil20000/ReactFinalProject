@@ -22,7 +22,7 @@ import IReservation, { GetInitReservationAdd, IReservationCreateApi, IReservatio
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
-import { fullMonthFilter, IDateFilter } from "../../Interfaces/IDateFilter.js";
+import { fullMonthFilter, getFullMonthFilter, IDateFilter } from "../../Interfaces/IDateFilter.js";
 import { getDayFilter, getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering.js";
 import DatePickerDate from "../../Components/Buttons/DatePickerDate.js";
 import GeneralDrawer from "../../Components/GeneralDrawer.js";
@@ -192,7 +192,7 @@ function ReservationsPage() {
   const [viewMode, setViewMode] = useState<EviewMode>(EviewMode.E_VM_MONTH);
   const [dateRef, setDateRef] = useState(new Date())
   const [openFilter, setOpenFilter] = useState(false)
-  const [filterDate, setFilterDate] = useState<IReservationFilterDate>(dateFilter as IReservationFilterDate);
+  const [filterDate, setFilterDate] = useState<IReservationFilterDate>(getFullMonthFilter(new Date()) as IReservationFilterDate);
   const [openReservationAdd, setOpenReservationAdd] = useState(false);
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const { data: reservations, isError, isLoading, isSuccess, error, refetch } = useFetchAllReservationsQuery(filterDate);
@@ -244,7 +244,7 @@ function ReservationsPage() {
 
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [isFilterOwner, setIsFilterOwner] = useState(false);
  useEffect(() => {
   CustomLogger.info("useEffect/filterDate", filterDate)
@@ -366,11 +366,7 @@ function ReservationsPage() {
   const OnMonthViewDateChange = (date: Date) => {
     CustomLogger.log("ReservationPage/OnMonthViewDateChange", date)
     setDateRef(date)
-    const newFilter: IReservationFilterDate = {
-      from: date.getStartMonth(),
-      to: date.getEndMonth(),
-      currentOffset: 0
-    }
+    const newFilter: IReservationFilterDate = getFullMonthFilter(date) as IReservationFilterDate;
     setFilterDate(newFilter)
     /* refetch() */
     CustomLogger.log("ReservationPage/OnMonthViewDateChange_newFilter", newFilter)

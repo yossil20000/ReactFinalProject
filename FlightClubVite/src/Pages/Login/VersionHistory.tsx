@@ -61,6 +61,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 40,version: "2.0.15.7",date: new Date(2024,10,26).getDisplayDate() , "description" : "Fix CalanderView.Reservation not shown(filter problem)","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 41,version: "2.0.15.8",date: new Date(2024,10,29).getDisplayDate() , "description" : "Fix CalanderView Flight end month","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 42,version: "2.0.15.9",date: new Date(2024,11,2).getDisplayDate() , "description" : "Fix UpdateReservation, missing timezone","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 43,version: "2.0.15.10",date: new Date(2025,1,11).getDisplayDate() , "description" : "Fix MonthView filter. Fix CreateReservation Member Selection","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     
   ]
   function CustomToolbar() {

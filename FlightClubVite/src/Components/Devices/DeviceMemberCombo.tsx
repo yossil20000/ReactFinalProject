@@ -34,14 +34,18 @@ function DeviceMemberCombo(props: ComboPropsEx) {
     }
   }, [data?.data, isError,filter])
   useEffect(() => {
-    if(!selectedDeviceCanreserv?._id)
-      setSelectedDeviceCanreserv(deviceCanreservItems[0])
+    if(deviceCanreservItems && deviceCanreservItems.length > 0 && selectedDeviceCanreserv && !selectedDeviceCanreserv?._id)
+      {
+        setSelectedDeviceCanreserv(deviceCanreservItems[0])
+        if(deviceCanreservItems[0]._id.length > 0)
+          onChanged(deviceCanreservItems[0])
+      }
   }, [deviceCanreservItems])
 
   useEffect(() => {
-    if(selectedItem)
+    if(selectedItem && selectedItem?._id?.length > 0)
     onSelectedItem(selectedItem)
-    if (selectedDeviceCanreserv)
+    if (selectedDeviceCanreserv && selectedDeviceCanreserv?._id?.length > 0)
       onChanged(selectedDeviceCanreserv)
   }, [selectedItem])
 

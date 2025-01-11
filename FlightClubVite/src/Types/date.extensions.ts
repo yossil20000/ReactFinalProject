@@ -43,8 +43,7 @@ declare global {
 }
 
 Date.prototype.getStartMonth = function() : Date{
-   this.getFirstDateOfMonth(this.getFullYear(),this.getMonth())
-   return this
+   return this.getFirstDateOfMonth(this.getFullYear(),this.getMonth()) 
 }
 Date.prototype.getEndMonth = function() : Date{
    

@@ -273,7 +273,7 @@ exports.reservation_create = [
 			}
 			else {
 				log.info("Create/else_found", found?._doc);
-				return next(new ApplicationError("reservation_create", 400, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist (${found?._doc.date_from.toLocaleString()} -${found?._doc.date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
+				return next(new ApplicationError("reservation_create", 409, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist (${found?._doc.date_from.toLocaleString()} - ${found?._doc.date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
 
 			}
 		}

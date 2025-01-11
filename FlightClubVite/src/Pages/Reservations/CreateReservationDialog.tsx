@@ -55,8 +55,8 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
   const [alert, setAlert] = useState<ITransitionAlrertProps>(transitionAlertInitial);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [deviceDescription, setDeviceDescription] = useState("");
-  const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({} as InputComboItem)
-  const [selectedMember, setSelectedMember] = useState<InputComboItem>({} as InputComboItem)
+  const [selectedDevice, setSelectedDevice] = useState<InputComboItem>({  _id: "",lable: "",description: "",key: "",key2: ""} as InputComboItem)
+  const [selectedMember, setSelectedMember] = useState<InputComboItem>({  _id: "",lable: "",description: "",key: "",key2: ""} as InputComboItem)
   const [validator,setValidator] = useState<validationError>({
     date_from: "",
     date_to: "",
