@@ -105,15 +105,15 @@ function AccountReportsTab() {
   }
   
   function getTransactionFilter(quarterFilter: IQuarterDateFilter) : ITransactionTableFilter {
-    const filter :ITransactionTableFilter = {
+    const transactioFilter :ITransactionTableFilter = {
       dateFilter: {
-        from: quarterFilter.from,
-        to: quarterFilter.to,
-        currentOffset: quarterFilter.currentOffset
+        from: filter.from,
+        to: filter.to,
+        currentOffset: filter.currentOffset
       }
 
     }
-    return filter;
+    return transactioFilter;
   }
   return (
     <ContainerPage>

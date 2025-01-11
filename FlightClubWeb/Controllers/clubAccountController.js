@@ -169,7 +169,7 @@ exports.add_order_transaction = [
   body('payment.method').isLength({ min: 1 }).withMessage("Payment methos is missing"),
   async (req, res, next) => {
     try {
-
+      
       let { source, destination, amount, order, description, type ,date} = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -825,7 +825,7 @@ exports.add_transaction_payment = [
         await session.commitTransaction();
         const savedCA = await ClubAccount.find().populate('transactions')
         log.info("savedCA", savedCA)
-        await send_recipe(destinationAccount.member.contact.email,sourceTransaction);
+        await send_recipe(/* destinationAccount.member.contact.email */"yos.1965@gmail.com",sourceTransaction);
         
         return res.status(201).json({ success: true, errors: ["add_transaction success"], data: [] })
       }

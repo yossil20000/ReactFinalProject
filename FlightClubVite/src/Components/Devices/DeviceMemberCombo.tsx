@@ -34,7 +34,7 @@ function DeviceMemberCombo(props: ComboPropsEx) {
     }
   }, [data?.data, isError,filter])
   useEffect(() => {
-    if(deviceCanreservItems && deviceCanreservItems.length > 0)
+    if(!filter && deviceCanreservItems && deviceCanreservItems.length > 0)
       {
         setSelectedDeviceCanreserv(deviceCanreservItems[0])
        /*  if(deviceCanreservItems[0]._id.length > 0) */
@@ -45,7 +45,7 @@ function DeviceMemberCombo(props: ComboPropsEx) {
   useEffect(() => {
     if(selectedItem && selectedItem?._id?.length > 0)
     onSelectedItem(selectedItem)
-    if (selectedDeviceCanreserv && selectedDeviceCanreserv?._id?.length > 0)
+    if (!filter && selectedDeviceCanreserv && selectedDeviceCanreserv?._id?.length > 0)
       onChanged(selectedDeviceCanreserv)
   }, [selectedItem])
 

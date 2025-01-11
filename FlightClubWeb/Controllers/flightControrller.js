@@ -385,7 +385,7 @@ const isEngienValid = async (_id, req) => {
         }
       ]
     }).exec();
-    log.info("isFlightValid/found", found?._doc)
+
     return found?._doc === undefined;
   }
   catch (error) {

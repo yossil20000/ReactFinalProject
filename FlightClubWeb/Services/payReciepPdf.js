@@ -24,7 +24,9 @@ exports.send_recipe = async function (email, transaction) {
     row = 20;
     doc.text(`Recipe : ${ref.reciepeId}`,100,nextRow());
     doc.text(`Date : ${new Date().getDisplayDate()}`,100,nextRow());
-    
+    nextRow()
+    nextRow()
+    doc.text(`Recipe For: ${transaction.destination}`,50,nextRow());
     doc.autoTable({
       startY: nextRow() + 10,
       header: "cxxx",

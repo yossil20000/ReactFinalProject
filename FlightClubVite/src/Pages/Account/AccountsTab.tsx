@@ -57,7 +57,7 @@ function AccountsTab() {
   const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const handleChangePage = (event: unknown, newPage: number) => { setPage(newPage); };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
@@ -331,7 +331,7 @@ function AccountsTab() {
             <Grid container>
               <Grid item xs={12}>
                 <TablePagination
-                  rowsPerPageOptions={[1, 5, 10, 25, 100]}
+                  rowsPerPageOptions={[1, 5, 15, 25, 100]}
                   component="div"
                   count={getData.filter(filterAccount).length}
                   rowsPerPage={rowsPerPage}
