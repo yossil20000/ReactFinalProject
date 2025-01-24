@@ -25,8 +25,8 @@ import ReportDialog from '../../Components/Report/Exel/ReportDialog';
 const flightSummaryProperty: IFlightSummaryFilter = {
   from: new Date(),
   to: new Date(),
-  status: FlightStatus.FS_Active,
-  member_type: MemberType.MT_Pilot
+  status: FlightStatus.CLOSE,
+  member_type: MemberType.Member
 }
 type RowItem = {
   id: string;

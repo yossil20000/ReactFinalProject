@@ -13,7 +13,7 @@ export enum FlightStatus {
     CREATED = "CREATED",
     CLOSE = "CLOSE",
     PAYED = "PAYED",
-    FS_Active = "FS_Active"
+    //FS_Active = "FS_Active"
 }
 interface IFlightBase {
     description: string;
