@@ -4,12 +4,12 @@ import cgc from '/src/Asset/images/IMG-CGC-1.jpg'
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
 import { GridExpandMoreIcon } from '@mui/x-data-grid'
 import { useFetchDeviceReportQuery } from '../../features/Device/deviceApiSlice'
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace'
+
 
 function DeviceReport() {
   const { data, isError, error, isLoading } = useFetchDeviceReportQuery("4XCGC")
   console.log("DeviceReport/data", data)
-  function getSummary(): ReactJSXElement {
+  function getSummary(): JSX.Element {
     if (isLoading) {
       return (<>Loading</>)
     }
@@ -25,7 +25,7 @@ function DeviceReport() {
     }
     return (<>Unknown</>)
   }
-  function getDetailes(): ReactJSXElement {
+  function getDetailes(): JSX.Element {
     if (isLoading) {
       return (<>Loading</>)
     }

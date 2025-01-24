@@ -4,7 +4,7 @@ import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/Controled
 import { useAppSelector } from '../../app/hooks';
 import { Grid, ToggleButton } from '@mui/material';
 import { UseIsAuthorized } from '../RequireAuth';
-import { Role } from '../../Interfaces/API/IMember';
+import { IMemberCombo, Role, Status } from '../../Interfaces/API/IMember';
 
 interface ComboPropsEx extends ComboProps {
   device: InputComboItem
@@ -26,7 +26,10 @@ function DeviceMemberCombo(props: ComboPropsEx) {
 
   /* const [deviceCanreservItems, setDeviceCanreservItems] = useState<InputComboItem[]>([]);
   const [selectedDeviceCanreserv, setSelectedDeviceCanreserv] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceCanreserv`, undefined); */
-
+  const filterComboMembers = (member: IMemberCombo) : boolean => { 
+    
+    return member.status === Status.Active && (showAllMemebers || member._id == login.member._id);
+  }
   const [selectedComboItems, setSelectedComboItems] = useState<selectedComboItems>(
     {
       selectedDeviceCanreserv: { _id: "", lable: "", description: "", key: "", key2: "" },
@@ -37,7 +40,7 @@ function DeviceMemberCombo(props: ComboPropsEx) {
   useEffect(() => {
     CustomLogger.log("DeviceMemberCombo/ Devices.data", data?.data)
     let items: InputComboItem[] = []
-    data?.data.map((item) => item.can_reservs.filter((i) => showAllMemebers ? true : i._id == login.member._id).map((can_reserv) => (items.push(({ lable: `${can_reserv.family_name}.${can_reserv.first_name.at(0)} ${can_reserv.member_id}`, _id: can_reserv._id, description: "" }) as InputComboItem))));
+    data?.data.map((item) => item.can_reservs.filter(filterComboMembers).map((can_reserv) => (items.push(({ lable: `${can_reserv.family_name}.${can_reserv.first_name.at(0)} ${can_reserv.member_id}`, _id: can_reserv._id, description: "" }) as InputComboItem))));
     /* let items  =   devicesToItemCombo(data?.data[0] === undefined ? [] : data?.data[0]); */
     CustomLogger.info("DeviceMemberCombo/ DeviceItem", items)
     if (items !== undefined && items.length > 0) {

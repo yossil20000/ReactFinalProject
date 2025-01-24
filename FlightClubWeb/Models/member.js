@@ -7,10 +7,21 @@ const SALT_WORK_FACTOR = 10;
 
 
 const {DateTime} = require('luxon');
+const { QuarterType } = require('./constants');
 
 var Schema = mongoose.Schema;
 var FlightsSummarySchema = new Schema({
     year: {type: String, require: true},
+    quarter: {
+        type: [{type: mongoose.Decimal128 ,default: 0, get: getDecimal}],
+        default: [0, 0.0, 0.0, 0.0],
+        validate: {
+          validator: function(v) {
+            return v.length === 4 && v.every(val => !isNaN(val)); 
+          },
+          message: 'Decimal array must have 4 values and all values must be numbers.'
+        }
+      },
     total: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
 },{toJSON: {getters: true}})
 

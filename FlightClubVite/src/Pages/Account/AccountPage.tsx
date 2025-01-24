@@ -7,6 +7,7 @@ import AccountOrders from "./AccountOrdersTab";
 import AccountsTab from "./AccountsTab";
 import AccountTransactionsTab from "./AccountTransactionsTab";
 import AccountReportsTab from "./AccountReportsTab";
+import AccountStatisticTab from "./AccountStatisticTab";
 
 const items: ScrollableTabsItem[] = [
   { id: 0, label: "Member Flights" },
@@ -14,7 +15,8 @@ const items: ScrollableTabsItem[] = [
   { id: 2, label: "Club Expense" },
   { id: 3, label: "Transactions" },
   { id: 4, label: "Report" },
-  { id: 5, label: "Accounts" },
+  { id: 4, label: "Statistic" },
+  { id: 6, label: "Accounts" },
  /*  { id: 5, label: "ExpenseGrid" } */
 ]
 
@@ -33,13 +35,13 @@ function AccountPage() {
         {/* <MembersContext.Provider value={{ selectedItem: selectedMember, setSelectedItem: setSelectedMember, members: members?.data }}> */}
         <Box height={"100%"} sx={{backgroundColor: "white"}}>
             <Paper style={{height: "100%"}}>
-              {value === 5 && (<AccountsTab/>)}
+              {value === 6 && (<AccountsTab/>)}
               {value === 0 && (<AccountFlightsTab/>)}
               {value === 2 && (<AccountExpenseTab/>)}
               {value === 1 && (<AccountOrders/>)}
               {value === 3 && (<AccountTransactionsTab/>)}
               {value === 4 && (<AccountReportsTab/>)}
-              
+              {value === 5 && (<AccountStatisticTab/>)}
              {/*  {value === 5 && (<AccountExpenseGridTab/>)} */}
               {/* {value === 5 && (<AccountTest/>)} */}
 

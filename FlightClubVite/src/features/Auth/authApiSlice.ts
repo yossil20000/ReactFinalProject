@@ -1,4 +1,3 @@
-import base from "@emotion/styled/types/base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {  getServerAddress } from "../../Enums/Routers";
 import {  URLS } from "../../Enums/Urls";

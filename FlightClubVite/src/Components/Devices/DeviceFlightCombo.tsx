@@ -1,73 +1,74 @@
-import { useEffect, useState,useId } from 'react'
+import { useEffect, useState, useId } from 'react'
 import { useFetchDevicsComboQuery } from '../../features/Device/deviceApiSlice';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { IDeviceCombo, IDeviceComboFilter } from '../../Interfaces/API/IDevice'
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
-const filterCombo : IDeviceComboFilter = {
-filter: {
-  status: Status.Active
-}
+const filterCombo: IDeviceComboFilter = {
+  filter: {
+    status: Status.Active
+  }
 }
 export interface IDeviceFlightComboProps {
-  onChanged: (item: InputComboItem,has_hobbs: boolean) => void;
+  onChanged: (item: InputComboItem, has_hobbs: boolean) => void;
   source: string;
   selectedItem?: InputComboItem;
   filter?: any;
 }
-function DevicesFlightCombo(props : IDeviceFlightComboProps) {
-  const {onChanged,source,filter} = props
+function DevicesFlightCombo(props: IDeviceFlightComboProps) {
+  const { onChanged, source, filter } = props
   const { data, isError, isLoading, error } = useFetchDevicsComboQuery(filter !== undefined ? filterCombo : {});
-  
-  const [devicesItems,setDevicesItem] = useState<InputComboItem[]>([]);
-  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`_${source}/Device`,undefined);
 
-  function getDeviceDetailed(_id: string | undefined) : string {
+  const [devicesItems, setDevicesItem] = useState<InputComboItem[]>([]);
+  const [selectedDevice, setSelectedDevice] = useLocalStorage<InputComboItem | undefined>(`_${source}/Device`, undefined);
+
+  function getDeviceDetailed(_id: string | undefined): string {
     CustomLogger.log("getDeviceDetailed", _id)
-    if(_id === undefined)
+    if (_id === undefined)
       return "";
-     const device : IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
-     if(device)
-     {
-      CustomLogger.info("getDeviceDetailed/dvice",device)
+    const device: IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
+    if (device) {
+      CustomLogger.info("getDeviceDetailed/dvice", device)
       return `Current TACH: ${device.engien_meter} Next Service: ${device.maintanance.next_meter}`
-     }
-     return "";
+    }
+    return "";
   }
   const devicesToItemCombo = (input: IDeviceCombo): InputComboItem => {
-    
-    return {  lable: input.device_id, _id: input._id,description: getDeviceDetailed(input._id) }
+
+    return { lable: input.device_id, _id: input._id, description: getDeviceDetailed(input._id) }
   }
-  CustomLogger.log("DevicesFlightCombo/selectedDevice" , selectedDevice)
+  CustomLogger.log("DevicesFlightCombo/selectedDevice", selectedDevice)
   useEffect(() => {
     CustomLogger.info("DevicesFlightCombo/ Devices.data", data?.data)
-    
-    let items  =   data?.data.map((item) => {
+
+    let items = data?.data.map((item) => {
       CustomLogger.info("DevicesFlightCombo/ DeviceItemMap", item)
       return devicesToItemCombo(item)
     });
     CustomLogger.info("DevicesFlightCombo/ DeviceItem", items)
-    if (items !== undefined)
+    if (items !== undefined && items.length > 0) {
       setDevicesItem(items);
-    if(isError){
-        CustomLogger.error("DevicesFlightCombo/error", error)
+      setSelectedDevice(items[0])
     }
-  }, [data?.data,isError])
-  useEffect(()=> {
-    if(selectedDevice){
+    if (isError) {
+      CustomLogger.error("DevicesFlightCombo/error", error)
+    }
+  }, [data?.data, isError])
+  useEffect(() => {
+    if (selectedDevice) {
       const hasHobbs = data?.data.find((device) => selectedDevice._id === device._id)?.has_hobbs;
-      onChanged(selectedDevice,hasHobbs === undefined ? false : hasHobbs)
+      onChanged(selectedDevice, hasHobbs === undefined ? false : hasHobbs)
     }
-      
-  },[])
-  const onSelectedItem = (item : InputComboItem) => {
+
+  }, [])
+  const onSelectedItem = (item: InputComboItem) => {
     const hasHobbs = data?.data.find((device) => item._id === device._id)?.has_hobbs;
     setSelectedDevice(item);
     CustomLogger.log("DevicesFlightCombo/ DeviceItem", item)
-    onChanged(item,hasHobbs === undefined ? false : hasHobbs)
+    onChanged(item, hasHobbs === undefined ? false : hasHobbs)
   }
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedDevice === undefined ? null : selectedDevice}  items={devicesItems} /* handleComboChange={handleDeviceOnChange} */ title="Devices" />
+    <ControledCombo onSelectedItem={onSelectedItem} selectedItem={selectedDevice === undefined ? null : selectedDevice} items={devicesItems} /* handleComboChange={handleDeviceOnChange} */ title="Devices" />
   )
 }
 

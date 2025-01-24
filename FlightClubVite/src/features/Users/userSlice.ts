@@ -150,7 +150,7 @@ export const apiSlice = createApi({
             }),
             flightSummary: builder.mutation<IResultBaseSingle<IMemberFlightSummary>,IFlightSummaryFilter>({
                 query: (filter) => ({
-                    url:``,
+                    url:`/${URLS.MEMBER_FLIGHT_SUMMARY}`,
                     method: "PUT",
                     body: filter
                 })

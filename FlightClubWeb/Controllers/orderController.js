@@ -1,4 +1,5 @@
 const log = require('debug-level').log('OrderController');
+const {convertDecimal128ArrayToNumbers} = require('../Utils/mongooseTypeConverter');
 const { body, param, validationResult } = require('express-validator');
 const { ApplicationError } = require('../middleware/baseErrors');
 const Order = require('../Models/order');
@@ -94,9 +95,17 @@ exports.order_create = [
       if (req.body.orderType.referance === "Flight") {
         //positional operator
         const year = new Date(req.body.order_date).getFullYear();
+        const quarter1 = new Date(req.body.order_date).getQuarter();
         let member = await Member.find({_id: req.body.member._id,"flights_summary.year": year})
+        let newQuarter = [0,0,0,0];
         if(member.length == 0){
           member = await Member.updateOne({_id: req.body.member._id},{$addToSet: {flights_summary: {year: year,total:0}}})
+        }
+        else{
+            console.log("member",member[0].flights_summary.toObject()) 
+            let flights_summary = member[0].toObject().flights_summary.find((item) => item.year == year);
+            newQuarter = convertDecimal128ArrayToNumbers(flights_summary.quarter);
+            newQuarter[quarter1-1] = newQuarter[quarter1-1] + req.body.units;
         }
         const updated = await Member.updateMany(
           {
@@ -105,6 +114,9 @@ exports.order_create = [
           {
             "$inc": {
               "flights_summary.$[item].total": req.body.units
+            },
+            "$set": {
+              "flights_summary.$[item].quarter": newQuarter
             }
           },
           {

@@ -16,10 +16,10 @@ let mongoose = require('mongoose');
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
-  })
- 
+})
 
-var mongoDB = userArgs[0] === undefined ? process.env.MONGODB_URL : userArgs[0];
+
+var mongoDB = userArgs[0] === undefined ? process.env.MONGODB_TEST_URL : userArgs[0];
 //console.log(mongoDB);
 
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -28,20 +28,24 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
-function flightSummaryCreate(user,flight_summary,cb){
-   
+function flightSummaryCreate(user, flight_summary, cb) {
+
     Member.findOneAndUpdate({ username: user }, { flights_summary: flight_summary })
-    .then((res) => {
-        console.log('findOneAndUpdate / res : ', res);
-        cb(null, res);
-    }).catch((err) => {
-        return cb(err, null);
-    })
+        .then((res) => {
+            console.log('findOneAndUpdate / res : ', res);
+            cb(null, res);
+        }).catch((err) => {
+            return cb(err, null);
+        })
 }
 function createFlightSummary(cb) {
     async.series([
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 5.3
+            },
+            {
                 year: "2023",
                 total: 7.9
             },
@@ -73,11 +77,15 @@ function createFlightSummary(cb) {
                 year: "2016",
                 total: 9.2
             }
-        ]
+            ]
             flightSummaryCreate("User1000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 0
+            },
+            {
                 year: "2023",
                 total: 0
             },
@@ -125,11 +133,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 7.7
             }
-        ]
+            ]
             flightSummaryCreate("User2000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 5.7
+            },
+            {
                 year: "2023",
                 total: 13.2
             },
@@ -177,11 +189,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 16
             }
-        ]
+            ]
             flightSummaryCreate("User3000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 0
+            },
+            {
                 year: "2023",
                 total: 6.5
             },
@@ -229,11 +245,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 6.7
             }
-        ]
+            ]
             flightSummaryCreate("User4000@", flight_summary, callback);
         },
-         function (callback) {
+        function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 0.7
+            },
+            {
                 year: "2023",
                 total: 4.9
             },
@@ -281,11 +301,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 11.9
             }
-        ]
+            ]
             flightSummaryCreate("User5000@", flight_summary, callback);
-        }, 
+        },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 4.3
+            },
+            {
                 year: "2023",
                 total: 18.1
             },
@@ -333,11 +357,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 0
             }
-        ]
+            ]
             flightSummaryCreate("User6000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 7.4
+            },
+            {
                 year: "2023",
                 total: 10.9
             },
@@ -385,11 +413,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 11.3
             }
-        ]
+            ]
             flightSummaryCreate("User7000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 24.7
+            },
+            {
                 year: "2023",
                 total: 20.8
             },
@@ -437,11 +469,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 0
             }
-        ]
+            ]
             flightSummaryCreate("User8000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 2.6
+            },
+            {
                 year: "2023",
                 total: 9.4
             },
@@ -489,11 +525,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 10.5
             }
-        ]
+            ]
             flightSummaryCreate("User9000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 11.9
+            },
+            {
                 year: "2023",
                 total: 4
             },
@@ -541,11 +581,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 10.6
             }
-        ]
+            ]
             flightSummaryCreate("User10000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 9.4
+            },
+            {
                 year: "2023",
                 total: 15.5
             },
@@ -593,11 +637,15 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 0
             }
-        ]
+            ]
             flightSummaryCreate("User11000@", flight_summary, callback);
         },
         function (callback) {
             let flight_summary = [{
+                year: "2024",
+                total: 5.4
+            },
+            {
                 year: "2023",
                 total: 9.7
             },
@@ -645,10 +693,121 @@ function createFlightSummary(cb) {
                 year: "2012",
                 total: 0
             }
-        ]
+            ]
             flightSummaryCreate("User12000@", flight_summary, callback);
         },
-
+        function (callback) {
+            let flight_summary = [{
+                year: "2024",
+                total: 2.9
+            },
+            {
+                year: "2023",
+                total: 0
+            },
+            {
+                year: "2022",
+                total: 0
+            },
+            {
+                year: "2021",
+                total: 0
+            },
+            {
+                year: "2020",
+                total: 0
+            },
+            {
+                year: "2019",
+                total: 0
+            },
+            {
+                year: "2018",
+                total: 0
+            },
+            {
+                year: "2017",
+                total: 0
+            },
+            {
+                year: "2016",
+                total: 0
+            },
+            {
+                year: "2015",
+                total: 0
+            },
+            {
+                year: "2014",
+                total: 0
+            },
+            {
+                year: "2013",
+                total: 0
+            },
+            {
+                year: "2012",
+                total: 0
+            }
+            ]
+            flightSummaryCreate("User26000@", flight_summary, callback);
+        },
+        function (callback) {
+            let flight_summary = [{
+                year: "2024",
+                total: 2
+            },
+            {
+                year: "2023",
+                total: 0
+            },
+            {
+                year: "2022",
+                total: 0
+            },
+            {
+                year: "2021",
+                total: 0
+            },
+            {
+                year: "2020",
+                total: 0
+            },
+            {
+                year: "2019",
+                total: 0
+            },
+            {
+                year: "2018",
+                total: 0
+            },
+            {
+                year: "2017",
+                total: 0
+            },
+            {
+                year: "2016",
+                total: 0
+            },
+            {
+                year: "2015",
+                total: 0
+            },
+            {
+                year: "2014",
+                total: 0
+            },
+            {
+                year: "2013",
+                total: 0
+            },
+            {
+                year: "2012",
+                total: 0
+            }
+        ]
+            flightSummaryCreate("User27000@", flight_summary, callback);
+        },
     ],
         cb
     );
@@ -656,12 +815,12 @@ function createFlightSummary(cb) {
 
 
 readline.question(`Do You Want to Delete (YeS)?`, ans => {
-    
+
     console.log(`Hi ${ans}!`)
 
-    if(ans == 'YeS'){
-        
-       /*  dropCollections(); */
+    if (ans == 'YeS') {
+
+        /*  dropCollections(); */
         async.series([
             /* createMemberships, */
             createFlightSummary,
@@ -675,21 +834,20 @@ readline.question(`Do You Want to Delete (YeS)?`, ans => {
                 }
                 else {
                     console.log('Fligjt_summary: ');
-        
+
                 }
                 // All done, disconnect from database
                 mongoose.connection.close();
             });
-        
-        
+
+
 
     }
-    else
-    {
+    else {
         throw "Exit";
     }
     readline.close();
-  });
+});
 
 
 

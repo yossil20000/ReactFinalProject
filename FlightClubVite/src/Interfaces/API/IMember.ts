@@ -16,7 +16,8 @@ export enum Gender {
 export enum MemberType{
     Supplier ="Supplier",
     Member  = "Member",
-    Club = "Club" 
+    Club = "Club", 
+    MT_Pilot = "MT_Pilot"
 }
 export enum Status {
     "Active" = "Active","Suspended" = "Suspended","Removed"="Removed"
@@ -31,6 +32,7 @@ export enum Role{
 }
 export interface IFlightSummary {
     year: string;
+    quarter: [number];
     total: number;
     _id: string;
 }

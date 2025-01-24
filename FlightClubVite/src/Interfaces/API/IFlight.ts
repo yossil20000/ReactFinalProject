@@ -12,7 +12,8 @@ export interface IFlightFilterDate extends IDateFilter {
 export enum FlightStatus {
     CREATED = "CREATED",
     CLOSE = "CLOSE",
-    PAYED = "PAYED"
+    PAYED = "PAYED",
+    FS_Active = "FS_Active"
 }
 interface IFlightBase {
     description: string;
