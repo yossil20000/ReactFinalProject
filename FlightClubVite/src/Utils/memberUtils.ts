@@ -1,7 +1,7 @@
 import { LeakRemove } from "@mui/icons-material";
 import { IExportExelTable } from "../Components/Report/Exel/ExportExelTable";
 import { IFlightSummary, IMemberFlightSummary } from "../Interfaces/API/IMember";
-import _ from 'lodash'; 
+import _ from 'lodash';
 export type FlightStatistic = {
   _id: string;
   family_name: string,
@@ -16,6 +16,7 @@ export type FlightStatisticSummary = {
   total_last_years: number;
   total_this_years: number;
   totat_last_year_quarters: number[];
+  last_year_name?: string;
 }
 type fixSummary = {
   _id: string;
@@ -44,36 +45,36 @@ function checkFlightSummaryData(data: IMemberFlightSummary): fixSummaryFlight {
     }
     return result;
   })
-  
+
   return { fixSummaryFlight: statistic_list, max_year_name: max_year_name };
 }
 function fixFlightSummaryData(data: IMemberFlightSummary, fixData: fixSummaryFlight): IMemberFlightSummary {
-  let newData:IMemberFlightSummary; // = { ...data };
+  let newData: IMemberFlightSummary; // = { ...data };
   let isExt = Object.isExtensible(data);
   newData = _.cloneDeep(data);
   //newData.annual_summary_flights = [...data.annual_summary_flights];
   const result = fixData.fixSummaryFlight.map((item) => {
     const numYears = Number(fixData.max_year_name) - Number(item.last_years_found);
-    let foundYear: [IFlightSummary] ;
+    let foundYear: [IFlightSummary];
     for (let i = 0; i < numYears; i++) {
       console.log("AccountStatisticTab/calculateStatistic/fixFlightSummaryData", item, fixData.max_year_name, numYears)
-      let newYear: IFlightSummary = { year: (Number(item.last_years_found) + 1 + i).toFixed(0), total: 0, quarter: Array(4), id:"",_id:"" }
+      let newYear: IFlightSummary = { year: (Number(item.last_years_found) + 1 + i).toFixed(0), total: 0, quarter: Array(4), id: "", _id: "" }
 
       const found = newData.annual_summary_flights.findIndex((f) => f._id === item._id);
       foundYear = [...newData.annual_summary_flights[found].flights_summary];
-      if(found>= 0){
+      if (found >= 0) {
         newYear.quarter = [0, 0, 0, 0]
         newYear.id = foundYear[0].id;
         newYear._id = foundYear[0]._id;
-        foundYear.push(newYear) 
-        
+        foundYear.push(newYear)
+
       }
       isExt = Object.isExtensible(newData.annual_summary_flights[found].flights_summary);
       isExt = Object.isSealed(newData.annual_summary_flights[found].flights_summary)
       isExt = Object.isFrozen(newData.annual_summary_flights[found].flights_summary)
       newData.annual_summary_flights[found].flights_summary = foundYear;
     }
-    
+
   })
   return newData;
 }
@@ -83,8 +84,10 @@ export function calculateStatistic(data: IMemberFlightSummary): FlightStatisticS
     let fixSummaryFlight = checkFlightSummaryData(data);
     if (fixSummaryFlight) {
       console.info("AccountStatisticTab/calculateStatistic/fixSummaryFlight", fixSummaryFlight)
-      data = fixFlightSummaryData(Object.assign({}, data), fixSummaryFlight)
+      data = fixFlightSummaryData(data, fixSummaryFlight)
     }
+    let last_year_total = 0;
+    let last_year_name = "1900";
     let statistic_list = data.annual_summary_flights.map((item) => {
       let flightSorted = [...item.flights_summary].sort((a, b) => {
         console.log("AccountStatisticTab/calculateStatistic/sort", a, b, item)
@@ -94,8 +97,8 @@ export function calculateStatistic(data: IMemberFlightSummary): FlightStatisticS
 
 
 
-      let last_year = flightSorted[0].total;
-      let last_year_name = flightSorted[0].year;
+      last_year_total = flightSorted[0].total > last_year_total ? flightSorted[0].total : last_year_total;
+      last_year_name = Number(flightSorted[0].year) > Number(last_year_name) ? flightSorted[0].year : last_year_name;
 
       let accumulatedData = flightSorted.slice(1).reduce((acc, item) => { return { total: acc.total + item.total, quarters: acc.quarters.map((q, index) => q + item.quarter[index]) } }, { total: 0, quarters: [0, 0, 0, 0] })
 
@@ -104,7 +107,7 @@ export function calculateStatistic(data: IMemberFlightSummary): FlightStatisticS
         first_name: item.first_name,
         family_name: item.family_name,
         last_years: accumulatedData.total,
-        this_years: last_year,
+        this_years: last_year_total,
         last_year_quarters: flightSorted[0].quarter
       }
     })
@@ -121,7 +124,8 @@ export function calculateStatistic(data: IMemberFlightSummary): FlightStatisticS
       statistic_list: statistic_list,
       total_last_years: total_last_years,
       total_this_years: total_this_years,
-      totat_last_year_quarters: totat_last_year_quarters
+      totat_last_year_quarters: totat_last_year_quarters,
+      last_year_name: last_year_name
     }
   }
   catch (error) {
@@ -149,7 +153,40 @@ export class CStatistToReport {
       body: [],
       save: false
     }
-    report.header = ["Index", "id", "Name", "PrevYears", "LastYear", "LastQ1", "LastQ2", "LastQ3", "LastQ4"]
+    report.header = ["Index", "id", "Name", `Until ${this.statistic_summary.last_year_name}`, `${this.statistic_summary.last_year_name}`, "LastQ1", "LastQ2", "LastQ3", "LastQ4"]
+    report.body = this.statistic_summary.statistic_list?.map((item, i) => {
+      console.info("CExpenseToReport/statistic_summary", item)
+      return [i.toFixed(0),
+      item._id,
+      item.family_name + " " + item.first_name,
+      item.last_years.toFixed(1),
+      item.this_years.toFixed(1),
+      item.last_year_quarters[0].toFixed(1),
+      item.last_year_quarters[1].toFixed(1),
+      item.last_year_quarters[2].toFixed(1),
+      item.last_year_quarters[3].toFixed(1)
+      ]
+    })
+    console.info("CStatistToReport/report", report)
+    return report;
+  }
+}
+export class CFullStatistToReport {
+  private statistic_summary: FlightStatisticSummary;
+  constructor(statistic_summary: FlightStatisticSummary | undefined) {
+    this.statistic_summary = statistic_summary ? statistic_summary : { statistic_list: [], total_last_years: 0, total_this_years: 0, totat_last_year_quarters: [0, 0, 0, 0] };
+    console.info("CStatistToReport/CTOR_statistic_summary", this.statistic_summary)
+  }
+  getStatisticToExel(file: string = "flightStatisticReport", sheet: string = "FlightStatistic", title: string = "Flight Statistic Reports"): IExportExelTable {
+    let report: IExportExelTable = {
+      file: `${file}_${new Date().getDisplayDate()}`,
+      sheet: sheet,
+      title: title,
+      header: [],
+      body: [],
+      save: false
+    }
+    report.header = ["Index", "id", "Name", `Until ${this.statistic_summary.last_year_name}`, `${this.statistic_summary.last_year_name}`, "LastQ1", "LastQ2", "LastQ3", "LastQ4"]
     report.body = this.statistic_summary.statistic_list?.map((item, i) => {
       console.info("CExpenseToReport/statistic_summary", item)
       return [i.toFixed(0),

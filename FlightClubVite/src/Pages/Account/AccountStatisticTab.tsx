@@ -122,6 +122,31 @@ function AccountStatisticTab() {
       }
       return transactioFilter;
     } */
+/*    const allYearsColumns = (flightResults: IMemberFlightSummary) =>  {
+    const years = flightResults.annual_summary_flights.map((item) => item.flights_summary.map((flight) => flight.year)).flat();
+    const uniqueYears = [...new Set(years)];
+    let coloumns =[{
+      field: "id",
+      headerName: "ID",
+      type: 'string',
+      description: "ID",
+      sortable: true,
+      minWidth: 60,
+      flex: 1,
+    }]
+    let col = uniqueYears.map((year) => {  
+       coloumns= [...coloumns,{field: year, headerName: year, type: 'number', description: `flight In year`,sortable: true, minWidth: 60, flex: 1}]
+    })
+    const gridRows  = flightResults.annual_summary_flights.map((item) => {
+      console.log("AccountStatisticTab/statistic", item)
+      let rows = [{
+        id: item._id,
+        name: `${item.family_name}, ${item.first_name}`,
+      }]
+      
+    )
+    })
+  }  */
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: 'id', headerName: 'ID', hideable: true, minWidth: 80, flex: 1 },
     {
@@ -135,7 +160,7 @@ function AccountStatisticTab() {
     },
     {
       field: 'lastYears',
-      headerName: 'Last Years',
+      headerName: `Until ${statistic?.last_year_name}`,
       type: 'number',
       description: 'All hours until last year',
       minWidth: 60,
@@ -144,7 +169,7 @@ function AccountStatisticTab() {
     },
     {
       field: 'thisYear',
-      headerName: 'This Year',
+      headerName: `${statistic?.last_year_name}`,
       type: 'number',
       description: 'All hours until last year',
       minWidth: 50,
@@ -211,14 +236,18 @@ function AccountStatisticTab() {
     }
 
   }, [statistic])  // eslint-disable-line react-hooks/exhaustive-deps
+  
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
     CustomLogger.info("AccountTransactionsTab/onAction", event?.target, action, item)
     switch (action) {
 
-      case EAction.SAVE:
+      case EAction.OTHER:
         setOpenExportSave(!openExportSave);
         break;
+        case EAction.SAVE:
+          setOpenExportSave(!openExportSave);
+          break;
     }
   }
   return (
@@ -233,8 +262,12 @@ function AccountStatisticTab() {
                 </IconButton>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export" }]} disable={[{key: EAction.SAVE,value: false}]}/>
+                <ActionButtons OnAction={onAction} show={[EAction.OTHER]} item="EXPORT" display={[{ key: EAction.OTHER, value: "Export Report" }]} disable={[{key: EAction.OTHER,value: false}]}/>
               </Grid>
+              <Grid item xs={12} sm={3}>
+                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export Raw Data" }]} disable={[{key: EAction.SAVE,value: false}]}/>
+              </Grid>
+
             </Grid>
           </Box>
         </ContainerPageHeader>
