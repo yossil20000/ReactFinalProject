@@ -65,6 +65,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 44,version: "2.0.15.11",date: new Date(2025,1,11).getDisplayDate() , "description" : "Fix Report, Improve Notification","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 45,version: "2.0.15.12",date: new Date(2025,1,13).getDisplayDate() , "description" : "Fix User Select in Creat Reservation","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 46,version: "2.0.16.0",date: new Date(2025,1,24).getDisplayDate() , "description" : "Add Account Statistic TAB for flight statistic","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 46,version: "2.0.16.1",date: new Date(2025,1,25).getDisplayDate() , "description" : "Add report statistic Active selector, add new report include years detailes","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     
   ]
   function CustomToolbar() {
