@@ -1,12 +1,11 @@
 
-import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
 import { Fragment, useEffect, useState } from 'react';
 
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 
 import { SetProperty } from '../../Utils/setProperty';
 import { IQuarterDateFilter, IQuarterFilter, newQuarterDateFilter } from '../../Interfaces/IDateFilter';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { IMemberFlightSummary, MemberType } from '../../Interfaces/API/IMember';
 import QuarterButtons from '../../Components/Buttons/QuarterButtons';
 import { DateRangeIcon } from '@mui/x-date-pickers';
@@ -17,7 +16,7 @@ import { useFlightSummaryMutation } from '../../features/Users/userSlice';
 import { FlightStatus } from '../../Interfaces/API/IFlight';
 import { IFlightSummaryFilter } from '../../Interfaces/API/IFilter';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { CStatistToReport, FlightStatisticSummary, calculateStatistic } from '../../Utils/memberUtils';
+import { CStatistToReport, FlightStatisticSummary, calculateStatistic, getAllYearsColumns } from '../../Utils/memberUtils';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import ReportDialog from '../../Components/Report/Exel/ReportDialog';
 
@@ -52,6 +51,8 @@ function AccountStatisticTab() {
   const [statistic, setStatistic] = useState<FlightStatisticSummary>();
   const [rows, setRows] = useState<RowItem[]>([]);
   const [openExportSave, setOpenExportSave] = useState(false);
+  const [isActiveOnly, setIsActiveOnly] = useState(true);
+  const [isFullReport, setIsFullReport] = useState(true);
   /*   if (flightResults && flightResults?.annual_summary_flights.length > 0) {
       const calculated = useDataCalculator({ data: flightResults, calculate: calculateStatistic })
       CustomLogger.info("AccountStatisticTab/calculated", calculated)
@@ -60,11 +61,12 @@ function AccountStatisticTab() {
     let results;
     CustomLogger.info("AccountStatisticTab/flightResults", flightResults)
     if (flightResults) {
-      results = calculateStatistic(flightResults)
+      results = calculateStatistic(flightResults,isActiveOnly)
       setStatistic(results);
       console.log("AccountStatisticTab/flightResults/results", results)
+      getAllYearsColumns(flightResults,isActiveOnly)
     }
-  }, [flightResults])
+  }, [flightResults,isActiveOnly])
 
   useEffect(() => {
     GetFlightSummary(flightSummaryProperty).unwrap()
@@ -122,31 +124,56 @@ function AccountStatisticTab() {
       }
       return transactioFilter;
     } */
-/*    const allYearsColumns = (flightResults: IMemberFlightSummary) =>  {
-    const years = flightResults.annual_summary_flights.map((item) => item.flights_summary.map((flight) => flight.year)).flat();
-    const uniqueYears = [...new Set(years)];
-    let coloumns =[{
-      field: "id",
-      headerName: "ID",
-      type: 'string',
-      description: "ID",
-      sortable: true,
-      minWidth: 60,
-      flex: 1,
-    }]
-    let col = uniqueYears.map((year) => {  
-       coloumns= [...coloumns,{field: year, headerName: year, type: 'number', description: `flight In year`,sortable: true, minWidth: 60, flex: 1}]
-    })
-    const gridRows  = flightResults.annual_summary_flights.map((item) => {
-      console.log("AccountStatisticTab/statistic", item)
-      let rows = [{
-        id: item._id,
-        name: `${item.family_name}, ${item.first_name}`,
+  /*   const allYearsColumns = (flightResults: IMemberFlightSummary): [coloumn: any[], rows: any[], uniqueYears: string[]] => {
+      let rows: any[] = [];
+      const years = flightResults.annual_summary_flights.map((item) => item.flights_summary.map((flight) => flight.year)).flat();
+      const uniqueYears = [...new Set(years)].sort((a, b) => Number(a) - Number(b));
+      let coloumns = [{
+        field: "id",
+        headerName: "ID",
+        type: 'string',
+        description: "ID",
+        sortable: true,
+        minWidth: 60,
+        flex: 1,
+      },
+      {
+        field: "name",
+        headerName: "Name",
+        type: 'string',
+        description: "Pilot name",
+        sortable: true,
+        minWidth: 60,
+        flex: 1,
       }]
-      
-    )
-    })
-  }  */
+      uniqueYears.map((year) => {
+        coloumns = [...coloumns, { field: year, headerName: year, type: 'number', description: `flight In year`, sortable: true, minWidth: 60, flex: 1 }]
+      })
+  
+      const totalForYear = new Map<string, number>();
+      let totalRow: any
+      flightResults.annual_summary_flights.map((item) => {
+        console.log("AccountStatisticTab/statistic", item)
+        let row: any;
+  
+        uniqueYears.map((year) => {
+          let flight = item.flights_summary.find((flight) => flight.year === year)
+          let yearFligh = flight?.total == undefined ? 0 : flight.total
+          const yT = Number((yearFligh + (totalForYear.get(year) ?? 0)).toFixed(1))
+          totalForYear.set(year, yT)
+          row = { [year]: yearFligh, ...row }
+          totalRow = { ...totalRow, [year]: yT }
+        })
+        row = { ...row, id: item._id, name: `${item.family_name}, ${item.first_name}` }
+        rows.push(row)
+      })
+      totalRow = { ...totalRow, id: "Total", name: "Total" }
+      rows.push(totalRow)
+      console.log("AccountStatisticTab/allYearsColumns/rows", rows, coloumns, totalForYear)
+      return [coloumns, rows, uniqueYears]
+  
+    } */
+
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: 'id', headerName: 'ID', hideable: true, minWidth: 80, flex: 1 },
     {
@@ -232,11 +259,23 @@ function AccountStatisticTab() {
         }
         rows.push(row)
       })
+      const row: RowItem = {
+        id: "",
+        name: `Total`,
+        lastYears: statistic.total_last_years,
+        thisYear: statistic.total_this_years,
+        lastYearQ1: statistic.totat_last_year_quarters[0],
+        lastYearQ2: statistic.totat_last_year_quarters[1],
+        lastYearQ3: statistic.totat_last_year_quarters[2],
+        lastYearQ4: statistic.totat_last_year_quarters[3]
+      }
+      rows.unshift(row);
       setRows(rows)
+
     }
 
   }, [statistic])  // eslint-disable-line react-hooks/exhaustive-deps
-  
+
   function onAction(action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) {
     event?.defaultPrevented
     CustomLogger.info("AccountTransactionsTab/onAction", event?.target, action, item)
@@ -245,27 +284,41 @@ function AccountStatisticTab() {
       case EAction.OTHER:
         setOpenExportSave(!openExportSave);
         break;
-        case EAction.SAVE:
-          setOpenExportSave(!openExportSave);
-          break;
+      case EAction.SAVE:
+        setOpenExportSave(!openExportSave);
+        break;
     }
   }
+  const [allColoumns, allRows, uniqueYears] = flightResults ? getAllYearsColumns(flightResults,isActiveOnly) : [[], [], []];
+  const handleSelectActiveOnly = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
+    setIsActiveOnly(checked);
+  }
+  const handleSelectFullReport = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
+    setIsFullReport(checked);
+  }
+  
   return (
     <ContainerPage>
       <>
         <ContainerPageHeader>
           <Box marginTop={2}>
             <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
-              <Grid item xs={2} sm={2}>
+              {/*               <Grid item xs={2} sm={2}>
                 <IconButton aria-label="close" color="inherit" size="small" onClick={() => setOpenFilter(true)}>
                   <FilterListIcon fontSize="inherit" />
                 </IconButton>
+              </Grid> */}
+              <Grid item xs={6} sm={2}>
+                <FormControlLabel control={<Checkbox onChange={handleSelectActiveOnly} name={"isActiveOnly"} checked={isActiveOnly} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Active Only" />
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.OTHER]} item="EXPORT" display={[{ key: EAction.OTHER, value: "Export Report" }]} disable={[{key: EAction.OTHER,value: false}]}/>
+              <Grid item xs={6} sm={2}>
+                <FormControlLabel control={<Checkbox onChange={handleSelectFullReport} name={"isFullReport"} checked={isFullReport} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Full Report" />
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export Raw Data" }]} disable={[{key: EAction.SAVE,value: false}]}/>
+              <Grid item xs={6} sm={4}>
+                <ActionButtons OnAction={onAction} show={[EAction.OTHER]} item="EXPORT" display={[{ key: EAction.OTHER, value: "Export Report" }]} disable={[{ key: EAction.OTHER, value: false }]} />
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export Raw Data" }]} disable={[{ key: EAction.SAVE, value: true }]} />
               </Grid>
 
             </Grid>
@@ -304,11 +357,11 @@ function AccountStatisticTab() {
                     </ListItem>
                   </List>
                 </GeneralDrawer>
-                {openExportSave && <ReportDialog onClose={()=> setOpenExportSave(false)} open={openExportSave} table={(new CStatistToReport(statistic)).getStatisticToExel()} action="StatisticExport" />}
+                {openExportSave && <ReportDialog onClose={() => setOpenExportSave(false)} open={openExportSave} table={(new CStatistToReport(statistic)).getStatisticToExel()} action="StatisticExport" />}
                 <Box sx={{ height: '100%', width: '100%' }}>
                   <DataGrid
-                    rows={rows}
-                    columns={columns}
+                    rows={isFullReport ? allRows :rows}
+                    columns={isFullReport ? allColoumns :columns}
                     initialState={{
                       columns: {
                         columnVisibilityModel: {

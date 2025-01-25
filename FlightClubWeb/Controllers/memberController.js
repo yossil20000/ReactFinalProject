@@ -37,7 +37,7 @@ exports.member_flight_summary = async function (req, res, next) {
         
         console.log(result)
         const members = await Member.find({member_type: filter.member_type})
-            .select({'_id':1, 'member_id': 1 ,'id_number': 1, 'first_name': 1 , 'family_name': 1, 'flights_summary': 1})
+            .select({'_id':1, 'member_id': 1 ,'id_number': 1, 'first_name': 1 , 'family_name': 1, 'flights_summary': 1,'status': 1})
             .sort([['family_name', 'ascending']])
             .exec();
             res.status(201).json({ success: true, errors: [], data: {member_flights_size: result.length,member_flight_filter:{from: filter.from,to: filter.to}, member_flights: result,annual_summary_flights_size:members.length, annual_summary_flights: members} });

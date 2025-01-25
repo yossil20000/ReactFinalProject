@@ -1,6 +1,6 @@
 import { LeakRemove } from "@mui/icons-material";
 import { IExportExelTable } from "../Components/Report/Exel/ExportExelTable";
-import { IFlightSummary, IMemberFlightSummary } from "../Interfaces/API/IMember";
+import { IFlightSummary, IMemberFlightSummary, Status } from "../Interfaces/API/IMember";
 import _ from 'lodash';
 export type FlightStatistic = {
   _id: string;
@@ -32,6 +32,7 @@ function checkFlightSummaryData(data: IMemberFlightSummary): fixSummaryFlight {
   let max_year_name = "0";
   let last_item_max_year = "0";
   let statistic_list = data.annual_summary_flights.map((item) => {
+    /* if(item.status !== Status.Active) return { _id: item._id, last_years_found: "0" } */
     let flightSorted = [...item.flights_summary].sort((a, b) => {
       console.log("AccountStatisticTab/calculateStatistic/sort", a, b, item)
       const diff = Number(b.year) - Number(a.year);
@@ -79,16 +80,17 @@ function fixFlightSummaryData(data: IMemberFlightSummary, fixData: fixSummaryFli
   return newData;
 }
 
-export function calculateStatistic(data: IMemberFlightSummary): FlightStatisticSummary {
+export function calculateStatistic(data: IMemberFlightSummary,isActiveOnly:boolean): FlightStatisticSummary {
   try {
     let fixSummaryFlight = checkFlightSummaryData(data);
     if (fixSummaryFlight) {
       console.info("AccountStatisticTab/calculateStatistic/fixSummaryFlight", fixSummaryFlight)
       data = fixFlightSummaryData(data, fixSummaryFlight)
     }
-    let last_year_total = 0;
     let last_year_name = "1900";
-    let statistic_list = data.annual_summary_flights.map((item) => {
+    
+    let statistic_list = data.annual_summary_flights.filter((itemStatus) => isActiveOnly ? itemStatus.status == Status.Active: true ).map((item) => {
+      let this_year_total = 0;
       let flightSorted = [...item.flights_summary].sort((a, b) => {
         console.log("AccountStatisticTab/calculateStatistic/sort", a, b, item)
         const diff = Number(b.year) - Number(a.year);
@@ -97,7 +99,7 @@ export function calculateStatistic(data: IMemberFlightSummary): FlightStatisticS
 
 
 
-      last_year_total = flightSorted[0].total > last_year_total ? flightSorted[0].total : last_year_total;
+      this_year_total = flightSorted[0].total;/*  > this_year_total ? flightSorted[0].total : this_year_total */;
       last_year_name = Number(flightSorted[0].year) > Number(last_year_name) ? flightSorted[0].year : last_year_name;
 
       let accumulatedData = flightSorted.slice(1).reduce((acc, item) => { return { total: acc.total + item.total, quarters: acc.quarters.map((q, index) => q + item.quarter[index]) } }, { total: 0, quarters: [0, 0, 0, 0] })
@@ -107,7 +109,7 @@ export function calculateStatistic(data: IMemberFlightSummary): FlightStatisticS
         first_name: item.first_name,
         family_name: item.family_name,
         last_years: accumulatedData.total,
-        this_years: last_year_total,
+        this_years: this_year_total,
         last_year_quarters: flightSorted[0].quarter
       }
     })
@@ -204,3 +206,54 @@ export class CFullStatistToReport {
     return report;
   }
 }
+
+export  const getAllYearsColumns = (flightResults: IMemberFlightSummary,isActiveOnly:boolean): [coloumn: any[], rows: any[], uniqueYears: string[]] => {
+    let rows: any[] = [];
+    const years = flightResults.annual_summary_flights.map((item) => item.flights_summary.map((flight) => flight.year)).flat();
+    const uniqueYears = [...new Set(years)].sort((a, b) => Number(a) - Number(b));
+    let coloumns = [{
+      field: "id",
+      headerName: "ID",
+      type: 'string',
+      description: "ID",
+      sortable: true,
+      minWidth: 60,
+      flex: 1,
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      type: 'string',
+      description: "Pilot name",
+      sortable: true,
+      minWidth: 60,
+      flex: 1,
+    }]
+    uniqueYears.map((year) => {
+      coloumns = [...coloumns, { field: year, headerName: year, type: 'number', description: `flight In year`, sortable: true, minWidth: 60, flex: 1 }]
+    })
+
+    const totalForYear = new Map<string, number>();
+    let totalRow: any
+    flightResults.annual_summary_flights.filter((itemStatus) => isActiveOnly ? itemStatus.status == Status.Active: true ).map((item) => {
+      console.log("AccountStatisticTab/statistic", item)
+      let row: any;
+
+      uniqueYears.map((year) => {
+        let flight = item.flights_summary.find((flight) => flight.year === year)
+        let yearFligh = flight?.total == undefined ? 0 : flight.total
+        const yT = Number((yearFligh + (totalForYear.get(year) ?? 0)).toFixed(1))
+        totalForYear.set(year, yT)
+        row = { [year]: yearFligh, ...row }
+        totalRow = { ...totalRow, [year]: yT }
+      })
+      row = { ...row, id: item._id, name: `${item.family_name}, ${item.first_name}` }
+      rows.push(row)
+    })
+    totalRow = { ...totalRow, id: "Total", name: "Total" }
+    rows.unshift(totalRow)
+    //rows.push(totalRow)
+    console.log("AccountStatisticTab/allYearsColumns/rows", rows, coloumns, totalForYear)
+    return [coloumns, rows, uniqueYears]
+
+  }

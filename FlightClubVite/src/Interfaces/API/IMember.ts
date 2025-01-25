@@ -130,6 +130,7 @@ export interface IMemberCombo{
         _id: string,
         member_id: string,
         id_number: string,
+        status: Status,
         family_name: string,
         first_name: string,
         flights_summary: [IFlightSummary]
