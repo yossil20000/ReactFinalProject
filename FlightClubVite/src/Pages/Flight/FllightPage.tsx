@@ -472,7 +472,7 @@ const FlightPage = () => {
   }
   const columns: GridColDef[] = [
 
-    { field: '_id', type: 'string', hideable: true },
+    { field: '_id', type: 'string', hideable: false },
     {
       field: 'date', headerName: 'Date', type: 'date', sortable: true, editable: true,
       filterable: true, flex: 1, minWidth: 110
@@ -635,6 +635,9 @@ const FlightPage = () => {
                                   </Typography>
                                   <Typography>
                                     {`TACH Stop: ${row.engien_stop}`}
+                                  </Typography>
+                                  <Typography>
+                                    {`FlightID: ${row._id}`}
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={12} >

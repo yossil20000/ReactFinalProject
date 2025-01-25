@@ -51,6 +51,14 @@ function createData(
 
 const columns: Column[] = [
   {
+    id: '_id',
+    label: '_id',
+    minWidth: 170,
+    align: 'center',
+    isCell: true
+
+  },
+  {
     id: 'date', label: 'Date', minWidth: 170, isCell: true, format: (date: Date): string => {
       return (new Date(date)).getDisplayDate()
     }
@@ -110,14 +118,7 @@ const columns: Column[] = [
     isCell: true
 
   },
-  {
-    id: '_id',
-    label: '_id',
-    minWidth: 170,
-    align: 'center',
-    isCell: false
 
-  },
 ];
 
 function AccountFlightsTab() {
