@@ -53,6 +53,8 @@ function AccountStatisticTab() {
   const [openExportSave, setOpenExportSave] = useState(false);
   const [isActiveOnly, setIsActiveOnly] = useState(true);
   const [isFullReport, setIsFullReport] = useState(true);
+  const [isPercentageReport, setIsPercentageReport] = useState(true);
+  
   /*   if (flightResults && flightResults?.annual_summary_flights.length > 0) {
       const calculated = useDataCalculator({ data: flightResults, calculate: calculateStatistic })
       CustomLogger.info("AccountStatisticTab/calculated", calculated)
@@ -61,12 +63,13 @@ function AccountStatisticTab() {
     let results;
     CustomLogger.info("AccountStatisticTab/flightResults", flightResults)
     if (flightResults) {
-      results = calculateStatistic(flightResults,isActiveOnly)
+      results = calculateStatistic(flightResults, isActiveOnly)
       setStatistic(results);
       console.log("AccountStatisticTab/flightResults/results", results)
-      getAllYearsColumns(flightResults,isActiveOnly)
+      getAllYearsColumns(flightResults, isActiveOnly)
+
     }
-  }, [flightResults,isActiveOnly])
+  }, [flightResults, isActiveOnly])
 
   useEffect(() => {
     GetFlightSummary(flightSummaryProperty).unwrap()
@@ -289,12 +292,38 @@ function AccountStatisticTab() {
         break;
     }
   }
-  const [allColoumns, allRows, uniqueYears] = flightResults ? getAllYearsColumns(flightResults,isActiveOnly) : [[], [], []];
+  const [allColoumns, allRows, uniqueYears] = flightResults ? getAllYearsColumns(flightResults, isActiveOnly) : [[], [], []];
   const handleSelectActiveOnly = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
     setIsActiveOnly(checked);
   }
   const handleSelectFullReport = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
     setIsFullReport(checked);
+  }
+  const handleSelectPercentage = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
+    setIsPercentageReport(checked);
+  }
+  
+  const getAllRowsPercentage = () => {
+    const indexOfTotal = allRows?.findIndex((row) => row.id === "Total")
+    console.log("AccountStatisticTab/getAllRows", allRows[indexOfTotal])
+    let converted: any[] = []
+    if (indexOfTotal >= 0) {
+      converted = [...allRows.slice(0, indexOfTotal), ...allRows.slice(indexOfTotal + 1)].map((row) => {
+        console.log("AccountStatisticTab/getAllRows", row)
+         uniqueYears.map((year) => {
+          console.log("AccountStatisticTab/getAllRows/uniqueYears", year, row[year])
+          row[year] = Number(((row[year] / (allRows[indexOfTotal][year] === 0 ? 1 : allRows[indexOfTotal][year])) * 100).toFixed(2))
+          console.log("AccountStatisticTab/getAllRows/uniqueYears/row[year]", year, row[year])
+        })
+        console.log("AccountStatisticTab/getAllRows/persent", row)
+        return row
+      })
+      converted= [...converted.slice(0, 0), allRows[indexOfTotal], ...converted.slice(0)];
+    console.log("AccountStatisticTab/getAllRows/converted", converted)
+    return converted
+    }
+   
+    return allRows
   }
   
   return (
@@ -313,6 +342,9 @@ function AccountStatisticTab() {
               </Grid>
               <Grid item xs={6} sm={2}>
                 <FormControlLabel control={<Checkbox onChange={handleSelectFullReport} name={"isFullReport"} checked={isFullReport} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Full Report" />
+              </Grid>
+              <Grid item xs={6} sm={2}>
+                <FormControlLabel control={<Checkbox onChange={handleSelectPercentage} name={"isShowPercentage"} checked={isPercentageReport} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Show as %" />
               </Grid>
               <Grid item xs={6} sm={4}>
                 <ActionButtons OnAction={onAction} show={[EAction.OTHER]} item="EXPORT" display={[{ key: EAction.OTHER, value: "Export Report" }]} disable={[{ key: EAction.OTHER, value: false }]} />
@@ -360,8 +392,8 @@ function AccountStatisticTab() {
                 {openExportSave && <ReportDialog onClose={() => setOpenExportSave(false)} open={openExportSave} table={(new CStatistToReport(statistic)).getStatisticToExel()} action="StatisticExport" />}
                 <Box sx={{ height: '100%', width: '100%' }}>
                   <DataGrid
-                    rows={isFullReport ? allRows :rows}
-                    columns={isFullReport ? allColoumns :columns}
+                    rows={isFullReport ? isPercentageReport ?getAllRowsPercentage(): allRows : rows}
+                    columns={isFullReport ? allColoumns : columns}
                     initialState={{
                       columns: {
                         columnVisibilityModel: {
