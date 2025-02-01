@@ -16,7 +16,7 @@ import { useFlightSummaryMutation } from '../../features/Users/userSlice';
 import { FlightStatus } from '../../Interfaces/API/IFlight';
 import { IFlightSummaryFilter } from '../../Interfaces/API/IFilter';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { CStatistToReport, FlightStatisticSummary, calculateStatistic, getAllYearsColumns } from '../../Utils/memberUtils';
+import { CFullStatistToReport, CStatistToReport, FlightStatisticSummary, calculateStatistic, getAllYearsColumns } from '../../Utils/memberUtils';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import ReportDialog from '../../Components/Report/Exel/ReportDialog';
 
@@ -51,6 +51,7 @@ function AccountStatisticTab() {
   const [statistic, setStatistic] = useState<FlightStatisticSummary>();
   const [rows, setRows] = useState<RowItem[]>([]);
   const [openExportSave, setOpenExportSave] = useState(false);
+  const [openExportOther, setOpenExportOther] = useState(false);
   const [isActiveOnly, setIsActiveOnly] = useState(true);
   const [isFullReport, setIsFullReport] = useState(true);
   const [isPercentageReport, setIsPercentageReport] = useState(true);
@@ -285,7 +286,7 @@ function AccountStatisticTab() {
     switch (action) {
 
       case EAction.OTHER:
-        setOpenExportSave(!openExportSave);
+        setOpenExportOther(!openExportOther);
         break;
       case EAction.SAVE:
         setOpenExportSave(!openExportSave);
@@ -337,20 +338,20 @@ function AccountStatisticTab() {
                   <FilterListIcon fontSize="inherit" />
                 </IconButton>
               </Grid> */}
-              <Grid item xs={6} sm={2}>
+              <Grid item xs={4} sm={2}>
                 <FormControlLabel control={<Checkbox onChange={handleSelectActiveOnly} name={"isActiveOnly"} checked={isActiveOnly} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Active Only" />
               </Grid>
-              <Grid item xs={6} sm={2}>
+              <Grid item xs={4} sm={2}>
                 <FormControlLabel control={<Checkbox onChange={handleSelectFullReport} name={"isFullReport"} checked={isFullReport} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Full Report" />
               </Grid>
-              <Grid item xs={6} sm={2}>
+              <Grid item xs={4} sm={2}>
                 <FormControlLabel control={<Checkbox onChange={handleSelectPercentage} name={"isShowPercentage"} checked={isPercentageReport} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Show as %" />
               </Grid>
-              <Grid item xs={6} sm={4}>
+              <Grid item xs={6} sm={3}>
                 <ActionButtons OnAction={onAction} show={[EAction.OTHER]} item="EXPORT" display={[{ key: EAction.OTHER, value: "Export Report" }]} disable={[{ key: EAction.OTHER, value: false }]} />
               </Grid>
-              <Grid item xs={6} sm={4}>
-                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export Raw Data" }]} disable={[{ key: EAction.SAVE, value: true }]} />
+              <Grid item xs={6} sm={3}>
+                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="EXPORT" display={[{ key: EAction.SAVE, value: "Export Raw Data" }]} disable={[{ key: EAction.SAVE, value: false }]} />
               </Grid>
 
             </Grid>
@@ -389,10 +390,11 @@ function AccountStatisticTab() {
                     </ListItem>
                   </List>
                 </GeneralDrawer>
-                {openExportSave && <ReportDialog onClose={() => setOpenExportSave(false)} open={openExportSave} table={(new CStatistToReport(statistic)).getStatisticToExel()} action="StatisticExport" />}
+                {openExportOther && <ReportDialog onClose={() => setOpenExportOther(false)} open={openExportOther} table={(new CStatistToReport(statistic)).getStatisticToExel()} action="StatisticExport" />}
+                {openExportSave && <ReportDialog onClose={() => setOpenExportSave(false)} open={openExportSave} table={(new CFullStatistToReport(allRows,uniqueYears)).getStatisticToExel()} action="StatisticExport" />}
                 <Box sx={{ height: '100%', width: '100%' }}>
                   <DataGrid
-                    rows={isFullReport ? isPercentageReport ?getAllRowsPercentage(): allRows : rows}
+                    rows={isFullReport ? (isPercentageReport ? getAllRowsPercentage(): allRows) : rows}
                     columns={isFullReport ? allColoumns : columns}
                     initialState={{
                       columns: {

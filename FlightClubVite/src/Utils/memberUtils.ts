@@ -146,9 +146,9 @@ export class CStatistToReport {
     this.statistic_summary = statistic_summary ? statistic_summary : { statistic_list: [], total_last_years: 0, total_this_years: 0, totat_last_year_quarters: [0, 0, 0, 0] };
     console.info("CStatistToReport/CTOR_statistic_summary", this.statistic_summary)
   }
-  getStatisticToExel(file: string = "flightStatisticReport", sheet: string = "FlightStatistic", title: string = "Flight Statistic Reports"): IExportExelTable {
+  getStatisticToExel(file: string = "flightRawReport", sheet: string = "FlightStatistic", title: string = "Flight Statistic Reports"): IExportExelTable {
     let report: IExportExelTable = {
-      file: `${file}_${new Date().getDisplayDate()}`,
+      file: `${file}_${new Date().getDisplayDateTime()}`,
       sheet: sheet,
       title: title,
       header: [],
@@ -174,33 +174,27 @@ export class CStatistToReport {
   }
 }
 export class CFullStatistToReport {
-  private statistic_summary: FlightStatisticSummary;
-  constructor(statistic_summary: FlightStatisticSummary | undefined) {
-    this.statistic_summary = statistic_summary ? statistic_summary : { statistic_list: [], total_last_years: 0, total_this_years: 0, totat_last_year_quarters: [0, 0, 0, 0] };
-    console.info("CStatistToReport/CTOR_statistic_summary", this.statistic_summary)
+  private rows: any[];
+  uniqueYears: string[] = [];
+  constructor(rows: any[] | undefined, uniqueYears: string[]) {
+    this.rows = rows ? rows : [];
+    this.uniqueYears = uniqueYears ? uniqueYears : [];
+    console.info("CFullStatistToReport/CTOR_CFullStatistToReport", this.rows,this.uniqueYears)
   }
   getStatisticToExel(file: string = "flightStatisticReport", sheet: string = "FlightStatistic", title: string = "Flight Statistic Reports"): IExportExelTable {
     let report: IExportExelTable = {
-      file: `${file}_${new Date().getDisplayDate()}`,
+      file: `${file}_${new Date().getDisplayDateTime()}`,
       sheet: sheet,
       title: title,
       header: [],
       body: [],
       save: false
     }
-    report.header = ["Index", "id", "Name", `Until ${this.statistic_summary.last_year_name}`, `${this.statistic_summary.last_year_name}`, "LastQ1", "LastQ2", "LastQ3", "LastQ4"]
-    report.body = this.statistic_summary.statistic_list?.map((item, i) => {
+
+    report.header = ["Index", "id", "Name"].concat( this.uniqueYears.map((year) => year))
+    report.body = this.rows?.map((item, i) => {
       console.info("CExpenseToReport/statistic_summary", item)
-      return [i.toFixed(0),
-      item._id,
-      item.family_name + " " + item.first_name,
-      item.last_years.toFixed(1),
-      item.this_years.toFixed(1),
-      item.last_year_quarters[0].toFixed(1),
-      item.last_year_quarters[1].toFixed(1),
-      item.last_year_quarters[2].toFixed(1),
-      item.last_year_quarters[3].toFixed(1)
-      ]
+      return [i.toFixed(0),item["id"],item["name"],...this.uniqueYears.map((year) => item[year].toFixed(1))]
     })
     console.info("CStatistToReport/report", report)
     return report;
@@ -253,7 +247,7 @@ export  const getAllYearsColumns = (flightResults: IMemberFlightSummary,isActive
     totalRow = { ...totalRow, id: "Total", name: "Total" }
     rows.unshift(totalRow)
     //rows.push(totalRow)
-    console.log("AccountStatisticTab/allYearsColumns/rows", rows, coloumns, totalForYear)
+    console.log("AccountStatisticTab/allYearsColumns/rows, coloumns,uniqueYears, totalForYear", rows, coloumns,uniqueYears, totalForYear)
     return [coloumns, rows, uniqueYears]
 
   }
