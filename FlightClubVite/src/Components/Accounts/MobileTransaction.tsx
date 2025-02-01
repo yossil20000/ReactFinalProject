@@ -130,6 +130,7 @@ function MobileTransaction({ item, accountId }: MobileTransactionProps) {
             <Grid item xs={8} sm={8}>
               <Grid>{item.source}</Grid>
               <Grid>{new Date(item.date).getDisplayDate()}</Grid>
+              <Grid>{`${item.order.type}`}</Grid>
             </Grid>
 
             <Grid item xs={2} sm={2} alignItems={"center"} justifyItems={"left"}>

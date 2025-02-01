@@ -114,7 +114,7 @@ function UserAccountTab() {
     CustomLogger.info("UserAccountTab/Filter/onDateChanged", key, value, accountFilter)
     if (value === null) return;
     let newFilter = SetProperty(accountFilter, key, new Date(value));
-    newFilter = SetProperty(accountFilter, 'quarter', EQuarterOption.E_QO_Q0);
+    newFilter = SetProperty(newFilter, 'quarter', EQuarterOption.E_QO_Q0);
 
     setAccountFilter(newFilter)
     CustomLogger.info("UserAccountTab/Filter/onDateChanged/newFilter",newFilter)
@@ -234,7 +234,7 @@ function UserAccountTab() {
                     {changeView == true ? (
                     <>
                     {transcations.map((transaction) => (
-                      <Grid item xs={12} lg={6} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", lg: "48%" } }}>
+                      <Grid item xs={12} sm={12} lg={12} mx={{ xs: 0, lg: 1 }} sx={{ maxWidth: { xs: "100%", lg: "90%" } }}>
                         <MobileTransaction item={transaction} accountId={account?.account_id} />
                       </Grid>
                     ))}
