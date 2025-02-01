@@ -15,7 +15,7 @@ import { EQuarterOption } from '../../Utils/enums';
 import { useFlightSummaryMutation } from '../../features/Users/userSlice';
 import { FlightStatus } from '../../Interfaces/API/IFlight';
 import { IFlightSummaryFilter } from '../../Interfaces/API/IFilter';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridColumnVisibilityModel } from '@mui/x-data-grid';
 import { CFullStatistToReport, CStatistToReport, FlightStatisticSummary, calculateStatistic, getAllYearsColumns } from '../../Utils/memberUtils';
 import ActionButtons, { EAction } from '../../Components/Buttons/ActionButtons';
 import ReportDialog from '../../Components/Report/Exel/ReportDialog';
@@ -55,7 +55,11 @@ function AccountStatisticTab() {
   const [isActiveOnly, setIsActiveOnly] = useState(true);
   const [isFullReport, setIsFullReport] = useState(true);
   const [isPercentageReport, setIsPercentageReport] = useState(true);
-  
+  const [columnVisibilityModel, setColumnVisibilityModel] =
+    useState<GridColumnVisibilityModel>({
+      id: false
+    });
+  const [selectedColumns, setSelectedColumns] = useState<string[] | undefined>(undefined); // Store field names
   /*   if (flightResults && flightResults?.annual_summary_flights.length > 0) {
       const calculated = useDataCalculator({ data: flightResults, calculate: calculateStatistic })
       CustomLogger.info("AccountStatisticTab/calculated", calculated)
@@ -67,7 +71,7 @@ function AccountStatisticTab() {
       results = calculateStatistic(flightResults, isActiveOnly)
       setStatistic(results);
       console.log("AccountStatisticTab/flightResults/results", results)
-      getAllYearsColumns(flightResults, isActiveOnly)
+      getAllYearsColumns(flightResults, isActiveOnly, selectedColumns)
 
     }
   }, [flightResults, isActiveOnly])
@@ -116,67 +120,6 @@ function AccountStatisticTab() {
     newFilter = SetProperty(filter, 'quarterFilter.quarter', EQuarterOption.E_QO_Q0);
     setFilter(newFilter)
   }
-
-  /*   function getTransactionFilter(quarterFilter: IQuarterDateFilter) : ITransactionTableFilter {
-      const transactioFilter :ITransactionTableFilter = {
-        dateFilter: {
-          from: filter.from,
-          to: filter.to,
-          currentOffset: filter.currentOffset
-        }
-  
-      }
-      return transactioFilter;
-    } */
-  /*   const allYearsColumns = (flightResults: IMemberFlightSummary): [coloumn: any[], rows: any[], uniqueYears: string[]] => {
-      let rows: any[] = [];
-      const years = flightResults.annual_summary_flights.map((item) => item.flights_summary.map((flight) => flight.year)).flat();
-      const uniqueYears = [...new Set(years)].sort((a, b) => Number(a) - Number(b));
-      let coloumns = [{
-        field: "id",
-        headerName: "ID",
-        type: 'string',
-        description: "ID",
-        sortable: true,
-        minWidth: 60,
-        flex: 1,
-      },
-      {
-        field: "name",
-        headerName: "Name",
-        type: 'string',
-        description: "Pilot name",
-        sortable: true,
-        minWidth: 60,
-        flex: 1,
-      }]
-      uniqueYears.map((year) => {
-        coloumns = [...coloumns, { field: year, headerName: year, type: 'number', description: `flight In year`, sortable: true, minWidth: 60, flex: 1 }]
-      })
-  
-      const totalForYear = new Map<string, number>();
-      let totalRow: any
-      flightResults.annual_summary_flights.map((item) => {
-        console.log("AccountStatisticTab/statistic", item)
-        let row: any;
-  
-        uniqueYears.map((year) => {
-          let flight = item.flights_summary.find((flight) => flight.year === year)
-          let yearFligh = flight?.total == undefined ? 0 : flight.total
-          const yT = Number((yearFligh + (totalForYear.get(year) ?? 0)).toFixed(1))
-          totalForYear.set(year, yT)
-          row = { [year]: yearFligh, ...row }
-          totalRow = { ...totalRow, [year]: yT }
-        })
-        row = { ...row, id: item._id, name: `${item.family_name}, ${item.first_name}` }
-        rows.push(row)
-      })
-      totalRow = { ...totalRow, id: "Total", name: "Total" }
-      rows.push(totalRow)
-      console.log("AccountStatisticTab/allYearsColumns/rows", rows, coloumns, totalForYear)
-      return [coloumns, rows, uniqueYears]
-  
-    } */
 
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: 'id', headerName: 'ID', hideable: true, minWidth: 80, flex: 1 },
@@ -293,7 +236,7 @@ function AccountStatisticTab() {
         break;
     }
   }
-  const [allColoumns, allRows, uniqueYears] = flightResults ? getAllYearsColumns(flightResults, isActiveOnly) : [[], [], []];
+  const [allColoumns, allRows, uniqueYears] = flightResults ? getAllYearsColumns(flightResults, isActiveOnly, selectedColumns) : [[], [], []];
   const handleSelectActiveOnly = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
     setIsActiveOnly(checked);
   }
@@ -303,15 +246,18 @@ function AccountStatisticTab() {
   const handleSelectPercentage = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
     setIsPercentageReport(checked);
   }
-  
+
   const getAllRowsPercentage = () => {
     const indexOfTotal = allRows?.findIndex((row) => row.id === "Total")
     console.log("AccountStatisticTab/getAllRows", allRows[indexOfTotal])
     let converted: any[] = []
+    let totalSelectedYesrs: number =  0
     if (indexOfTotal >= 0) {
+      totalSelectedYesrs =  allRows[indexOfTotal]?.total
       converted = [...allRows.slice(0, indexOfTotal), ...allRows.slice(indexOfTotal + 1)].map((row) => {
         console.log("AccountStatisticTab/getAllRows", row)
-         uniqueYears.map((year) => {
+        row['total'] = Number((row['total'] / totalSelectedYesrs * 100).toFixed(2))
+        uniqueYears.map((year) => {
           console.log("AccountStatisticTab/getAllRows/uniqueYears", year, row[year])
           row[year] = Number(((row[year] / (allRows[indexOfTotal][year] === 0 ? 1 : allRows[indexOfTotal][year])) * 100).toFixed(2))
           console.log("AccountStatisticTab/getAllRows/uniqueYears/row[year]", year, row[year])
@@ -319,14 +265,24 @@ function AccountStatisticTab() {
         console.log("AccountStatisticTab/getAllRows/persent", row)
         return row
       })
-      converted= [...converted.slice(0, 0), allRows[indexOfTotal], ...converted.slice(0)];
-    console.log("AccountStatisticTab/getAllRows/converted", converted)
-    return converted
+      converted = [...converted.slice(0, 0), allRows[indexOfTotal], ...converted.slice(0)];
+      console.log("AccountStatisticTab/getAllRows/converted", converted)
+      return converted
     }
-   
+
     return allRows
   }
-  
+  const onColumnVisibilityModelChange = (model: GridColumnVisibilityModel): string[] => {
+    
+    console.log("AccountStatisticTab/onColumnVisibilityModelChange", model)
+    const gridSelectedYears = uniqueYears.map((year) => {
+      if (model[year] == false) return "";
+      return year
+    }
+    )
+    setSelectedColumns(gridSelectedYears)
+    return gridSelectedYears
+  }
   return (
     <ContainerPage>
       <>
@@ -391,16 +347,15 @@ function AccountStatisticTab() {
                   </List>
                 </GeneralDrawer>
                 {openExportOther && <ReportDialog onClose={() => setOpenExportOther(false)} open={openExportOther} table={(new CStatistToReport(statistic)).getStatisticToExel()} action="StatisticExport" />}
-                {openExportSave && <ReportDialog onClose={() => setOpenExportSave(false)} open={openExportSave} table={(new CFullStatistToReport(allRows,uniqueYears)).getStatisticToExel()} action="StatisticExport" />}
+                {openExportSave && <ReportDialog onClose={() => setOpenExportSave(false)} open={openExportSave} table={(new CFullStatistToReport(allRows, uniqueYears)).getStatisticToExel()} action="StatisticExport" />}
                 <Box sx={{ height: '100%', width: '100%' }}>
                   <DataGrid
-                    rows={isFullReport ? (isPercentageReport ? getAllRowsPercentage(): allRows) : rows}
+                    onColumnVisibilityModelChange={onColumnVisibilityModelChange}
+                    rows={isFullReport ? (isPercentageReport ? getAllRowsPercentage() : allRows) : rows}
                     columns={isFullReport ? allColoumns : columns}
                     initialState={{
                       columns: {
-                        columnVisibilityModel: {
-                          id: false,
-                        }
+                        columnVisibilityModel: columnVisibilityModel
                       },
                       pagination: {
                         paginationModel: {

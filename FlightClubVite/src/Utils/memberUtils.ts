@@ -201,7 +201,7 @@ export class CFullStatistToReport {
   }
 }
 
-export  const getAllYearsColumns = (flightResults: IMemberFlightSummary,isActiveOnly:boolean): [coloumn: any[], rows: any[], uniqueYears: string[]] => {
+export  let getAllYearsColumns = (flightResults: IMemberFlightSummary,isActiveOnly:boolean,selectedYears: string[] | undefined): [coloumn: any[], rows: any[], uniqueYears: string[]] => {
     let rows: any[] = [];
     const years = flightResults.annual_summary_flights.map((item) => item.flights_summary.map((flight) => flight.year)).flat();
     const uniqueYears = [...new Set(years)].sort((a, b) => Number(a) - Number(b));
@@ -222,7 +222,18 @@ export  const getAllYearsColumns = (flightResults: IMemberFlightSummary,isActive
       sortable: true,
       minWidth: 60,
       flex: 1,
-    }]
+      hideable: false
+    },{
+      field: "total",
+      headerName: "Total",
+      type: 'string',
+      description: "Total for selected years",
+      sortable: false,
+      minWidth: 60,
+      flex: 1,
+      hideable: false
+    }
+  ]
     uniqueYears.map((year) => {
       coloumns = [...coloumns, { field: year, headerName: year, type: 'number', description: `flight In year`, sortable: true, minWidth: 60, flex: 1 }]
     })
@@ -247,7 +258,16 @@ export  const getAllYearsColumns = (flightResults: IMemberFlightSummary,isActive
     totalRow = { ...totalRow, id: "Total", name: "Total" }
     rows.unshift(totalRow)
     //rows.push(totalRow)
+    const totalForSelectedYears = rows.map((row:any) => {
+      let total: number = 0;
+      (selectedYears === undefined ? uniqueYears : selectedYears)?.map((year) => {
+        if (year != "" && typeof Number(row[year] === "number"))
+          total += Number(row[year])
+      })
+      return { 'total': Number(total.toFixed(2)), ...row }
+    })
+    console.log("AccountStatisticTab/onColumnVisibilityModelChange/gridSelectedYears", selectedYears, totalForSelectedYears)
     console.log("AccountStatisticTab/allYearsColumns/rows, coloumns,uniqueYears, totalForYear", rows, coloumns,uniqueYears, totalForYear)
-    return [coloumns, rows, uniqueYears]
+    return [coloumns, totalForSelectedYears, uniqueYears]
 
   }
