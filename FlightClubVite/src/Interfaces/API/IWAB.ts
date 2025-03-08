@@ -169,9 +169,10 @@ export enum EPoint_WAB_GC {
 
 export class CWAB implements IWAB {
   items: WABItem[] = [];
-  /* constructor(items?: WABItem[] = ) {
+  public constructor(items: WABItem[] =[] ) {
     this.items = items;
-  } */
+  } 
+
   setStationWeight(pX: number, pY: number, weight: number, type: WABItemType): WABGc {
 
     let validation: string[] = [];

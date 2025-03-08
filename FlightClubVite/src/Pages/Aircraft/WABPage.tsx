@@ -49,11 +49,14 @@ function WABPage() {
 
   };
   useEffect(() => {
-    console.log("WABPage/useEffect")
-    let CGC = new CWAB()
-    CGC.inititialCGC();
-    if(items.length== 0)
+    console.log("WABPage/useEffect/items", items)
+    let CGC = new CWAB(items)
+    
+    if(items.length == 0){
+      CGC.inititialCGC();
       setItems(CGC.items)
+    }
+      
     setCoG(CWAB.calcCG(CGC.items))
   }, [])
   const onWABChange = (cGResult: EPoint_WAB_GC) => {

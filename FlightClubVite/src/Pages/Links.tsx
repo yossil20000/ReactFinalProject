@@ -58,6 +58,17 @@ function LinksPage() {
                 </Grid>
               </Grid>
             </Box>
+            <Box >
+              <Grid container key={"radar"} display={'flex'} flexDirection={'row'}>
+                <Grid item xs={12} sm={1}>
+                  Flight Board:
+                </Grid>
+                <Grid item xs={4} sm={3}>
+                  <Link href="https://www.iaa.gov.il/airports/haifa/flight-board/?flightType=arrivals">LLHA Flights</Link>
+                </Grid>
+
+              </Grid>
+            </Box>
             </>
           </ContainerPageHeader>
         </>
