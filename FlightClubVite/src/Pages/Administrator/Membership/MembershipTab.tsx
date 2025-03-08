@@ -5,14 +5,14 @@ import { InputComboItem } from '../../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../../Components/Buttons/TransitionAlert'
 import MembershipCombo from '../../../Components/Membership/MembershipCombo';
 import { useFetchAllMembershipQuery, useUpdateMembershipMutation } from '../../../features/membership/membershipApiSlice';
-import useLocalStorage from '../../../hooks/useLocalStorage';
+import useSessionStorage from '../../../hooks/useLocalStorage';
 import IMembership, { NewMembership } from '../../../Interfaces/API/IMembership';
 import { getValidationFromError } from '../../../Utils/apiValidation.Parser';
 import { getSelectedItem, setProperty } from '../../../Utils/setProperty';
 const source = "MembershipTab/status"
 function MembershipTab() {
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  const [selectedItem, setSelectedItem] = useLocalStorage<IMembership>("MembershipTab/selectedItem", NewMembership);
+  const [selectedItem, setSelectedItem] = useSessionStorage<IMembership>("MembershipTab/selectedItem", NewMembership);
   const { data, isError, error } = useFetchAllMembershipQuery();
 
   const [updateMembership] = useUpdateMembershipMutation();

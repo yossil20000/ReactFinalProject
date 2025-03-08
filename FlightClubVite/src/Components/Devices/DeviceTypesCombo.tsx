@@ -1,7 +1,7 @@
 import { iteratorSymbol } from 'immer/dist/internal';
 import { useEffect, useState, useId } from 'react'
 import { useFetchAllDeviceTypesQuery } from '../../features/DeviceTypes/deviceTypesApiSlice';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import IDeviceType from '../../Interfaces/API/IDeviceType';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
 

@@ -6,7 +6,7 @@ import { InputComboItem, newInputComboItem } from '../../Components/Buttons/Cont
 import OrderTable from '../../Components/OrderTable';
 
 import FilterListIcon from '@mui/icons-material/FilterList';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 import { SetProperty } from '../../Utils/setProperty';
 import GeneralDrawer from '../../Components/GeneralDrawer';
@@ -28,8 +28,8 @@ function AccountOrdersTab() {
   const [openFilter, setOpenFilter] = useState(false)
   const [openAddQuarter, setOpenAddQuarter] = useState(false)
   const [openAddExpense, setOpenAddExpense] = useState(false)
-  const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
-  const [selectedMember, setSelectedMember] = useLocalStorage<InputComboItem | null>("_accountOrder/selectedMember", null)
+  const [selectedClubAccount, setSelectedClubAccount] = useSessionStorage<InputComboItem | null>("_accountOrder/selectedClubAccount", null)
+  const [selectedMember, setSelectedMember] = useSessionStorage<InputComboItem | null>("_accountOrder/selectedMember", null)
   const [filter, setFilter] = useState<IOrderTableFilter>({ ...from_to_year_Filter(new Date()), orderStatus: OrderStatus.CREATED });
 
   const OnSelectedClubAccount = (item: InputComboItem): void => {

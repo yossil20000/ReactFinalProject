@@ -8,7 +8,7 @@ import { DevicesContext } from '../../app/Context/DevicesContext';
 import { DeviceTypesContext } from '../../app/Context/DeviceTypesContext';
 import { useFetchAllDevicesQuery } from '../../features/Device/deviceApiSlice';
 import { useFetchAllDeviceTypesQuery } from '../../features/DeviceTypes/deviceTypesApiSlice';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import IDevice from '../../Interfaces/API/IDevice';
 import IDeviceType from '../../Interfaces/API/IDeviceType';
 import MemberTab from './Members/MemberTab';
@@ -30,14 +30,14 @@ const items: ScrollableTabsItem[] = [
 ]
 
 function AdminPage() {
-  const [value, setValue] = useLocalStorage<number>("_adminPage", 0);
+  const [value, setValue] = useSessionStorage<number>("_adminPage", 0);
   const { data: devices, isError, isLoading, isSuccess, error } = useFetchAllDevicesQuery();
   const { data: members } = useFetchMembersAdminQuery();
   const { data: membersCombo } = useFetchMembersComboQuery({});
   const { data: deviceTypes } = useFetchAllDeviceTypesQuery();
-  const [selectedDevice, setSelectedDevice] = useLocalStorage<IDevice | null | undefined>("_admin/selectedDevice", null);
-  const [selectedDeviceTypes, setSelectedDeviceTypes] = useLocalStorage<IDeviceType | null | undefined>("_admin/selectedDeviceType", null);
-  const [selectedMember, setSelectedMember] = useLocalStorage<IMemberAdmin | null>("_admin/selectedMember", null);
+  const [selectedDevice, setSelectedDevice] = useSessionStorage<IDevice | null | undefined>("_admin/selectedDevice", null);
+  const [selectedDeviceTypes, setSelectedDeviceTypes] = useSessionStorage<IDeviceType | null | undefined>("_admin/selectedDeviceType", null);
+  const [selectedMember, setSelectedMember] = useSessionStorage<IMemberAdmin | null>("_admin/selectedMember", null);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)

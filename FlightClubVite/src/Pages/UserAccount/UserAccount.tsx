@@ -1,6 +1,6 @@
 import { Box, Paper } from "@mui/material";
 import ScrollableTabs, { ScrollableTabsItem } from "../../Components/Buttons/ScrollableTabs"
-import useLocalStorage from "../../hooks/useLocalStorage";
+import useSessionStorage from "../../hooks/useLocalStorage";
 import UserAccountTab from "./UserAccountTab";
 import UserOrderTab from "./UserOrderTab";
 
@@ -10,7 +10,7 @@ const items: ScrollableTabsItem[] = [
 ]
 
 function UserAccount() {
-  const [value, setValue] = useLocalStorage<number>("_UserAccount", 0);
+  const [value, setValue] = useSessionStorage<number>("_UserAccount", 0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
     CustomLogger.info("AdminPage/newValue", newValue)

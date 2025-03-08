@@ -5,7 +5,7 @@ import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import TransactionTable, { ITransactionTableFilter } from '../../Components/TransactionTable';
 
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 
 import React from 'react';
@@ -23,7 +23,7 @@ const dateFilter: IDateFilter = fullYearFilter;
 
 function AccountTransactionsTab() {
   const isAuthorized = UseIsAuthorized({  roles: [Role.desk, Role.admin, Role.account]})
-  const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
+  const [selectedClubAccount, setSelectedClubAccount] = useSessionStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
   const [openExportSave, setOpenExportSave] = useState(false);
   /* const [dateTo,setDateTo] = useLocalStorage("_filter/dateTo", dateFilter.to)

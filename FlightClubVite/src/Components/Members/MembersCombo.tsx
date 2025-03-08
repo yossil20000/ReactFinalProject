@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react'
 import { useFetchMembersComboQuery } from '../../features/Users/userSlice';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import { IMemberCombo, IMemberComboFilter, MemberType } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem, newInputComboItem } from '../Buttons/ControledCombo';
@@ -25,7 +25,7 @@ function MembersCombo(props : ComboProps) {
   
   const [items,setItems] = useState<InputComboItem[]>([]);
   /* const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>(); */
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
+  const [selectedItem, setSelectedItem] = useSessionStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
  
 
   useEffect(() => {

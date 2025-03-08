@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import { CategoryType } from '../../Interfaces/API/IDeviceType';
 import { Enum2ComboItem } from '../../Utils/enums';
 import ControledCombo, { ComboProps, InputComboItem, StateComboProps } from '../Buttons/ControledCombo';

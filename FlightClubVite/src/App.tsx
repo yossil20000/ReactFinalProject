@@ -13,7 +13,7 @@ import { useAppDispatch } from './app/hooks';
 import { LOCAL_STORAGE } from './Enums/localStroage';
 import { setCredentials } from './features/Auth/authSlice';
 import { useFetchAllNoticesQuery } from './features/clubNotice/noticeApiSlice';
-import useLocalStorage from './hooks/useLocalStorage';
+import useSessionStorage from './hooks/useLocalStorage';
 import IClubNotice, { NewNotice } from './Interfaces/API/IClubNotice';
 import { ILoginResult } from './Interfaces/API/ILogin';
 import { Role } from './Interfaces/API/IMember';
@@ -56,7 +56,7 @@ theme = responsiveFontSizes(theme);
 function App() {
     const {isError,isLoading,isSuccess,isFetching,error,data} = useFetchAllNoticesQuery();
     const [notices,setNotices] = useState<IClubNotice[]>([])
-    const [selectedNotice,setSelectedNotice] = useLocalStorage<IClubNotice | null| undefined>("_Notice/selected",NewNotice)
+    const [selectedNotice,setSelectedNotice] = useSessionStorage<IClubNotice | null| undefined>("_Notice/selected",NewNotice)
   
      useEffect(() => {
       CustomLogger.log("HomePage/isLoading", isLoading)

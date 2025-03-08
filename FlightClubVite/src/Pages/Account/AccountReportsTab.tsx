@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { ITransactionTableFilter } from '../../Components/TransactionTable';
 
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import ContainerPage, { ContainerPageHeader, ContainerPageMain, ContainerPageFooter } from '../Layout/Container';
 
 import React from 'react';
@@ -27,7 +27,7 @@ const quarterDateFilter: IQuarterDateFilter = newQuarterDateFilter;
 
 function AccountReportsTab() {
   const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
-  const [selectedClubAccount, setSelectedClubAccount] = useLocalStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
+  const [selectedClubAccount, setSelectedClubAccount] = useSessionStorage<InputComboItem | null>("_accountTransaction/selectedClubAccoun", null)
   const [openFilter, setOpenFilter] = useState(false)
 
   const [dateTo, setDateTo] = useState(quarterDateFilter.to)

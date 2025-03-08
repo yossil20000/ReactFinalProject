@@ -1,5 +1,5 @@
 
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import { CRUDActions } from '../../Types/ItemsProps';
 import ControledCombo, { ComboProps, InputComboItem } from './ControledCombo';
 
@@ -17,7 +17,7 @@ const getInputItems= () => {
 }
 function ActionCombo(props : ComboProps) {
   const {onChanged,source} = props
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`_${source}/Action`,undefined);
+  const [selectedItem, setSelectedItem] = useSessionStorage<InputComboItem | undefined>(`_${source}/Action`,undefined);
   
   const onSelectedItem = (item : InputComboItem) => {
     setSelectedItem(item);

@@ -1,7 +1,7 @@
 import '../../Types/Array.extensions';
 import { useEffect, useState } from 'react'
 import { useClubAccountComboQuery, useClubAccountQuery } from '../../features/Account/accountApiSlice';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useSessionStorage from '../../hooks/useLocalStorage';
 import { IClubAccountCombo, IClubAccountsCombo } from '../../Interfaces/API/IClub';
 import { IMemberComboFilter, MemberType } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
@@ -19,7 +19,7 @@ function ClubAccountsCombo(props: IClubAccountProps) {
   const { onChanged, source, filter, title, selectedItem: initialItem ,includesType} = props;
   const { data: accounts } = useClubAccountComboQuery();
   const [bankaccounts, setbankAccounts] = useState<InputComboItem[]>([])
-  const [selectedItem, setSelectedItem] = useLocalStorage<InputComboItem | undefined>(`${source}`, undefined);
+  const [selectedItem, setSelectedItem] = useSessionStorage<InputComboItem | undefined>(`${source}`, undefined);
 
   const accountToItemCombo = (input: IClubAccountCombo): InputComboItem => {
     if(input.member.member_type == MemberType.Supplier)

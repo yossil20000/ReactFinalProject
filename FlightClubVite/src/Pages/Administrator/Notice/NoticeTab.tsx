@@ -3,12 +3,12 @@ import { Box } from '@mui/material'
 import NoticesTable from "../../../Components/Tables/NoticesTable";
 import { IValidationAlertProps, NewValidationAlertProps, ValidationAlert, getValidationAlertMessages } from "../../../Components/Buttons/TransitionAlert";
 import { useState } from "react";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import useSessionStorage from "../../../hooks/useLocalStorage";
 import { getValidationFromError } from "../../../Utils/apiValidation.Parser";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../../Components/ConfirmationDialog";
 
 function NoticeTab() {
-  const [validationAlert, setValidationAlert] = useLocalStorage<IValidationAlertProps[]>("_NoticeTab/alert",[NewValidationAlertProps]);
+  const [validationAlert, setValidationAlert] = useSessionStorage<IValidationAlertProps[]>("_NoticeTab/alert",[NewValidationAlertProps]);
   const [confirmation, setConfirmation] = useState<ConfirmationDialogProps>({ open: false, isOperate: false } as ConfirmationDialogProps);
   /* CustomLogger.info("NoticeTab/validationAlert", validationAlert); */
  

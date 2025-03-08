@@ -1,7 +1,7 @@
 import { Grid, styled, Box } from '@mui/material'
 import IDeviceType, { CategoryType, EngienType, newDeviceType, SurfaceType } from '../../../Interfaces/API/IDeviceType'
 import { useCreateDeviceTypeMutation, useFetchAllDeviceTypesQuery, useUpdateDeviceTypeMutation, useUpdateStatusDeviceTypeMutation } from '../../../features/DeviceTypes/deviceTypesApiSlice'
-import useLocalStorage from '../../../hooks/useLocalStorage'
+import useSessionStorage from '../../../hooks/useLocalStorage'
 import DeviceTypesCombo from '../../../Components/Devices/DeviceTypesCombo'
 import DeviceTypeItem from './DeviceTypeItem'
 import { DeviceTypesContext, DeviceTypesContextType } from '../../../app/Context/DeviceTypesContext'

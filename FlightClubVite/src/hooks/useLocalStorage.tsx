@@ -9,7 +9,7 @@ function useLocalStorage<T>(key: string, initialValue: T): ReturnType<T> {
   const [state, setState] = useState<T>(() => {
 
     try {
-      const value = sessionStorage.getItem(key);
+      const value = localStorage.getItem(key);
       CustomLogger.info(`useLocalStorage/value/${key} `, value)
       if (value) {
         const parsed = JSON.parse(value);
@@ -31,7 +31,7 @@ function useLocalStorage<T>(key: string, initialValue: T): ReturnType<T> {
 
     {
       try {
-        sessionStorage.setItem(key, JSON.stringify(state))
+        localStorage.setItem(key, JSON.stringify(state))
       }
       catch (err) {
         CustomLogger.error("useLocalStorage exception: ", err)
@@ -43,4 +43,41 @@ function useLocalStorage<T>(key: string, initialValue: T): ReturnType<T> {
   return [state, setState]
 }
 
+export function useSessionStorage<T>(key: string, initialValue: T): ReturnType<T> {
+  const [state, setState] = useState<T>(() => {
+
+    try {
+      const value = sessionStorage.getItem(key);
+      CustomLogger.info(`useSessionStorage/value/${key} `, value)
+      if (value) {
+        const parsed = JSON.parse(value);
+        CustomLogger.info(`useSessionStorage/parsed/${key} `, parsed)
+        return parsed;
+      }
+      else {
+        if (!initialValue) return;
+        return initialValue;
+      }
+    }
+    catch (err) {
+      CustomLogger.error("useSessionStorage exception: ", err)
+      return initialValue;
+    }
+  })
+  CustomLogger.log(`useSessionStorage/state/${key} `, state)
+  useEffect(() => {
+
+    {
+      try {
+        sessionStorage.setItem(key, JSON.stringify(state))
+      }
+      catch (err) {
+        CustomLogger.error("useSessionStorage exception: ", err)
+      }
+    }
+
+  }, [state, key])
+
+  return [state, setState]
+}
 export default useLocalStorage

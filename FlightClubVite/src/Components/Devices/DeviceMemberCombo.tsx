@@ -25,7 +25,7 @@ function DeviceMemberCombo(props: ComboPropsEx) {
   const { data, isError, isLoading, error } = useFetchDevicCanReservQuery(device._id);
 
   /* const [deviceCanreservItems, setDeviceCanreservItems] = useState<InputComboItem[]>([]);
-  const [selectedDeviceCanreserv, setSelectedDeviceCanreserv] = useLocalStorage<InputComboItem | undefined>(`_${source}/DeviceCanreserv`, undefined); */
+  const [selectedDeviceCanreserv, setSelectedDeviceCanreserv] = useSessionStorage<InputComboItem | undefined>(`_${source}/DeviceCanreserv`, undefined); */
   const filterComboMembers = (member: IMemberCombo) : boolean => { 
     
     return member.status === Status.Active && (showAllMemebers || member._id == login.member._id);
