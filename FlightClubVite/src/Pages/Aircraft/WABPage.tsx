@@ -96,7 +96,7 @@ function WABPage() {
         <WABChart wabXPoints={CoG?.cgMoment} wabYPoints={CoG?.cgWeight} onChanged={onWABChange} />
         <Box display={'flex'} flexDirection={'column'} minWidth={'50%'} sx={{ overflow: "scroll" }} >
           <Table aria-label='weight and balance table'  >
-            <caption>CGC Weight And Balance</caption>
+            
             <TableHead>
               <TableRow>
                 <TableCell width="50%" align='left'></TableCell>
@@ -133,6 +133,7 @@ function WABPage() {
                   </TableRow>
                 ))
               }
+
               <TableRow>
                 <TableCell colSpan={1}>Total Weight</TableCell>
                 <TableCell align="right">{CoG?.weight.toFixed(1)} Limit: {`${getAircraftLimitWeight()}`}</TableCell>
@@ -142,11 +143,10 @@ function WABPage() {
                 <TableCell align="right">{CoG?.cg.toFixed(2)}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell colSpan={1}>CG Results</TableCell>
-                <TableCell align="right">{
-
-                }</TableCell>
-                <TableCell width="20%" align='right' sx={{ backgroundColor: `${getCGResultColor()}` }}>{`${cgResults}`}</TableCell>
+                
+                
+                <TableCell colSpan={1}  align='left' sx={{ backgroundColor: `${getCGResultColor()}` }}>{`CG Results: ${cgResults}`}</TableCell>
+                <TableCell colSpan={5}  align='left' sx={{ backgroundColor: `${CoG?.validation[0] != undefined ? 'red' : ''}` }}>{`${CoG?.validation[0] == undefined ? "" : CoG?.validation[0] }`}</TableCell>
               </TableRow>
             </TableBody>
 

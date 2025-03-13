@@ -148,7 +148,7 @@ function CreateCGCWaB(): WABItem[] {
     type: WABItemType.WAB_FUEL,
     weight: 0,
     cX: 0,
-    cY: 46.0,
+    cY: 46,
     pX: 0, pY: 1,
     weightLimit: 300,
     displayUnits: WABUnits.WAB_GALON,
@@ -156,7 +156,6 @@ function CreateCGCWaB(): WABItem[] {
     unit: WABUnits.WAB_POUND,
     displayValue: 0
   }
-
   return items;
 }
 export enum EPoint_WAB_GC {
@@ -208,12 +207,14 @@ export class CWAB implements IWAB {
       acc[2] += cur.weight * cur.cY
       cgMoment.push(acc[2]/acc[0])
       cgWeight.push(acc[0])
-      cur.weightLimit ? 
+ /*      cur.weightLimit ? 
       cur.weight > cur.weightLimit ?
       validation.push(`Invalid Weight in station ${cur.type} location: ${cur.pX} , ${cur.pY} weight: ${cur.weight} limits: ${cur.weightLimit}`) 
-      : "" : ""
+      : "" : "" */
       return acc;
     }, [0, 0, 0])
+    if(items[5].weight + items[6].weight > 120)
+      validation.push(`Total Baggage weight over limit 120`)
     return { x: cg[1], y: cg[2], weight: cg[0], validation: validation ,cg: cg[2]/cg[0],cgMoment: cgMoment,cgWeight: cgWeight}
   }
   getGC(): WABGc {
