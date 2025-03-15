@@ -4,11 +4,17 @@ import cgc from '/src/Asset/images/IMG-CGC-1.jpg'
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
 import { GridExpandMoreIcon } from '@mui/x-data-grid'
 import { useFetchDeviceReportQuery } from '../../features/Device/deviceApiSlice'
+import { useGetDeviceMaxValuesQuery } from "../../features/Flight/flightApi"
 
 
 function DeviceReport() {
   const { data, isError, error, isLoading } = useFetchDeviceReportQuery("4XCGC")
-  console.log("DeviceReport/data", data)
+  const { data: deviceMaxValues, error: deviceMaxValuesError } = useGetDeviceMaxValuesQuery("4XCGC")
+  const mongooseValue = {$numberDecimal: '67'};
+  const number = parseFloat(mongooseValue.$numberDecimal);
+  console.log(number); // Outputs: 67
+  
+  console.log("DeviceReport/data_deviceMaxValues", data,deviceMaxValues)
   function getSummary(): JSX.Element {
     if (isLoading) {
       return (<>Loading</>)
@@ -19,7 +25,8 @@ function DeviceReport() {
     if (data?.data && data.data.length == 1) {
       return (
         <>
-          {`${data?.data[0].device.device_id} last flight: ${new Date(data?.data[0].date).getDisplayDate()} current TACH: ${data?.data[0].device.engien_meter} next service: ${data?.data[0].device.maintanance.next_meter}`}
+          {`${data?.data[0].device.device_id} last flight: ${new Date(data?.data[0].date).getDisplayDate()} 
+          current TACH: ${data?.data[0].engien_stop} (Last close: ${data?.data[0].device.engien_meter}) next service: ${data?.data[0].device.maintanance.next_meter}`}
         </>
       )
     }

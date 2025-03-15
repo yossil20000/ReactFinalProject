@@ -7,7 +7,9 @@ const Flight = require('../Models/flight');
 const Member = require('../Models/member');
 const Device = require('../Models/device');
 const { findFlights } = require('../Services/flightService');
-const {getFlightQuery} = require('./Url2Mongoos')
+const { findDevice } = require('../Services/deviceService');
+const {getFlightQuery} = require('./Url2Mongoos');
+const { device } = require('./deviceController');
 const transactionOptions = {
   readPreference: 'primary',
   readConcern: { level: 'local' },
@@ -410,7 +412,20 @@ const deviceMaxValues = async (_id) => {
     ]
   ).exec();
   log.info("filter", deviceMaxValues);
-  const deviceMaxValuesFiltered = maxValues.filter((item) => (item._id == _id));
+  const deviceMaxValuesFiltered = maxValues;/* .filter((item) => (item._id == _id)); */
   log.info("filter", deviceMaxValuesFiltered);
   return deviceMaxValuesFiltered;
 }
+exports.device_max_values1 = async function (req, res, next) {
+  log.info(`flight ${req.params.device_id}`)
+  try {
+    const device = await findDevice({device: req.params.device_id})
+    await deviceMaxValues(device._id).then((results) => {
+      return res.status(201).json({ success: true, errors: [], data: results })
+    })
+  }
+  catch (error) {
+    return next(new ApplicationError("device_max_values", 400, "CONTROLLER.FLIGHT.DEVICE_MAX_VALUES.EXCEPTION", { name: "EXCEPTION", error }));
+    
+  }
+};

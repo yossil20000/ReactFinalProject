@@ -179,3 +179,11 @@ export interface IFlightData  extends IFlightBase{
     device_id: string; date: Date; member_id: string; validOperation: CanDo;
     hobbs_start: number; hobbs_stop: number; engien_start: number; engien_stop: number; status: FlightStatus;
   }
+
+export interface IDeviceMaxValues {
+    max_engien_start: number;
+    max_engien_stop: number;
+    max_hobbs_start: number;
+    max_hobbs_stop: number;
+}
+    

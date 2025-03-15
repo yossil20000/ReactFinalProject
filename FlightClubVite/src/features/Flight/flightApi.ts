@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
 import { getServerAddress } from "../../Enums/Routers";
 import { URLS } from "../../Enums/Urls";
-import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi } from "../../Interfaces/API/IFlight";
+import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi,IDeviceMaxValues } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import { IParams, getUrlWithParams, getUrlWithParamsArray } from "../../Utils/url";
 
@@ -24,6 +24,7 @@ export const flightApi = createApi({
   tagTypes: ['Flights'],
   endpoints(builder) {
     return {
+
       getAllFlights: builder.query<IResultBase<IFlight>,IFlightFilterDate>({
         query: (filter) => ({
           url:`/${URLS.FLIGHT_SEARCH}/date?from=${filter.from}&to=${filter.to}`,
@@ -57,6 +58,18 @@ export const flightApi = createApi({
           CustomLogger.info("FixDaySavingTime/response", response);
           CustomLogger.info("FixDaySavingTime/clientOffset",new Date(),new Date().getTimezoneOffset() );
           response.data =  FixDaySavingTime(response.data)
+          return response;
+        }
+      }),
+      getDeviceMaxValues: builder.query<IResultBase<IDeviceMaxValues>,string>({
+        query: (device_id) => ({
+          url:`/${URLS.FLIGHT_DEVICE_MAX_VALUES}/${device_id}`,
+          method: "GET"
+        }),providesTags: ["Flights"],
+        transformResponse: (response : IResultBase<IDeviceMaxValues>) => {
+          CustomLogger.info("getDeviceMaxValues/response", response);
+          
+          
           return response;
         }
       }),
@@ -111,5 +124,6 @@ useGetAllFlightsQuery,
 useDeleteFlightMutation,
 useUpdateFlightMutation,
 useGetAllFlightsSearchQuery,
-useGetAllFlightsParamsQuery
+useGetAllFlightsParamsQuery,
+useGetDeviceMaxValuesQuery
 } = flightApi;
