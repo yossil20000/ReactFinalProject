@@ -122,7 +122,7 @@ function CreateCGCWaB(): WABItem[] {
   }
   items[5] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 33,
+    weight: 11,
     cX: 0,
     cY: 95,
     pX: 1, pY: 3,
@@ -134,7 +134,7 @@ function CreateCGCWaB(): WABItem[] {
   }
   items[6] = {
     type: WABItemType.WAB_CHAIR,
-    weight: 0,
+    weight: 22,
     cX: 0,
     cY: 123,
     pX: 1, pY: 4,
