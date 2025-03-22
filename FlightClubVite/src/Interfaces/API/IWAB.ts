@@ -130,7 +130,7 @@ function CreateCGCWaB(): WABItem[] {
     displayName: "Baggage 120",
     displayUnits: WABUnits.WAB_KG,
     unit: WABUnits.WAB_POUND,
-    displayValue: 15
+    displayValue: 5
   }
   items[6] = {
     type: WABItemType.WAB_CHAIR,
@@ -142,7 +142,7 @@ function CreateCGCWaB(): WABItem[] {
     displayName: "Baggage 50",
     displayUnits: WABUnits.WAB_KG,
     unit: WABUnits.WAB_POUND,
-    displayValue: 0
+    displayValue: 10
   }
   items[7] = {
     type: WABItemType.WAB_FUEL,
