@@ -35,7 +35,12 @@ export const accountApiSlice = createApi({
           url: `/${URLS.ACCOUNTS}`,
           method: "GET"
         }), 
-        providesTags: ["Accounts"]
+        providesTags: ["Accounts"],
+        transformResponse: (response : IResultBase<IAccount>) => {
+                  CustomLogger.info("fetchAllAccounts/response", response);
+                  
+                  return response;
+                }
       }),
       fetchAccount: builder.query<IResultBase<IAccount>, string>({
         query: (_id) => ({

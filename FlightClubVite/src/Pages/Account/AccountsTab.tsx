@@ -115,7 +115,7 @@ function AccountsTab() {
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const { data, refetch, isLoading, error } = useFetchAllAccountsQuery({});
   const { data: bankAccounts } = useClubAccountQuery(true);
-  const [filterData, setFilterData] = useState({ account_id: "", active_only: false, negative_balance: false, members: true, suppliers: true } as IAccountFilter)
+  const [filterData, setFilterData] = useState({ account_id: "", active_only: true, negative_balance: false, members: true, suppliers: false } as IAccountFilter)
   const getData = useMemo(() => {
     let bankFound: IClubAccount | undefined = undefined;
     if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
@@ -160,6 +160,9 @@ function AccountsTab() {
 
     if (!filterData.suppliers && filter == true) {
       filter = item.member_type == MemberType.Supplier ? false : true
+    }
+    if(filterData.active_only && filter == true) {
+      filter = item.status == Status.Active ? true : false
     }
     return filter;
   }
