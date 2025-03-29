@@ -18,6 +18,7 @@ import FullScreenLoader from '../../Components/FullScreenLoader'
 import { UseIsAuthorized } from '../../Components/RequireAuth';
 import ReportDialog from '../../Components/Report/Exel/ReportDialog'
 import { CExpenseToReport } from '../../Interfaces/API/IAccountReport'
+import ExpenseTable from '../../Components/ExpensesTable'
 
 interface Data {
   _id: string,
@@ -106,7 +107,7 @@ function AccountExpenseTab() {
     rows = rows === undefined ? [] : rows;
     setCount(rows.length);
     return rows;
-  }, [data])
+  }, [data,isAuthorized])
 
 
   const OnSelectedAccount = (item: string): void => {
@@ -192,6 +193,7 @@ function AccountExpenseTab() {
           <ContainerPageHeader>
             <Box marginTop={2}>
               <Grid container width={"100%"} height={"100%"} gap={0} columns={12}>
+              <ActionButtons OnAction={onAction} show={[EAction.ADD, EAction.SAVE]} display={[{ key: EAction.SAVE, value: "Export" }]} item={""} disable={[{ key: EAction.SAVE, value: !isAuthorized }]} />
               </Grid>
             </Box>
           </ContainerPageHeader>
@@ -203,14 +205,15 @@ function AccountExpenseTab() {
               {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
               {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
               {(openDeleteExpense == true && selectedExpense !== undefined) ? (<DeleteExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openDeleteExpense} />) : (null)}
-              <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "", disable: [] }} />
+              {/* <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "", disable: [] }} /> */}
+              <ExpenseTable  hideAction={false} filter={{}} onAction={onAction} />
             </>
           </ContainerPageMain>
           <ContainerPageFooter>
             <>
               <Grid container>
                 <Grid item xs={12}>
-                  <TablePagination
+{/*                   <TablePagination
                     rowsPerPageOptions={[1, 5, 10, 25, 100]}
                     component="div"
                     count={count}
@@ -218,7 +221,7 @@ function AccountExpenseTab() {
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
+                  /> */}
                 </Grid>
                 {validationAlert.map((item) => (
                   <Grid item xs={12}>
