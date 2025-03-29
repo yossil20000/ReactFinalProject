@@ -1,6 +1,6 @@
 import '../../Types/date.extensions'
-import { Box, duration, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, TablePagination } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, TablePagination } from '@mui/material';
+import { useMemo, useState } from 'react';
 import { EAction } from '../../Components/Buttons/ActionButtons';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable';
@@ -15,7 +15,6 @@ import FullScreenLoader from '../../Components/FullScreenLoader';
 import MembersCombo from '../../Components/Members/MembersCombo';
 import { UseIsAuthorized, IRequireAuthProps } from '../../Components/RequireAuth'
 import { MemberType, Role } from '../../Interfaces/API/IMember';
-import { useAppSelector } from '../../app/hooks';
 import { DateRangeIcon } from '@mui/x-date-pickers';
 import DatePickerDate from '../../Components/Buttons/DatePickerDate';
 import FilterListIcon from '@mui/icons-material/FilterList';

@@ -24,12 +24,34 @@ export default function ExpenseTable({  hideAction = false, filter = {}, onActio
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(50);
   const [page, setPage] = useState(1);
-  const { data: Expenses, refetch, isLoading, error } = useFetchExpenseQuery({});
+  const { data: Expenses,  isLoading, error } = useFetchExpenseQuery({});
   
+  const  getExpenseStatistics = (expenses: IExpense[]) => {
+    const total = expenses.reduce((acc, expense) => acc + expense.amount, 0); 
+    const average = total / expenses.length;
+    const max = Math.max(...expenses.map(expense => expense.amount));
+    const min = Math.min(...expenses.map(expense => expense.amount));
+    const groupByCategory = Object.groupBy(expenses, (expense) => expense.expense.category)
+    const groupByType = Object.entries(groupByCategory).map(([key, value]) => {
+      if(value)
+      return [key,Object.groupBy(value, (expense) => expense.expense.type)]
+      
+    })
+
+    const groupBy = Object.entries(groupByCategory).map(([key, value]) => { 
+      const total = value?.reduce((acc, expense) => acc + expense.amount, 0); 
+      /* const average = total / value?.length; */
+      /* const max = Math.max(...value?.map(expense => expense.amount));
+      const min = Math.min(...value?.map(expense => expense.amount)); */
+      return { key, total };
+    }); 
+    CustomLogger.error("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy,groupByCategory,groupByType)
+    return { total, average, max, min,groupBy ,groupByCategory};  
+  }
   const ExpenseRows = useMemo(() => {
 
     CustomLogger.log("ExpenseTable/ExpenseRows/filter/filter", filter)
-    const rows = Expenses?.data.map((row: IExpense) => ({
+    const rows = Expenses?.data.filter((item) => true).map((row: IExpense) => ({
       _id: row._id, date: new Date(row.date),
       units: row.units,
       pricePeUnit: row.pricePeUnit,
@@ -42,11 +64,17 @@ export default function ExpenseTable({  hideAction = false, filter = {}, onActio
       source: row.source.display,
       destination: row.destination.display,
     }))
+    if(Expenses?.data.length ){
+      getExpenseStatistics(Expenses.data)
+      CustomLogger.info("ExpenseTable/ExpenseRows/Expenses", getExpenseStatistics(Expenses.data))
+     
+    }
     if (rows !== undefined) {
       CustomLogger.info("ExpenseTable/ExpenseRows/Expenses", rows, Expenses);
       return rows
     }
-    return []
+    
+    return [filter]
 
 
   }, [Expenses,  filter.ExpenseStatus])
