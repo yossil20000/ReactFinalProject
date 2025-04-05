@@ -170,12 +170,12 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
                 const row: ITransactionTableRow = {
                   row: GetTransactionCells(item)
                 }
-
                 memberOrders.rows.push(row)
               })
               let totalTransaction: number = 0
               const amount = orderGroup[order]?.reduce((accumulator, current) => {
-                if (current.order.type !== Transaction_OT.TRANSFER) { return current.amount + accumulator }
+                if (current.order.type.toLocaleUpperCase() !== Transaction_OT.TRANSFER.toLocaleUpperCase()) 
+                { return current.amount + accumulator }
                 else {
                   totalTransaction += current.amount
                   return accumulator

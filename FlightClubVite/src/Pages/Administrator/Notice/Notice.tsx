@@ -92,7 +92,7 @@ function NoticeEdit() {
                   label="Due Date"
                   key={"due_date"}
                   value={DateTime.fromJSDate(notice?.due_date ? notice?.due_date : new Date())}
-                  onChange={(e: DateTime | null) => handleDateChange(e == (undefined || null) ? new Date() : e?.toJSDate(), "due_date")}
+                  onChange={(e: DateTime | null) => handleDateChange(e === undefined || e === null ? new Date() : e.toJSDate(), "due_date")}
                 />
               </ThemeProvider>
             </LocalizationProvider>

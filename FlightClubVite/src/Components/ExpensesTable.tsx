@@ -18,35 +18,35 @@ interface IExpenseTableProps {
   onAction?: (action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) => void;
   // selectedClubAccount: InputComboItem | null;
 }
-export default function ExpenseTable({  hideAction = false, filter = {}, onAction = () => {} }: IExpenseTableProps) {
+export default function ExpenseTable({ hideAction = false, filter = {}, onAction = () => { } }: IExpenseTableProps) {
   const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
-      
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(50);
   const [page, setPage] = useState(1);
-  const { data: Expenses,  isLoading, error } = useFetchExpenseQuery({});
-  
-  const  getExpenseStatistics = (expenses: IExpense[]) => {
-    const total = expenses.reduce((acc, expense) => acc + expense.amount, 0); 
+  const { data: Expenses, isLoading, error } = useFetchExpenseQuery({});
+
+  const getExpenseStatistics = (expenses: IExpense[]) => {
+    const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     const average = total / expenses.length;
     const max = Math.max(...expenses.map(expense => expense.amount));
     const min = Math.min(...expenses.map(expense => expense.amount));
-    const groupByCategory = Object.groupBy(expenses, (expense) => expense.expense.category)
+    const groupByCategory = (Object.groupBy(expenses, (expense: IExpense) => expense.expense.category) as Record<string, IExpense[]>)
     const groupByType = Object.entries(groupByCategory).map(([key, value]) => {
-      if(value)
-      return [key,Object.groupBy(value, (expense) => expense.expense.type)]
-      
+      if (value)
+        return [key, Object.groupBy(value, (expense: IExpense) => expense.expense.type)]
     })
 
-    const groupBy = Object.entries(groupByCategory).map(([key, value]) => { 
-      const total = value?.reduce((acc, expense) => acc + expense.amount, 0); 
+    const groupBy = Object.entries(groupByCategory).map(([key, value]) => {
+      let total: number = 0;
+      if (value)
+        total = value?.reduce((acc: number, expense: IExpense) => acc + expense.amount, 0);
       /* const average = total / value?.length; */
       /* const max = Math.max(...value?.map(expense => expense.amount));
       const min = Math.min(...value?.map(expense => expense.amount)); */
       return { key, total };
-    }); 
-    CustomLogger.error("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy,groupByCategory,groupByType)
-    return { total, average, max, min,groupBy ,groupByCategory};  
+    });
+    CustomLogger.error("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy, groupByCategory, groupByType)
+    return { total, average, max, min, groupBy, groupByCategory };
   }
   const ExpenseRows = useMemo(() => {
 
@@ -64,34 +64,34 @@ export default function ExpenseTable({  hideAction = false, filter = {}, onActio
       source: row.source.display,
       destination: row.destination.display,
     }))
-    if(Expenses?.data.length ){
+    if (Expenses?.data.length) {
       getExpenseStatistics(Expenses.data)
       CustomLogger.info("ExpenseTable/ExpenseRows/Expenses", getExpenseStatistics(Expenses.data))
-     
+
     }
     if (rows !== undefined) {
       CustomLogger.info("ExpenseTable/ExpenseRows/Expenses", rows, Expenses);
       return rows
     }
-    
+
     return [filter]
 
 
-  }, [Expenses,  filter.ExpenseStatus])
- 
+  }, [Expenses, filter.ExpenseStatus])
+
   const columns: GridColDef[] = useMemo(() => [
-    { field: '_id', headerName: 'id',hideable: true, minWidth: 50, type: 'string' },
+    { field: '_id', headerName: 'id', hideable: true, minWidth: 50, type: 'string' },
     { field: 'date', headerName: 'Date', minWidth: 30, type: 'date' },
     { field: 'units', headerName: 'Units', minWidth: 40, type: 'number' },
     { field: 'pricePeUnit', headerName: 'Per Unit', minWidth: 90, type: 'number' },
     { field: 'amount', headerName: 'Amount', minWidth: 70, type: 'number' },
     { field: 'category', headerName: 'Category', minWidth: 70, type: 'string' },
-    { field: 'type', headerName: 'Type', minWidth: 70, type: 'string', flex:2 },
-    { field: 'utilizated', headerName: 'Utilizated', minWidth: 70, type: 'string' , flex:2},
+    { field: 'type', headerName: 'Type', minWidth: 70, type: 'string', flex: 2 },
+    { field: 'utilizated', headerName: 'Utilizated', minWidth: 70, type: 'string', flex: 2 },
     { field: 'description', headerName: 'Description', minWidth: 170, type: 'string' },
     { field: 'status', headerName: 'Status', minWidth: 70, type: 'string', format: (value: Status) => value.toLocaleUpperCase(), isCell: true },
     { field: 'source', headerName: 'Source', minWidth: 170, type: 'string' },
-    { field: 'destination', headerName: 'Destination', minWidth: 170, type: 'string',flex: 2 },
+    { field: 'destination', headerName: 'Destination', minWidth: 170, type: 'string', flex: 2 },
     {
       field: 'actions',
       flex: 3,
@@ -101,20 +101,20 @@ export default function ExpenseTable({  hideAction = false, filter = {}, onActio
       hide: hideAction,
       renderCell: (params: GridRenderCellParams) => (
         <Box display={'flex'} flexDirection={'row'} gap={1} height={"5ch"} >
-        <>{params.row.status == OrderStatus.CREATED ? (<>
-          <Box display={'flex'} flexDirection={'row'} gap={1}>
-            <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={params.row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT, value: !isAuthorized }]} />
-            <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={params.row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY, value: !isAuthorized }]} />
-            <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={params.row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE, value: !isAuthorized }]} />
-          </Box>
-        </>) : (<></>)}
-        </>
+          <>{params.row.status == OrderStatus.CREATED ? (<>
+            <Box display={'flex'} flexDirection={'row'} gap={1}>
+              <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={params.row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT, value: !isAuthorized }]} />
+              <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={params.row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY, value: !isAuthorized }]} />
+              <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={params.row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE, value: !isAuthorized }]} />
+            </Box>
+          </>) : (<></>)}
+          </>
         </Box>
       )
 
     },
 
-  ], [rowId, hideAction,isAuthorized]);
+  ], [rowId, hideAction, isAuthorized]);
 
   if (isLoading) {
     CustomLogger.info('ExpenseTable/isLoading', isLoading)

@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { ITransactionTableRow, ITransactionTableRowProps } from '../../../Interfaces/ITransactionsReport'
 import { textAlign, width } from '@mui/system'
+import { customLogger } from '../../../customLogging'
 
 const borderColor = '#90e5fc'
 const borderRightWidth = 1
@@ -66,11 +67,7 @@ function TransactionsFlightTableData(items: ITransactionTableRowProps) {
     <View style={styles.row} key={index}>
       {item.row.map((i, j) => {
         let s : any = {...stylesArray[j],width: i.width};
-        
-        return (
-        
-        <Text style={s} key={`col${j}`}>{i.data}</Text>
-    )})}
+        return ( <Text style={s} key={`col${j}`}>{i.data}</Text> )})}
     </View>
   )
   { console.log("TransactionsFlightTableData/rows", rows,items) }
