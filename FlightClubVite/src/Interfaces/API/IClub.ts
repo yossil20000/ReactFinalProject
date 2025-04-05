@@ -82,7 +82,8 @@ export enum Transaction_OT {
   ORDER = 'Order',
   OTHER = "Other",
   TRANSFER = "Transfer",
-  REFUND = "Refund"
+  REFUND = "Refund",
+  VARIABLE = "Variable"
 }
 export enum Transaction_Type {
   CREDIT = "Credit",

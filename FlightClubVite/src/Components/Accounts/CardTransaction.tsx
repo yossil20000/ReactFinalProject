@@ -36,21 +36,42 @@ const getOrderIcon = (orderType: Transaction_OT): JSX.Element => {
   }
   if (orderType === Transaction_OT.EXPENSE) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Transaction Done"}>
+      <Tooltip title={"Expense Done"}>
         <MiscellaneousServicesIcon />
       </Tooltip>
     </Fab>
   }
   if (orderType === Transaction_OT.MONTLY) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Transaction Done"}>
+      <Tooltip title={"Montly Done"}>
         <FlightIcon />
       </Tooltip>
     </Fab>
   }
   if (orderType === Transaction_OT.OTHER) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Transaction Done"}>
+      <Tooltip title={"Other Done"}>
+        <FlightIcon />
+      </Tooltip>
+    </Fab>
+  }
+  if (orderType === Transaction_OT.TRANSFER) {
+    node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+      <Tooltip title={"Transfer Done"}>
+        <FlightIcon />
+      </Tooltip>
+    </Fab>
+  }
+  if (orderType === Transaction_OT.REFUND) {
+    node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+      <Tooltip title={"Refund Done"}>
+        <FlightIcon />
+      </Tooltip>
+    </Fab>
+  }
+  if (orderType === Transaction_OT.VARIABLE) {
+    node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+      <Tooltip title={"Variable Done"}>
         <FlightIcon />
       </Tooltip>
     </Fab>

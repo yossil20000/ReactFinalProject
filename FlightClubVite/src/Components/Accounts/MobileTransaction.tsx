@@ -3,9 +3,11 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Fab, Grid, SvgIcon,
 import { CTransaction, ITransaction, Transaction_OT } from '../../Interfaces/API/IClub'
 import FlightIcon from '@mui/icons-material/Flight';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
-import GroupsIcon from '@mui/icons-material/Groups';
 import { green } from '@mui/material/colors';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined';
+import PriceChangeOutlinedIcon from '@mui/icons-material/PriceChangeOutlined';
+import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 export interface MobileTransactionProps {
   item: ITransaction;
   accountId: string | undefined;
@@ -28,44 +30,59 @@ export function ShekelIcon(props: SvgIconProps) {
 
 const getOrderIcon = (orderType: Transaction_OT): JSX.Element => {
   let node = <></>;
-  if (orderType === Transaction_OT.FLIGHT) {
+  if (orderType.toUpperCase() === Transaction_OT.FLIGHT.toUpperCase()) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Flight"}>
         <FlightIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType === Transaction_OT.EXPENSE) {
+  if (orderType.toUpperCase() === Transaction_OT.EXPENSE.toUpperCase()) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Expense Done"}>
+      <Tooltip title={"Expense"}>
         <MiscellaneousServicesIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType === Transaction_OT.MONTLY) {
+  if (orderType.toUpperCase() === Transaction_OT.MONTLY.toUpperCase()) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Monthly Expense"}>
-        <GroupsIcon />
+        <DashboardCustomizeOutlinedIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType === Transaction_OT.OTHER) {
+  if (orderType.toUpperCase() === Transaction_OT.OTHER.toUpperCase()) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
-      <Tooltip title={"Transaction Done"}>
-        <FlightIcon />
+      <Tooltip title={"Other Operation"}>
+        <MoreHorizOutlinedIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType === Transaction_OT.ORDER) {
+  if (orderType.toUpperCase() === Transaction_OT.ORDER.toUpperCase()) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Order Done"}>
         <FlightIcon />
       </Tooltip>
     </Fab>
   }
-  if (orderType === Transaction_OT.TRANSFER) {
+  if (orderType.toUpperCase() === Transaction_OT.TRANSFER.toUpperCase()) {
     node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
       <Tooltip title={"Tranfer Money"}>
+        <MonetizationOnIcon />
+      </Tooltip>
+    </Fab>
+  }
+  if (orderType.toUpperCase() === Transaction_OT.VARIABLE.toUpperCase()) {
+    node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+      <Tooltip title={"Variable Expense"}>
+        <PriceChangeOutlinedIcon />
+      </Tooltip>
+    </Fab>
+  }
+
+  if (orderType.toUpperCase() === Transaction_OT.REFUND.toUpperCase()) {
+    node = <Fab color='primary' sx={{ width: 40, height: 40, backgroundColor: green[500], '&:hover': { bgcolor: green[700] }, }}>
+      <Tooltip title={"Refund Money"}>
         <MonetizationOnIcon />
       </Tooltip>
     </Fab>

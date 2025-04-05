@@ -21,10 +21,11 @@ import QuarterButtons from '../../Components/Buttons/QuarterButtons';
 import UserAccountTable from '../../Components/Tables/UserAccountTable';
 import { EQuarterOption } from '../../Utils/enums';
 import { IQuarterFilter } from '../../Interfaces/IDateFilter';
+
 function UserAccountTab() {
   const login: ILoginResult = useAppSelector<ILoginResult>((state) => state.authSlice);
   const [openFilter, setOpenFilter] = useState(false)
-  const [accountFilter, setAccountFilter] = useState({ member: login.member._id,from: (new Date()).getStartQuarterDate().toLocaleString() ,to: (new Date()).getEndQuarterDate().toLocaleString(),quarter:  (new Date()).getQuarter()}) 
+  const [accountFilter, setAccountFilter] = useState({ member: login.member._id,from: (new Date()).getStartOfYear().toLocaleString() ,to: (new Date()).getEndOfYear().toLocaleString(),quarter:  (new Date()).getQuarter()}) 
  
   const { data, isLoading, isError, error } = useFetchAccountSearchQuery({});
   /* const [filter, setFilter] = useState<IOrderTableFilter>(Current_Quarter_Filter()); */
