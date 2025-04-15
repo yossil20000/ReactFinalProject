@@ -16,6 +16,7 @@ import { MemberType } from '../../Interfaces/API/IMember';
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
+import SizePerUnitCombo from '../../Components/Buttons/SizePerUnitCombo';
 export interface CreateExpenseDialogProps {
 
   onClose: () => void;
@@ -32,7 +33,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
   const [selectedType, setSelectedType] = useState<InputComboItem>()
   const [selectedCategory, setSelectedCategory] = useState<InputComboItem>()
-  
+  const [selectedSPU, setSelectedSPU] = useState<InputComboItem>()
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const UpdateSourceAccountFields = (): IExpenseBase => {
@@ -140,6 +141,14 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
       setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
     } */
   }
+  const onSPUChanged = (item: InputComboItem) => {
+    CustomLogger.log("ExpenseDialog/onSPUChanged/item", item)
+    setSelectedSPU(item)
+    setSelectedExpense(setProperty(selectedExpense, `sizePerUnit`, item.lable))
+/*     if(selectedExpense.description == "" || selectedExpense.description.includes("|") ){
+      setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
+    } */
+  }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     setSelectedExpense(setProperty(selectedExpense, prop, item.lable))
     CustomLogger.log("selectedExpense", selectedExpense)
@@ -180,20 +189,23 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
                   selectedItem={{ lable: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item xs={12} sm={4}>
+              <SizePerUnitCombo onChanged={onSPUChanged} source={'_CreateExspense/SizePerUnit'} selectedItem={{ lable: selectedExpense.sizePerUnit === undefined ? "" : selectedExpense.sizePerUnit, _id: "", description: "" }}/>
+              </Grid>
+              <Grid item xs={12} sm={2}>
                 <TextField fullWidth={true} onChange={handleNumberChange} id="units" name="units"
                   type={"number"}
                   label="Units" placeholder="Units" variant="standard"
                   value={selectedExpense?.units} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <TextField fullWidth={true} onChange={handleNumberChange} id="pricePeUnit" name="pricePeUnit"
                   type={"number"}
                   label="Unit Price" placeholder="Per Unit" variant="standard"
                   value={selectedExpense?.pricePeUnit} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }} />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <TextField fullWidth={true} onChange={handleNumberChange} id="amount" name="amount"
                   disabled
                   type={"number"}

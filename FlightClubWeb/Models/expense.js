@@ -9,6 +9,7 @@ var ExpenseSchema = new Schema({
   units: {type: Number, default: 0, required:true},
   pricePeUnit: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
+  sizePerUnit: {type: String, default: "Unit"},
   expense: {
     category: {type: String, required:true, default: ""},
     type: {type: String, required:true, default: ""},

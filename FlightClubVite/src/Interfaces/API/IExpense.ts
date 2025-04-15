@@ -2,16 +2,29 @@ import { OrderStatus } from "./IAccount"
 import { MemberType } from "./IMember"
 export enum Utilizated {
   HOURS_0000= "HOURS_0000",
+  HOURS_0001= "HOURS_0001",
   HOURS_0100= "HOURS_0100",
+  HOURS_0150= "HOURS_0150",
   HOURS_0200= "HOURS_0200",
+  HOURS_0250= "HOURS_0250",
+  HOURS_0300= "HOURS_0300",
+  HOURS_0350= "HOURS_0350",
+  HOURS_0400= "HOURS_0400",
+  HOURS_0450= "HOURS_0450",
   HOURS_0500= "HOURS_0500",
   HOURS_1000= "HOURS_1000",
   HOURS_1500= "HOURS_1500",
   HOURS_2000= "HOURS_2000"
 }
+export enum ESizePerUnit {
+  UNIT = 'Unit',
+  GALON_PER_HOUR= 'GalonPerHour',
+  QUART = 'Quart',
+  HOUR_AND_PART = 'H & Part',
+  PACKAGE = 'Package'
+}
 export interface IUpsertExpanse {
-  filter?:{
-  },
+  filter?:object,
   update?: IExpense | IExpenseBase 
 }
 
@@ -20,6 +33,7 @@ export interface IExpenseBase {
   units: number,
   pricePeUnit: number,
   amount: number,
+  sizePerUnit: string,
   expense: {
     category: string,
     type: string,
@@ -49,6 +63,7 @@ export const newExpense : IExpenseBase= {
   units: 0,
   pricePeUnit: 0,
   amount: 0,
+  sizePerUnit: 'Unit',
   expense: {
     category:"",
     type: "",

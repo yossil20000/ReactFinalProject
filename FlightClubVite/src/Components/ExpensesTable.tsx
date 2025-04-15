@@ -61,6 +61,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
       units: row.units,
       pricePeUnit: row.pricePeUnit,
       amount: row.amount,
+      sizePerUnit: row.sizePerUnit,
       category: row.expense.category,
       type: row.expense.type,
       utilizated: row.expense.utilizated,
@@ -87,6 +88,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
   const columns: GridColDef[] = useMemo(() => [
     { field: '_id', headerName: 'id', hideable: true, minWidth: 50, type: 'string' },
     { field: 'date', headerName: 'Date', minWidth: 30, type: 'date' },
+    { field: 'sizePerUnit', headerName: 'Unit Size', minWidth: 90, type: 'string' },
     { field: 'units', headerName: 'Units', minWidth: 40, type: 'number' },
     { field: 'pricePeUnit', headerName: 'Per Unit', minWidth: 90, type: 'number' },
     { field: 'amount', headerName: 'Amount', minWidth: 70, type: 'number' },

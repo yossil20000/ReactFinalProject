@@ -23,6 +23,7 @@ import { GridColDef, GridRowsProp } from '@mui/x-data-grid'
 interface Data {
   _id: string,
   date: Date,
+  sizePerUnit: string,
   units: number,
   pricePeUnit: number,
   amount: number,
@@ -46,8 +47,9 @@ function createData(_id: string, date: Date,
   status: OrderStatus,
   source: IMember | string,
   destination: IMember | string,
+  sizePerUnit: string,
   render?: React.ReactNode): Data {
-  return { _id, date, units, pricePeUnit, amount, category, type, utilizated, description, status, source, destination, render }
+  return { _id, date, units, pricePeUnit, amount, category, type, utilizated, description, status, source, destination,sizePerUnit, render }
 }
 
 
@@ -119,7 +121,7 @@ function AccountExpenseGridTab() {
   const getData = useMemo(() => {
     CustomLogger.info("AccountExpenseTab/getData/expense/data", data);
     let rows = data?.data.map((row) => {
-      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.expense.utilizated, row.description, row.status, row.source.display, row.destination.display,
+      return createData(row._id, row.date, row.units, row.pricePeUnit, row.amount, row.expense.category, row.expense.type, row.expense.utilizated, row.description, row.status, row.source.display, row.sizePerUnit, row.destination.display,
         <>{row.status == OrderStatus.CREATED ? (<>
           <Box display={'flex'} flexDirection={'column'} gap={1}>
             <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT, value: !isAuthorized }]} />
