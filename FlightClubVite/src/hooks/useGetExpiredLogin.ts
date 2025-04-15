@@ -12,7 +12,7 @@ export default function useGetExpiredLogin()  {
         const currentDate = DateTime.now();
         const dateExpired = DateTime.fromJSDate(new Date(login?.expDate))
         const remain = dateExpired.toUnixInteger() - currentDate.toUnixInteger();
-        setRemainLogin(remain)
+        setRemainLogin(remain > 0 ? remain : 0)
         CustomLogger.log("useGetExpiredLogin/remainLogin",remainLogin,remain)
       }
     },1000)
