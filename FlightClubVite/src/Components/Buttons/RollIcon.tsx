@@ -1,7 +1,5 @@
 import React from 'react'
 import AdbIcon from '@mui/icons-material/Adb';
-import PersonIcon from '@mui/icons-material/Person';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import BusinessIcon from '@mui/icons-material/Business';
@@ -12,8 +10,9 @@ export interface IRollIcon {
 }
 function RollIcon(props: IRollIcon) {
   globalThis.CustomLogger.log("RollIcon/props")
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function GetIcon():any {
-    const iconsArray : JSX.Element[] = [];
+    const iconsArray : React.JSX.Element[] = [];
     if(props.roles?.includes(Role.admin)){
       globalThis.CustomLogger.log("RollIcon/containe")
       iconsArray.push(<AdminPanelSettingsIcon key="admin"/>) ; 

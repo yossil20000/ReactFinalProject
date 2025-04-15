@@ -16,14 +16,14 @@ type PrimitiveType = string | Symbol | number | boolean;
 
 // Type guard for the primitive types which will support printing
 // out of the box
-function isPrimitive(value: any): value is PrimitiveType {
+/* function isPrimitive(value: any): value is PrimitiveType {
   return (
     typeof value === "string" ||
     typeof value === "number" ||
     typeof value === "boolean" ||
     typeof value === "symbol"
   );
-}
+} */
 
 /** Component */
 
@@ -51,12 +51,12 @@ export default function GenericTable<T extends MinTableItem>(props: TableProps<T
           const customRenderer = props.customRenderers?.[itemProperty];
 
           if (customRenderer) {
-            return <td>{customRenderer(item)}</td>;
+            return <td key={`${item.id}-${String(itemProperty)}`}>{customRenderer(item)}</td>;
           }
 
           return (
             
-            <td>{item[itemProperty] as unknown as ReactNode}</td>
+            <td key={`${item.id}-${String(itemProperty)}`}>{item[itemProperty] as unknown as ReactNode}</td>
           );
         })}
       </tr>
@@ -67,7 +67,7 @@ export default function GenericTable<T extends MinTableItem>(props: TableProps<T
     <table>
       <thead>
         {objectValues(props.headers).map((headerValue) => (
-          <th>{headerValue}</th>
+          <th key={headerValue}>{headerValue}</th>
         ))}
       </thead>
       <tbody>{props.items.map(renderRow)}</tbody>

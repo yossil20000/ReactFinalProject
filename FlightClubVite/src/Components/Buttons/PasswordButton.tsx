@@ -1,11 +1,9 @@
-import { Box, Container, CssBaseline, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, OutlinedInput, Paper, TextField } from '@mui/material';
+import { FormControl, FormHelperText, IconButton, InputLabel, OutlinedInput, Paper } from '@mui/material';
 import { useState } from 'react'
-import { IPageNavigate } from '../../Interfaces/IPageNavigate';
 import { styled } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import IMemberCreate from '../../Interfaces/IMemberCreate';
-import checkPassword, { checkUsername, IValidation, IsUsernaaameValid } from '../../Utils/registerUtils';
+import { IValidation } from '../../Utils/registerUtils';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -25,7 +23,7 @@ export type PasswordButtonProps = {
 function PasswordButton(props: PasswordButtonProps) {
     const {handleChange,value,isValid,label,property} = props;
     const [showPassword,setShowPassword] = useState(false)
-    const handleClickShowPasssword = (e: any) => {
+    const handleClickShowPasssword = () => {
         setShowPassword(prev => !prev);
     }
     return (
@@ -46,7 +44,8 @@ function PasswordButton(props: PasswordButtonProps) {
                                 onMouseDown={handleClickShowPasssword}
                                 edge="end"
                             >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                {showPassword && <VisibilityOff />}
+                                {!showPassword && <Visibility />}
                             </IconButton>
                         </InputAdornment>
                     }

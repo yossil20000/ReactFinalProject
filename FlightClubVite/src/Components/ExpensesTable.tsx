@@ -1,3 +1,6 @@
+/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
+import { customLogger } from "../customLogging";
 import '../Types/date.extensions'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
@@ -14,6 +17,7 @@ import { UseIsAuthorized } from './RequireAuth';
 
 interface IExpenseTableProps {
   hideAction?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   onAction?: (action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) => void;
   // selectedClubAccount: InputComboItem | null;
@@ -45,12 +49,13 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
       const min = Math.min(...value?.map(expense => expense.amount)); */
       return { key, total };
     });
-    CustomLogger.error("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy, groupByCategory, groupByType)
+    customLogger.error("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy, groupByCategory, groupByType)
     return { total, average, max, min, groupBy, groupByCategory };
   }
   const ExpenseRows = useMemo(() => {
 
-    CustomLogger.log("ExpenseTable/ExpenseRows/filter/filter", filter)
+    customLogger.log("ExpenseTable/ExpenseRows/filter/filter", filter)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const rows = Expenses?.data.filter((item) => true).map((row: IExpense) => ({
       _id: row._id, date: new Date(row.date),
       units: row.units,
@@ -66,11 +71,11 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
     }))
     if (Expenses?.data.length) {
       getExpenseStatistics(Expenses.data)
-      CustomLogger.info("ExpenseTable/ExpenseRows/Expenses", getExpenseStatistics(Expenses.data))
+      customLogger.info("ExpenseTable/ExpenseRows/Expenses", getExpenseStatistics(Expenses.data))
 
     }
     if (rows !== undefined) {
-      CustomLogger.info("ExpenseTable/ExpenseRows/Expenses", rows, Expenses);
+      customLogger.info("ExpenseTable/ExpenseRows/Expenses", rows, Expenses);
       return rows
     }
 
@@ -117,7 +122,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
   ], [rowId, hideAction, isAuthorized]);
 
   if (isLoading) {
-    CustomLogger.info('ExpenseTable/isLoading', isLoading)
+    customLogger.info('ExpenseTable/isLoading', isLoading)
     return (
       <div className='main' style={{ overflow: 'auto' }}>
         <FullScreenLoader />
@@ -128,7 +133,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
     if ('status' in error) {
       // you can access all properties of `FetchBaseQueryError` here
       const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
-      CustomLogger.error('ExpenseTable/error', errMsg)
+      customLogger.error('ExpenseTable/error', errMsg)
       return (
         <div>
           <div>ExpenseTable</div>
@@ -162,7 +167,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
         checkboxSelection={false}
         getRowId={(row) => row._id}
         disableRowSelectionOnClick
-        onCellEditStop={(params, event) => setRowId(params.id.toString())}
+        onCellEditStop={(params) => setRowId(params.id.toString())}
       /* rowHeight={123} */
 
       />

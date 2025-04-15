@@ -5,7 +5,7 @@ import { Enum2ComboItem } from '../../Utils/enums';
 import ControledCombo, {  InputComboItem, StateComboProps } from './ControledCombo';
 
 function MemberTypeCombo(props : StateComboProps) {
-const {onChanged,source, selectedItem} = props
+const {onChanged, selectedItem} = props
   const items = useRef(new Enum2ComboItem(MemberType).getItems())
   const onSelectedItem = (item : InputComboItem) => {
     CustomLogger.log("MemberTypeCombo/DeviceItem", item)

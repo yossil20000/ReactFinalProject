@@ -1,3 +1,4 @@
+/* eslint-disable jsx-control-statements/jsx-jcs-no-undef */
 import { useMemo, useState } from "react";
 import MultiOptionCombo, { LabelType } from "../Buttons/MultiOptionCombo"
 import { blue } from "@mui/material/colors";

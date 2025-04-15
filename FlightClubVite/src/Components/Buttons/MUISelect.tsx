@@ -1,5 +1,5 @@
 import { MenuItem, TextField } from '@mui/material'
-import { ChangeEventHandler, useState } from 'react';
+import { useState } from 'react';
 
 export type MUISelectProps<T> = {
   data: T[];

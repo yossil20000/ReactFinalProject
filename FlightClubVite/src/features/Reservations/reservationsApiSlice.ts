@@ -6,7 +6,6 @@ import { URLS } from "../../Enums/Urls";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
 import IReservation, { IReservationCreateApi, IReservationDelete, IReservationUpdate } from "../../Interfaces/API/IReservation";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
-import { map } from "lodash";
 import { customLogger } from "../../customLogging";
 
 
@@ -35,8 +34,8 @@ export const reservationApiSlice = createApi({
                 }),
                 providesTags: ["Reservation"],
                 transformResponse: (response : IResultBase<IReservation>) => {
-                    CustomLogger.info("FixReservationDaySavingTime/response", response);
-                    CustomLogger.info("FixReservationDaySavingTime/clientOffset",new Date(),new Date().getTimezoneOffset() );
+                    customLogger.info("FixReservationDaySavingTime/response", response);
+                    customLogger.info("FixReservationDaySavingTime/clientOffset",new Date(),new Date().getTimezoneOffset() );
                     response.data = FixDaySavingTime(response.data)
                     return response;
                   }

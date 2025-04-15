@@ -38,7 +38,7 @@ export default function ScrollableTabs(props: ISacrollableTabsProps) {
         }}
       >
         {props.items.map((item) => (
-          <Tab label={item.label} key={item.id} />  
+          <Tab label={item.label} key={`${item.id}-${item.label}`} />  
         ))}
       </Tabs>
     </Box>
