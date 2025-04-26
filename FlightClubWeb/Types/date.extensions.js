@@ -210,3 +210,9 @@ Date.prototype.dateWithoutTimezone = function ()  {
    console.log("getOffsetDate/offset,totalOffset",offset,totalOffset)
    return new Date(this.valueOf() + totalOffset) 
   }
+
+  Date.prototype.TimeOffsetDate = function(time ,offset)  {
+   
+   console.log("TimeOffsetDate/time,offset",time,offset)
+   return new Date(this.valueOf() + offset * 60000);
+  }

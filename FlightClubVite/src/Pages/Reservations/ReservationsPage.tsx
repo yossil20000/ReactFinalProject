@@ -750,6 +750,7 @@ function ReservationsPage() {
                                     {row.member_id}
                                   </Typography>
                                 </Grid>
+
                                 <Grid item xs={2} sm={4} >
                                   <Typography>
                                     {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
@@ -763,6 +764,12 @@ function ReservationsPage() {
                                     {(row.validOperation & CanDo.Delete) ? <Button onClick={(event) => handleConfirmation("DELETE_RESERVATION", row._id_reservaion)}>Delete</Button> : null}
                                   </Typography>
 
+                                </Grid>
+                                <Grid item xs={5} sm={5}>
+                                  
+                                  <Typography>
+                                    {`_id: ${row._id_reservaion}`}
+                                  </Typography>
                                 </Grid>
                               </Grid>
                             </AccordionDetails>

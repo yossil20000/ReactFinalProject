@@ -43,4 +43,5 @@ FlightReservationSchema.pre('remove', async function(next){
         next
     )
 });
-module.exports = mongoose.model('FlightReservation', FlightReservationSchema);
+const FlightReservation = mongoose.model("FlightReservation", FlightReservationSchema);
+module.exports = FlightReservation

@@ -19,3 +19,22 @@ validationResult {
     param: 'account_id',
     location: 'body'
 } 
+
+
+			const found = await FlightReservation.findOne({
+				$and: [
+					{ device: newReservation.device },
+					{
+						/* date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } */
+
+						$or: [
+							{ time_from: { "$lte": newDateTo }, time_to: { "$gte": newDateFrom } },
+							/* 
+							{ time_from: { "$lte": newReservation._doc.time_from }, time_to: { "$gte": newReservation._doc.time_from } },
+							{ time_from: { "$lte": newReservation._doc.time_to }, time_to: { "$gte": newReservation._doc.time_to } },
+							{ time_from: { "$gte": newReservation._doc.time_from }, time_to: { "$lte": newReservation._doc.time_to } }, */
+							/* { time_to: { "$lte": newReservation._doc.time_to }, time_to: { "$gte": newReservation._doc.time_from } } */
+						]
+					}
+				]
+			}).exec();

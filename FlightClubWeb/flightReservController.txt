@@ -7,10 +7,10 @@ const { ApplicationError } = require('../middleware/baseErrors');
 const { CValidationError } = require('../Utils/CValidationError');
 const async = require('async');
 const log = require('debug-level').log('flightReservationController');
-const { findOverlapping } = require('../Services/reservationService');
+
 const { body, check, validationResult } = require('express-validator');
 const { sendNotification } = require('../Services/notificationService');
-const { find } = require('../Models/clubAccount');
+const { $where } = require('../Models/role');
 
 exports.reservation = function (req, res, next) {
 	try {
@@ -234,20 +234,40 @@ exports.reservation_create = [
 				time_to: (new Date(req.body.date_to)).getTime()
 			});
 			log.info("newReservation", newReservation._doc);
-			let found = undefined
-			await findOverlapping(newReservation.device,newReservation.time_from, newReservation.time_to,newReservation.timeOffset).then((results) => {			
-				log.info("findOverlapping", results);	
-				found = results;
-			})
-			
+			const newTimeFrom = newReservation._doc.time_from - (newReservation._doc.timeOffset * 60000); 
+			const newTimeTo = newReservation._doc.time_to - (newReservation._doc.timeOffset * 60000); 
 
+			const found = undefined;
+			const found2 = await FlightReservation.aggregate([
+				{
+					$addFields: {
+					timeDelta: {$multiply: ["$timeOffset", 60000]},
+					fromValue: {$subtract: ["$time_from", "$timeDelta"]},
+					toValue: {$subtract: ["$time_to", "$timeDelta"]}, 
+				}
+			},
+			{
+				$match: {
+					$and: [
+						{ device: newReservation.device },
+						{
+							/* date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } */
+	
+							$or: [
+								{ fromValue: { "$lte": newTimeTo }, toValue: { "$gte": newTimeFrom } },
+								
+							]
+						}
+					]
+				}
 
-
+			}
+			]).exec();
 
 
 			log.info("FlightReservation.find/doc", found?._doc);
-
-			if (found === undefined) {
+			log.info("FlightReservation.find/doc", found2);
+			if (found?._doc === undefined) {
 				newReservation.save(err => {
 					if (err) {
 						return res.status(500).json({ success: false, errors: [err], data: [] });
@@ -281,8 +301,8 @@ exports.reservation_create = [
 				return;
 			}
 			else {
-				log.info("Create/else_found", found);
-				return next(new ApplicationError("reservation_create", 409, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  Already Overlaping / Exist`, '', "DB.Reservation")).validationResult.errors }));
+				log.info("Create/else_found", found?._doc);
+				return next(new ApplicationError("reservation_create", 409, "CONTROLLER.FLIGHT_RESERV.CREATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${newReservation.date_from.toLocaleString()} to:${newReservation.date_to.toLocaleString()}  already exist (${found?._doc.date_from.toLocaleString()} - ${found?._doc.date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
 
 			}
 		}
