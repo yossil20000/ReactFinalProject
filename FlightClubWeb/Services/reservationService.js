@@ -13,40 +13,45 @@ const timeOffsetTOtimeZone = (timeOffset) => {
 const findOverlapping = async (device, timeFromRef, timeToRef, timeOffset) => {
   let timeStart = timeFromRef - 2 * 36000000;
   let timeEnd = timeToRef + 2 * 36000000;
-
-  const found = await FlightReservation.find({
-    $and: [
-      { device: device },
-      {
-        /* date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } */
-
-        $or: [
-          { time_from: { $lte: timeStart }, time_to: { $gte: timeEnd } },
-          { time_from: { $lte: timeEnd }, time_to: { $gte: timeStart } },
-        ],
-      },
-    ],
-  }).exec();
-  console.log("found", found);
-  timeStart = timeFromRef - timeOffset * 60000;
-  timeEnd = timeToRef - timeOffset * 60000;
-  let localDateFound = undefined;
-  found.forEach((item) => {
-    const i = item.toJSON
-    itemTimeOffset = item.timeOffset;
-    const itemStart = item.time_from - itemTimeOffset * 60000;
-    const itemEnd = item.time_to - itemTimeOffset * 60000;
-    if (
-      (itemStart <= timeStart && itemEnd >= timeStart) ||
-      (itemStart <= timeEnd && itemEnd >= timeEnd)
-    ) {
-      localDateFound = item;
-      console.log("item", item);
-       
-    }
-  });
-
-  return localDateFound;
+  try {
+    const found = await FlightReservation.find({
+      $and: [
+        { device: device },
+        {
+          /* date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } */
+  
+          $or: [
+            { time_from: { $lte: timeStart }, time_to: { $gte: timeEnd } },
+            { time_from: { $lte: timeEnd }, time_to: { $gte: timeStart } },
+          ],
+        },
+      ],
+    }).exec();
+    console.log("found", found);
+    timeStart = timeFromRef - timeOffset * 60000;
+    timeEnd = timeToRef - timeOffset * 60000;
+    let localDateFound = undefined;
+    found.forEach((item) => {
+      const i = item.toJSON
+      itemTimeOffset = item.timeOffset;
+      const itemStart = item.time_from - itemTimeOffset * 60000;
+      const itemEnd = item.time_to - itemTimeOffset * 60000;
+      if (
+        (itemStart <= timeStart && itemEnd >= timeStart) ||
+        (itemStart <= timeEnd && itemEnd >= timeEnd)
+      ) {
+        localDateFound = item;
+        console.log("item", item);
+         
+      }
+    });
+    
+    return localDateFound;
+  }
+  catch (errors) {
+    throw(errors)
+  }
+ 
   /* const findOverlapping =  (dateStart, dateEnd)   => {
   FlightReservation.aggregate([
     {

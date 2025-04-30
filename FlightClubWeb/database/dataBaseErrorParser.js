@@ -62,6 +62,26 @@ const parseExpressValidator = (error) => {
 const parseApplicationError = (error) => {
   let { name, errors } = error;
   name = name == "" ? errors.name : name;
+  if(errors == undefined){
+   if (error.hasOwnProperty("error")) {
+      if (error.error.hasOwnProperty("errors"))
+        errors = error.error.errors
+      else if (error.error.hasOwnProperty("message"))
+        errors = [error.error.message]
+      else if (error.error.hasOwnProperty("value"))
+        errors = [error.error.value]
+      else if (error.error.hasOwnProperty("name"))
+        errors = [error.error.name]
+      else if (error.error.hasOwnProperty("path"))
+        errors = [error.error.path]
+      else if (error.error.hasOwnProperty("value"))
+        errors = [error.error.value]
+      else if (error.error.hasOwnProperty("param"))
+        errors = [error.error.param]
+      else
+      errors = [error.error]
+        }
+  }
   log.error("parseApplicationError/error", error)
   switch (name) {
     case "ValidationError":
@@ -76,6 +96,9 @@ const parseApplicationError = (error) => {
       if (typeof error == 'object') {
         if (error.error.hasOwnProperty("message"))
           return { errorType: name, errors: [error.error.message] };
+      }
+      if(typeof error == 'string'){
+        return { errorType: name, errors: [error] };
       }
       return { errorType: name, errors: [errors.error] };
     case "MongoServerError":
