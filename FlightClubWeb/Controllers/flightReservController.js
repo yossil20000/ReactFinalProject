@@ -314,8 +314,15 @@ exports.reservation_update = [
 			else {
 				let deviceFound = await Device.findOne({ device_id: req.body.device_name }).lean().exec()
 				const results = await FlightReservation.findOne({ _id: req.body._id }).populate('device member').exec()
+				let newReservation = new FlightReservation({
+					date_from: new Date(req.body.date_from),
+					date_to: new Date(req.body.date_to),
+					timeOffset: req.body.timeOffset,
+					time_from: req.body.time_from,
+					time_to: req.body.time_to
+				});
 				log.info("reservation_update/newReservation", results)
-				const found = await FlightReservation.find({
+/* 				const found = await FlightReservation.find({
 					$and: [
 						{ device: deviceFound._id },
 						{
@@ -325,28 +332,33 @@ exports.reservation_update = [
 							]
 						}
 					]
-				}).lean().exec();
-				if (found.length == 0 || (found.length == 1 && found[0]._id.toString() == results._id)) {
+				}).lean().exec(); */
+				let found = undefined
+				await findOverlapping(deviceFound,newReservation._doc.time_from, newReservation._doc.time_to,newReservation._doc.timeOffset,req.body._id).then((reservations) => {			
+					log.info("findOverlapping", reservations);	
+					found = reservations;
+				})
+				if (found === undefined) {
 
 					const results = await FlightReservation.findOneAndUpdate({ _id: req.body._id }, { date_from: req.body.date_from, date_to: req.body.date_to, timeOffset: req.body.timeOffset, time_from: req.body.time_from, time_to: req.body.time_to }).populate('device member')
 					notifyMessage = `Flight from: ${results.date_from} to: ${results.date_to} \n Changed to Flight From: ${req.body.date_from} To: ${req.body.date_to}\n on device: ${results.device.device_id} by: ${results.member.full_name}`
 					const message = `<div>
-    <h3><b><u>Flight Reservation Changed</u></b></h3>
-    <p><b><u>Airplane:</u></b> ${results.device.device_id}</p>
-		<p><b><u>Flight:</u></b></p>
-    <p><b><u>From:</u></b> ${new Date(results.date_from).getOffsetDate(results.timeOffset)}</p>
-    <p><b><u>To:</u></b> ${new Date(results.date_to).getOffsetDate(results.timeOffset)}</p>
-		<p><b><u>Flight Updated to:</u></b></p>
-		<p><b><u>From:</u></b> ${new Date(req.body.date_from).getOffsetDate(results.timeOffset)}</p>
-    <p><b><u>To:</u></b> ${new Date(req.body.date_to).getOffsetDate(results.timeOffset)}</p>
-    <p><b><u>By:</u></b> ${results.member.full_name}</p></div>`
+													<h3><b><u>Flight Reservation Changed</u></b></h3>
+													<p><b><u>Airplane:</u></b> ${results.device.device_id}</p>
+													<p><b><u>Flight:</u></b></p>
+													<p><b><u>From:</u></b> ${new Date(results.date_from).getOffsetDate(results.timeOffset)}</p>
+													<p><b><u>To:</u></b> ${new Date(results.date_to).getOffsetDate(results.timeOffset)}</p>
+													<p><b><u>Flight Updated to:</u></b></p>
+													<p><b><u>From:</u></b> ${new Date(req.body.date_from).getOffsetDate(results.timeOffset)}</p>
+													<p><b><u>To:</u></b> ${new Date(req.body.date_to).getOffsetDate(results.timeOffset)}</p>
+													<p><b><u>By:</u></b> ${results.member.full_name}</p></div>`
 
 					await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CHANGED, message)
 					return res.status(201).json({ success: true, errors: [], data: [] });
 				}
 				else {
 					log.info("Update/else_found", found);
-					return next(new ApplicationError("reservation_update", 400, "CONTROLLER.FLIGHT_RESERV.UPDATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${req.body.date_from.toLocaleString()} to:${req.body.date_to.toLocaleString()}  already exist (${found[0].date_from.toLocaleString()} -${found[0].date_to.toLocaleString()}) `, '', "DB.Reservation")).validationResult.errors }));
+					return next(new ApplicationError("reservation_update", 400, "CONTROLLER.FLIGHT_RESERV.UPDATE_RESERVATION.VALIDATION", { name: "Validator", errors: (new CValidationError("", `Flight from:${req.body.date_from.toLocaleString()} to:${req.body.date_to.toLocaleString()}  already exist (${found.date_from} -${found.date_to}) `, '', "DB.Reservation")).validationResult.errors }));
 
 				}
 

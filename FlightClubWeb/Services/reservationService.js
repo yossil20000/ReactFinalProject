@@ -10,13 +10,24 @@ const timeOffsetTOtimeZone = (timeOffset) => {
   const absoluteMinutes = Math.abs(minutes).toString().padStart(2, "0");
   return `${sign}${absoluteHours}:${absoluteMinutes}`;
 };
-const findOverlapping = async (device, timeFromRef, timeToRef, timeOffset) => {
+/**
+ * Finds overlapping time slots for a device based on reference times and an offset.
+ * @param {string} device - The device ID or name to check reservations for.
+ * @param {Date} timeFromRef - The reference start time.
+ * @param {Date} timeToRef - The reference end time.
+ * @param {number} timeOffset - The time offset in seconds.
+ * @param {string} [reservation_id="000000000000"] - Optional reservation ID to exclude from the search.
+ * @returns {Promise<Array>} A promise resolving to an array of overlapping reservations.
+ */
+
+const findOverlapping = async (device, timeFromRef, timeToRef, timeOffset,reservation_id="000000000000") => {
   let timeStart = timeFromRef - 2 * 36000000;
   let timeEnd = timeToRef + 2 * 36000000;
   try {
     const found = await FlightReservation.find({
       $and: [
         { device: device },
+        {_id: { $ne: reservation_id } },
         {
           /* date_from: { "$lte": new Date(newReservation._doc.date_to) }, date_to: { "$gte": new Date(newReservation._doc.date_from) } */
   
