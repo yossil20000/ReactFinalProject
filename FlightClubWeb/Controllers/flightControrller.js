@@ -399,16 +399,26 @@ const isEngienValid = async (_id, req) => {
 const deviceMaxValues = async (_id) => {
   let maxValues = await Flight.aggregate(
     [
+      { $match: { status: "CLOSE",device: _id } },
       {
         $group:
         {
-          _id: "$device",
+          _id: "$device", 
           max_hobbs_start: { $max: "$hobbs_start" },
           max_hobbs_stop: { $max: "$hobbs_stop" },
           max_engien_start: { $max: "$engien_start" },
           max_engien_stop: { $max: "$engien_stop" }
         }
+      },
+      {
+        $project: {
+          max_hobbs_start: { $toDouble: "$max_hobbs_start" }, // Converts Decimal128 to a regular number
+          max_hobbs_stop: { $toDouble: "$max_hobbs_stop" }, // Converts Decimal128 to a regular number
+          max_engien_start: { $toDouble: "$max_engien_start" }, // Converts Decimal128 to a regular number
+          max_engien_stop: { $toDouble: "$max_engien_stop" } // Converts Decimal128 to a regular number
+        }
       }
+    
     ]
   ).exec();
   log.info("filter", deviceMaxValues);

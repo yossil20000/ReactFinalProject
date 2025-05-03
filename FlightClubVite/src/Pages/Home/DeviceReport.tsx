@@ -26,7 +26,7 @@ function DeviceReport() {
       return (
         <>
           {`${data?.data[0].device.device_id} last flight: ${new Date(data?.data[0].date).getDisplayDate()} 
-          current TACH: ${data?.data[0].engien_stop} (Last close: ${data?.data[0].device.engien_meter}) next service: ${data?.data[0].device.maintanance.next_meter}`}
+          current TACH: ${data?.data[0].engien_stop} (Last close: ${deviceMaxValues?.data[0].max_engien_stop}) next service: ${data?.data[0].device.maintanance.next_meter}`}
         </>
       )
     }

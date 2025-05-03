@@ -70,6 +70,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 48,version: "2.0.16.3",date: new Date(2025,2,1).getDisplayDate() , "description" : "Links Add LLHA Flights Schedual Link, Fix WAB persistance initialize data","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 49,version: "2.0.16.4",date: new Date(2025,3,15).getDisplayDate() , "description" : "Links Add Instructors.","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 50,version: "2.0.17.0",date: new Date(2025,4,25).getDisplayDate() , "description" : "HOME Page Links, WAB default and warning,Account Report fix,Account filter","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 51,version: "2.0.17.1",date: new Date(2025,4,25).getDisplayDate() , "description" : "Last close flight, time zone changed error, expense add sizePerUnit field","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     
   ]
   function CustomToolbar() {
