@@ -74,7 +74,7 @@ export default function NoticeStepper({header ,steppers,editMode,role,children} 
   CustomLogger.info("NoticeStepper/stepper/,",maxSteps,activeStep,steppers)
   return (
     <Box sx={{ width: '100%', flexGrow: 1}}>
-      <Typography sx={{ height: "3ex", textAlign: "center" }}>{header}</Typography>
+      {/* <Typography sx={{ height: "3ex", textAlign: "center" }}>{header}</Typography> */}
       <Paper
         square
         elevation={2}
@@ -105,7 +105,7 @@ export default function NoticeStepper({header ,steppers,editMode,role,children} 
             
             multiline
             fullWidth
-            
+            dir="rtl"
           />
       </Box>
      
