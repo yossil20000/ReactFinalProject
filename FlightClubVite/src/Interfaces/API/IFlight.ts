@@ -161,10 +161,10 @@ export class CFlightToReport {
             body: [],
             save:false
         }
-        report.header=["Index","Date","EngienStart","EngienEnd","Name","MemberId","Description"]
+        report.header=["Index","Date","EngienStart","EngienEnd","Duration","Name","MemberId","Description"]
         report.body = this.flights.map((flight,i) => {
             console.info("CFlightToReport/flight",flight)
-            return [i.toFixed(0),flight.date.getDisplayDate(),flight.engien_start.toFixed(1),flight.engien_stop.toFixed(1),flight.name,flight.member_id,flight.description]
+            return [i.toFixed(0),flight.date.getDisplayDate(),flight.engien_start.toFixed(1),flight.engien_stop.toFixed(1),flight.duration.toFixed(1),`${flight.name}`,flight.member_id,flight.description]
         })
         console.info("CFlightToReport/report",report)
         return report;

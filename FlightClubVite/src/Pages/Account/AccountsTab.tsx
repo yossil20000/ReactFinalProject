@@ -241,7 +241,7 @@ function AccountsTab() {
 
     return (
       <Box>
-        {bank !== undefined ? (<>{bank.club.brand}/{bank.club.branch}/{bank.club.account_id} {`CASH Balnace: ${bank.balance}`} {`ENGINE Balance: ${savingEngien}`}</>) : (<>Undefined</>)}
+        {bank !== undefined ? (<>{bank.club.brand}/{bank.club.branch}/{bank.club.account_id} {`CASH Balnace: ${bank.balance.toFixed(2)}`} {`ENGINE Balance: ${savingEngien.toFixed(2)}`}</>) : (<>Undefined</>)}
       </Box>
     )
   }, [bank])

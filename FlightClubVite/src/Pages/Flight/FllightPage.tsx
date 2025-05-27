@@ -54,7 +54,7 @@ const StyledAccordion = styled(Box)(({ theme }) => ({
 function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
   return {
     _id: flight._id, _id_member: flight.member._id, description: flight.description,
-    name: flight.member.family_name, device_id: flight.device.device_id,
+    name: `${flight.member.family_name} ${flight.member.first_name}`, device_id: flight.device.device_id,
     date: new Date(flight.date), member_id: flight.member.member_id,
     hobbs_start: flight.hobbs_start, hobbs_stop: flight.hobbs_stop, engien_start: flight.engien_start, engien_stop: flight.engien_stop, status: flight.status,
     validOperation: validOperation, duration: flight.duration,flight_time: flight.flight_time, fuel_start: flight.fuel_start,reuired_hobbs: flight.reuired_hobbs, timeOffset: flight.timeOffset
@@ -483,6 +483,11 @@ const FlightPage = () => {
 
 
   ];
+  const sortEngineStart = (a: IFlightData, b: IFlightData) => {
+    if (a.engien_start < b.engien_start) return -1; 
+    if (a.engien_start > b.engien_start) return 1;
+    return 0;
+  }
   return (
     <>
       <ContainerPage>
@@ -590,7 +595,7 @@ const FlightPage = () => {
 
               {openFlightUpdate && <UpdateFlightDialog onClose={handleUpdateOnClose} value={flightUpdateIntitial} open={openFlightUpdate} onSave={handleUpdateOnSave} />}
               {openFlightAdd && <CreateFlightDialog onClose={handleAddOnClose} value={flightAddIntitial} open={openFlightAdd} onSave={handleAddOnSave} />}
-              {openExport && <ReportDialog onClose={handleAddOnClose} open={openExport} table={(new CFlightToReport(flightsData)).getFlightToExel()} action="FlightExport" />}
+              {openExport && <ReportDialog onClose={handleAddOnClose} open={openExport} table={(new CFlightToReport(flightsData.sort(sortEngineStart))).getFlightToExel()} action="FlightExport" />}
               <Box sx={{ width: '100%', height: '100%' }}>
 
                 <Paper sx={{ width: '100%', mb: 1 }}>
