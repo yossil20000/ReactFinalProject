@@ -610,7 +610,7 @@ const FlightPage = () => {
                           <Accordion key={row._id} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}
                           >
                             <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                              <Typography variant='caption'> {row.device_id} , {row.date.getDisplayDate()}</Typography>
+                              <Typography variant='caption'> {row.device_id} , {`${row.date.getDisplayDate()} ${row.name}`}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                               <Grid container spacing={1} columns={12}>
@@ -626,7 +626,6 @@ const FlightPage = () => {
                                     {row.member_id}
                                   </Typography>
                                 </Grid>
-
                                 <Grid item xs={6} >
                                   <Typography>
                                     {`TACH Start: ${row.engien_start}`}
