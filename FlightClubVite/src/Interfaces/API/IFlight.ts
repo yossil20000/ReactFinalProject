@@ -161,7 +161,9 @@ export class CFlightToReport {
             body: [],
             save:false
         }
-        report.header=["Index","Date","EngienStart","EngienEnd","Duration","Name","MemberId","Flight Time","Description"]
+        report.header=["Index","Date","EngienStart","EngienEnd","Duration","Name","MemberId","Flight Time","Description","Delta"];
+        let delta=0;
+        let previous=0;
         report.body = this.flights.map((flight,i) => {
             console.info("CFlightToReport/flight",flight)
             if(flight.duration==0){
@@ -170,7 +172,16 @@ export class CFlightToReport {
             if(flight.flight_time==0){
                 flight.flight_time = flight.engien_stop - flight.engien_start;
             }
-            return [i.toFixed(0),flight.date.getDisplayDate(),flight.engien_start.toFixed(1),flight.engien_stop.toFixed(1),flight.duration.toFixed(1),`${flight.name}`,flight.member_id,flight.flight_time.toFixed(1),flight.description]
+            if(i==0){
+                previous = flight.engien_stop;
+
+            }else{
+               /*  if(flight.engien_start < previous) */{
+                    delta = previous - flight.engien_start
+                    previous = flight.engien_stop;
+                }
+            }
+            return [i.toFixed(0),flight.date.getDisplayDate(),flight.engien_start.toFixed(1),flight.engien_stop.toFixed(1),flight.duration.toFixed(1),`${flight.name}`,flight.member_id,flight.flight_time.toFixed(1),flight.description,delta.toFixed(1)]
         })
         console.info("CFlightToReport/report",report)
         return report;
