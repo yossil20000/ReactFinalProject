@@ -862,14 +862,19 @@ const FlightPage = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                               <Grid container spacing={1} columns={12}>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={4}>
                                   <Typography>
                                     {`TACH Start: ${row.engien_start}`}
                                   </Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={4}>
                                   <Typography>
                                     {`TACH End: ${row.engien_stop}`}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                  <Typography>
+                                    {`TACH: ${(row.engien_stop - row.engien_start).toFixed(1)}`}
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -882,11 +887,11 @@ const FlightPage = () => {
                                     {`Fuel Start: ${row.fuel_start}`}
                                   </Typography>
                                 </Grid>
-                                  <Grid item xs={12}>
-                                    <Typography>
-                                      description: {row.description}
-                                    </Typography>
-                                  </Grid>
+                                <Grid item xs={12}>
+                                  <Typography>
+                                    description: {row.description}
+                                  </Typography>
+                                </Grid>
                                 <Grid item xs={12}>
                                   <Typography>
                                     {`FlightID: ${row._id}`}
