@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
-import ExportExelTable, { IExportExelTable } from "./ExportExelTable";
+import { ExportExelTable} from "./ExportExelTable";
+import { IExportExelTable } from "../../../Interfaces/IExport"
 import { useState } from "react";
 
 export interface IReportDialogProps {

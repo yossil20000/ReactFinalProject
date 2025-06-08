@@ -1,5 +1,4 @@
-import { LeakRemove } from "@mui/icons-material";
-import { IExportExelTable } from "../Components/Report/Exel/ExportExelTable";
+import { IExportExelTable } from "../Interfaces//IExport";
 import { IFlightSummary, IMemberFlightSummary, Status } from "../Interfaces/API/IMember";
 import _ from 'lodash';
 export type FlightStatistic = {
@@ -157,7 +156,7 @@ export class CStatistToReport {
     }
     report.header = ["Index", "id", "Name", `Until ${this.statistic_summary.last_year_name}`, `${this.statistic_summary.last_year_name}`, "LastQ1", "LastQ2", "LastQ3", "LastQ4"]
     report.body = this.statistic_summary.statistic_list?.map((item, i) => {
-      console.info("CExpenseToReport/statistic_summary", item)
+      console.info("CStatistToReport/statistic_summary", item)
       return [i.toFixed(0),
       item._id,
       item.family_name + " " + item.first_name,
@@ -193,7 +192,7 @@ export class CFullStatistToReport {
 
     report.header = ["Index", "id", "Name"].concat( this.uniqueYears.map((year) => year))
     report.body = this.rows?.map((item, i) => {
-      console.info("CExpenseToReport/statistic_summary", item)
+      console.info("CFullStatistToReport/statistic_summary", item)
       return [i.toFixed(0),item["id"],item["name"],...this.uniqueYears.map((year) => item[year].toFixed(1))]
     })
     console.info("CStatistToReport/report", report)

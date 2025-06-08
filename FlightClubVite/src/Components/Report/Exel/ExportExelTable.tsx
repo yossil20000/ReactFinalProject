@@ -1,16 +1,8 @@
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
 import { useEffect } from "react";
 import { downloadExcel } from "react-export-table-to-excel";
+import { IExportExelTable } from "../../../Interfaces/IExport";
 
-export interface IExportExelTable {
-  file: string;
-  sheet: string;
-  title: string;
-  header: string[];
-  body: Array<string[]>
-  save:boolean;
-  showSelfSave?:boolean
-}
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -31,7 +23,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function ExportExelTable({ file, sheet, title, header, body ,save,showSelfSave=false}: IExportExelTable) {
+export function ExportExelTable({ file, sheet, title, header, body ,save,showSelfSave=false}: IExportExelTable) {
   function handleExportTable() : boolean {
     const opt = 'downloadExcel Method'; 
     const result = downloadExcel({
@@ -80,5 +72,3 @@ function ExportExelTable({ file, sheet, title, header, body ,save,showSelfSave=f
     </TableContainer>
   )
 }
-
-export default ExportExelTable

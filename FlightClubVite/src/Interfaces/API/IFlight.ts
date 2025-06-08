@@ -1,6 +1,6 @@
 
 import '../../Types/date.extensions'
-import { IExportExelTable } from "../../Components/Report/Exel/ExportExelTable";
+import { IExportExelTable } from '../IExport';
 import { CanDo } from "../../Utils/owner";
 import { IDateFilter } from "../IDateFilter";
 import IDevice from "./IDevice"
@@ -152,7 +152,7 @@ export class CFlightToReport {
         this.flights= flights;
         console.info("CFlightToReport/CTOR_flights",this.flights)
     }
-    getFlightToExel(file: string="flightReport",sheet:string ="Flights",title:string= "Flight Reports"): IExportExelTable{
+    getFlightToExel(file: string="flightReport",sheet:string ="Flights",title:string= "Flight Reports",filterWithDelta: boolean=false): IExportExelTable{
         let report : IExportExelTable = {
             file: file,
             sheet: sheet,
@@ -161,7 +161,7 @@ export class CFlightToReport {
             body: [],
             save:false
         }
-        report.header=["Index","Date","EngienStart","EngienEnd","Duration","Name","MemberId","Flight Time","Description","Delta"];
+        report.header=["Index","Date","EngienStart","EngienEnd","Delta","Duration","Name","MemberId","Flight Time","Description"];
         let delta=0;
         let previous=0;
         report.body = this.flights.map((flight,i) => {
@@ -181,9 +181,14 @@ export class CFlightToReport {
                     previous = flight.engien_stop;
                 }
             }
-            return [i.toFixed(0),flight.date.getDisplayDate(),flight.engien_start.toFixed(1),flight.engien_stop.toFixed(1),flight.duration.toFixed(1),`${flight.name}`,flight.member_id,flight.flight_time.toFixed(1),flight.description,delta.toFixed(1)]
+            return [i.toFixed(0),flight.date.getDisplayDate(),flight.engien_start.toFixed(1),flight.engien_stop.toFixed(1),delta.toFixed(1),flight.duration.toFixed(1),`${flight.name}`,flight.member_id,flight.flight_time.toFixed(1),flight.description]
         })
         console.info("CFlightToReport/report",report)
+        if(filterWithDelta){
+            report.body = report.body.filter((row) => {
+                return row[4] !== "0.0"
+            })
+        }
         return report;
     }
 }

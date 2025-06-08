@@ -6,8 +6,7 @@ import IFlight, { FlightStatus } from "./IFlight"
 import IFlightReservation from "./IFlightReservation"
 import IMember, { IMemberCombo } from "./IMember"
 import { Status } from "./IStatus"
-import { IExportExelTable } from "../../Components/Report/Exel/ExportExelTable";
-
+import { IExportExelTable } from "../IExport"
 
 
 export interface IDeviceComboFilter extends IFilter {
