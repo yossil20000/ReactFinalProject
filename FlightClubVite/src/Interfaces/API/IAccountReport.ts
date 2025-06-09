@@ -1,5 +1,5 @@
 import '../../Types/date.extensions'
-import { IExportExelTable } from "../IExport"
+import { IExportExelTable,ExportExpensesType, getNewExportExpensesType} from "../IExport"
 import { IExpense } from "./IExpense";
 import { ITransaction } from './IClub';
 import { get, groupBy } from "lodash";
@@ -40,28 +40,31 @@ export class CExpenseToReport {
     console.info("CExpenseToReport/report", report)
     return report;
   }
-  getExpesesByCategoryMap(): Map<string, Map<string, Map<string, IExpense[]>>> {
+  getExpesesByCategoryMap(): Map<string, Map<string, Map<string, ExportExpensesType>>> {
 
-    let threeLevelMap = new Map<string, Map<string, Map<string, IExpense[]>>>();
+    let threeLevelMap = new Map<string, Map<string, Map<string, ExportExpensesType>>>();
     this.expenses.forEach((expense) => {
       let category = expense.expense.category.toLocaleUpperCase();  
       let type = expense.expense.type.toLocaleUpperCase();
       let utilized = expense.expense.utilizated.toLocaleUpperCase();
 
       if (!threeLevelMap.has(category)) {
-        threeLevelMap.set(category, new Map<string, Map<string, IExpense[]>>());
+        threeLevelMap.set(category, new Map<string, Map<string, ExportExpensesType>>());
       }
-      else {
         let typeMap = threeLevelMap.get(category);
         if (!typeMap?.has(type)) {
-          typeMap?.set(type, new Map<string, IExpense[]>());
+          typeMap?.set(type, new Map<string, ExportExpensesType>());
         }
         let utilizedMap = typeMap?.get(type);
         if (!utilizedMap?.has(utilized)) {
-          utilizedMap?.set(utilized, []);
+          utilizedMap?.set(utilized, getNewExportExpensesType());
         }
-        utilizedMap?.get(utilized)?.push(expense);
-      }
+        const currentUtilized = utilizedMap?.get(utilized);
+        if (currentUtilized) {
+          currentUtilized.expenses.push(expense);
+          currentUtilized.subtotal = (currentUtilized.subtotal || 0) + expense.amount;
+        }
+       
     })
     console.info("CExpenseToReport/getExpesesByCategoryMap/threeLevelMap", threeLevelMap);
     return threeLevelMap;
