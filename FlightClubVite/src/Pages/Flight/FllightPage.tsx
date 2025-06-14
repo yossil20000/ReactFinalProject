@@ -17,7 +17,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Fragment, SetStateAction, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import {
   useGetAllFlightsQuery,
@@ -43,7 +43,7 @@ import SortButtons, {
 import CreateFlightDialog from "./CreateFlightDialog";
 
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation";
-import { IDateFilter, newDateFilter } from "../../Interfaces/IDateFilter";
+import { IDateFilter } from "../../Interfaces/IDateFilter";
 import {
   getDayFilter,
   getMonthFilter,
@@ -79,14 +79,10 @@ import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import ReportDialog from "../../Components/Report/Exel/ReportDialog";
 import GridTable from "../../Components/Tables/GridTable";
 import {
-  GridActionsCellItem,
   GridColDef,
-  GridRowModes,
-  GridRowsProp,
-  GridValidRowModel,
+  GridRowsProp
 } from "@mui/x-data-grid";
 import { GridInitialStateCommunity } from "@mui/x-data-grid/models/gridStateCommunity";
-import { DEVICE_SERVICE } from "../../Interfaces/API/IDevice";
 
 const dateFilter: IDateFilter = {
   from: new Date().getStartOfYear(),
@@ -210,7 +206,6 @@ const FlightPage = () => {
   >((state) => state.authSlice);
   const {
     isLoading,
-    isError,
     error,
     data: flights,
     refetch,
@@ -383,6 +378,7 @@ const FlightPage = () => {
   };
   const handleUpdateOnClose = () => {
     setOpenFlightUpdate(false);
+    setOpenExport(!openExport);
   };
 
   const handleAddOnSave = (value: IFlightCreate) => {
@@ -393,7 +389,7 @@ const FlightPage = () => {
 
   const handleAddOnClose = () => {
     setOpenFlightAdd(false);
-    setOpenExport(false);
+    setOpenExport(!openExport);
   };
   const getFilteredDataMemo = getFilteredData();
   const onTodayChanged = () => {
@@ -814,7 +810,7 @@ const FlightPage = () => {
                   open={openExport}
                   table={new CFlightToReport(
                     flightsData.sort(sortEngineStart)
-                  ).getFlightToExel()}
+                  ).getFlightToExel("flightReport","Flights","Flight Reports",false)}
                   action="FlightExport"
                 />
               )}

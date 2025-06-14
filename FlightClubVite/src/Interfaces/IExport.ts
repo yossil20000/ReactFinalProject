@@ -10,6 +10,17 @@ export interface IExportExelTable {
   showSelfSave?:boolean
 }
 
+export type MapTotal = {
+  map:  Map<string, MapTotal | ExportExpensesType>;
+    subtotal: number;
+    total: number;
+  
+}
+
+export type Dictionary<T> = {
+  [key: string]: T;
+}
+
 export type ExportExpensesType  ={
   expenses: IExpense[] ;
   subtotal: number ;

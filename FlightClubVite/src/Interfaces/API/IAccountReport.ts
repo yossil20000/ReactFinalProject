@@ -1,8 +1,8 @@
 import '../../Types/date.extensions'
-import { IExportExelTable,ExportExpensesType, getNewExportExpensesType} from "../IExport"
+import { IExportExelTable, ExportExpensesType, getNewExportExpensesType, MapTotal } from "../IExport"
 import { IExpense } from "./IExpense";
 import { ITransaction } from './IClub';
-import { get, groupBy } from "lodash";
+import { groupBy } from "lodash";
 import { Dictionary } from "@reduxjs/toolkit";
 import { customLogger } from '../../customLogging';
 
@@ -21,8 +21,7 @@ export class CExpenseToReport {
       body: [],
       save: false
     }
-    this.getExpesesByCategory();
-    this.getExpesesByCategoryMap();
+    
     report.header = ["Index", "Date", "Source", "Destination", "Category", "Type", "Utilized", "Amount", "Description"]
     report.body = this.expenses?.map((expense, i) => {
       console.info("CExpenseToReport/expense", expense)
@@ -44,27 +43,61 @@ export class CExpenseToReport {
 
     let threeLevelMap = new Map<string, Map<string, Map<string, ExportExpensesType>>>();
     this.expenses.forEach((expense) => {
-      let category = expense.expense.category.toLocaleUpperCase();  
+      let category = expense.expense.category.toLocaleUpperCase();
       let type = expense.expense.type.toLocaleUpperCase();
       let utilized = expense.expense.utilizated.toLocaleUpperCase();
 
       if (!threeLevelMap.has(category)) {
         threeLevelMap.set(category, new Map<string, Map<string, ExportExpensesType>>());
       }
-        let typeMap = threeLevelMap.get(category);
-        if (!typeMap?.has(type)) {
-          typeMap?.set(type, new Map<string, ExportExpensesType>());
-        }
-        let utilizedMap = typeMap?.get(type);
-        if (!utilizedMap?.has(utilized)) {
-          utilizedMap?.set(utilized, getNewExportExpensesType());
-        }
-        const currentUtilized = utilizedMap?.get(utilized);
-        if (currentUtilized) {
-          currentUtilized.expenses.push(expense);
-          currentUtilized.subtotal = (currentUtilized.subtotal || 0) + expense.amount;
-        }
-       
+      let typeMap = threeLevelMap.get(category);
+      if (!typeMap?.has(type)) {
+        typeMap?.set(type, new Map<string, ExportExpensesType>());
+      }
+      let utilizedMap = typeMap?.get(type);
+      if (!utilizedMap?.has(utilized)) {
+        utilizedMap?.set(utilized, getNewExportExpensesType());
+      }
+      const currentUtilized = utilizedMap?.get(utilized);
+      if (currentUtilized) {
+        currentUtilized.expenses.push(expense);
+        currentUtilized.subtotal = (currentUtilized.subtotal || 0) + expense.amount;
+      }
+
+    })
+    console.info("CExpenseToReport/getExpesesByCategoryMap/threeLevelMap", threeLevelMap);
+    return threeLevelMap;
+  }
+  getExpesesByCategoryObject(): MapTotal {
+
+    let threeLevelMap: MapTotal = { map: new Map<string, MapTotal>(), subtotal: 0, total: 0 };
+    threeLevelMap.map = new Map<string, MapTotal>();
+    threeLevelMap.subtotal = 0;
+    this.expenses.forEach((expense) => {
+      let category = expense.expense.category.toLocaleUpperCase();
+      let type = expense.expense.type.toLocaleUpperCase();
+      let utilized = expense.expense.utilizated.toLocaleUpperCase();
+
+      if (!threeLevelMap.map.has(category)) {
+        threeLevelMap.map.set(category, { map: new Map<string, MapTotal>(), subtotal: 0, total: 0 });
+      }
+      let typeMap = threeLevelMap.map.get(category) as MapTotal;
+      if (!typeMap?.map.has(type)) {
+        typeMap?.map.set(type, { map: new Map<string, ExportExpensesType>(), subtotal: 0, total: 0 });
+      }
+      let utilizedMap = typeMap?.map.get(type) as MapTotal;
+      if (!utilizedMap?.map.has(utilized)) {
+        utilizedMap?.map.set(utilized, getNewExportExpensesType());
+      }
+      const currentUtilized = utilizedMap?.map.get(utilized) as ExportExpensesType;
+      if (currentUtilized) {
+        currentUtilized.expenses.push(expense);
+        currentUtilized.subtotal = Number((currentUtilized.subtotal || 0).toFixed(2)) + Number(expense.amount.toFixed(2));
+        utilizedMap.subtotal = Number(utilizedMap.subtotal) + Number(expense.amount.toFixed(2));
+        threeLevelMap.map.get(category)!.subtotal = Number((threeLevelMap.map.get(category)!.subtotal).toFixed(2)) + Number(expense.amount.toFixed(2));
+        threeLevelMap.subtotal = Number(threeLevelMap.subtotal.toFixed(2)) + Number(expense.amount.toFixed(2));
+      }
+
     })
     console.info("CExpenseToReport/getExpesesByCategoryMap/threeLevelMap", threeLevelMap);
     return threeLevelMap;
@@ -74,7 +107,7 @@ export class CExpenseToReport {
     let values = Object.values(group_category);
     let expenses = Object.keys(group_category);
     console.info("CExpenseToReport/getExpesesByCategory/group_category", group_category);
-    let mapKeys:Map<string, Dictionary<IExpense[]>> = new Map<string, Dictionary<IExpense[]>>();
+    let mapKeys: Map<string, Dictionary<IExpense[]>> = new Map<string, Dictionary<IExpense[]>>();
     expenses.forEach(element => {
       CustomLogger.info("CExpenseToReport/getExpesesByCategory/element", element);
       let group_type = groupBy(group_category[element], tr => tr.expense.type.toLocaleUpperCase());
@@ -85,13 +118,13 @@ export class CExpenseToReport {
       })
     })
 
-    CustomLogger.info("CExpenseToReport/getExpesesByCategory/values.length,values,keys,group_category,mapKeys", values.length, values, expenses, group_category,mapKeys);
+    CustomLogger.info("CExpenseToReport/getExpesesByCategory/values.length,values,keys,group_category,mapKeys", values.length, values, expenses, group_category, mapKeys);
 
-this.getExpensesByCategoryAsArray(mapKeys, "expenseReport", "Expenses", "Expense Reports", false);
+    this.getExpensesByCategoryAsArray(mapKeys, "expenseReport", "Expenses", "Expense Reports", false);
 
     return group_category;
   }
-  getExpensesByCategoryAsArray(data: Map<string, Dictionary<IExpense[]>>, file: string="flightReport",sheet:string ="Expenses",title:string= "Expenses Reports",filterWithDelta: boolean=false): IExportExelTable {
+  getExpensesByCategoryAsArray(data: Map<string, Dictionary<IExpense[]>>, file: string = "flightReport", sheet: string = "Expenses", title: string = "Expenses Reports", filterWithDelta: boolean = false): IExportExelTable {
     let report: IExportExelTable = {
       file: file,
       sheet: sheet,
@@ -100,14 +133,14 @@ this.getExpensesByCategoryAsArray(mapKeys, "expenseReport", "Expenses", "Expense
       body: [],
       save: false
     }
-    report.header = ["Index", "Date", "Source", "Destination", "Category", "Type", "Utilized", "Amount", "Description","Total For Type","Total For Category"];
-    customLogger.info("CExpenseToReport/getExpensesByCategoryAsArray/report,data,keys", report,data.keys());
-    let expensesTable : Array<string[]> = [[]]
+    report.header = ["Index", "Date", "Source", "Destination", "Category", "Type", "Utilized", "Amount", "Description", "Total For Type", "Total For Category"];
+    customLogger.info("CExpenseToReport/getExpensesByCategoryAsArray/report,data,keys", report, data.keys());
+    let expensesTable: Array<string[]> = [[]]
     data.forEach((value, key) => {
-      console.info("CExpenseToReport/getExpensesByCategoryAsArray/key,value",  key,value);
+      console.info("CExpenseToReport/getExpensesByCategoryAsArray/key,value", key, value);
       expensesTable.push([]);
-    })   ;
-    
+    });
+
     report.body = expensesTable;
     console.info("CExpenseToReport/getExpensesByCategoryAsArray/report", report)
     return report;
