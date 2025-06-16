@@ -27,7 +27,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
   const [rowId, setRowId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(50);
   const [page, setPage] = useState(1);
-  const { data: Expenses, isLoading, error } = useFetchExpenseQuery({});
+  const { data: Expenses, isLoading, error } = useFetchExpenseQuery(filter);
 
   const getExpenseStatistics = (expenses: IExpense[]) => {
     const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);

@@ -39,6 +39,7 @@ import GeneralDrawer from "../../Components/GeneralDrawer";
 import { SetProperty } from "../../Utils/setProperty";
 import { IDateFilter } from "../../Interfaces/IDateFilter";
 import { from_to_year_Filter } from "../../Utils/filtering";
+import { getFilter, IFilter } from "../../Interfaces/API/IFilter";
 interface Data {
   _id: string;
   date: Date;
@@ -60,10 +61,8 @@ function AccountExpenseTab() {
     roles: [Role.desk, Role.admin, Role.account],
   });
   const [openFilter, setOpenFilter] = useState(false);
-  const [filter, setFilter] = useState<IDateFilter>({
-    ...from_to_year_Filter(new Date()),
-  });
-  const { data, refetch, isLoading, error } = useFetchExpenseQuery({});
+  const [filter, setFilter] = useState<IDateFilter>({currentOffset: 0, from: new Date().getStartOfYear().getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter);
+  const { data, refetch, isLoading, error } = useFetchExpenseQuery(filter);
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseSave, setOpenExpenseSave] = useState(false);
   const [openExpenseUtilizedSave, setOpenExpenseUtilizedSave] = useState(false);
@@ -182,6 +181,7 @@ function AccountExpenseTab() {
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter);
     CustomLogger.log("AccountExpenseTab/onDateChanged", newFilter);
+    refetch();
   };
   return (
     <Box fontSize={{ xs: "1rem", md: "1.2rem" }} height={"100%"}>
@@ -258,7 +258,7 @@ function AccountExpenseTab() {
                       </ListItemIcon>
                       <DatePickerDate
                         value={
-                          filter.from === undefined ? new Date() : filter.from
+                          filter?.from === undefined ? new Date() : filter.from
                         }
                         param="from"
                         lable="From Date"

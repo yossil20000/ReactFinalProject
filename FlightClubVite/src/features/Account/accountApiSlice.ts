@@ -203,11 +203,11 @@ export const accountApiSlice = createApi({
         }),
         invalidatesTags: [{ type: "ClubAccount" } , { type: "Orders" },{type: "Transaction"}]
       }),
-      fetchExpense: builder.query<IResultBase<IExpense>, IFilter>({
+      fetchExpense: builder.query<IResultBase<IExpense>, IDateFilter>({
         query: (filter) => ({
           url: `/${URLS.CLUB_EXPENSE}`,
           method: "PATCH",
-          params: filter
+          body: filter
         }),
         providesTags: ["Expense"]
       }),

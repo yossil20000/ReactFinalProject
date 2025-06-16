@@ -19,6 +19,7 @@ import { CExpenseToReport } from '../../Interfaces/API/IAccountReport'
 import GridTable from '../../Components/Tables/GridTable'
 import { GridInitialStateCommunity } from '@mui/x-data-grid/models/gridStateCommunity'
 import { GridColDef, GridRowsProp } from '@mui/x-data-grid'
+import { IDateFilter } from '../../Interfaces/IDateFilter'
 
 interface Data {
   _id: string,
@@ -98,7 +99,7 @@ function AccountExpenseGridTab() {
     { field: 'destination', headerName: 'Destination', type: 'string', minWidth: 170, flex: 1, editable: true },
 
   ];
-  const { data, refetch, isLoading, error } = useFetchExpenseQuery({});
+  const { data, refetch, isLoading, error } = useFetchExpenseQuery({currentOffset: 0, from: new Date().getStartOfYear().getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter);
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseSave, setOpenExpenseSave] = useState(false);
   const [openExpenseEdit, setOpenExpenseEdit] = useState(false);
