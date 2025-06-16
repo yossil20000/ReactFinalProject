@@ -27,6 +27,7 @@ declare global {
       getLocalTimeWithOffset(offset: number) : Date;
       getStartDayDate() : Date;
       getEndDayDate() : Date;
+      getMidDayDate() : Date;
       compareTime(date: Date): number;
       compareDate(date: Date) : number;
       getHoursDiff(date: Date) : number;
@@ -126,6 +127,9 @@ Date.prototype.getStartDayDate = function() : Date {
 Date.prototype.getEndDayDate = function() : Date {
    return new Date(this.getFullYear(),this.getMonth(),this.getDate(),23,59,59);
   }
+Date.prototype.getMidDayDate = function() : Date {
+   return new Date(this.getFullYear(),this.getMonth(),this.getDate(),12,0,0);
+}
 Date.prototype.getLocalTimeWithOffset = function(offset: number) : Date {
    const correctionOffset = offset - this.getTimezoneOffset()
    return new Date(this.addMinutes(correctionOffset))
