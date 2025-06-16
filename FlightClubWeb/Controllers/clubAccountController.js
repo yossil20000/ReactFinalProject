@@ -889,7 +889,13 @@ exports.delete_expense = [
 ]
 exports.list_expense = [
   async (req, res, next) => {
-    let { filter } = req.body;
+    let from = new Date(req.body.from);
+    let to = new Date(req.body.to);
+    let filter = { date: { $gte: from, $lte: to } };
+      if (isNaN(from) || isNaN(to)) {
+        filter = {}
+      }
+    
     if (filter === undefined) filter = {};
     try {
       const results = await Expense.find(filter).exec();
