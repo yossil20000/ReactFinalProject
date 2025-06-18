@@ -36,6 +36,7 @@ import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import FullScreenLoader from "../../Components/FullScreenLoader";
 import { MemberType } from "../../Interfaces/API/IMember";
 import SizePerUnitCombo from "../../Components/Buttons/SizePerUnitCombo";
+import UtilizatedCombo from "../../Components/Buttons/UtilizatedCombo";
 export interface UpdateExpenseDialogProps {
   onClose: () => void;
   onSave: (value: IExpenseBase) => void;
@@ -78,6 +79,7 @@ function UpdateExpenseDialog({
     newObj = setProperty(newObj, "source.account_id", selectedSource?.key2);
     newObj = setProperty(newObj, "destination.id", selectedDestination?._id);
     newObj = setProperty(newObj, "destination.type", selectedDestination?.key);
+    newObj = setProperty(newObj, "supplier", selectedDestination?.description);
     newObj = setProperty(
       newObj,
       "destination.display",
@@ -143,6 +145,7 @@ function UpdateExpenseDialog({
 
   const OnselectedDestination = (item: InputComboItem): void => {
     setSelectedDestination(item);
+    SetProperty(selectedExpense, `supplier`, item.description)
   };
 
   const RenderSource = (): JSX.Element => {
@@ -225,6 +228,11 @@ function UpdateExpenseDialog({
       setProperty(selectedExpense, `expense.type`, item.lable)
     );
   };
+    const onComboChanged = (item: InputComboItem, prop: string): void => {
+      setSelectedExpense(setProperty(selectedExpense, prop, item.lable))
+      CustomLogger.log("selectedExpense", selectedExpense)
+    }
+    
   const onSPUChanged = (item: InputComboItem) => {
     CustomLogger.log("ExpenseDialog/onSPUChanged/item", item);
     setSelectedSPU(item);
@@ -260,7 +268,7 @@ function UpdateExpenseDialog({
               <Grid item xs={12} sm={6}>
                 {destinationCombo}
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={4}>
                 <TypesCombo
                   selectedKey="Expense"
                   title={"Category"}
@@ -270,7 +278,7 @@ function UpdateExpenseDialog({
                   source={"_CreateExspense/category"}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={4}>
                 <TypesCombo
                   selectedKey={`Expense.${selectedExpense.expense.category}`}
                   title={"Type"}
@@ -279,6 +287,10 @@ function UpdateExpenseDialog({
                   onChanged={onTypeChanged}
                   source={"_CreateExspense/Type"}
                 />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <UtilizatedCombo onChanged={(item) => onComboChanged(item, "expense.utilizated")} source={""}
+                  selectedItem={{ lable: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item xs={6} sm={6}>
                 <SizePerUnitCombo

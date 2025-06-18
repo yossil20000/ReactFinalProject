@@ -83,6 +83,7 @@ interface IDeviceBase {
     price: {
         base: number
         meter: DEVICE_MET
+        engine_fund: number
     },
     details: {
         image: string

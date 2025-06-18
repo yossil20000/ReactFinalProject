@@ -1,12 +1,11 @@
 import '../../Types/Array.extensions';
 import { useEffect, useState } from 'react'
-import { useClubAccountComboQuery, useClubAccountQuery } from '../../features/Account/accountApiSlice';
+import { useClubAccountComboQuery } from '../../features/Account/accountApiSlice';
 import useSessionStorage from '../../hooks/useLocalStorage';
 import { IClubAccountCombo, IClubAccountsCombo } from '../../Interfaces/API/IClub';
 import { IMemberComboFilter, MemberType } from '../../Interfaces/API/IMember';
 import { Status } from '../../Interfaces/API/IStatus';
-import ControledCombo, { ComboProps, IClubAccountProps, InputComboItem } from '../Buttons/ControledCombo';
-import { Label, Title } from '@mui/icons-material';
+import ControledCombo, { IClubAccountProps, InputComboItem } from '../Buttons/ControledCombo';
 import { FormControlLabel } from '@mui/material';
 
 const filterCombo: IMemberComboFilter = {
@@ -21,8 +20,9 @@ function ClubAccountsCombo(props: IClubAccountProps) {
   const { onChanged, source, filter, title, selectedItem: initialItem ,includesType} = props;
   const { data: accounts } = useClubAccountComboQuery();
   const [bankaccounts, setbankAccounts] = useState<InputComboItem[]>([])
-  const [selectedItem, setSelectedItem] = useSessionStorage<InputComboItem | undefined>(`${source}`, undefined);
-
+  /* const [selectedItem, setSelectedItem] = useSessionStorage<InputComboItem | undefined>(`${source}`, undefined); */
+  const [selectedItem, setSelectedItem] = useState<InputComboItem | null>(initialItem === undefined ? null : initialItem);
+  
   const accountToItemCombo = (input: IClubAccountCombo): InputComboItem => {
     if(input.member.member_type == MemberType.Supplier)
       return { lable: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: `${input.member.member_type}.${input.member.family_name}.${input.member.first_name}`, key: input.member.member_type, key2: input.account_id }

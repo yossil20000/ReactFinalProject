@@ -43,7 +43,8 @@ function newDevice(): IDevice {
     },
     price: {
       base: 0,
-      meter: DEVICE_MET.HOBBS
+      meter: DEVICE_MET.HOBBS,
+      engine_fund: 120
     },
     details: {
       image: '',

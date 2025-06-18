@@ -330,7 +330,10 @@ function DeviceTabItem() {
                       <TextField type={"number"} fullWidth onChange={handleChange} required name="price.base" label="Base Price" placeholder="Base price" variant="standard"
                         value={selectedItem?.price.base} helperText="" InputLabelProps={{ shrink: true }} />
                     </Grid>
-
+                    <Grid item xs={1}>
+                      <TextField type={"number"} fullWidth onChange={handleChange} required name="price.engine_fund" label="Engine fund" placeholder="Engine Fund" variant="standard"
+                        value={selectedItem?.price.engine_fund} helperText="" InputLabelProps={{ shrink: true }} />
+                    </Grid>
                     <Grid item xs={1} md={1}>
                       <TextField type={"number"} fullWidth onChange={handleChange} name="details.fuel.quantity" label="Fuel Quantity" placeholder="Fuel Units" variant="standard" value={selectedItem?.details.fuel.quantity} InputLabelProps={{ shrink: true }} />
                     </Grid>

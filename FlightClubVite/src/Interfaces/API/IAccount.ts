@@ -87,6 +87,8 @@ export type orderDescription = {
   engien_start: number,
   engien_stop: number,
   total: number,
+  engine_fund?: number,
+  engine_fund_part?: number,
   description: string
 }
 export class COrderDescription {
@@ -96,6 +98,8 @@ export class COrderDescription {
     engien_start: 0,
     engien_stop: 0,
     total: 0,
+    engine_fund: 120,
+    engine_fund_part:120,
     description: ""
   }
   constructor(orderDescription: orderDescription) {
@@ -123,6 +127,8 @@ export class COrderDescription {
         engien_start: 0,
         engien_stop: 0,
         total: 0,
+        engine_fund: 120,
+        engine_fund_part:120,
         description: orderDescription
       }
       return null;
@@ -131,7 +137,7 @@ export class COrderDescription {
   static displayTransaction(orderDescription: string): string {
     const description = this.parseDescription(orderDescription)
     if(description)
-    return `${description.operation} on ${description.date} Start: ${description.engien_start} Stop: ${description.engien_stop} Total: ${description.total}`
+    return `${description.operation} on ${description.date} Start: ${description.engien_start} Stop: ${description.engien_stop} Total: ${description.total} engine_fund: ${description.engine_fund} engine_fund_part: ${description.engine_fund_part}`;
    else
     return orderDescription;
   }

@@ -86,7 +86,29 @@ const QuarterType = {
     Q3: "Q3",
     Q4: "Q4"
 }
+/**
+ * Enumeration of flight hours utilization markers.
+ * Represents different thresholds of flight hours for maintenance and tracking purposes.
+ * @readonly
+ * @enum {string}
+ * @property {string} HOURS_0000 - 0 hours marker
+ * @property {string} HOURS_0001 - 1 hour marker
+ * @property {string} HOURS_0100 - 100 hours marker
+ * @property {string} HOURS_0150 - 150 hours marker
+ * @property {string} HOURS_0200 - 200 hours marker
+ * @property {string} HOURS_0250 - 250 hours marker
+ * @property {string} HOURS_0300 - 300 hours marker
+ * @property {string} HOURS_0350 - 350 hours marker
+ * @property {string} HOURS_0400 - 400 hours marker
+ * @property {string} HOURS_0450 - 450 hours marker
+ * @property {string} HOURS_0500 - 500 hours marker
+ * @property {string} HOURS_1000 - 1000 hours marker
+ * @property {string} HOURS_1500 - 1500 hours marker
+ * @property {string} HOURS_2000 - 2000 hours marker
+ * @property {string} HOURS_UPEQ - Unpredicted Expense Equal Seperate
+ */
 const Utilizated = {
+    HOURS_UPEQ: "HOURS_UPEQ",
     HOURS_0000: "HOURS_0000",
     HOURS_0001: "HOURS_0001",
     HOURS_0100: "HOURS_0100",
@@ -101,6 +123,7 @@ const Utilizated = {
     HOURS_1000: "HOURS_1000",
     HOURS_1500: "HOURS_1500",
     HOURS_2000: "HOURS_2000"
+    
 }
 const NotifyEvent = {
     "ClubNotice": "ClubNotice",

@@ -25,8 +25,6 @@ import { IAccountFlightFilter, from_to_year_Filter, getAccountFlightFilter } fro
 interface IData {
   _id: string;
   date: Date;
-  hobbs_start: number
-  hobbs_stop: number
   duration: number
   engien_start: number
   engien_stop: number
@@ -37,15 +35,13 @@ interface IData {
 function createData(
   _id: string,
   date: Date,
-  hobbs_start: number,
-  hobbs_stop: number,
   duration:number,
   engien_start: number,
   engien_stop: number,
   order_by: string
 ): IData {
 
-  return { _id, date, hobbs_start, hobbs_stop,duration, engien_start, engien_stop, order_by };
+  return { _id, date, duration, engien_start, engien_stop, order_by };
 }
 
 const columns: Column[] = [
@@ -81,22 +77,6 @@ const columns: Column[] = [
   {
     id: 'duration',
     label: 'Duration',
-    minWidth: 170,
-    align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
-    isCell: true
-  },
-  {
-    id: 'hobbs_start',
-    label: 'HobbsStart',
-    minWidth: 170,
-    align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
-    isCell: true
-  },
-  {
-    id: 'hobbs_stop',
-    label: 'HobbsStop',
     minWidth: 170,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
@@ -158,14 +138,14 @@ function AccountFlightsTab() {
     return a.engien_start >= b.engien_start ? 1 : -1;
   }
   const getData = useMemo(() => {
-    let rows = data?.data.filter(filterFlight).filter((item) => lastItem != null ? lastItem.product != item._id : true).map((row) => createData(row._id, row.date, row.hobbs_start, row.hobbs_stop, row.duration == 0 ? row.engien_stop - row.engien_start : row.duration,row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
+    let rows = data?.data.filter(filterFlight).filter((item) => lastItem != null ? lastItem.product != item._id : true).map((row) => createData(row._id, row.date, row.duration == 0 ? row.engien_stop - row.engien_start : row.duration,row.engien_start, row.engien_stop, `${row.member?.family_name}/${row.member?.member_id}`))
     CustomLogger.info("AccountFlight/Flight/getData", rows)
     rows = rows === undefined ? [] : rows;
     setCount(rows.length)
     return rows;
   }, [data, selectedMember,lastItem])
 
-  const getPrice = (flight: IFlight): [units: number, pricePeUnit: number, amount: number, discount: number] => {
+  const getPrice = (flight: IFlight): [units: number, pricePeUnit: number, amount: number, discount: number,engine_fund: number,engine_fund_part:number] => {
     let units: number = 0, pricePeUnit: number = 0, discount: number = 0, amount: number = 0;
     console.info("AccountFlight/DeviceMeter", flight.device.price.meter, flight.engien_stop, flight.engien_start, flight)
     if (flight.device.price.meter == DEVICE_MET.ENGIEN) {
@@ -179,7 +159,7 @@ function AccountFlightsTab() {
     discount = isNaN(flight.member?.membership?.hour_disc_percet) ? 0 : flight.member?.membership?.hour_disc_percet;
     discount = flight.device.price.base * (discount / 100);
     amount = units * flight.device.price.base - discount;
-    return [units, flight.device.price.base, amount, discount]
+    return [units, flight.device.price.base, amount, discount,flight.device.price.engine_fund,flight.device.price.engine_fund * units];
   }
   function CreateOrder(flightId: string): IOrderBase | undefined {
     const flightFound = data?.data.find((item) => item._id === flightId)
@@ -192,6 +172,8 @@ function AccountFlightsTab() {
         engien_start: flightFound.engien_start,
         engien_stop: flightFound.engien_stop,
         total: Number((flightFound.engien_stop - flightFound.engien_start).toFixed(2)),
+        engine_fund: flightFound.device.price.engine_fund,
+        engine_fund_part: Number((flightFound.device.price.engine_fund * units).toFixed(2)),
         description: flightFound.description
       }
       let order: IOrderBase = {

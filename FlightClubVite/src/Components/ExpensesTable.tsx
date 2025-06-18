@@ -49,7 +49,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
       const min = Math.min(...value?.map(expense => expense.amount)); */
       return { key, total };
     });
-    customLogger.error("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy, groupByCategory, groupByType)
+    customLogger.log("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy, groupByCategory, groupByType)
     return { total, average, max, min, groupBy, groupByCategory };
   }
   const ExpenseRows = useMemo(() => {

@@ -96,7 +96,7 @@ function CreateFlightOrderDialog({ value, onClose, onSave, open, ...other }: Cre
       maxWidth="lg"
 
       open={open} {...other}>
-      <DialogTitle>Order Create</DialogTitle>
+      <DialogTitle>Flight Order Create</DialogTitle>
       <DialogContent>
         <Card variant="outlined">
           <CardContent>

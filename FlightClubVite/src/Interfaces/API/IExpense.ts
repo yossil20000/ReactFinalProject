@@ -5,6 +5,12 @@ import { get, groupBy } from "lodash";
 import { Dictionary } from "@reduxjs/toolkit";
 import { customLogger } from "../../customLogging";
 
+/**
+ * Represents the possible utilization time slots for an expense.
+ * Each value corresponds to a specific number of hours, formatted as "HOURS_xxxx",
+ * where "xxxx" indicates the time in hours and minutes (e.g., "HOURS_0001" for 1 hour).
+ * The "HOURS_UPEQ" value represents Unpredectibale Expense With Equaly divided.
+ */
 export enum Utilizated {
   HOURS_0000 = "HOURS_0000",
   HOURS_0001 = "HOURS_0001",
@@ -19,7 +25,8 @@ export enum Utilizated {
   HOURS_0500 = "HOURS_0500",
   HOURS_1000 = "HOURS_1000",
   HOURS_1500 = "HOURS_1500",
-  HOURS_2000 = "HOURS_2000"
+  HOURS_2000 = "HOURS_2000",
+  HOURS_UPEQ = "HOURS_UPEQ",
 }
 export enum ESizePerUnit {
   UNIT = 'Unit',
@@ -58,6 +65,7 @@ export interface IExpenseBase {
     display: string,
     account_id: string
   }
+  supplier:string
 }
 export interface IExpense extends IExpenseBase {
   _id: string
@@ -87,7 +95,8 @@ export const newExpense: IExpenseBase = {
     type: MemberType.Member,
     display: "",
     account_id: ""
-  }
+  },
+  supplier: ""
 }
 
 /* export class CExpenseToReport {

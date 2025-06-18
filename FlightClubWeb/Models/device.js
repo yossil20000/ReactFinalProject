@@ -33,7 +33,8 @@ var DeviceSchema = new Schema({
     },
     price:{
         base: {type: mongoose.Decimal128,get: getDecimal},
-        meter: {type: String, enum:[CE.DEVICE_MET.HOBBS,CE.DEVICE_MET.ENGIEN], default:CE.DEVICE_MET[1]}
+        meter: {type: String, enum:[CE.DEVICE_MET.HOBBS,CE.DEVICE_MET.ENGIEN], default:CE.DEVICE_MET[1]},
+        engine_fund: {type: mongoose.Decimal128, get: getDecimal, default: 120},
     },
     details:{
         image: {type: String},

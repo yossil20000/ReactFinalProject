@@ -28,7 +28,8 @@ var ExpenseSchema = new Schema({
     type: {type: String, enum: Object.values(constants.MemberType) , required: true,default: constants.MemberType.MEMBER},
     display: {type: String, required: true,default: ""},
     account_id: {type: String, required: true,default:""}
-  }
+  },
+  supplier:{type: String, required: true,default:""}
 },{toJSON: {getters: true}})
 
 function getDecimal(value) {
@@ -37,4 +38,14 @@ function getDecimal(value) {
   }
   return value;
 };
+ExpenseSchema.post("find",async function(docs){
+  console.log("Supplier is empty, setting to null",docs);
+  docs.forEach((doc) => {
+    let supplier = doc.supplier;
+    if(supplier == undefined || supplier.length == 0  ){
+      doc.supplier = doc.destination.display
+      console.log("Supplier is empty, setting to null",doc.supplier);
+    } 
+  })
+})
 module.exports = mongoose.model("Expense", ExpenseSchema);
