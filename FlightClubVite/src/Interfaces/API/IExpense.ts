@@ -28,6 +28,34 @@ export enum Utilizated {
   HOURS_2000 = "HOURS_2000",
   HOURS_UPEQ = "HOURS_UPEQ",
 }
+export const UtilizatedDictionary = {
+  [Utilizated.HOURS_0000]: "Expense Not Depend on Time",
+  [Utilizated.HOURS_0001]: "expense for 1 hour",
+  [Utilizated.HOURS_0100]: "expense for 100 hours",
+  [Utilizated.HOURS_0150]: "expense for 150 hours",
+  [Utilizated.HOURS_0200]: "expense for 200 hours", 
+  [Utilizated.HOURS_0250]: "expense for 250 hours",
+  [Utilizated.HOURS_0300]: "expense for 300 hours", 
+  [Utilizated.HOURS_0350]: "expense for 350 hours",
+  [Utilizated.HOURS_0400]: "expense for 400 hours", 
+  [Utilizated.HOURS_0450]: "expense for 450 hours",
+  [Utilizated.HOURS_0500]: "expense for 500 hours", 
+  [Utilizated.HOURS_1000]: "expense for 1000 hours",
+  [Utilizated.HOURS_1500]: "expense for 1500 hours",
+  [Utilizated.HOURS_2000]: "expense for 2000 hours",
+  [Utilizated.HOURS_UPEQ]: "Unpredectibale Expense With Equaly divided"
+}
+
+function getEnumKeyByValue(value: string): keyof typeof Utilizated  {
+  const key = Object.keys(Utilizated).find(
+    (key) => Utilizated[key as keyof typeof Utilizated] === value
+  );
+  if (key && Object.prototype.hasOwnProperty.call(Utilizated, key)) {
+    return key as keyof typeof Utilizated;
+  }
+  return Utilizated.HOURS_0000;
+}
+
 export enum ESizePerUnit {
   UNIT = 'Unit',
   GALON_PER_HOUR = 'GalonPerHour',
@@ -173,15 +201,15 @@ export class CExpenseGroupToReport {
       save: false
     }
     const reportData = this.getExpesesByUtilizationObject();
-    report.header = ["Utilized","Type", "Amount", "Category","Total"]
+    report.header = ["Utilized","Utilized description","Type", "Amount", "Category","Total"]
     report.body = [];
     reportData.map.forEach((utilizedMap, utilizated) => {
       console.info("getExpesesUtilizationToExel/utilizatedMap", utilizated, utilizedMap.subtotal);
-      report.body.push([utilizated, "", "", "", utilizedMap.subtotal.toFixed(2)]);
+      report.body.push([utilizated, `${UtilizatedDictionary[getEnumKeyByValue(utilizated)]}`,"", "", "", utilizedMap.subtotal.toFixed(2)]);
       
       (utilizedMap as MapTotal).map.forEach((typeMap, type) => {
         console.info("getExpesesUtilizationToExel/typeMap", type, typeMap, typeof typeMap);
-        report.body.push(["", type,  typeMap.subtotal.toFixed(2), `${Array.from((typeMap as MapTotal).map.keys()).join(", ")}`]);
+        report.body.push(["", "",type,  typeMap.subtotal.toFixed(2), `${Array.from((typeMap as MapTotal).map.keys()).join(", ")}`]);
         
         
       })
