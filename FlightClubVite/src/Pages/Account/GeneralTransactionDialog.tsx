@@ -35,6 +35,7 @@ let newTransaction: IAddTransaction = {
     accountType: ""
   },
   amount: Number("0"),
+  engine_fund_amount: Number("0"),
   type: Transaction_Type.CREDIT,
   order: {
     type: Transaction_OT.OTHER,
@@ -93,7 +94,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
       },
       type: selectedTransaction.type,
       amount: selectedTransaction.amount,
-     
+     engine_fund_amount: selectedTransaction.engine_fund_amount,
       order: {
         type: selectedTransaction.order.type,
         _id: '',

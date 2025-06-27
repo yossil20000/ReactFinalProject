@@ -74,6 +74,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
       },
       type: payInfo.selectedTransaction.type,
       amount: payInfo.selectedTransaction.amount,
+      engine_fund_amount: payInfo.selectedTransaction.engine_fund_amount,
       order: {
         type: payInfo.selectedTransaction.order.type,
         _id: '',

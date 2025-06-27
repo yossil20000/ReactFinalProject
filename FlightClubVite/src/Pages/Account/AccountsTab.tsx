@@ -25,6 +25,8 @@ interface Data {
   member_type: MemberType;
   name: string;
   balance: number;
+  engine_fund_balance: number;
+  total:number;
   status: Status;
   description: string,
   render?: React.ReactNode
@@ -37,12 +39,14 @@ function createData(
   member_type: MemberType,
   name: string,
   balance: number,
+  engine_fund_balance: number,
+  total: number = balance + engine_fund_balance,
   status: Status,
   description: string,
   render?: React.ReactNode
 ): Data {
 
-  return { bank, _id, account_id, member_type, name, balance, status, description, render };
+  return { bank, _id, account_id, member_type, name, balance,engine_fund_balance,total, status, description, render };
 }
 
 interface IAccountFilter {
@@ -70,18 +74,39 @@ function AccountsTab() {
       minWidth: 170,
       align: 'left',
       render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} /></>),
-      isCell: true
+      isCell: true,
+      description:"",
     },
-    { id: 'account_id', label: 'Account Number', minWidth: 170, isCell: true, align: 'left' },
-    { id: 'member_type', label: 'Type', minWidth: 170, isCell: true, align: 'left' },
-    { id: 'name', label: 'Name', minWidth: 100, align: 'left', isCell: true },
+    { id: 'account_id', label: 'Account Number', minWidth: 170, isCell: true, align: 'left',description:"" },
+    { id: 'member_type', label: 'Type', minWidth: 170, isCell: true, align: 'left',description:"" },
+    { id: 'name', label: 'Name', minWidth: 100, align: 'left', isCell: true,description:""},
     {
       id: 'balance',
-      label: 'Balance',
+      label: 'Other.B',
       minWidth: 170,
       align: 'center',
       format: (value: number) => value.toLocaleString('en-US'),
-      isCell: true
+      isCell: true,
+      description:""
+    },
+    {
+      id: 'engine_fund_balance',
+      label: 'EngineFund.B',
+      minWidth: 170,
+      align: 'center',
+      format: (value: number) => value.toLocaleString('en-US'),
+      isCell: true,
+      description:"The balance of the engine fund associated with the account."
+    },
+    {
+      id: 'total',
+      label: 'Total.B',
+      minWidth: 170,
+      align: 'center',
+      format: (value: number) => value.toLocaleString('en-US'),
+      isCell: true,
+      description:""
+      
     },
     {
       id: 'status',
@@ -89,14 +114,16 @@ function AccountsTab() {
       minWidth: 170,
       align: 'left',
       format: (value: Status) => value.toLocaleUpperCase(),
-      isCell: true
+      isCell: true,
+      description:""
     },
     {
       id: 'description',
       label: 'Description',
       minWidth: 170,
       align: 'left',
-      isCell: true
+      isCell: true,
+      description:""
     },
     {
       id: 'render',
@@ -104,7 +131,8 @@ function AccountsTab() {
       minWidth: 170,
       align: 'center',
       render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{ key: EAction.ADD, value: !isAuthorized }]} /></>),
-      isCell: true
+      isCell: true,
+      description:""
     }
   ];
   const [openAccountAdd, setOpenAccountAdd] = useState(false);
@@ -136,7 +164,7 @@ function AccountsTab() {
         if (foundAccount)
           bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
-      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
+      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.engine_fund_balance,row.balance+row.engine_fund_balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
     })
     CustomLogger.info("AccountsTab/getData", rows)
     return rows === undefined ? [] : rows;

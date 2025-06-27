@@ -34,6 +34,7 @@ const newTransaction: IAddTransaction = {
     accountType: ''
   },
   amount: 0,
+  engine_fund_amount: 0,
   type: Transaction_Type.DEBIT,
   order: {
     type: Transaction_OT.ORDER,
@@ -143,6 +144,7 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
             accountType: getAccountType(value.destination.type)
           },
           amount: value.amount,
+          engine_fund_amount: 0,
           type: Transaction_Type.DEBIT,
           order: {
             type: Transaction_OT.EXPENSE,

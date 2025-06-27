@@ -50,11 +50,11 @@ const columns: Column[] = [
     label: '_id',
     minWidth: 170,
     align: 'center',
-    isCell: true
-
+    isCell: true,
+    description: 'Flight ID',
   },
   {
-    id: 'date', label: 'Date', minWidth: 170, isCell: true, format: (date: Date): string => {
+    id: 'date', label: 'Date', minWidth: 170, isCell: true,description:"", format: (date: Date): string => {
       return (new Date(date)).getDisplayDate()
     }
   },
@@ -64,7 +64,8 @@ const columns: Column[] = [
     minWidth: 170,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
-    isCell: true
+    isCell: true,
+    description:""
   },
   {
     id: 'engien_stop',
@@ -72,7 +73,8 @@ const columns: Column[] = [
     minWidth: 170,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
-    isCell: true
+    isCell: true,
+    description:"",
   },
   {
     id: 'duration',
@@ -80,21 +82,24 @@ const columns: Column[] = [
     minWidth: 170,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
-    isCell: true
+    isCell: true,
+    description:"",
   },
   {
     id: 'order_by',
     label: 'Order By',
     minWidth: 170,
     align: 'center',
-    isCell: true
+    isCell: true,
+    description:"",
   },
   {
     id: 'action',
     label: 'Action',
     minWidth: 170,
     align: 'center',
-    isCell: true
+    isCell: true,
+    description:""
 
   },
 
@@ -109,7 +114,7 @@ function AccountFlightsTab() {
   const [accountFlightFilter, setaccountFlightFilter] = useState<IAccountFlightFilter>(getAccountFlightFilter())
   const { data, isError, error, isLoading, refetch } = useGetAllFlightsSearchQuery(accountFlightFilter);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [count, setCount] = useState(0);
   const [selectedMember, setSelectedMember] = useState<InputComboItem>()
   const [lastItem,setLastItem] =useState<IOrderBase | null>(null)

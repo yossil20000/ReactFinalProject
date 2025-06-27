@@ -170,7 +170,7 @@ exports.add_order_transaction = [
   async (req, res, next) => {
     try {
       
-      let { source, destination, amount, order, description, type ,date} = req.body;
+      let { source, destination, amount,engine_fund_amount, order, description, type} = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
@@ -252,6 +252,7 @@ exports.add_order_transaction = [
           source: tSource,
           destination: tDestination,
           amount: -Number(Number(amount).toFixed(2)),
+          engine_fund_amount: engine_fund_amount === undefined ? 0 : -Number(Number(engine_fund_amount).toFixed(2)),
           type: type.toUpperCase(),
           calculation_type: constants.CalcType.AMOUNT,
           source_balance: Number(sourceAccount.balance.toFixed(2)),
@@ -295,10 +296,12 @@ exports.add_order_transaction = [
                 
                 await transactionDestination.save({ session })
                 */
-        destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) - Number(Number(amount).toFixed(2));
+        const destination_new_balance = Number(destinationAccount.balance.toFixed(2)) - Number(Number(amount).toFixed(2)) ;
+        destinationAccount.balance = destination_new_balance
+        destinationAccount.engine_fund_balance = Number(destinationAccount.engine_fund_balance.toFixed(2)) - Number(Number(engine_fund_amount).toFixed(2));
         destinationAccount.transactions.push(sourceTransaction)
         /* destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + Number(amount.toFixed(2)); */
-        if (isNaN(destinationAccount.balance)) {
+        if (isNaN(destinationAccount.balance) || isNaN(destinationAccount.engine_fund_balance)) {
           throw new Error('Destination: The new balance is not a number!');
         }
         await destinationAccount.save({ session })
@@ -343,7 +346,7 @@ exports.add_transaction = [
 
   async (req, res, next) => {
     try {
-      let { source, destination, amount, order, description, payment, type, date } = req.body;
+      let { source, destination, amount, order, description, payment, type } = req.body;
       type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -741,25 +744,51 @@ exports.add_transaction_payment = [
         log.info("tSource", tSource)
         const tDestination = getTranctionName(destination, destinationAccount);
         log.info("tDestination", tDestination)
-        let sourceAmount = 0;
-        let destinationAmount = 0;
-        if (type == constants.TransactionType.CREDIT) {
-          sourceAmount = Number(Number(-amount).toFixed(2));
-          destinationAmount = sourceAmount
+        //transaction fields
+        let tSourceAmount = Number(0);
+        let tSourceEngineFundAmount = Number(0);
+        let tDestinationAmount = Number(0);
+        let tDestinationEngineFundAmount = Number(0);
+
+        let newEngineFundAmount = Number(0);
+        let newAmount = Number(amount);
+        let destination_engine_fund_balance = Number(destinationAccount.engine_fund_balance.toFixed(2));
+
+        if(type == constants.TransactionType.DEBIT && destination_engine_fund_balance < 0){
+          if(newAmount + destination_engine_fund_balance >= 0)
+          {
+            newEngineFundAmount = Math.abs(destination_engine_fund_balance);
+            newAmount = amount - newEngineFundAmount;
+          }
+          else{
+            newEngineFundAmount = Math.abs(destination_engine_fund_balance);
+            newAmount = 0;
+          }
+        }
+
+       if (type == constants.TransactionType.CREDIT) {
+          tSourceAmount = Number(Number(-newAmount).toFixed(2));
+          tSourceEngineFundAmount = Number(0)
+          tDestinationAmount = tSourceAmount
+          tDestinationEngineFundAmount = tSourceEngineFundAmount
         }
         else if (type == constants.TransactionType.DEBIT) {
-          sourceAmount = Number(Number(amount).toFixed(2));
-          destinationAmount = sourceAmount
+          tSourceAmount = Number(Number(newAmount).toFixed(2));
+          tSourceEngineFundAmount = Number(newEngineFundAmount.toFixed(2));
+          tDestinationAmount = tSourceAmount
+          tDestinationEngineFundAmount = tSourceEngineFundAmount;
+          
         }
         else {
           await session.abortTransaction();
           return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(type, `Transaction Type`, 'type', "DB.ClubAccount")).validationResult.errors }));
         }
-      
+            
         const sourceTransaction = new Transaction({
           source: tSource,
           destination: tDestination,
-          amount: sourceAmount,
+          amount: tSourceAmount,
+          engine_fund_amount: tSourceEngineFundAmount,
           source_balance: Number(sourceAccount.balance.toFixed(2)),
           destination_balance: Number(destinationAccount.balance.toFixed(2)),
           type: type,
@@ -770,7 +799,9 @@ exports.add_transaction_payment = [
           order: order
         });
 
-        sourceAccount.balance = Number(sourceAccount.balance.toFixed(2)) + sourceAmount;
+        log.info("sourceAccount.account_saving[0].balance",sourceAccount?.account_saving[0]?.balance)
+        sourceAccount.balance = Number(sourceAccount.balance.toFixed(2)) + tSourceAmount;
+        sourceAccount.account_saving[0].balance = Number(sourceAccount?.account_saving[0]?.balance.toFixed(2)) + tSourceEngineFundAmount;
         if (isNaN(sourceAccount.balance)) {
           throw new Error('Source: The new balance is not a number!');
         }
@@ -779,41 +810,11 @@ exports.add_transaction_payment = [
         await sourceAccount.save({ session })
         await sourceTransaction.save({ session });
 
-        /*         const destinationTransaction = new Transaction({
-                  source: tDestination ,
-                  destination: tSource ,
-                  amount: destinationAmount,
-                  balance: Number(destinationAccount.balance.toFixed(2)),
-                  type: type,
-                  calculation_type: constants.CalcType.AMOUNT,
-                  date: source.date,
-                  description: description,
-                  payment: payment,
-                  order: order
-                }); 
-        
-                destinationAccount.transactions.push(destinationTransaction);*/
         destinationAccount.transactions.push(sourceTransaction);
         /*  await destinationTransaction.save({ session }); */
-        destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + destinationAmount;
-        /* if (type === constants.TransactionType.TRANSFER) {
-          destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + destinationAmount;
-        }
-        else if (type === constants.TransactionType.CREDIT) {
-          if (isDenstinationAccount) {
-            destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + destinationAmount;
-          }
-        }
-        else if (type === constants.TransactionType.DEBIT) {
-          if (isDenstinationAccount) {
-            destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + destinationAmount;
-            destinationAccount.balance = Number(destinationAccount.balance.toFixed(2))
-          }
-        }
-        else {
-          await session.abortTransaction();
-          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(destination, `Transaction Source not valid to transaction type`, 'source', "DB.ClubAccount")).validationResult.errors }));
-        } */
+        destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + tDestinationAmount;
+        destinationAccount.engine_fund_balance = Number(destinationAccount.engine_fund_balance.toFixed(2)) + tDestinationEngineFundAmount;
+       
         if (isNaN(destinationAccount.balance)) {
           throw new Error('Destination: The new balance is not a number!');
         }

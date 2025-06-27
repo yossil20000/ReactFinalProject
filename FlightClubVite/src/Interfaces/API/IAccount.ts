@@ -159,6 +159,7 @@ export interface IAccountBase {
   },
   transactions: ITransaction[],
   balance: number,
+  engine_fund_balance: number
   description: string,
   status: Status
 }
@@ -178,9 +179,11 @@ export const newAccount = (): IAccount => {
     },
     transactions: [],
     balance: 0,
+    engine_fund_balance: 0,
     description: "",
     status: Status.Active,
     _id: ""
+    
   }
   return account;
 }

@@ -24,6 +24,7 @@ var TransactionSchema = new Schema({
   source: {type: String, required: true},
   destination: {type: String, required: true},
   amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
+  engine_fund_amount: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   source_balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   destination_balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   order:  {

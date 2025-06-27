@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import ActionButtons, { IActionButtonsProps } from './Buttons/ActionButtons';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 
 export interface GroupHeader {
   id: string,
@@ -21,7 +21,8 @@ export interface Column {
   align?: 'right' | "left" | 'center';
   format?: (value: number | any) => string;
   isCell:boolean;
-  render?: React.ReactNode
+  render?: React.ReactNode,
+  description: string
 }
 
 export interface IColumnGroupingTableProps<T> {
@@ -65,7 +66,9 @@ export default function ColumnGroupingTable<T,>(props: IColumnGroupingTableProps
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
                 >
-                  {column.label === "" ? column.render : column.label}
+                  <Tooltip title={column.description} placement="top">
+                  <>{column.label === "" ? column.render : column.label}</>
+                  </Tooltip>
                 </TableCell>
               )})}
             </TableRow>

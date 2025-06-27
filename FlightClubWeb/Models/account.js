@@ -8,6 +8,7 @@ const AccountSchema = new Schema({
   member: {type: Schema.Types.ObjectId, ref: "Member", required: true},
   transactions:[ {type: Schema.Types.ObjectId, ref: "Transaction", required: true}],
   balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
+  engine_fund_balance: {type: mongoose.Decimal128 ,default: 0, get: getDecimal},
   description: {type: String},
   status:{type:String, enum: Object.values(constants.STATUS), default: constants.STATUS.Active},
 },{toJSON: {getters: true}})

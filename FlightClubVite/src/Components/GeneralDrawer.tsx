@@ -43,6 +43,7 @@ export default function GeneralDrawer({ setOpen, open, children }: GeneralDrawer
             width: drawerWidth,
             boxSizing: 'border-box',
           },
+          
         }}
         variant="persistent"
         anchor="left"

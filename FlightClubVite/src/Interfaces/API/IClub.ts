@@ -116,6 +116,7 @@ export interface IAddTransaction {
     accountType: string
   },
   amount: number,
+  engine_fund_amount: number,
   type: Transaction_Type,
   order: {
     type: Transaction_OT,
@@ -134,6 +135,7 @@ export interface ITransactionBase {
   source: string,
   destination: string,
   amount: number,
+  engine_fund_amount: number,
   source_balance: number,
   destination_balance: number,
   type: Transaction_Type,
@@ -229,7 +231,7 @@ let newTransaction: IAddTransaction = {
     accountType: ""
   },
   amount: Number("0"),
-
+  engine_fund_amount: Number("0"),
   type: Transaction_Type.DEBIT,
   order: {
     type: Transaction_OT.TRANSFER,
@@ -355,6 +357,7 @@ const transactions: ITransaction = {
   source: "",
   destination: "",
   amount: 0,
+  engine_fund_amount: 0,
   source_balance: 0,
   destination_balance: 0,
   type: Transaction_Type.CREDIT,

@@ -24,7 +24,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   const { data: orders ,isLoading,error} = useGetOrderSearchQuery(filter);
   CustomLogger.log("OrderTable/selectedClubAccount/",selectedClubAccount)
   
-  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string, product: Transaction_OT,date:Date) : IAddTransaction => {
+  const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string, product: Transaction_OT,date:Date,engine_fund_amount:number) : IAddTransaction => {
     CustomLogger.log("OrderTable/getTransaction/input",sourseId,destinationId,order_id)
     CustomLogger.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
     const addTransaction : IAddTransaction = {
@@ -36,7 +36,8 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
         _id: destinationId,
         accountType: EAccountType.EAT_ACCOUNT
       },
-      amount: amount,
+      amount: Number((amount - engine_fund_amount).toFixed(2)),
+      engine_fund_amount: engine_fund_amount === undefined ? 0 : engine_fund_amount,
       type: Transaction_Type.CREDIT,
       order: {
         _id: order_id,
@@ -85,6 +86,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     }).map((row : IOrder) => ({
       id: row._id, date: new Date(row.order_date).getDisplayDate(),
       amount: row.amount,
+      engine_fund_amount: JSON.parse(row.description).engine_fund_part === undefined ? 0 : JSON.parse(row.description).engine_fund_part,
       product: row.orderType.referance,
       units: row.units,
       unitPrice: row.pricePeUnit,
@@ -108,7 +110,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     { field: 'description', hide: true },
     { field: 'date',hide: false, headerName: 'Date', minWidth: 100, maxWidth: 100,  sortable: true,
     filterable: true,flex:1},
-    { field: 'orderBy', headerName: 'Order By', minWidth: 100,flex:2 },
+    { field: 'orderBy', headerName: 'Order By', minWidth: 120,flex:1 },
     { field: 'product', headerName: 'Product', minWidth: 80,maxWidth: 80,flex:1 },
     { field: 'units', headerName: 'Units', type: 'number', minWidth: 70 ,maxWidth: 70, flex: 1 },
 
@@ -118,7 +120,8 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       type: 'number',
       minWidth: 100,maxWidth: 120,flex:1
     },
-    { field: 'amount', headerName: 'Total', type: 'number', minWidth: 100,maxWidth: 120,flex:1 },
+    { field: 'amount', headerName: 'Amount', type: 'number', minWidth: 100,maxWidth: 120,flex:1 },
+    { field: 'engine_fund_amount', headerName: 'EngineFund', type: 'number', minWidth: 100,maxWidth: 120,flex:1 },
     { field: 'status', headerName: 'Status' ,minWidth: 120, maxWidth: 120,flex:1},
     {
       field: 'actions',
@@ -132,7 +135,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
  
          <TransactionAction {...{params,rowId,setRowId,orderId : params.row.product !== OT_REF.FLIGHT ? params.row.id : undefined  ,
           transaction: getTransaction(
-            selectedClubAccount?._id == undefined ? "" : selectedClubAccount?._id ,params.row.member._id,params.row.id, params.row.amount,params.row.description,params.row.product,params.row.date)}}/>
+            selectedClubAccount?._id == undefined ? "" : selectedClubAccount?._id ,params.row.member._id,params.row.id, params.row.amount,params.row.description,params.row.product,params.row.date,params.row.engine_fund_amount)}}/>
 
         </Box>
       )
