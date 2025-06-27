@@ -45,7 +45,7 @@ const ResponsiveAppBar = () => {
     { name: `Links`, route: 'links' , roles:[]},
     { name: 'Reservations', route: ROUTES.RESERVATION, roles:[Role.user, Role.desk, Role.admin, Role.account] },
     { name: 'Flight', route: ROUTES.Flight , roles:[Role.user, Role.desk, Role.admin, Role.account] },
-    { name: "Account", route: "account" ,roles:[Role.desk, Role.admin, Role.account]},
+    { name: "Account", route: "account" ,roles:[Role.user, Role.desk, Role.admin, Role.account]},
     { name: 'Admin', route: 'admin' ,roles:[Role.admin]},
     { name: `Register`, route: "registration" , roles:[Role.admin]},
     { name: 'Contacts', route: 'members' ,roles:[Role.user, Role.desk, Role.admin, Role.account]},
