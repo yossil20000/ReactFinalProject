@@ -221,7 +221,7 @@ function AccountExpenseTab() {
                     show={[EAction.SAVE]}
                     display={[{ key: EAction.SAVE, value: "Export" }]}
                     item={""}
-                    disable={[{ key: EAction.SAVE, value: !isAuthorized }]}
+                    disable={[{ key: EAction.SAVE, value: false }]}
                   />
                 </Grid>
                 <Grid item xs={12} md={2}>
@@ -232,7 +232,7 @@ function AccountExpenseTab() {
                       { key: EAction.OTHER, value: "ExportBy Utilized" },
                     ]}
                     item={""}
-                    disable={[{ key: EAction.OTHER, value: !isAuthorized }]}
+                    disable={[{ key: EAction.OTHER, value: false }]}
                   />
                 </Grid>
                 <Grid item xs={12} md={2}>
@@ -241,7 +241,7 @@ function AccountExpenseTab() {
                     show={[EAction.PAY]}
                     display={[{ key: EAction.PAY, value: "ExportBy Category" }]}
                     item={""}
-                    disable={[{ key: EAction.PAY, value: !isAuthorized }]}
+                    disable={[{ key: EAction.PAY, value: false }]}
                   />
                 </Grid>
               </Grid>

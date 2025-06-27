@@ -164,7 +164,7 @@ function AccountsTab() {
         if (foundAccount)
           bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
-      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.engine_fund_balance,row.balance+row.engine_fund_balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} /></>)
+      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.engine_fund_balance,row.balance+row.engine_fund_balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} disable={[{ key: EAction.EDIT, value: !isAuthorized }]}/></>)
     })
     CustomLogger.info("AccountsTab/getData", rows)
     return rows === undefined ? [] : rows;

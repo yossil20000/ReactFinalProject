@@ -103,7 +103,7 @@ export function PagesRouter() {
           <Route path="/admin" element={<AdminPage></AdminPage>} />
 
         </Route>
-        <Route element={<RequireAuth roles={[Role.desk, Role.admin, Role.account]} />}>
+        <Route element={<RequireAuth roles={[Role.user, Role.desk, Role.admin, Role.account]} />}>
 
           <Route path="/account" element={<AccountPage></AccountPage>} />
         </Route>
