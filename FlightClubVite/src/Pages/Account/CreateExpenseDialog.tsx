@@ -157,7 +157,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   }
   const handleDateChange = (newValue: DateTime | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    newDate.setSeconds(0, 0);
+    newDate.setHours(12,0,0,0);
     setSelectedExpense(prev => ({ ...prev, date: newDate }))
   };
   return (
