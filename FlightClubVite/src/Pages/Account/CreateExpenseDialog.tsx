@@ -97,8 +97,8 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
   const OnselectedDestination = (item: InputComboItem): void => {
     setSelectedDestination(item);
-    SetProperty(selectedExpense, `supplier`, item.description)
-
+    const newObj: IExpenseBase = SetProperty(selectedExpense, `supplier`, item.description)
+    setSelectedExpense(newObj)
   }
 
   const RenderSource = (): JSX.Element => {
