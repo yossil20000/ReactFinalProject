@@ -44,12 +44,13 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
         type: product,
         quarter: QuarterType.NONE
       },
-      payment:{
+      payment: {
         method: PaymentMethod.NONE,
         referance: ""
       },
       description: description,
-      date: new Date(date)
+      date: new Date(date),
+      supplier: ''
     }
     CustomLogger.info("OrderTable/getTransaction/addTransaction",addTransaction)
     return addTransaction;

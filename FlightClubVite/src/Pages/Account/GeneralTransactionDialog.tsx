@@ -47,7 +47,8 @@ let newTransaction: IAddTransaction = {
     referance: ''
   },
   description: '',
-  date: new Date()
+  date: new Date(),
+  supplier: ''
 }
 const getAccountType = (memberType: string | undefined): string => {
   /* CustomLogger.info("getTransaction/getAccountType/memberType",memberType , MemberType.Club) */
@@ -94,7 +95,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
       },
       type: selectedTransaction.type,
       amount: selectedTransaction.amount,
-     engine_fund_amount: selectedTransaction.engine_fund_amount,
+      engine_fund_amount: selectedTransaction.engine_fund_amount,
       order: {
         type: selectedTransaction.order.type,
         _id: '',
@@ -105,7 +106,8 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
         referance: selectedTransaction.payment.referance
       },
       description: selectedTransaction.description,
-      date: selectedTransaction.date
+      date: selectedTransaction.date,
+      supplier: selectedTransaction.supplier
     }
     CustomLogger.log("GeneralTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
     CustomLogger.log("GeneralTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
