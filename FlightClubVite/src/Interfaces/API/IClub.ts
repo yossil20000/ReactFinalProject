@@ -128,7 +128,8 @@ export interface IAddTransaction {
     referance: string
   },
   description: string,
-  date: Date
+  date: Date,
+  supplier: string
 }
 
 export interface ITransactionBase {
@@ -243,7 +244,8 @@ let newTransaction: IAddTransaction = {
     referance: ''
   },
   description: '',
-  date: new Date()
+  date: new Date(),
+  supplier: ""
 }
 export type PayInfo = {
   selectedTransaction: IAddTransaction,

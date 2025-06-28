@@ -155,7 +155,10 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
 
     if (event.target.name = "amount") {
-      event.target.value = Math.abs(Number(event.target.value)).toString()
+      if(Number(event.target.value)<0){
+          event.target.value = Math.abs(Number(event.target.value)).toString()
+      }
+      
     }
     let newObj: IAddTransaction = SetProperty(payInfo.selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
     const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)

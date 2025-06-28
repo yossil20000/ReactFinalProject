@@ -46,7 +46,8 @@ const newTransaction: IAddTransaction = {
     referance: ""
   },
   description: '',
-  date: new Date()
+  date: new Date(),
+  supplier: ''
 }
 
 function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: CreateTransactionDialogProps) {
@@ -156,7 +157,8 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
             referance: ""
           },
           description: value.description,
-          date: new Date()
+          date: new Date(),
+          supplier: value.supplier === undefined ? "Unknown" : value.supplier
         }
         setSelectedTransaction(newTransaction);
         const filter = filterAccount;
