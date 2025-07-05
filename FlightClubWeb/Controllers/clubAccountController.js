@@ -346,13 +346,13 @@ exports.add_transaction = [
 
   async (req, res, next) => {
     try {
-      let { source, destination, amount, order, description, payment, type } = req.body;
+      let { source, destination, amount, order, description, payment, type,supplier } = req.body;
       type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_expanse_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
-      }
-
+      } 
+      
       /* Transaction */
       const session = await mongoose.startSession();
       try {
@@ -360,6 +360,10 @@ exports.add_transaction = [
 
         const expense = await Expense.findById(order._id).exec();
         if (expense) {
+          if(expense.supplier === undefined || expense.supplier.length == 0){ 
+            expense.supplier = supplier;
+            log.info("Supplier is empty, setting to null",expense.supplier);
+          }
           expense.status = constants.OrderStatus.CLOSE;
           await expense.save({ session });
         }

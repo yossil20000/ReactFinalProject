@@ -80,7 +80,7 @@ function GetTransactionCells(item: ITransaction): ITransactionReportTableCell[] 
       }
       cells[3] = duration
       const amount: ITransactionReportTableCell = {
-        data: Number(item.amount).toFixed(2),
+        data: (Number(item.amount) + Number(item.engine_fund_amount == undefined ? 0 : item.engine_fund_amount)).toFixed(2),
         toolTip: "",
         width: "20%"
       }
@@ -173,11 +173,12 @@ function useGetTransacReportData(transactions: IResultBase<ITransaction> | undef
                 memberOrders.rows.push(row)
               })
               let totalTransaction: number = 0
-              const amount = orderGroup[order]?.reduce((accumulator, current) => {
+              const amount: number = orderGroup[order]?.reduce((accumulator, current) => {
+                const amountTotal = Number(current.amount) + Number(current.engine_fund_amount === undefined ? 0 :  current.engine_fund_amount);
                 if (current.order.type.toLocaleUpperCase() !== Transaction_OT.TRANSFER.toLocaleUpperCase()) 
-                { return current.amount + accumulator }
+                { return amountTotal + accumulator }
                 else {
-                  totalTransaction += current.amount
+                  totalTransaction += amountTotal
                   return accumulator
                 }
               }, 0)

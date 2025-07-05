@@ -9,6 +9,9 @@ import { EAccountType, IAddTransaction, PaymentMethod, Transaction_OT, Transacti
 import { InputComboItem } from './Buttons/ControledCombo';
 import FullScreenLoader from './FullScreenLoader';
 import { QuarterType } from '../Utils/enums';
+import { customLogger } from '../customLogging';
+import { json } from 'react-router-dom';
+import { safeJsonParse } from '../Utils/json';
 
 
 interface IOrderTableProps {
@@ -57,9 +60,10 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   },[selectedClubAccount] )
 
   const orderRows = useMemo(() => {
+    try{
     CustomLogger.log("OrderTable/orderRows/filter/member", selectedMember)
     CustomLogger.log("OrderTable/orderRows/filter/filter", filter)
-    const rows = orders?.data.filter((item) => {
+    const rows= orders?.data.filter((item) => {
       CustomLogger.info("OrderTable/orderRows/filter/item", item)
 
       /* CustomLogger.info("OrderTable/orderRows/filter/item.status.toString() == filter.orderStatus.toString()",item.status.toString() , (filter.orderStatus as OrderStatus)) */
@@ -84,10 +88,19 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
          { doFilter = false}
       CustomLogger.info("OrderTable/orderRows/filter/dofilter_4", doFilter)
       return doFilter;
-    }).map((row : IOrder) => ({
+    }).map((row : IOrder) => {
+      customLogger.log("OrderTable/orderRows/map/row", row)
+      return{
+      
       id: row._id, date: new Date(row.order_date).getDisplayDate(),
       amount: row.amount,
-      engine_fund_amount: JSON.parse(row.description).engine_fund_part === undefined ? 0 : JSON.parse(row.description).engine_fund_part,
+      engine_fund_amount: (() => {
+        const parsed = safeJsonParse(row.description);
+        if (parsed && typeof parsed === 'object' && 'engine_fund_part' in parsed) {
+          return (parsed as { engine_fund_part: number }).engine_fund_part;
+        }
+        return 0;
+      })(),
       product: row.orderType.referance,
       units: row.units,
       unitPrice: row.pricePeUnit,
@@ -95,12 +108,20 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       member: row.member === undefined ? undefined : row.member,
       status: row.status,
       description: `${row.description}`,
-    }))
+    }
+  })
     if (rows !== undefined) {
       CustomLogger.info("OrderTable/orderRows/orders",rows,orders);
       return rows
     }
     return []
+    }
+    catch (error) {
+      CustomLogger.error("OrderTable/orderRows/error", error)
+      return []
+    }
+
+
 
 
   }, [orders,selectedMember,selectedClubAccount,filter.orderStatus])
