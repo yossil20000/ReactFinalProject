@@ -315,6 +315,10 @@ exports.flight_delete = [
       if (flight == null) {
         return res.status(400).json({ success: false, errors: ["Flight  delete Not exist"], data: [] })
       }
+      const maxValues = await deviceMaxValuesWithStatus(flight.device._id,null);
+      const hobbs_meter = (maxValues?.length == 0 || req.body.hobbs_stop > maxValues[0]?.max_hobbs_stop) ? req.body.hobbs_stop : maxValues[0].max_hobbs_stop;
+      const engien_meter = (maxValues?.length == 0 || req.body.engien_stop > maxValues[0]?.max_engien_stop) ? req.body.engien_stop : maxValues[0].max_engien_stop;
+      const deviceUpdate = await Device.updateOne({ _id: flight.device._id }, { engien_meter: engien_meter, hobbs_meter: hobbs_meter }, { session });
 
       const trananctionResult = await session.withTransaction(async () => {
         const flightDeleteResult = await Flight.deleteOne({ _id: req.body._id }, { session: session });
@@ -396,10 +400,48 @@ const isEngienValid = async (_id, req) => {
   }
 
 }
+const deviceMaxValuesWithStatus = async (_id, status = "CLOSE") => {
+  try {
+    const matchStage = {
+      device: mongoose.Types.ObjectId(_id)
+    };
+
+    if (status) {
+      matchStage.status = status;
+    }
+
+
+    const maxValues = await Flight.aggregate([
+      { $match: matchStage },
+      {
+        $group: {
+          _id: "$device",
+          max_hobbs_start: { $max: "$hobbs_start" },
+          max_hobbs_stop: { $max: "$hobbs_stop" },
+          max_engine_start: { $max: "$engine_start" },
+          max_engine_stop: { $max: "$engine_stop" }
+        }
+      },
+      {
+        $project: {
+          max_hobbs_start: { $toDouble: "$max_hobbs_start" },
+          max_hobbs_stop: { $toDouble: "$max_hobbs_stop" },
+          max_engine_start: { $toDouble: "$max_engine_start" },
+          max_engine_stop: { $toDouble: "$max_engine_stop" }
+        }
+      }
+    ]).exec();
+
+    return maxValues;
+  } catch (err) {
+    console.error("Error during aggregation:", err);
+    return null;
+  }
+};
 const deviceMaxValues = async (_id) => {
   let maxValues = await Flight.aggregate(
     [
-      { $match: { status: "CLOSE",device: _id } },
+      { $match: {device: _id } },
       {
         $group:
         {
