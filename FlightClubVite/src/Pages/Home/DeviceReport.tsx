@@ -64,7 +64,8 @@ function DeviceReport() {
                   <div>{`The airplane is ${report.device.status} , ${report.device.available ? "Available" : "Not Available"} and ${report.device.device_status}`}</div>
                   <div>{`Next Service ${report.device.maintanance.type} on ${report.device.maintanance.next_meter}`}</div>
                   <div>{`Annual on ${new Date(report.device.due_date).getDisplayDate()}`}</div>
-                  <div>{`Engine Current TACH ${(report.device.engien_start_meter + data?.data[0].device.engien_meter).toFixed(1)}`}</div>
+                  <div>{`Engine Total Hours (Calculated: offset + current TACH) ${(report.device.engien_start_meter + data?.data[0].device.engien_meter).toFixed(1)}`}</div>
+                  <div color="red"><b><u>Due to engine meter replacmnt the offset is: 7101.4 - 6329.7 = 771.7</u></b></div>
                 </Typography>
               </CardContent>
             </Card>
