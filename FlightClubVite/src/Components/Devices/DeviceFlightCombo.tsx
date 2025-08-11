@@ -1,9 +1,9 @@
-import { useEffect, useState, useId } from 'react'
+import { useEffect, useState } from 'react'
 import { useFetchDevicsComboQuery } from '../../features/Device/deviceApiSlice';
 import useSessionStorage from '../../hooks/useLocalStorage';
 import { IDeviceCombo, IDeviceComboFilter } from '../../Interfaces/API/IDevice'
 import { Status } from '../../Interfaces/API/IStatus';
-import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
+import ControledCombo, { InputComboItem } from '../Buttons/ControledCombo';
 const filterCombo: IDeviceComboFilter = {
   filter: {
     status: Status.Active

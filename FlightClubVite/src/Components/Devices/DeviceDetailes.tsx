@@ -1,8 +1,6 @@
-import { Box, Typography } from '@mui/material';
-import { textAlign } from '@mui/system';
-import React, { useEffect } from 'react'
+import { Typography } from '@mui/material';
+import { useEffect } from 'react'
 import { useFetchDeviceQuery } from '../../features/Device/deviceApiSlice';
-import IDevice from '../../Interfaces/API/IDevice'
 import FlightIcon from '@mui/icons-material/Flight';
 
 interface IDeviceDetails {
