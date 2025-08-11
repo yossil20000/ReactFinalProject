@@ -40,6 +40,7 @@ declare global {
       isIntersec(from:Date,to:Date) : boolean
       dateWithoutTimezone() : string 
       getOffsetDate(offset: number) : Date
+      getDayDiff(date: Date) : number
    }
 }
 
@@ -246,4 +247,10 @@ Date.prototype.dateWithoutTimezone = function () :string {
   const totalOffset : number = (thisTimezoneOffset - offset) * 60000
   CustomLogger.info("getOffsetDate/offset,totalOffset",offset,totalOffset)
   return new Date(this.valueOf() + totalOffset) 
+ }
+
+ Date.prototype.getDayDiff = function(date: Date) : number {
+  const diffTime = (this.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  return diffDays;
  }
