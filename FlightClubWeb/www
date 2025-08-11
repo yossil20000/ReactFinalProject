@@ -22,7 +22,7 @@ if((globalThis.LastDate.lastCheck - new Date()) / (1000 * 60 *60 *24))
   device.then((res) => {
     console.log("Scheduler device",(res.due_date - new Date()) / (1000 * 60 *60 *24),new Date(),(res.engien_meter - res.maintanance.next_meter) < 10, res.maintanance,res.engien_meter,res.due_date)
     if((res.due_date - new Date()) / (1000 * 60 *60 *24) < 14 || (res.maintanance.next_meter - res.engien_meter) < 10 )
-      sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,`Service Soon ${res.maintanance.type} for ${res.device_id} . Current Engien: ${res.engien_meter} Next Service: on ${res.maintanance.next_meter} ${res.due_date}`)
+      /*sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,`Service Soon ${res.maintanance.type} for ${res.device_id} . Current Engien: ${res.engien_meter} Next Service: on ${res.maintanance.next_meter} ${res.due_date}`)*/
       globalThis.LastDate.lastCheck = new Date()
   }).catch((error) => {
     console.log("Scheduler Error",error)
@@ -33,7 +33,7 @@ const job = schedule.scheduleJob('0 0 22 * * *', function(){
   device.then((res) => {
     console.log("Scheduler device",(res.due_date - new Date()) / (1000 * 60 *60 *24),new Date(),(res.engien_meter - res.maintanance.next_meter) < 10, res.maintanance,res.engien_meter,res.due_date)
     if((res.due_date - new Date()) / (1000 * 60 *60 *24) < 14 || (res.maintanance.next_meter - res.engien_meter) < 10 )
-      sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,`Service Soon ${res.maintanance.type} for ${res.device_id} . Current Engien: ${res.engien_meter} Next Service: on ${res.maintanance.next_meter} ${res.due_date}`)
+      /*sendNotification(constants.NotifyEvent.ClubNotice,constants.NotifyOn.CREATED,`Service Soon ${res.maintanance.type} for ${res.device_id} . Current Engien: ${res.engien_meter} Next Service: on ${res.maintanance.next_meter} ${res.due_date}`)*/
   }).catch((error) => {
     console.log("Scheduler Error",error)
   })
