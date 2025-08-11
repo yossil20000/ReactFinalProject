@@ -36,6 +36,7 @@ export interface InputComboItem{
   description: string;
   key?: string;
   key2?: string;
+  validation?: number;
   
 }
 export const newInputComboItem : InputComboItem = {

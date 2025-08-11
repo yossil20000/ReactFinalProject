@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
+import { amber,orange } from '@mui/material/colors';
 import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -14,8 +15,9 @@ import { IReservationCreateApi } from "../../Interfaces/API/IReservation";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import { GridExpandMoreIcon } from "@mui/x-data-grid";
 import { validationError, Inputs } from "../../Types/Validation";
+import DevicePlaneServiceInfo from "../../Components/Devices/DevicePlaneServiceInfo";
 const source: string = "CreateReservation"
-
+const amber500 = orange[500];
 export interface CreateReservationDialogProps {
   value: IReservationCreateApi;
   onClose: () => void;
@@ -143,6 +145,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
       maxWidth="sm"
       open={open} {...other}>
       <DialogTitle>Reservation Create</DialogTitle>
+      
       <DialogContent>
         <Grid container sx={{ width: "100%" }} justifyContent="center" >
           <Grid item sx={{ marginLeft: "0px" }} xs={12} md={6} xl={6} >
@@ -193,7 +196,10 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
           <Grid item xs={12} sm={6} sx={{ marginTop: '2ch', width: "100%" }}>
             <DeviceMemberCombo onChanged={onMemberChanged} source={source} device={device} />
           </Grid>
-          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' }}>
+          <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' ,'& .MuiInputBase-input.Mui-disabled': {
+          WebkitTextFillColor: device?.validation === 2 ? 'red' : device?.validation === 1 ? amber500 : 'green', // For Webkit browsers (Chrome, Safari)
+          color: device?.validation === 2 ? 'red' : device?.validation === 1 ? amber500 : 'green', // Fallback for other browsers
+        },}}>
             <TextField
               disabled
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -202,6 +208,9 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               label="Status"
               value={device?.description}
               multiline
+              variant="outlined"
+              
+              //inputProps={{ style: { color: "blue" } }}
             />
           </Grid>
           <Accordion sx={{ width: "100%" }}>

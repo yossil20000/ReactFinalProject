@@ -1,4 +1,5 @@
-import { useEffect, useState, useId } from 'react'
+import '../../Types/date.extensions'
+import { useEffect, useState } from 'react'
 import { useFetchDevicsComboQuery } from '../../features/Device/deviceApiSlice';
 import useSessionStorage from '../../hooks/useLocalStorage';
 import { IDeviceCombo, IDeviceComboFilter } from '../../Interfaces/API/IDevice'
@@ -9,26 +10,48 @@ const filterCombo: IDeviceComboFilter = {
     status: Status.Active
   }
 }
+function GetDeviceState(due_date: Date, current_engine: number,service_engine: number,tollerance: number) : {state: "OK" | "NEED_SERVICE_SOON" | "NEED_SERVICE_NOW" | "UNKNOWN"} {
+  if(due_date === undefined || current_engine === undefined || service_engine === undefined || tollerance === undefined) {
+    return { state: "UNKNOWN" };
+  }
+  const now = new Date();
+  const dayDiff = due_date.getDayDiff(now);
+  const engineDiff = service_engine - current_engine
+    if (engineDiff <= 0 || dayDiff <= 0) {
+    return { state: "NEED_SERVICE_NOW" };
+  }
+  if ((dayDiff < tollerance * 6 && dayDiff > 0) || (engineDiff < tollerance && engineDiff > 0)) {
+    return { state: "NEED_SERVICE_SOON" };
+  }
+  
+
+  return { state: "OK" };
+}
 function DevicesCombo(props: ComboProps) {
   const { onChanged, source, filter } = props
   const { data, isError, isLoading, error } = useFetchDevicsComboQuery(filter !== undefined ? filterCombo : {});
 
   const [devicesItems, setDevicesItem] = useState<InputComboItem[]>([]);
   const [selectedDevice, setSelectedDevice] = useSessionStorage<InputComboItem | undefined>(`_${source}/Device`, undefined);
-  function getDeviceDetailed(_id: string | undefined): string {
+
+  function getDeviceDetailed(_id: string | undefined): {description: string, validation:number} {
+
     CustomLogger.log("getDeviceDetailed", _id)
     if (_id === undefined)
-      return "";
+      return {description: "No Device Selected", validation: 2};
     const device: IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
+    const deviceState = device ? GetDeviceState(new Date(device.due_date), device.engien_meter, device.maintanance.next_meter, 5) : { state: "OK" };
+    CustomLogger.log("getDeviceDetailed/deviceState", deviceState, device)  
     if (device) {
       CustomLogger.info("getDeviceDetailed/device", device)
-      return `Current TACH: ${device.engien_meter} Next Service: ${device.maintanance.next_meter}`
+      const due_date = new Date(device.due_date)
+      return {description: `Service: ${device.maintanance.type} At ${device.maintanance.next_meter} Current TACH: ${device.engien_meter}  Annual At: ${due_date.getDate()}/${due_date.getMonth() + 1}/${due_date.getFullYear()} `,validation: deviceState.state == "OK" ? 0 : deviceState.state == "NEED_SERVICE_SOON" ? 1 : 2}
     }
-    return "";
+    return {description: "No Device Selected", validation: 2};
   }
   const devicesToItemCombo = (input: IDeviceCombo): InputComboItem => {
-
-    return { lable: input.device_id, _id: input._id, description: getDeviceDetailed(input._id) }
+    const { description, validation } = getDeviceDetailed(input._id);
+    return { lable: input.device_id, _id: input._id, description: description, validation: validation }
   }
   CustomLogger.log("DevicesCombo/selectedDevice", selectedDevice)
   useEffect(() => {

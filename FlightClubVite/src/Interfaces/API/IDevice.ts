@@ -130,11 +130,31 @@ export interface IDeviceCombo {
     maintanance: Maintanance;
     can_reservs: IMemberCombo[]
     has_hobbs: boolean;
+    due_date: Date
 }
 export interface IDeviceCanReserve {
     can_reservs: IMemberCombo[]
 }
-
+export interface IDeviceServiceInfo {
+    _id: string;
+    device: {
+        _id: string;
+        device_id: string;
+        available: boolean;
+        device_status: DEVICE_STATUS;
+        engien_meter: number
+        engien_start_meter:number
+        due_date: Date
+        maintanance: {
+            type: DEVICE_MT
+            next_meter: number,
+            services: [
+                Services
+            ]
+        };
+        status: Status;
+    }
+}
 export interface IDeviceReport {
     _id: string;
     description: string;
