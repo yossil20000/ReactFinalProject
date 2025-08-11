@@ -74,6 +74,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 52,version: "2.0.18.1",date: new Date(2025,6,14).getDisplayDate() , "description" : "Add:expenses reports, Tach duration field,Flight page view,Home page Notice","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 53,version: "2.0.19.0",date: new Date(2025,6,27).getDisplayDate() , "description" : "Add support Engine_fund account. open Account page to user for view only","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 54,version: "2.0.20.0",date: new Date(2025,6,27).getDisplayDate() , "description" : "Fix Transaction, Support Engine Fund Calculation","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 55,version: "2.0.21.0",date: new Date(2025,8,11).getDisplayDate() , "description" : "Create Reservation, update Device info with colors Red,Orange,green","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
 
   ]
   function CustomToolbar() {
