@@ -15,7 +15,7 @@ exports.signin = function (req, res, next) {
     const password = req.body.password;
     const username = req.body.username;
     log.info(`login: ${email} ${password} ${username}`);
-
+    try{
     Member.findOne({$or:[{"username": username},{"contact.email": email}] }, (err, member) => {
         if (err) {
             log.error(`${email} Access Denied ${err}`)
@@ -88,6 +88,11 @@ exports.signin = function (req, res, next) {
         }
 
     })
+    }
+    catch(error){
+        return next(new ApplicationError("signin",400,"CONTROLLER.NOTICE.SIGNIN.EXCEPTION",{name: "EXCEPTION", error}));
+    }
+
 
 }
 exports.logout = function(req,res,next) {
@@ -101,7 +106,7 @@ exports.logout = function(req,res,next) {
         res.status(200).json({success: true, errors: [], message: "logout" })
     }
     catch (error) {
-        return next(new ApplicationError("notice_list",400,"CONTROLLER.NOTICE.NOTICE_LIST.EXCEPTION",{name: "EXCEPTION", error}));
+        return next(new ApplicationError("logout",400,"CONTROLLER.NOTICE.LOGOUT.EXCEPTION",{name: "EXCEPTION", error}));
     }
 }
 exports.reset = function (req, res, next) {

@@ -36,7 +36,7 @@ exports.device_combo = function (req, res, next) {
         Device.find(req.body.filter === undefined ? {} : req.body.filter, req.body.find_select === undefined ? {} : req.body.find_select)
             .populate("device_type")
             .populate( {path: "account_owner",model: "ClubAccount",select:{"transactions": 0,"account_saving":0,"accounts":0,"contact": 0 }})
-            .select('_id device_id engien_meter maintanance has_hobbs available')
+            .select('_id device_id engien_meter maintanance has_hobbs available due_date')
             .sort([['device_id', 'ascending']])
             .exec(function (err, list_combo) {
                 if (err) { return next(err); }
