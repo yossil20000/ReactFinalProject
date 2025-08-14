@@ -859,7 +859,7 @@ const FlightPage = () => {
                               <Typography variant="caption">
                                 {" "}
                                 {row.device_id} ,{" "}
-                                {`${row.date.getDisplayDate()} ${row.name}`}
+                                {`${row.date.getDisplayDate()} ${row.name} ${row.duration} Hr` }
                               </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
