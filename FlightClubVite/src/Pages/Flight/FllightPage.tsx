@@ -381,7 +381,7 @@ const FlightPage = () => {
   };
   const handleUpdateOnClose = () => {
     setOpenFlightUpdate(false);
-    setOpenExport(!openExport);
+    
   };
 
   const handleAddOnSave = (value: IFlightCreate) => {
@@ -392,8 +392,11 @@ const FlightPage = () => {
 
   const handleAddOnClose = () => {
     setOpenFlightAdd(false);
-    setOpenExport(!openExport);
+    
   };
+  const handleExportOnClose = () => {
+    setOpenExport(false);
+  };  
   const getFilteredDataMemo = getFilteredData();
   const onTodayChanged = () => {
     const filter = getTodayFilter();
@@ -809,7 +812,7 @@ const FlightPage = () => {
               )}
               {openExport && (
                 <ReportDialog
-                  onClose={handleAddOnClose}
+                  onClose={handleExportOnClose}
                   open={openExport}
                   table={new CFlightToReport(
                     flightsData.sort(sortEngineStart)
