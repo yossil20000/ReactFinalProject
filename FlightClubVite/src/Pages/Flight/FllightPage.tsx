@@ -194,8 +194,8 @@ const FlightPage = () => {
   const [openExport, setOpenExport] = useState(false);
   const [openFlightUpdate, setOpenFlightUpdate] = useState(false);
   const [DeleteFlight] = useDeleteFlightMutation();
-  const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof IFlightData>("_id");
+  const [order, setOrder] = useState<Order>("desc");
+  const [orderBy, setOrderBy] = useState<keyof IFlightData>("engien_stop");
   const [flightsData, setFilghtData] = useState<IFlightData[]>([]);
   const [expanded, setExpanded] = useState<string | false>("panel0");
   const [isFilterOwner, setIsFilterOwner] = useState(false);
