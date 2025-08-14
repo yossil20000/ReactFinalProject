@@ -52,6 +52,7 @@ function DeviceReport() {
                   <div>{`Engine: ${report.engien_stop} - ${report.engien_start} = ${(report.engien_stop - report.engien_start).toFixed(1)} Hour`}</div>
                   <div>{`Flight Time: ${report.flight_time == 0 ? (report.engien_stop - report.engien_start).toFixed(1) : report.flight_time.toFixed(1)} Hour`}</div>
                   <div>{`Fuel Start: ${report.fuel_start} Galon`}</div>
+                  <div>{`Oil Added: ${report.oil_added } Litter`}</div>
                 </Typography>
               </CardContent>
             </Card>

@@ -129,6 +129,43 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
               </Item>
             </Grid>
           ))}
+          <Grid item xs={4} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Item>
+          <TextField
+            type={"number"}
+            sx={{ marginLeft: "0px", width: "100%" }}
+            name="flight_time"
+            label="Flight Time"
+            value={flightUpdate.flight_time}
+            onChange={handleFligtChange}
+            />
+        </Item>
+      </Grid>
+      <Grid item xs={4} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+        <Item>
+          <TextField
+            type={"number"}
+            sx={{ marginLeft: "0px", width: "100%" }}
+            name="fuel_start"
+            label="Start Fuel"
+            value={flightUpdate.fuel_start}
+            onChange={handleFligtChange}
+          />
+        </Item>
+      </Grid>
+
+      <Grid item xs={4} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+        <Item>
+          <TextField
+          type={"number"}
+          sx={{ marginLeft: "0px", width: "100%" }}
+          name="oil_added"
+          label="Added Oil"
+          value={flightUpdate.oil_added}
+          onChange={handleFligtChange}                
+          />
+        </Item>
+        </Grid>
           <Grid item xs={6} md={6} xl={6} sx={{ marginLeft: "0px" }}>
             <Item>
               <TextField

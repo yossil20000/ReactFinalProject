@@ -131,7 +131,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
           <Grid item xs={12} sm={6} >
             <DeviceMemberCombo onChanged={onMemberChanged} source={source} device={selectedDevice} />
           </Grid>
-          <Grid item sx={{ marginLeft: "0px", width: "100%" }} xs={12} md={4}  >
+          <Grid item sx={{ marginLeft: "0px", width: "100%" }} xs={12} md={3}  >
             <Box sx={{ marginLeft: "0px", marginTop: '2ch', width: "100%" }}>
               <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                 <ThemeProvider theme={defaultMaterialThem}>
@@ -146,7 +146,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               </LocalizationProvider>
             </Box>
           </Grid>
-          <Grid item xs={6} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={4} md={3} xl={3} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
@@ -157,13 +157,24 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={6} md={4} xl={4} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+          <Grid item xs={4} md={3} xl={3} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
             <TextField
               type={"number"}
               sx={{ marginLeft: "0px", width: "100%" }}
               name="fuel_start"
               label="Start Fuel"
               value={flightCreate.fuel_start}
+              onChange={handleFligtChange}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={4} md={3} xl={3} sx={{ marginLeft: "0px", marginTop: '2ch' }}>
+            <TextField
+              type={"number"}
+              sx={{ marginLeft: "0px", width: "100%" }}
+              name="oil_added"
+              label="Added Oil"
+              value={flightCreate.oil_added}
               onChange={handleFligtChange}
               InputLabelProps={{ shrink: true }}
             />

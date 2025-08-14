@@ -168,6 +168,7 @@ export interface IDeviceReport {
     duration: number;
     flight_time: number;
     fuel_start: number;
+    oil_added: number;
     device: {
         _id: string;
         device_id: string;

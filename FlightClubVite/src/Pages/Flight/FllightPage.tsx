@@ -115,6 +115,7 @@ function createdata(flight: IFlight, validOperation: CanDo): IFlightData {
     duration: flight.duration,
     flight_time: flight.flight_time,
     fuel_start: flight.fuel_start,
+    oil_added: flight.oil_added,
     reuired_hobbs: flight.reuired_hobbs,
     timeOffset: flight.timeOffset,
   };
@@ -164,6 +165,7 @@ let flightUpdateIntitial: IFlightUpdate = {
   duration: 0,
   flight_time: 0,
   fuel_start: 0,
+  oil_added: 0,
   timeOffset: 0,
 };
 let flightAddIntitial: IFlightCreate = {
@@ -182,6 +184,7 @@ let flightAddIntitial: IFlightCreate = {
   duration: 0,
   flight_time: 0,
   fuel_start: 0,
+  oil_added: 0,
   timeOffset: 0,
 };
 const FlightPage = () => {
@@ -873,14 +876,19 @@ const FlightPage = () => {
                                     {`TACH: ${(row.engien_stop - row.engien_start).toFixed(1)}`}
                                   </Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={4}>
                                   <Typography>
                                     {`Flight Time: ${row.flight_time}`}
                                   </Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={4}>
                                   <Typography>
                                     {`Fuel Start: ${row.fuel_start}`}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                  <Typography>
+                                    {`Oil Added: ${row.oil_added}`}
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={12}>

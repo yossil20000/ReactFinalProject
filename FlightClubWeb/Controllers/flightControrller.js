@@ -117,6 +117,7 @@ exports.flight_update = [
         duration: req.body.duration,
         flight_time: req.body.flight_time,
         fuel_start: req.body.fuel_start,
+        oil_added: req.body.oil_added,
         timeOffset: Number((new Date(req.body.date)).getTimezoneOffset()),
       }
       log.info("updateFlight", updateFlight);
@@ -242,6 +243,7 @@ exports.flight_create = [
         duration: req.body.duration,
         flight_time: req.body.flight_time,
         fuel_start: req.body.fuel_start,
+        oil_added: req.body.oil_added,
         timeOffset: Number((new Date(req.body.date)).getTimezoneOffset()),
       })
       log.info("newReservation", newFlight._doc);
