@@ -363,6 +363,14 @@ const FlightPage = () => {
       flightUpdateIntitial.engien_stop = flight[0].engien_stop;
       flightUpdateIntitial.description = flight[0].description;
       flightUpdateIntitial.status = flight[0].status;
+      flightUpdateIntitial.duration = flight[0].duration;
+      flightUpdateIntitial.flight_time = flight[0].flight_time;
+      flightUpdateIntitial.fuel_start = flight[0].fuel_start;
+      flightUpdateIntitial.oil_added = flight[0].oil_added;
+      flightUpdateIntitial.reuired_hobbs = flight[0].reuired_hobbs;
+      flightUpdateIntitial.timeOffset = flight[0].timeOffset;
+      
+
       /* setFlightUpdate(flightUpdateIntitial); */
     }
   }
