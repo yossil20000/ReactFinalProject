@@ -31,6 +31,7 @@ function newDevice(): IDevice {
     maintanance: {
       type: DEVICE_MT['50hr'],
       next_meter: 0,
+      next_meter_tollerance: 0,
       services: [
         {
           _id: "",

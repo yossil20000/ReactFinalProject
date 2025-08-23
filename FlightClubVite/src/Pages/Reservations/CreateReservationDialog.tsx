@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { amber,orange } from '@mui/material/colors';
+import { red,orange,pink,purple } from '@mui/material/colors';
 import { Dialog, DialogTitle, DialogContent, Grid, TextField, Button, createTheme, Paper, styled, Box, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -16,6 +16,7 @@ import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import { GridExpandMoreIcon } from "@mui/x-data-grid";
 import { validationError, Inputs } from "../../Types/Validation";
 import DevicePlaneServiceInfo from "../../Components/Devices/DevicePlaneServiceInfo";
+import { EDeviceServiceState } from "../../Interfaces/API/IDevice";
 const source: string = "CreateReservation"
 const amber500 = orange[500];
 export interface CreateReservationDialogProps {
@@ -139,6 +140,23 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     setReservationCreate(prev => ({ ...prev, _id_member: item._id }))
     CustomLogger.log("CreateFlightDialoq/onMemberChanged/item", item);
   }
+  const ValidationToColor = (validation: number | undefined) : string => {
+    if (validation === undefined) return "red";
+    switch (validation) {
+      case 0:
+        return "red";
+      case 1:
+        return "green";
+      case 2:
+        return orange[500];
+      case 3:
+        return orange[300];
+      case 4:
+        return red[900];
+      default:
+        return "default";
+    }
+  }
   return (
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: "80%", maxHeight: "auto" } }}
@@ -197,7 +215,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
             <DeviceMemberCombo onChanged={onMemberChanged} source={source} device={device} />
           </Grid>
           <Grid item xs={12} md={12} xl={12} sx={{ marginLeft: "0px", width: "100%", marginTop: '2ch' ,'& .MuiInputBase-input.Mui-disabled': {
-          WebkitTextFillColor: device?.validation === 2 ? 'red' : device?.validation === 1 ? amber500 : 'green', // For Webkit browsers (Chrome, Safari)
+          WebkitTextFillColor: ValidationToColor(device?.validation), // For Webkit browsers (Chrome, Safari)
           color: device?.validation === 2 ? 'red' : device?.validation === 1 ? amber500 : 'green', // Fallback for other browsers
         },}}>
             <TextField
@@ -205,7 +223,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
               sx={{ marginLeft: "0px", width: "100%" }}
               name="description"
               id="outlined-disabled"
-              label="Status"
+              label={`Status: ${EDeviceServiceState[device?.validation === undefined ? 0 : device?.validation]}`}
               value={device?.description}
               multiline
               variant="outlined"

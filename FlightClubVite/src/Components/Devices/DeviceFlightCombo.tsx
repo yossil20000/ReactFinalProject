@@ -29,7 +29,7 @@ function DevicesFlightCombo(props: IDeviceFlightComboProps) {
     const device: IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
     if (device) {
       CustomLogger.info("getDeviceDetailed/dvice", device)
-      return `Current TACH: ${device.engien_meter} Next Service: ${device.maintanance.next_meter}`
+      return `Current TACH: ${device.engien_meter} Next Service: ${device.maintanance.next_meter} Next Service Tolerance: ${device.maintanance.next_meter_tollerance}`
     }
     return "";
   }

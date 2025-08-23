@@ -271,7 +271,7 @@ function DeviceTabItem() {
                 </Grid>
               </AccordionSummary>
               <AccordionDetails>
-                <Grid container spacing={1} columns={{ xs: 2, sm: 2, md: 3 }}>
+                <Grid container spacing={1} columns={{ xs: 2, sm: 2, md: 4 }}>
                   <Grid item xs={1}>
                     <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
                       <MobileDateTimePicker
@@ -289,6 +289,11 @@ function DeviceTabItem() {
                     <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
                       placeholder="Next maintanance" variant="standard"
                       value={selectedItem?.maintanance.next_meter} error={false} helperText="" InputLabelProps={{ shrink: true }} />
+                  </Grid>
+                  <Grid item xs={1}>
+                    <TextField fullWidth={true} required onChange={handleChange} id="next_meter_tollerance" name="maintanance.next_meter_tollerance" label="Next meter Tolerance"
+                      placeholder="Next maintanance Tolerance" variant="standard"
+                      value={selectedItem?.maintanance.next_meter_tollerance} error={false} helperText="" InputLabelProps={{ shrink: true }} />
                   </Grid>
                   <Grid item xs={1}>
                     <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} selectedItem={{ lable: selectedItem?.device_status === undefined ? "" : selectedItem?.device_status.toString(), _id: "", description: "" }} />

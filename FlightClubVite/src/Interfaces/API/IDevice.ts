@@ -54,6 +54,7 @@ export enum DEVICE_INS {
 export type Maintanance = {
     type: DEVICE_MT
     next_meter: number
+    next_meter_tollerance: number
 }
 export type Services = {
     _id: string
@@ -76,6 +77,7 @@ interface IDeviceBase {
     maintanance: {
         type: DEVICE_MT
         next_meter: number,
+        next_meter_tollerance: number,
         services: [
             Services
         ]
@@ -148,6 +150,7 @@ export interface IDeviceServiceInfo {
         maintanance: {
             type: DEVICE_MT
             next_meter: number,
+            next_meter_tollerance: number,  
             services: [
                 Services
             ]
@@ -180,6 +183,7 @@ export interface IDeviceReport {
         maintanance: {
             type: DEVICE_MT
             next_meter: number,
+            next_meter_tollerance: number,
             services: [
                 Services
             ]
@@ -217,4 +221,12 @@ export class CServicesToReport {
         console.info("CServicesToReport/report", report)
         return report;
     }
+}
+
+export enum EDeviceServiceState {
+    UNKNOWN = 0,
+    OK = 1,
+    NEED_SERVICE_SOON = 2,
+    NEED_SERVICE_IN_RANGE = 3,
+    NEED_SERVICE_NOW = 4
 }

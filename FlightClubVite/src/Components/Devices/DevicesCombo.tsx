@@ -1,31 +1,36 @@
 import '../../Types/date.extensions'
+import '../../Types/Number.extensions'
 import { useEffect, useState } from 'react'
 import { useFetchDevicsComboQuery } from '../../features/Device/deviceApiSlice';
 import useSessionStorage from '../../hooks/useLocalStorage';
-import { IDeviceCombo, IDeviceComboFilter } from '../../Interfaces/API/IDevice'
+import { EDeviceServiceState, IDeviceCombo, IDeviceComboFilter } from '../../Interfaces/API/IDevice'
 import { Status } from '../../Interfaces/API/IStatus';
 import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/ControledCombo';
+import { ERange, tRangeResult } from '../../Types/Number.extensions';
 const filterCombo: IDeviceComboFilter = {
   filter: {
     status: Status.Active
   }
 }
-function GetDeviceState(due_date: Date, current_engine: number,service_engine: number,tollerance: number) : {state: "OK" | "NEED_SERVICE_SOON" | "NEED_SERVICE_NOW" | "UNKNOWN"} {
-  if(due_date === undefined || current_engine === undefined || service_engine === undefined || tollerance === undefined) {
-    return { state: "UNKNOWN" };
+function GetDeviceState(due_date: Date, engienRangeResult:tRangeResult,tollerance: number) : EDeviceServiceState {
+  if(due_date === undefined || engienRangeResult.range === ERange.UNKNOWN || tollerance === undefined) {
+    return EDeviceServiceState.UNKNOWN;
   }
   const now = new Date();
   const dayDiff = due_date.getDayDiff(now);
-  const engineDiff = service_engine - current_engine
-    if (engineDiff <= 0 || dayDiff <= 0) {
-    return { state: "NEED_SERVICE_NOW" };
+  const engineDiff = engienRangeResult.diff;
+  const engineRange = engienRangeResult.range;
+  if (engineRange == ERange.ABOVE || dayDiff <= 0) {
+    return EDeviceServiceState.NEED_SERVICE_NOW;
   }
-  if ((dayDiff < tollerance * 6 && dayDiff > 0) || (engineDiff < tollerance && engineDiff > 0)) {
-    return { state: "NEED_SERVICE_SOON" };
-  }
-  
+  if(engineRange == ERange.IN_RANGE) {
+    return EDeviceServiceState.NEED_SERVICE_IN_RANGE;
 
-  return { state: "OK" };
+  }
+  if ((dayDiff < tollerance * 6 && dayDiff > 0) || (engineDiff + tollerance >=0)) {
+    return EDeviceServiceState.NEED_SERVICE_SOON;
+  }
+  return EDeviceServiceState.OK;  
 }
 function DevicesCombo(props: ComboProps) {
   const { onChanged, source, filter } = props
@@ -40,12 +45,14 @@ function DevicesCombo(props: ComboProps) {
     if (_id === undefined)
       return {description: "No Device Selected", validation: 2};
     const device: IDeviceCombo | undefined = data?.data?.find((i) => i._id == _id);
-    const deviceState = device ? GetDeviceState(new Date(device.due_date), device.engien_meter, device.maintanance.next_meter, 5) : { state: "OK" };
-    CustomLogger.log("getDeviceDetailed/deviceState", deviceState, device)  
+    let deviceServiceRange = device ? device.engien_meter.IsInRange(device.maintanance.next_meter, device.maintanance.next_meter + device.maintanance.next_meter_tollerance) : { range: ERange.UNKNOWN, diff: 0 };
+  
+   const deviceState = device ? GetDeviceState(new Date(device.due_date), deviceServiceRange, 5) : EDeviceServiceState;
+    CustomLogger.info("getDeviceDetailed/deviceState, device", deviceState, device)  
     if (device) {
       CustomLogger.info("getDeviceDetailed/device", device)
       const due_date = new Date(device.due_date)
-      return {description: `Service: ${device.maintanance.type} At ${device.maintanance.next_meter} Current TACH: ${device.engien_meter}  Annual At: ${due_date.getDate()}/${due_date.getMonth() + 1}/${due_date.getFullYear()} `,validation: deviceState.state == "OK" ? 0 : deviceState.state == "NEED_SERVICE_SOON" ? 1 : 2}
+      return {description: `Service: ${device.maintanance.type} At ${device.maintanance.next_meter} (Permit Tolerance: ${device.maintanance.next_meter_tollerance} Hr) Current TACH: ${device.engien_meter}  \nAnnual On: ${due_date.getDate()}/${due_date.getMonth() + 1}/${due_date.getFullYear()} `,validation: deviceState as number}
     }
     return {description: "No Device Selected", validation: 2};
   }
