@@ -38,14 +38,14 @@ exports.flight_list = function (req, res, next) {
   if (isNaN(from) || isNaN(to)) {
     filter = {}
   }
-  Flight.find(filter).populate('device').populate('member').
+  Flight.find(filter).populate({ path: 'device',model: "Device", select: 'device_id _id' }).populate('member').
     exec((err, results) => {
       if (err) {
         log.info('flight_list', err);
         return res.status(400).json({ success: false, errors: [err], data: [] })
       }
       else {
-        log.info('flight_list', results);
+        log.info('flight_list/results.byteLenght', Buffer.byteLength(JSON.stringify(results)));
         return res.status(201).json({ success: true, errors: [], data: results })
       }
     })
