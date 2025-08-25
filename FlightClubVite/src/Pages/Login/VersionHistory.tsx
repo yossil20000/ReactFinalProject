@@ -77,6 +77,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 55,version: "2.0.21.0",date: new Date(2025,8,11).getDisplayDate() , "description" : "Create Reservation, update Device info with colors Red,Orange,green","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 56,version: "2.0.22.0",date: new Date(2025,8,14).getDisplayDate() , "description" : "Fix Update Engine last value, Add Oil Added field to flight","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 57,version: "2.0.23.0",date: new Date(2025,8,23).getDisplayDate() , "description" : "Add Service Tollerance option","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 58,version: "2.0.23.1",date: new Date(2025,8,25).getDisplayDate() , "description" : "Server crash when lots Flight. remove the unneeded  data","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
 
 
   ]
