@@ -47,7 +47,7 @@ export function ExportExelTable({ file, sheet, title, header, body ,save,showSel
   return (
     <TableContainer component={Paper}>
       {showSelfSave ? <Button onClick={handleExportTable}>export table</Button> : <></>}
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table sx={{ minWidth: 1650 }} size="small" aria-label="a dense table">
         <caption>{`File:${file} Sheet:${sheet}`}</caption>
         <TableHead>
           <StyledTableRow>

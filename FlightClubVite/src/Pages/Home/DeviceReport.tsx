@@ -5,11 +5,12 @@ import { Accordion, AccordionDetails, AccordionSummary, Avatar, Card, CardConten
 import { GridExpandMoreIcon } from '@mui/x-data-grid'
 import { useFetchDeviceReportQuery } from '../../features/Device/deviceApiSlice'
 import { useGetDeviceMaxValuesQuery } from "../../features/Flight/flightApi"
+import { defaultMaxValuesQuery, FlightStatus } from "../../Interfaces/API/IFlight"
 
 
 function DeviceReport() {
   const { data, isError, error, isLoading } = useFetchDeviceReportQuery("4XCGC")
-  const { data: deviceMaxValues, error: deviceMaxValuesError } = useGetDeviceMaxValuesQuery("4XCGC")
+  const { data: deviceMaxValues, error: deviceMaxValuesError } = useGetDeviceMaxValuesQuery({...defaultMaxValuesQuery, device_id: "4XCGC",status: [FlightStatus.CLOSE,FlightStatus.PAYED]})
   const mongooseValue = {$numberDecimal: '67'};
   const number = parseFloat(mongooseValue.$numberDecimal);
   console.log(number); // Outputs: 67

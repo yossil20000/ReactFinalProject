@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "../../app/userStor";
 import { getServerAddress } from "../../Enums/Routers";
 import { URLS } from "../../Enums/Urls";
-import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi,IDeviceMaxValues } from "../../Interfaces/API/IFlight";
+import IFlight, {  IFlightCreateApi, IFlightDeleteApi, IFlightFilterDate, IFlightUpdateApi,IDeviceMaxValues, IDeviceMaxValuesQuery } from "../../Interfaces/API/IFlight";
 import IResultBase, { IResultBaseSingle } from "../../Interfaces/API/IResultBase";
 import { IParams, getUrlWithParams, getUrlWithParamsArray } from "../../Utils/url";
 
@@ -61,9 +61,9 @@ export const flightApi = createApi({
           return response;
         }
       }),
-      getDeviceMaxValues: builder.query<IResultBase<IDeviceMaxValues>,string>({
-        query: (device_id) => ({
-          url:`/${URLS.FLIGHT_DEVICE_MAX_VALUES}/${device_id}`,
+      getDeviceMaxValues: builder.query<IResultBase<IDeviceMaxValues>,IDeviceMaxValuesQuery>({
+        query: (query) => ({
+          url:`/${URLS.FLIGHT_DEVICE_MAX_VALUES}/${query.device_id}?status=${query.status.join(",")}${query.from ? `&from=${query.from}` : ""}${query.to ? `&to=${query.to}` : ""}`,
           method: "GET"
         }),providesTags: ["Flights"],
         transformResponse: (response : IResultBase<IDeviceMaxValues>) => {

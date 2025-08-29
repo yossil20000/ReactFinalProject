@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { convertDecimal128ToNumber } = require('../Utils/mongooseTypeConverter');
 const log = require('debug-level').log('flightController');
 const { ApplicationError } = require('../middleware/baseErrors');
 const { CValidationError } = require('../Utils/CValidationError');
@@ -414,14 +415,34 @@ const isEngienValid = async (_id, req) => {
 
 }
 
-const deviceMaxValuesWithStatus = async (_id, status = ["CLOSE"]) => {
+const deviceMaxValuesWithStatus = async (_id, status = ["CLOSE"],from,to) => {
   if(_id instanceof mongoose.Types.ObjectId ) {
     _id = _id.toString();
   }
   const matchStage = {
        device: mongoose.Types.ObjectId(_id) ,
-       status: { $in:status }
+       status: { $in:status },
+ 
     };
+          //engien_start: { $ne: null, $ne: "" },
+       //engien_stop: { $ne: null, $ne: "" }
+  //from = new Date(new Date().setFullYear(new Date().getFullYear()-1));
+  //to =  new Date(new Date().setMonth(4));
+  if(from && to){
+    matchStage.date = {$gte: new Date(from),$lte: new Date(to) } //last year;
+  }
+  console.log("Match Stage:", matchStage);
+const sample = await Flight.find(matchStage);
+let max=0,min = 0
+sample.map(flight => {
+  const stop = Number(convertDecimal128ToNumber(flight.engien_stop));
+  const start = Number(convertDecimal128ToNumber(flight.engien_start));
+  if(stop > max) 
+    max = stop;
+  if(start < min || min === 0) 
+    min = start;
+});
+console.log("Sample flights:", this.flight,max,min);
   const maxValues = await Flight.aggregate(
     [
       {
@@ -434,7 +455,9 @@ const deviceMaxValuesWithStatus = async (_id, status = ["CLOSE"]) => {
           max_hobbs_start: { $max: "$hobbs_start" },
           max_hobbs_stop: { $max: "$hobbs_stop" },
           max_engien_start: { $max: "$engien_start" },
-          max_engien_stop: { $max: "$engien_stop" }
+          max_engien_stop: { $max: "$engien_stop" },
+          min_engien_start: { $min: "$engien_start" },
+          min_engien_stop: { $min: "$engien_stop" }
         }
       },
       {
@@ -442,7 +465,9 @@ const deviceMaxValuesWithStatus = async (_id, status = ["CLOSE"]) => {
           max_hobbs_start: { $toDouble: "$max_hobbs_start" }, // Converts Decimal128 to a regular number
           max_hobbs_stop: { $toDouble: "$max_hobbs_stop" }, // Converts Decimal128 to a regular number
           max_engien_start: { $toDouble: "$max_engien_start" }, // Converts Decimal128 to a regular number
-          max_engien_stop: { $toDouble: "$max_engien_stop" } // Converts Decimal128 to a regular number
+          max_engien_stop: { $toDouble: "$max_engien_stop" }, // Converts Decimal128 to a regular number
+          min_engien_start: { $toDouble: "$min_engien_start" }, // Converts Decimal128 to a regular number
+          min_engien_stop: { $toDouble: "$min_engien_stop" } // Converts Decimal128 to a regular number
         }
       }
     
@@ -489,9 +514,15 @@ const deviceMaxValues = async (_id) => {
 exports.device_max_values1 = async function (req, res, next) {
   log.info(`flight ${req.params.id}`)
   try {
+      let status = ["CLOSE"];
+      const from = req.query.from;
+      const to = req.query.to;
+    if(req.query.status) {
+      status = req.query.status.split(',');
+    }
     const device = await findDevice({device_id: req.params.id})
     /* const deviceMaxValuesFiltered = await deviceMaxValues(device._id); */
-    const deviceMaxValuesFiltered = await deviceMaxValuesWithStatus(device._id);
+    const deviceMaxValuesFiltered = await deviceMaxValuesWithStatus(device._id, status,from,to);
     if (deviceMaxValuesFiltered.length == 0) {
       return res.status(400).json({ success: false, errors: ["Device not exist"], data: [] })
     }

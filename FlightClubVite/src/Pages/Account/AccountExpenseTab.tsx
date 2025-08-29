@@ -40,6 +40,8 @@ import { SetProperty } from "../../Utils/setProperty";
 import { IDateFilter } from "../../Interfaces/IDateFilter";
 import { from_to_year_Filter } from "../../Utils/filtering";
 import { getFilter, IFilter } from "../../Interfaces/API/IFilter";
+import { useGetDeviceMaxValuesQuery } from "../../features/Flight/flightApi";
+import { defaultMaxValuesQuery, FlightStatus } from "../../Interfaces/API/IFlight";
 interface Data {
   _id: string;
   date: Date;
@@ -63,6 +65,7 @@ function AccountExpenseTab() {
   const [openFilter, setOpenFilter] = useState(false);
   const [filter, setFilter] = useState<IDateFilter>({currentOffset: 0, from: new Date().getStartOfYear().getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter);
   const { data, refetch, isLoading, error } = useFetchExpenseQuery(filter);
+  const { data: deviceMaxValues, error: deviceMaxValuesError } = useGetDeviceMaxValuesQuery({...defaultMaxValuesQuery, device_id: "4XCGC",status: [FlightStatus.CREATED, FlightStatus.CLOSE,FlightStatus.PAYED],from: filter.from.getStartDayDate(), to: filter.to.getEndDayDate()})
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseSave, setOpenExpenseSave] = useState(false);
   const [openExpenseUtilizedSave, setOpenExpenseUtilizedSave] = useState(false);
@@ -286,7 +289,7 @@ function AccountExpenseTab() {
                   onClose={handleAddOnClose}
                   open={openExpenseSave}
                   table={new CExpenseToReport(
-                    data?.data ? data.data : []
+                    data?.data ? data.data : [], filter.from, filter.to
                   ).getExpesesToExel()}
                   action="ExpenseExport"
                 />
@@ -296,7 +299,7 @@ function AccountExpenseTab() {
                   onClose={handleAddOnClose}
                   open={openExpenseUtilizedSave}
                   table={new CExpenseGroupToReport(
-                    data?.data ? data.data : []
+                    data?.data ? data.data : [], filter.from, filter.to, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].max_engien_stop : 0, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].min_engien_stop : 0
                   ).getExpesesUtilizationToExel()}
                   action="ExpenseGroupExport"
                 />
@@ -306,7 +309,7 @@ function AccountExpenseTab() {
                   onClose={handleAddOnClose}
                   open={openExpenseCategorySave}
                   table={new CExpenseGroupToReport(
-                    data?.data ? data.data : []
+                    data?.data ? data.data : [], filter.from, filter.to, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].min_engien_start : 0, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].max_engien_stop : 0
                   ).getExpesesCategoryToExel()}
                   action="ExpenseCategoryExport"
                 />

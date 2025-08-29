@@ -8,15 +8,19 @@ import { customLogger } from '../../customLogging';
 
 export class CExpenseToReport {
   private expenses: IExpense[] = [];
-  constructor(expenses: IExpense[]) {
+  private from: Date;
+  private to: Date;
+  constructor(expenses: IExpense[], from: Date, to: Date) {
     this.expenses = expenses;
+    this.from = from;
+    this.to = to;
     console.info("CExpenseToReport/CTOR_expeses", this.expenses)
   }
   getExpesesToExel(file: string = "expensesReport", sheet: string = "Expenses", title: string = "Expense Reports"): IExportExelTable {
     let report: IExportExelTable = {
       file: file,
-      sheet: sheet,
-      title: title,
+      sheet: `${sheet} - ${this.from.getDisplayDate()} to ${this.to.getDisplayDate()}`,
+      title: `${title}  From ${this.from.getDisplayDate()} To ${this.to.getDisplayDate()}`,
       header: [],
       body: [],
       save: false

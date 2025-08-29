@@ -80,8 +80,8 @@ function CreateOrderExpenseDialoq({ open, onClose, onSave, ...other }: ICreateOr
     }));
   };
   const handleDateChange = (newValue: DateTime | null) => {
-    let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
-    newDate.setSeconds(0, 0);
+    let newDate = (newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate()).getMidDayDate();
+    
     setSelectedMembers(prev => ({ ...prev, date: newDate }))
   };
   const OnSelectedChanged = (selectedMembers: LabelType[]) => {

@@ -159,16 +159,24 @@ export const newExpense: IExpenseBase = {
 } */
 export class CExpenseGroupToReport {
   private expenses: IExpense[] = [];
-  constructor(expenses: IExpense[]) {
+  private from: Date;
+  private to: Date;
+  private tachStart: number;
+  private tachEnd: number;
+  constructor(expenses: IExpense[], from: Date, to: Date,tachStart:number,tachEnd:number) {
     this.expenses = expenses;
+    this.from = from;
+    this.to = to;
+    this.tachStart = tachStart;
+    this.tachEnd = tachEnd;
     console.info("CExpenseGroupToReport/CTOR_expeses", this.expenses)
   }
 
-  getExpesesCategoryToExel(file: string = "ExpensesCategoryReport", sheet: string = "Expenses", title: string = "Expense Reports"): IExportExelTable {
+  getExpesesCategoryToExel(file: string = "ExpensesCategoryReport", sheet: string = "Expenses", title: string = "Expense Reports by Category"): IExportExelTable {
     let report: IExportExelTable = {
       file: file,
-      sheet: sheet,
-      title: title,
+      sheet: `${sheet} -${this.from.getDisplayDate()} to ${this.to.getDisplayDate()}`,
+      title: `${title}  From ${this.from.getDisplayDate()} To ${this.to.getDisplayDate()}`,
       header: [],
       body: [],
       save: false
@@ -176,6 +184,7 @@ export class CExpenseGroupToReport {
     const reportData = this.getExpesesByCategoryObject();
     report.header = ["Category", "Type", "Total", "Amount", "Description"]
     report.body = [];
+    report.body.push([title, "", "", "", ""]);
     reportData.map.forEach((categoryMap, category) => {
       console.info("CExpenseGroupToReport/categoryMap", category, categoryMap.subtotal);
       report.body.push([category, "", "", "", ""]);
@@ -187,6 +196,7 @@ export class CExpenseGroupToReport {
         
       })
       report.body.push(["", "", "Total", categoryMap.subtotal.toFixed(2), ""]);
+      report.body.push(["", "", "Total Flight Time", (this.tachEnd - this.tachStart).toFixed(1), ""]);
     })
     console.info("CExpenseGroupToReport/report", report)
     return report;
@@ -194,8 +204,8 @@ export class CExpenseGroupToReport {
   getExpesesUtilizationToExel(file: string = "ExpensesUtilizationReport", sheet: string = "Expenses", title: string = "Expense Reports"): IExportExelTable {
     let report: IExportExelTable = {
       file: file,
-      sheet: sheet,
-      title: title,
+      sheet: `${sheet} - ${this.from.getDisplayDate()} to ${this.to.getDisplayDate()}`,
+      title: `${title}  From ${this.from.getDisplayDate()} To ${this.to.getDisplayDate()}`,
       header: [],
       body: [],
       save: false
@@ -203,6 +213,7 @@ export class CExpenseGroupToReport {
     const reportData = this.getExpesesByUtilizationObject();
     report.header = ["Utilized","Utilized description","Type", "Amount", "Category","Total"]
     report.body = [];
+    report.body.push([title, "", "", "", ""]);
     reportData.map.forEach((utilizedMap, utilizated) => {
       console.info("getExpesesUtilizationToExel/utilizatedMap", utilizated, utilizedMap.subtotal);
       report.body.push([utilizated, `${UtilizatedDictionary[getEnumKeyByValue(utilizated)]}`,"", "", "", utilizedMap.subtotal.toFixed(2)]);
