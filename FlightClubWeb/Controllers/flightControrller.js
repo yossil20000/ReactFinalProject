@@ -431,7 +431,7 @@ const deviceMaxValuesWithStatus = async (_id, status = ["CLOSE"],from,to) => {
   if(from && to){
     matchStage.date = {$gte: new Date(from),$lte: new Date(to) } //last year;
   }
-  console.log("Match Stage:", matchStage);
+/*   console.log("Match Stage:", matchStage);
 const sample = await Flight.find(matchStage);
 let max=0,min = 0
 sample.map(flight => {
@@ -442,7 +442,7 @@ sample.map(flight => {
   if(start < min || min === 0) 
     min = start;
 });
-console.log("Sample flights:", this.flight,max,min);
+console.log("Sample flights:", this.flight,max,min); */
   const maxValues = await Flight.aggregate(
     [
       {
@@ -473,7 +473,7 @@ console.log("Sample flights:", this.flight,max,min);
     
     ]
   );
-  log.info("filter", deviceMaxValues);
+ 
   const deviceMaxValuesFiltered = maxValues.filter((item) => (item._id == _id)); 
   log.info("filter", deviceMaxValuesFiltered);
   return deviceMaxValuesFiltered;
