@@ -52,7 +52,7 @@ function GalleryPage() {
   }
   const filterImage = useCallback((): IImage[] => {
     if (filter && selectedMember !== undefined) {
-      const filtered = data?.data.filter((image) => image.author == selectedMember?.lable)
+      const filtered = data?.data.filter((image) => image.author == selectedMember?.label)
       CustomLogger.info("GalleryPage/filterImage/filtered", filtered)
       return filtered !== undefined ? filtered : []
     }

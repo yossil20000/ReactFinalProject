@@ -75,7 +75,7 @@ function UpdateExpenseDialog({
     );
     newObj = setProperty(selectedExpense, "source.id", selectedSource?._id);
     newObj = setProperty(newObj, "source.type", selectedSource?.key);
-    newObj = setProperty(newObj, "source.display", selectedSource?.lable);
+    newObj = setProperty(newObj, "source.display", selectedSource?.label);
     newObj = setProperty(newObj, "source.account_id", selectedSource?.key2);
     newObj = setProperty(newObj, "destination.id", selectedDestination?._id);
     newObj = setProperty(newObj, "destination.type", selectedDestination?.key);
@@ -83,7 +83,7 @@ function UpdateExpenseDialog({
     newObj = setProperty(
       newObj,
       "destination.display",
-      selectedDestination?.lable
+      selectedDestination?.label
     );
     newObj = setProperty(
       newObj,
@@ -216,7 +216,7 @@ function UpdateExpenseDialog({
     setSelectedCategory(item);
     /*  setSelectedType(newInputComboItem) */
     setSelectedExpense(
-      setProperty(selectedExpense, `expense.category`, item.lable)
+      setProperty(selectedExpense, `expense.category`, item.label)
     );
     /*  setSelectedExpense(setProperty(selectedExpense, `expense.type`, "")) */
   };
@@ -225,18 +225,18 @@ function UpdateExpenseDialog({
     setSelectedType(item);
 
     setSelectedExpense(
-      setProperty(selectedExpense, `expense.type`, item.lable)
+      setProperty(selectedExpense, `expense.type`, item.label)
     );
   };
     const onComboChanged = (item: InputComboItem, prop: string): void => {
-      setSelectedExpense(setProperty(selectedExpense, prop, item.lable))
+      setSelectedExpense(setProperty(selectedExpense, prop, item.label))
       CustomLogger.log("selectedExpense", selectedExpense)
     }
     
   const onSPUChanged = (item: InputComboItem) => {
     CustomLogger.log("ExpenseDialog/onSPUChanged/item", item);
     setSelectedSPU(item);
-    setSelectedExpense(setProperty(selectedExpense, `sizePerUnit`, item.lable));
+    setSelectedExpense(setProperty(selectedExpense, `sizePerUnit`, item.label));
     /*     if(selectedExpense.description == "" || selectedExpense.description.includes("|") ){
       setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
     } */
@@ -290,14 +290,14 @@ function UpdateExpenseDialog({
               </Grid>
               <Grid item xs={12} sm={4}>
                 <UtilizatedCombo onChanged={(item) => onComboChanged(item, "expense.utilizated")} source={""}
-                  selectedItem={{ lable: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
+                  selectedItem={{ label: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item xs={6} sm={6}>
                 <SizePerUnitCombo
                   onChanged={onSPUChanged}
                   source={"_CreateExspense/SizePerUnit"}
                   selectedItem={{
-                    lable:
+                    label:
                       selectedExpense.sizePerUnit === undefined
                         ? ""
                         : selectedExpense.sizePerUnit,

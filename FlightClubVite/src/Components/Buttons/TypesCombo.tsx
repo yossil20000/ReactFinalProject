@@ -21,14 +21,14 @@ function TypesCombo(props: SelectComboProps) {
   const [selectedItem, setSelectedItem] = useState<InputComboItem | undefined>();
 
   const TypesToItemCombo = (key: string, value: string): InputComboItem => {
-    return { lable: value, _id: key, description: `${key} for ${value}` }
+    return { label: value, _id: key, description: `${key} for ${value}` }
   }
 
   useEffect(() => {
     refetch()
     CustomLogger.log(`TypesCombo/useeffect/${title}/find`, selectedValue, items, selectedKey)
     if (items.length > 0) {
-      const item = items.find((i) => i.lable === selectedValue);
+      const item = items.find((i) => i.label === selectedValue);
       if (item !== undefined) {
         setSelectedItem(item)
         CustomLogger.info(`TypesCombo/useeffect/${title}/found`, item)

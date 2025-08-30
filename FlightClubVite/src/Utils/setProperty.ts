@@ -24,7 +24,7 @@ export const getSelectedItem = (value: string | undefined, device?: any): InputC
     /* selectedItem?[property].toString() : "" */
     CustomLogger.info("getSelectedItem/value", value, device)
     const selected: InputComboItem = {
-        lable: value ? value : "",
+        label: value ? value : "",
         _id: "",
         description: ""
     }

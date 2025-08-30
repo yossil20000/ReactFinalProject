@@ -8,8 +8,8 @@ import ControledCombo, { ComboProps, InputComboItem, newInputComboItem } from '.
 
 export  const membersToItemCombo = (input: IMemberCombo): InputComboItem => {
   if(input.member_type == MemberType.Supplier)
-    return {  lable: `${input.first_name}.${input.family_name}/${input.member_id}`, _id: input._id ,description: "",key: input.member_type }
-  return {  lable: `${input.family_name}/${input.member_id}`, _id: input._id ,description: "",key: input.member_type }
+    return {  label: `${input.first_name}.${input.family_name}/${input.member_id}`, _id: input._id ,description: "",key: input.member_type }
+  return {  label: `${input.family_name}/${input.member_id}`, _id: input._id ,description: "",key: input.member_type }
 }
 
 const filterCombo : IMemberComboFilter = {

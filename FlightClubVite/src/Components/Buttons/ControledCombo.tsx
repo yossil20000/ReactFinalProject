@@ -32,7 +32,7 @@ export interface StateComboProps {
 
 export interface InputComboItem{
   _id: string;
-  lable: string;
+  label: string;
   description: string;
   key?: string;
   key2?: string;
@@ -41,7 +41,7 @@ export interface InputComboItem{
 }
 export const newInputComboItem : InputComboItem = {
   _id: '',
-  lable: '',
+  label: '',
   description: '',
   key: "",
   key2: "",
@@ -72,7 +72,7 @@ export default function ControledCombo(props: InputComboProps) {
 
         setValue(newValue);
         
-          onSelectedItem(newValue ?? {_id: "",lable:""} as InputComboItem)
+          onSelectedItem(newValue ?? {_id: "",label:""} as InputComboItem)
       }}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => {
@@ -81,7 +81,7 @@ export default function ControledCombo(props: InputComboProps) {
         }}
         id="controllable-states-demo"
         options={items}
-        getOptionLabel={option => `${(option as InputComboItem).lable}`}
+        getOptionLabel={option => `${(option as InputComboItem).label}`}
         disabled={disable}
         renderInput={(params) => <TextField {...params}  label={title} variant="standard" />}
       />

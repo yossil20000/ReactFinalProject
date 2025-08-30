@@ -41,14 +41,14 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     CustomLogger.info("CreateExspenseDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
     newObj = setProperty(selectedExpense, "source.id", selectedSource?._id)
     newObj = setProperty(newObj, "source.type", selectedSource?.key)
-    newObj = setProperty(newObj, "source.display", selectedSource?.lable)
+    newObj = setProperty(newObj, "source.display", selectedSource?.label)
     newObj = setProperty(newObj, "source.account_id", selectedSource?.key2);
     newObj = setProperty(newObj, "destination.id", selectedDestination?._id)
     newObj = setProperty(newObj, "destination.type", selectedDestination?.key)
-    newObj = setProperty(newObj, "destination.display", selectedDestination?.lable)
+    newObj = setProperty(newObj, "destination.display", selectedDestination?.label)
     newObj = setProperty(newObj, "destination.account_id", selectedDestination?.key2)
     if(selectedExpense.description == "") {
-      newObj = setProperty(newObj, "description", `|${selectedExpense.expense.category}|${selectedExpense.expense.type}|${selectedExpense.expense.utilizated}|${selectedDestination?.lable}|`)
+      newObj = setProperty(newObj, "description", `|${selectedExpense.expense.category}|${selectedExpense.expense.type}|${selectedExpense.expense.utilizated}|${selectedDestination?.label}|`)
     }
     CustomLogger.info("CreateExspenseDialog/UpdateSourceAccountFields/newobj", newObj)
 
@@ -131,14 +131,14 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   const onCategoryChanged = (item: InputComboItem) => {
     CustomLogger.log("ExpenseDialog/onCategoryChanged/item", item)
     setSelectedCategory(item)
-    setSelectedExpense(setProperty(selectedExpense, `expense.category`, item.lable))
+    setSelectedExpense(setProperty(selectedExpense, `expense.category`, item.label))
     
 
   }
   const onTypeChanged = (item: InputComboItem) => {
     CustomLogger.log("ExpenseDialog/onTypeChanged/item", item)
     setSelectedType(item)
-    setSelectedExpense(setProperty(selectedExpense, `expense.type`, item.lable))
+    setSelectedExpense(setProperty(selectedExpense, `expense.type`, item.label))
 /*     if(selectedExpense.description == "" || selectedExpense.description.includes("|") ){
       setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
     } */
@@ -146,13 +146,13 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
   const onSPUChanged = (item: InputComboItem) => {
     CustomLogger.log("ExpenseDialog/onSPUChanged/item", item)
     setSelectedSPU(item)
-    setSelectedExpense(setProperty(selectedExpense, `sizePerUnit`, item.lable))
+    setSelectedExpense(setProperty(selectedExpense, `sizePerUnit`, item.label))
 /*     if(selectedExpense.description == "" || selectedExpense.description.includes("|") ){
       setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
     } */
   }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    setSelectedExpense(setProperty(selectedExpense, prop, item.lable))
+    setSelectedExpense(setProperty(selectedExpense, prop, item.label))
     CustomLogger.log("selectedExpense", selectedExpense)
   }
   const handleDateChange = (newValue: DateTime | null) => {
@@ -184,14 +184,14 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
                 <TypesCombo selectedKey='Expense' title={'Category'} selectedValue={selectedExpense.expense.category} onChanged={onCategoryChanged} source={"_CreateExspense/Category"} />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <TypesCombo selectedKey={`Expense.${selectedCategory?.lable}`} title={"Type"} selectedValue={selectedExpense.expense.type} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
+                <TypesCombo selectedKey={`Expense.${selectedCategory?.label}`} title={"Type"} selectedValue={selectedExpense.expense.type} selectedItem={selectedType} onChanged={onTypeChanged} source={"_CreateExspense/Type"} />
               </Grid>
               <Grid item xs={12} sm={4}>
                 <UtilizatedCombo onChanged={(item) => onComboChanged(item, "expense.utilizated")} source={""}
-                  selectedItem={{ lable: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
+                  selectedItem={{ label: selectedExpense.expense.utilizated === undefined ? "" : selectedExpense.expense.utilizated.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item xs={12} sm={4}>
-              <SizePerUnitCombo onChanged={onSPUChanged} source={'_CreateExspense/SizePerUnit'} selectedItem={{ lable: selectedExpense.sizePerUnit === undefined ? "" : selectedExpense.sizePerUnit, _id: "", description: "" }}/>
+              <SizePerUnitCombo onChanged={onSPUChanged} source={'_CreateExspense/SizePerUnit'} selectedItem={{ label: selectedExpense.sizePerUnit === undefined ? "" : selectedExpense.sizePerUnit, _id: "", description: "" }}/>
               </Grid>
               <Grid item xs={12} sm={2}>
                 <TextField fullWidth={true} onChange={handleNumberChange} id="units" name="units"

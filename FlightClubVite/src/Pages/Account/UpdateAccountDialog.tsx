@@ -100,7 +100,7 @@ function UpdateAccountDialog({ value, onClose, onSave, open, ...other }: UpdateA
   }
   const onComboChanged = (item: InputComboItem, prop:string): void => {
     CustomLogger.log("UpdateAccountDialog/onComboChanged/item", item, prop,selectedAccount);
-    const newObj: IAccount = SetProperty(selectedAccount, prop, item.lable) as IAccount;
+    const newObj: IAccount = SetProperty(selectedAccount, prop, item.label) as IAccount;
     setSelectedAccount(newObj)
   }
 

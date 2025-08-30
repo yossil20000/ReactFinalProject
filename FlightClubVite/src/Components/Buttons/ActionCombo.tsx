@@ -9,7 +9,7 @@ const getInputItems= () => {
     return {
       _id: CRUDActions[name as keyof typeof CRUDActions].toString(),
       description: "",
-      lable: name
+      label: name
     }
   })
   CustomLogger.info("ActionCombo/items",items)

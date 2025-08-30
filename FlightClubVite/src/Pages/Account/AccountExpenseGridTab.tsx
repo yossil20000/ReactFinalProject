@@ -238,7 +238,7 @@ function AccountExpenseGridTab() {
           </ContainerPageHeader>
           <ContainerPageMain >
             <div style={{ overflow: "hidden", height: "100%" }}>
-              {openExpenseSave && <ReportDialog onClose={handleAddOnClose} open={openExpenseSave} table={(new CExpenseToReport(data?.data ? data.data : [])).getExpesesToExel()} action="ExpenseExport" />}
+              {openExpenseSave && <ReportDialog onClose={handleAddOnClose} open={openExpenseSave} table={(new CExpenseToReport(data?.data ? data.data : [],new Date().getStartOfYear().getMidDayDate(), new Date().getEndOfYear().getMidDayDate())).getExpesesToExel()} action="ExpenseExport" />}
               {openExpenseAdd == true ? (<CreateExpenseDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseAdd} />) : (null)}
               {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
               {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}

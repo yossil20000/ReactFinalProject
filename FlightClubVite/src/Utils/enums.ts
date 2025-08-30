@@ -8,7 +8,7 @@ export class Enum2ComboItem<T extends {[name: string]: any}> {
       return {
         _id: this.enumObject[name as keyof typeof this.enumObject].toString(),
         description: "",
-        lable: name
+        label: name
       }
     })
     CustomLogger.info("Enum2ComboItem/items",items)

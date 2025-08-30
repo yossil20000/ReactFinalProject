@@ -73,7 +73,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
           doFilter = true;
           CustomLogger.info("OrderTable/orderRows/filter/dofilter_1", doFilter)
         }
-      if((!selectedMember  || selectedMember?.lable == "") )
+      if((!selectedMember  || selectedMember?.label == "") )
         {
           doFilter = doFilter && true;
           CustomLogger.info("OrderTable/orderRows/filter/dofilter_2", doFilter)

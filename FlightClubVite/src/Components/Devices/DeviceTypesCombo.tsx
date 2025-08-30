@@ -7,7 +7,7 @@ import ControledCombo, { ComboProps, InputComboItem } from '../Buttons/Controled
 
 export const deviceTypeToItemCombo = (input: IDeviceType): InputComboItem => {
   CustomLogger.log("DeviceTypesCombo/deviceTypeToItemCombo", input)
-  return { lable: input?.name, _id: input?._id, description: input?.name } as InputComboItem
+  return { label: input?.name, _id: input?._id, description: input?.name } as InputComboItem
 }
 
 function DeviceTypesCombo(props: ComboProps) {

@@ -72,7 +72,7 @@ function AccountOrdersTab() {
   }
   const onOrderStatusChanged = (item: InputComboItem) => {
     CustomLogger.log("AccountOrdersTab/item", item)
-    setFilter((prev) => ({ ...prev, orderStatus: item.lable as OrderStatus }))
+    setFilter((prev) => ({ ...prev, orderStatus: item.label as OrderStatus }))
   }
   return (
     <ContainerPage>
@@ -120,7 +120,7 @@ function AccountOrdersTab() {
                   </ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <OrderStatusCombo onChanged={onOrderStatusChanged} source={'_accountOrder/orderStatus'} selectedItem={{ ...newInputComboItem, lable: filter.orderStatus === undefined ? OrderStatus.CREATED : filter.orderStatus }} />
+                  <OrderStatusCombo onChanged={onOrderStatusChanged} source={'_accountOrder/orderStatus'} selectedItem={{ ...newInputComboItem, label: filter.orderStatus === undefined ? OrderStatus.CREATED : filter.orderStatus }} />
                 </ListItem>
                 <ListItem>
                   <MembersCombo onChanged={OnselectedMember} source={'_accountOrder/member'} />

@@ -28,7 +28,7 @@ function PermissionsTab() {
     CustomLogger.log("PermissionsTab/getSelectedMemberMemberShip", selectedMember)
     let initialMembership: InputComboItem = {
       _id: selectedMember?.membership ? selectedMember?.membership._id : "",
-      lable: selectedMember?.membership ? selectedMember?.membership.rank.toString() : "",
+      label: selectedMember?.membership ? selectedMember?.membership.rank.toString() : "",
       description: ""
     }
     CustomLogger.info("PermissionsTab/getSelectedMemberMemberShip/initial", initialMembership)
@@ -43,7 +43,7 @@ function PermissionsTab() {
   }, [selectedMember]);
   const onComboChanged = useCallback((item: InputComboItem, prop: string): void => {
     CustomLogger.log("/item", item, prop);
-    const newObj: IMemberAdmin = SetProperty(selectedMember, prop, item.lable) as IMemberAdmin;
+    const newObj: IMemberAdmin = SetProperty(selectedMember, prop, item.label) as IMemberAdmin;
     setSelectedMember(newObj)
   }, [selectedMember])
 

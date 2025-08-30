@@ -17,7 +17,7 @@ function AccountsCombo(props : ComboProps) {
   const [selectedItem, setSelectedItem] = useSessionStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
  
   const accountsToItemCombo = (input: IAccountsCombo): InputComboItem => {
-    return {  lable: `${input.account_id} ${input.member?.family_name} ${input.member?.member_id}`, _id: input._id ,description: ""}
+    return {  label: `${input.account_id} ${input.member?.family_name} ${input.member?.member_id}`, _id: input._id ,description: ""}
   }
   
   useEffect(() => {

@@ -58,13 +58,6 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
   const [isSaved, setIsSaved] = useState(false);
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionMutation();
 
-  const getAccountId = (id: string): string => {
-    const account = accounts?.data?.find((account) => account.account_id == id)
-    if (account !== undefined) {
-      return account.account_id;
-    }
-    return "";
-  }
   const handleOnCancel = () => {
     setValidationAlert([])
     if (isSaved)
@@ -182,7 +175,7 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
   };
   
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
+    setSelectedTransaction(setProperty(selectedTransaction, prop, item.label))
     CustomLogger.log("CreateTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
   }
   return (
@@ -256,11 +249,11 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
           </Grid>
           <Grid item xs={6}>
                 <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
-                  selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
+                  selectedItem={{ label: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
           <Grid item xs={6}>
             <PaymentMethodCombo disable={true} onChanged={(item) => onComboChanged(item, "payment.method")} source={""}
-              selectedItem={{ lable: selectedTransaction.payment.method === undefined ? "" : selectedTransaction.payment.method.toString(), _id: "", description: "" }} />
+              selectedItem={{ label: selectedTransaction.payment.method === undefined ? "" : selectedTransaction.payment.method.toString(), _id: "", description: "" }} />
           </Grid>
           <Grid item xs={6}>
             <TextField fullWidth={true} onChange={handleChange} id="payment.referance" name="payment.referance"

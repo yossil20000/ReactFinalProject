@@ -1,6 +1,6 @@
 import '../../Types/Number.extensions'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, TextField, ThemeProvider, useTheme } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import ClubAccountsCombo from '../../Components/Accounts/ClubAccountsCombo';
 import { InputComboItem } from '../../Components/Buttons/ControledCombo';
 import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons/TransitionAlert';
@@ -188,7 +188,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
     return newObj;
   }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    setSelectedTransaction(setProperty(selectedTransaction, prop, item.lable))
+    setSelectedTransaction(setProperty(selectedTransaction, prop, item.label))
     CustomLogger.log("GeneralTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
   }
   const handleDateChange = (newValue: DateTime | null) => {
@@ -234,11 +234,11 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
               </Grid>
               <Grid item sx={{ marginLeft: "0px",marginTop:"0.6rem" ,paddingRight:{xs:'0px' , md:'1ch'}}} xs={12} md={3}>
                 <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
-                  selectedItem={{ lable: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
+                  selectedItem={{ label: selectedTransaction.type === undefined ? "" : selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item sx={{ marginLeft: "0px",marginTop:"0.6rem",paddingRight:{xs:'0px' , md:'1ch'} }} xs={12} md={3}>
                 <Transaction_OTCombo onChanged={(item) => onComboChanged(item, "order.type")} source={""}
-                  selectedItem={{ lable: selectedTransaction.order.type === undefined ? "" : selectedTransaction.order.type.toString(), _id: "", description: "" }} />
+                  selectedItem={{ label: selectedTransaction.order.type === undefined ? "" : selectedTransaction.order.type.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item  sx={{ marginLeft: "0px", marginTop:"0.6rem" }} xs={12} md={3}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"

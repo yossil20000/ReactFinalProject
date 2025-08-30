@@ -35,7 +35,7 @@ function DevicesFlightCombo(props: IDeviceFlightComboProps) {
   }
   const devicesToItemCombo = (input: IDeviceCombo): InputComboItem => {
 
-    return { lable: input.device_id, _id: input._id, description: getDeviceDetailed(input._id) }
+    return { label: input.device_id, _id: input._id, description: getDeviceDetailed(input._id) }
   }
   CustomLogger.log("DevicesFlightCombo/selectedDevice", selectedDevice)
   useEffect(() => {

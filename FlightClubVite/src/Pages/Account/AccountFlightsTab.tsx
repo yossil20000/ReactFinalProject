@@ -123,7 +123,7 @@ function AccountFlightsTab() {
   };
 
   const filterFlight = (flight: IFlight): boolean => {
-    if (selectedMember?.lable != "") {
+    if (selectedMember?.label != "") {
       return flight.member._id == selectedMember?._id
     }
     return true;

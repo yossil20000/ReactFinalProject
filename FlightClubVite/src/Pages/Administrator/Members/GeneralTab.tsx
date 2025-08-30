@@ -33,7 +33,7 @@ function GeneralTab() {
   };
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     CustomLogger.log("onComboChanged/item", item, prop);
-    const newObj: IMemberAdmin = SetProperty(selectedItem, prop, item.lable) as IMemberAdmin;
+    const newObj: IMemberAdmin = SetProperty(selectedItem, prop, item.label) as IMemberAdmin;
     setSelectedItem(newObj)
   }
 
@@ -97,7 +97,7 @@ function GeneralTab() {
         </Grid>
         <Grid item xs={12} >
           <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={source}
-            selectedItem={{ lable: selectedItem?.gender === undefined ? "" : selectedItem?.gender.toString(), _id: "", description: "" }} />
+            selectedItem={{ label: selectedItem?.gender === undefined ? "" : selectedItem?.gender.toString(), _id: "", description: "" }} />
         </Grid>
         <Grid item xs={12}>
         </Grid>

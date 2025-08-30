@@ -12,7 +12,7 @@ function UserOrderTab() {
   const getSelectedMember = useMemo(() => {
     const memberItem : InputComboItem = {
       _id: login.member._id,
-      lable: login.member.member_id,
+      label: login.member.member_id,
       description: ''
     }
     return memberItem;

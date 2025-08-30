@@ -25,8 +25,8 @@ function ClubAccountsCombo(props: IClubAccountProps) {
   
   const accountToItemCombo = (input: IClubAccountCombo): InputComboItem => {
     if(input.member.member_type == MemberType.Supplier)
-      return { lable: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: `${input.member.member_type}.${input.member.family_name}.${input.member.first_name}`, key: input.member.member_type, key2: input.account_id }
-    return { lable: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: `${input.member.member_type}.${input.member.family_name}.${input.member.first_name}`, key: input.member.member_type, key2: input.account_id }
+      return { label: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: `${input.member.member_type}.${input.member.family_name}.${input.member.first_name}`, key: input.member.member_type, key2: input.account_id }
+    return { label: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: `${input.member.member_type}.${input.member.family_name}.${input.member.first_name}`, key: input.member.member_type, key2: input.account_id }
   }
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function ClubAccountsCombo(props: IClubAccountProps) {
     let items = accounts?.data.map((item: IClubAccountsCombo) => (item));
     if (items !== undefined && items?.length > 0) {
       const club = items.at(0);
-      const clubInput: InputComboItem = { lable: `${club?.club.brand}/${club?.club.branch}/${club?.club.account_id}`, _id: club?._id === undefined ? "" : club?._id, description: `${MemberType.Club}`, key: MemberType.Club, key2: club?.club.account_id }
+      const clubInput: InputComboItem = { label: `${club?.club.brand}/${club?.club.branch}/${club?.club.account_id}`, _id: club?._id === undefined ? "" : club?._id, description: `${MemberType.Club}`, key: MemberType.Club, key2: club?.club.account_id }
       const foudItems = club?.accounts.map((item) => 
         accountToItemCombo(item));
       const itemsClubAccount: InputComboItem[] = foudItems === undefined ? [] : foudItems;

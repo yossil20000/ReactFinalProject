@@ -38,7 +38,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
     }
   }
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    setFormData({ ...formData, [prop]: item.lable });
+    setFormData({ ...formData, [prop]: item.label });
     CustomLogger.info("PersonalInfo/onComboChanged/formData", formData)
   }
   const handlePersonChange = (prop: any) => (event: any) => {
@@ -174,7 +174,7 @@ function PersonalInfo({ numPage, page, setPage, formData, setFormData }: IPageNa
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={"gender"} selectedItem={{ lable: formData?.gender === undefined ? "" : formData?.gender.toString(), _id: "", description: "" }} />
+          <GenderCombo onChanged={(item) => onComboChanged(item, "gender")} source={"gender"} selectedItem={{ label: formData?.gender === undefined ? "" : formData?.gender.toString(), _id: "", description: "" }} />
         </Grid>
         <Grid item xs={12}>
           <img src={formData?.image} alt="My Image" />

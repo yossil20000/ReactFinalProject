@@ -1,17 +1,10 @@
 import { Autocomplete, TextField } from '@mui/material'
 import { useEffect, useState } from 'react';
-interface ComboProps {
-  onChanged: (item: InputComboItem) => void;
-}
+
 interface InputComboItem{
   _id: string;
-  lable: string;
+  label: string;
   description: string;
-}
-const defaultValue: InputComboItem = {
-  _id: '',
-  lable: '',
-  description: ""
 }
 export interface InputComboProps{
   items: InputComboItem[];
@@ -45,7 +38,7 @@ function InputComboObsulute(props: InputComboProps) {
               id="free-solo-2-demo"
               disableClearable
               options={items}
-              getOptionLabel={option => `${(option as InputComboItem).lable}`}
+              getOptionLabel={option => `${(option as InputComboItem).label}`}
               value={selected}
               onChange={handleSelectedItemChanged}
               renderInput={(params) => (

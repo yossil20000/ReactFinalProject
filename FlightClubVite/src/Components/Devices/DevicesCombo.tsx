@@ -58,7 +58,7 @@ function DevicesCombo(props: ComboProps) {
   }
   const devicesToItemCombo = (input: IDeviceCombo): InputComboItem => {
     const { description, validation } = getDeviceDetailed(input._id);
-    return { lable: input.device_id, _id: input._id, description: description, validation: validation }
+    return { label: input.device_id, _id: input._id, description: description, validation: validation }
   }
   CustomLogger.log("DevicesCombo/selectedDevice", selectedDevice)
   useEffect(() => {

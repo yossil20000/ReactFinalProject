@@ -139,7 +139,7 @@ function CreateImageDialog({ value, onClose, onSave, open, action, ...other }: C
 
   }
   const onMemberChanged = (item: InputComboItem) => {
-    setImageCreate(prev => ({ ...prev, author: item.lable }))
+    setImageCreate(prev => ({ ...prev, author: item.label }))
   }
   const getDialogTitle = () => {
     switch (action) {

@@ -15,11 +15,11 @@ function MembershipCombo(props: MembershipCombo) {
   const { data, isError, isLoading, error } = useFetchAllMembershipQuery();
 
   const [items, setItems] = useState<InputComboItem[]>([]);
-  const [selectedItem, setSelectedItem] = useState<InputComboItem>(initeialMemberShip === undefined ? { _id: "", lable: "", description: "" } : initeialMemberShip);
+  const [selectedItem, setSelectedItem] = useState<InputComboItem>(initeialMemberShip === undefined ? { _id: "", label: "", description: "" } : initeialMemberShip);
   /*  const [selectedItem, setSelectedItem] = useSessionStorage<InputComboItem | undefined>(`_${source}/Member`,undefined);
    */
   const MemberShipToItemCombo = (input: IMembership): InputComboItem => {
-    return { lable: `${input.name}`, _id: input._id, description: "" }
+    return { label: `${input.name}`, _id: input._id, description: "" }
   }
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function MembershipCombo(props: MembershipCombo) {
     CustomLogger.info("MembershipCombo/ Item", items)
     if (items !== undefined)
       setItems(items);
-    setSelectedItem(initeialMemberShip === undefined ? { _id: "", lable: "", description: "" } : initeialMemberShip)
+    setSelectedItem(initeialMemberShip === undefined ? { _id: "", label: "", description: "" } : initeialMemberShip)
   }, [data?.data])
 
   const onSelectedItem = (item: InputComboItem) => {
@@ -56,7 +56,7 @@ function MembershipCombo(props: MembershipCombo) {
     let itemFound = items?.find((i) => i._id == initeialMemberShip?._id)
     CustomLogger.info("MembershipCombo/getSelected", initeialMemberShip, itemFound)
 
-    itemFound = itemFound === undefined ? { _id: "", lable: "", description: "" } : itemFound
+    itemFound = itemFound === undefined ? { _id: "", label: "", description: "" } : itemFound
     setSelectedItem(itemFound)
     return itemFound;
   }, [initeialMemberShip])

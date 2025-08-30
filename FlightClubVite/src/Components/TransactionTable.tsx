@@ -46,9 +46,9 @@ const getData = useMemo(() => {
 
   console.info("TransactionTable/getData", dataTransaction)
   if (dataTransaction?.success) {
-    if (selectedClubAccount?.lable !== "") {
+    if (selectedClubAccount?.label !== "") {
       console.info("TransactionTable/selectedClubAccount", dataTransaction.data,selectedClubAccount)
-      const filterAccount = dataTransaction.data.filter((item) => (item.source == selectedClubAccount?.lable) || (item.destination == selectedClubAccount?.lable))
+      const filterAccount = dataTransaction.data.filter((item) => (item.source == selectedClubAccount?.label) || (item.destination == selectedClubAccount?.label))
       console.info("TransactionTable/filterAccount", filterAccount)
       setTransactions(filterAccount);
     }

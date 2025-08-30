@@ -96,20 +96,20 @@ function DeviceTabItem() {
   };
   const onComboChanged = (item: InputComboItem, prop: string): void => {
     CustomLogger.log("onComboChanged/item", item, prop);
-    const newObj: IDevice = SetProperty(selectedItem, prop, item.lable) as IDevice;
+    const newObj: IDevice = SetProperty(selectedItem, prop, item.label) as IDevice;
     setSelectedItem(newObj)
     SetDirtyFlage();
   }
   const onComboPriceMethodChanged = (item: InputComboItem, prop: string): void => {
     CustomLogger.log("onComboPriceMethodChanged/item", item, prop);
 
-    if (!selectedItem?.has_hobbs && item.lable === DEVICE_MET.HOBBS) {
+    if (!selectedItem?.has_hobbs && item.label === DEVICE_MET.HOBBS) {
       const newObj: IDevice = SetProperty(selectedItem, prop, DEVICE_MET.HOBBS) as IDevice;
       setSelectedItem(newObj)
 
     }
     else {
-      const newObj: IDevice = SetProperty(selectedItem, prop, item.lable) as IDevice;
+      const newObj: IDevice = SetProperty(selectedItem, prop, item.label) as IDevice;
       setSelectedItem(newObj)
     }
     SetDirtyFlage();
@@ -283,7 +283,7 @@ function DeviceTabItem() {
                     </LocalizationProvider>
                   </Grid>
                   <Grid item xs={1}>
-                    <DeviceMTCombo onChanged={(item) => onComboChanged(item, "maintanance.type")} source={source} selectedItem={{ lable: selectedItem?.device_status === undefined ? "" : selectedItem?.maintanance.type.toString(), _id: "", description: "" }} />
+                    <DeviceMTCombo onChanged={(item) => onComboChanged(item, "maintanance.type")} source={source} selectedItem={{ label: selectedItem?.device_status === undefined ? "" : selectedItem?.maintanance.type.toString(), _id: "", description: "" }} />
                   </Grid>
                   <Grid item xs={1}>
                     <TextField fullWidth={true} required onChange={handleChange} id="next_meter" name="maintanance.next_meter" label="Next meter"
@@ -296,7 +296,7 @@ function DeviceTabItem() {
                       value={selectedItem?.maintanance.next_meter_tollerance} error={false} helperText="" InputLabelProps={{ shrink: true }} />
                   </Grid>
                   <Grid item xs={1}>
-                    <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} selectedItem={{ lable: selectedItem?.device_status === undefined ? "" : selectedItem?.device_status.toString(), _id: "", description: "" }} />
+                    <DeviceStatusCombo onChanged={(item) => onComboChanged(item, "device_status")} source={source} selectedItem={{ label: selectedItem?.device_status === undefined ? "" : selectedItem?.device_status.toString(), _id: "", description: "" }} />
                   </Grid>
                   <Grid item xs={1} justifySelf={"center"} alignSelf={"center"}>
                     <FormControlLabel control={<Checkbox onChange={handleBoolainChange} name={"available"} checked={selectedItem?.available === undefined ? false : selectedItem?.available} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Available" />
@@ -305,7 +305,7 @@ function DeviceTabItem() {
                     <FormControlLabel control={<Checkbox onChange={handleHasHobbsChange} name={"has_hobbs"} checked={selectedItem?.has_hobbs === undefined ? false : selectedItem?.has_hobbs} sx={{ '& .MuiSvgIcon-root': { fontSize: 36 } }} />} label="Has Hobbs" />
                   </Grid>
                   <Grid item xs={1}>
-                    <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={{ lable: selectedItem?.status === undefined ? "" : selectedItem?.status.toString(), _id: "", description: "" }} />
+                    <StatusCombo onChanged={(item) => onComboChanged(item, "status")} source={source} selectedItem={{ label: selectedItem?.status === undefined ? "" : selectedItem?.status.toString(), _id: "", description: "" }} />
                   </Grid>
                   <Grid item xs={12}>
                   {openExport && <ReportDialog onClose={handleAddOnClose} open={openExport} table={(new CServicesToReport(selectedItem)).getServicesToExel()} action="ServicesExport" />}
@@ -324,10 +324,10 @@ function DeviceTabItem() {
               <AccordionDetails>
                 <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>
                   <Grid item xs={1}>
-                    <PriceMeterCombo onChanged={(item) => onComboPriceMethodChanged(item, "price.meter")} source={source} selectedItem={{ lable: selectedItem?.device_status === undefined ? "" : selectedItem?.price.meter.toString(), _id: "", description: "" }} />
+                    <PriceMeterCombo onChanged={(item) => onComboPriceMethodChanged(item, "price.meter")} source={source} selectedItem={{ label: selectedItem?.device_status === undefined ? "" : selectedItem?.price.meter.toString(), _id: "", description: "" }} />
                   </Grid>
                   <Grid item xs={1}>
-                    <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source} selectedItem={{ lable: selectedItem?.device_status === undefined ? "" : selectedItem?.details.fuel.units.toString(), _id: "", description: "" }} />
+                    <DeviceFuelUnitCombo onChanged={(item) => onComboChanged(item, "details.fuel.units")} source={source} selectedItem={{ label: selectedItem?.device_status === undefined ? "" : selectedItem?.details.fuel.units.toString(), _id: "", description: "" }} />
                   </Grid>
 
                   <Grid container spacing={0.5} padding={1} columns={{ xs: 2, md: 2 }}>

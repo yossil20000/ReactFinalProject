@@ -34,7 +34,7 @@ function DeviceTypeItem() {
   };
   const onComboChanged = (item: InputComboItem, prop:string): void => {
     CustomLogger.log("DeviceTypeItem/onComboChanged/item", item, prop,selectedItem);
-    const newObj: IDeviceType = SetProperty(selectedItem, prop, item.lable) as IDeviceType;
+    const newObj: IDeviceType = SetProperty(selectedItem, prop, item.label) as IDeviceType;
     setSelectedItem(newObj)
   }
 

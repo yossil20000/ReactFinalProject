@@ -199,7 +199,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     setPayInfo({selectedTransaction:newObj,recipe: recipe})
   };
   const onComboChanged = (item: InputComboItem, prop: string): void => {
-    const newObj = setProperty(payInfo.selectedTransaction, prop, item.lable)
+    const newObj = setProperty(payInfo.selectedTransaction, prop, item.label)
     const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)
     setPayInfo({selectedTransaction:newObj,recipe: recipe})
     CustomLogger.log("PayTransactionDialog/onComboChanged/selectedTransaction", payInfo.selectedTransaction)
@@ -292,7 +292,7 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
               </Grid>
               <Grid item xs={12} md={3} sx={{paddingRight:{xs:'0px' , md:'1ch'} }}>
                 <TransactionTypeCombo onChanged={(item) => onComboChanged(item, "type")} source={""}
-                  selectedItem={{ lable: payInfo.selectedTransaction.type === undefined ? "" : payInfo.selectedTransaction.type.toString(), _id: "", description: "" }} />
+                  selectedItem={{ label: payInfo.selectedTransaction.type === undefined ? "" : payInfo.selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item xs={12} md={3} sx={{paddingRight:{xs:'0px' , md:'1ch'} }}>
                 <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
