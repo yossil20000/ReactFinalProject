@@ -47,7 +47,8 @@ const newTransaction: IAddTransaction = {
   },
   description: '',
   date: new Date(),
-  supplier: ''
+  supplier: '',
+  value_date: new Date()
 }
 
 function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: CreateTransactionDialogProps) {
@@ -151,6 +152,7 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
           },
           description: value.description,
           date: new Date(),
+          value_date: new Date(),
           supplier: value.supplier === undefined ? "Unknown" : value.supplier
         }
         setSelectedTransaction(newTransaction);
@@ -239,6 +241,9 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
           </Grid>
           <Grid item xs={12}>
             <Typography textAlign={'center'} >{`Date: ${new Date(selectedTransaction.date).toLocaleDateString()}`}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography textAlign={'center'} >{`Value Date: ${new Date(selectedTransaction.value_date).toLocaleDateString()}`}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography textAlign={'center'} >{`Description: ${selectedTransaction.description}`}</Typography>

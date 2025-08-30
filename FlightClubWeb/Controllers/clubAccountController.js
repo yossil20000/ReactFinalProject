@@ -961,7 +961,8 @@ exports.list_transaction = [
     try {
       let from = new Date(req.query.from);
       let to = new Date(req.query.to);
-      let filter = { date: { $gte: from, $lte: to } };
+      let filter = { value_date: { $gte: from, $lte: to } };
+      //let filter = { value_date: undefined };
       if (isNaN(from) || isNaN(to)) {
         filter = {}
       }
@@ -1149,6 +1150,28 @@ exports.expense_fix = [
     }
     catch (error) {
       return next(new ApplicationError("expense_fix", 400, "CONTROLLER.CLUB.FIX.EXCEPTION", { name: "EXCEPTION", error }));
+    }
+  }
+]
+exports.account_transaction_fix_date = [
+  async (req, res, next) => {
+    
+    try {
+      
+      let filter = { value_date: undefined };
+      
+      const results = await Transaction.find(filter);
+      if (results) {
+        results.forEach( async (item) => {
+          item.value_date = new Date(item.date);
+          await item.save();
+        });
+        return res.status(201).json({ success: true, data: results });
+      }
+      return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB_ACCOUNT.TRANSACTION_LIST.VALIDATION", { name: "Validator", errors: (new CValidationError("*", "Expense Not Exist", '', "DB")).validationResult.errors }));
+    }
+    catch (error) {
+      return next(new ApplicationError("transaction_list", 400, "CONTROLLER.CLUB.TRANSACTION_LIST.EXCEPTION", { name: "EXCEPTION", error }));
     }
   }
 ]

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 const constants = require('../Models/constants');
-const {Transaction,TransactionSchema} = require('../Models/transaction')
+const {TransactionSchema} = require('../Models/transaction')
 
 var Schema = mongoose.Schema;
 var ClubSchema = new Schema({

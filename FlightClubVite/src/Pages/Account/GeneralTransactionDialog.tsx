@@ -48,6 +48,7 @@ let newTransaction: IAddTransaction = {
   },
   description: '',
   date: new Date(),
+  value_date: new Date(),
   supplier: ''
 }
 const getAccountType = (memberType: string | undefined): string => {
@@ -107,6 +108,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
       },
       description: selectedTransaction.description,
       date: selectedTransaction.date,
+      value_date: selectedTransaction.value_date,
       supplier: selectedTransaction.supplier
     }
     CustomLogger.log("GeneralTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)

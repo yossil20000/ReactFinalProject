@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 const {DateTime} = require('luxon');
-const { body } = require('express-validator');
 
 var Schema = mongoose.Schema;
 

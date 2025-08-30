@@ -53,6 +53,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
       },
       description: description,
       date: new Date(date),
+      value_date: new Date(date),
       supplier: ''
     }
     CustomLogger.info("OrderTable/getTransaction/addTransaction",addTransaction)

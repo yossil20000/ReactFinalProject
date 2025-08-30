@@ -129,6 +129,7 @@ export interface IAddTransaction {
   },
   description: string,
   date: Date,
+  value_date: Date,
   supplier: string
 }
 
@@ -150,7 +151,8 @@ export interface ITransactionBase {
     referance: string
   },
   description: string,
-  date: Date
+  date: Date,
+  value_date: Date
 }
 
 export interface ITransaction extends ITransactionBase {
@@ -245,6 +247,7 @@ let newTransaction: IAddTransaction = {
   },
   description: '',
   date: new Date(),
+  value_date: new Date(),
   supplier: ""
 }
 export type PayInfo = {
@@ -373,7 +376,34 @@ const transactions: ITransaction = {
     referance: ""
   },
   description: "",
-  date: new Date()
+  date: new Date(),
+  value_date: new Date()
+}
+export let getIAddTransaction : IAddTransaction = {
+  source: {
+    _id: "",
+    accountType: ""
+  },
+  destination: {
+    _id: "",
+    accountType: ""
+  },
+  amount: Number("0"),
+  engine_fund_amount: Number("0"),
+  type: Transaction_Type.CREDIT,
+  order: {
+    type: Transaction_OT.OTHER,
+    _id: '',
+    quarter: QuarterType.NONE
+  },
+  payment: {
+    method: PaymentMethod.NONE,
+    referance: ''
+  },
+  description: '',
+  date: new Date(),
+  value_date: new Date(),
+  supplier: ''
 }
 export const  getTransactionToPaymentReciept = () => new CPaymentRecipe<ITransaction | IAddTransaction,IPaymentRecipe> (convert)
 const ccc = new CPaymentRecipe<ITransaction,IPaymentRecipe> (convert)

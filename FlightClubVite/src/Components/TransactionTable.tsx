@@ -66,6 +66,7 @@ const getData = useMemo(() => {
       id: row._id,
      /*  _id: row._id, */
       date: new Date(row.date),
+      value_date: new Date(row.value_date),
       source: row.source,
       destination: row.destination,
       source_balance: row.source_balance,
@@ -91,6 +92,7 @@ const getData = useMemo(() => {
     { field: 'id',hideable: true },
     /* { field: '_id',hideable: true }, */
     { field: 'date', hideable: true, headerName: 'Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1},
+    { field: 'value_date', hideable: true, headerName: 'Value Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1},
     { field: 'source', headerName: 'Source', minWidth: 130, maxWidth:180 ,flex: 2 },
     { field: 'destination', headerName: 'Destination', minWidth: 130, maxWidth:180, flex: 2 },
     { field: 'order', headerName: 'Order', minWidth: 110, maxWidth:110, flex: 1 },
@@ -141,7 +143,7 @@ const getData = useMemo(() => {
        
         rows={transactionRows}
         columns={columns}
-        pageSizeOptions={[5, 10, 15, 20,100]}
+        pageSizeOptions={[5, 10, 15, 20, 100]}
         paginationModel={{page,pageSize}}
         onPaginationModelChange={(newPageSize) => {setPageSize(newPageSize.pageSize),setPage(newPageSize.page) }}
         initialState={initialState}

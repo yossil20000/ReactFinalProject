@@ -23,4 +23,5 @@ router.get('/expanse/fix',clubAccountController.expense_fix)
 router.get('/club/account_dump',clubAccountController.dump_club_account);
 router.get('/club/account_saving',clubAccountController.list_account_saving);
 router.post('/club/account_saving',clubAccountController.account_saving_update)
+router.get('/club/account_transaction/fix_date',clubAccountController.account_transaction_fix_date)
 module.exports = router;

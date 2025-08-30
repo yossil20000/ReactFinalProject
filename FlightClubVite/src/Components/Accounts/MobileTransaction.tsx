@@ -188,7 +188,13 @@ function MobileTransaction({ item, accountId }: MobileTransactionProps) {
                 {item.description}
               </Typography>
             </Grid>
+            <Grid item xs={4}>vlaue date</Grid>
+            <Grid item xs={8}>
 
+              <Typography sx={{ wordBreak: "break-word" }}>
+                {new Date(item.value_date).getDisplayDate()}
+              </Typography>
+            </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>

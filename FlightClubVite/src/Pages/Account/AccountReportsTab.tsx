@@ -128,7 +128,10 @@ function AccountReportsTab() {
                 </IconButton>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="TRANSACTION" display={[{ key: EAction.SAVE, value: openSaveAsPDF == false ? "Show PDF" : "Hide" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
+                <ActionButtons OnAction={onAction} show={[EAction.SAVE]} item="TRANSACTION" display={[{ key: EAction.SAVE, value: openSaveAsPDF == false ? "Show Members PDF" : "Hide" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <ActionButtons OnAction={onAction} show={[EAction.PAY]} item="TRANSACTION" display={[{ key: EAction.PAY, value: openSaveAsPDF == false ? "Show Annual" : "Hide" }]} disable={[{ key: EAction.ADD, value: isAuthorized }]} />
               </Grid>
             </Grid>
           </Box>
