@@ -9,5 +9,5 @@ router.get('/search/filter',flightController.flight_search);
 router.post('/create' , flightController.flight_create);
 router.delete('/delete', flightController.flight_delete);
 router.put("/update",flightController.flight_update);
-router.get('/flight_max_values/:id',flightController.device_max_values1);
+router.get('/device_engien_values/:id',flightController.device_max_min_engien_values);
 module.exports = router;

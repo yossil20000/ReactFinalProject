@@ -2,6 +2,7 @@ import { ITransactionTableFilter } from "../Components/TransactionTable";
 import "../Types/date.extensions"
 import { IClubAccount, ITransaction } from "./API/IClub";
 import IResultBase from "./API/IResultBase";
+import { IExportExelTable } from "./IExport";
 
 
 export interface ITransactionReportHeader {

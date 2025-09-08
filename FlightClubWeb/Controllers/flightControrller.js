@@ -511,7 +511,7 @@ const deviceMaxValues = async (_id) => {
   log.info("filter", deviceMaxValuesFiltered);
   return deviceMaxValuesFiltered;
 }
-exports.device_max_values1 = async function (req, res, next) {
+exports.device_max_min_engien_values = async function (req, res, next) {
   log.info(`flight ${req.params.id}`)
   try {
       let status = ["CLOSE"];

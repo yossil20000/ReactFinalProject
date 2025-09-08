@@ -20,7 +20,7 @@ export  enum URLS{
   DEVICES_CAN_RESERV = 'api/devices/can_reserv',
   FLIGHT = 'api/flight',
   FLIGHT_SEARCH = 'api/flight/search',
-  FLIGHT_DEVICE_MAX_VALUES = 'api/flight/flight_max_values',
+  FLIGHT_DEVICE_ENGINE_VALUES = 'api/flight/device_engien_values',
   CLUB_NOTICE = 'api/club_notice',
   CLUB_NOTICE_UPDATE ='api/club_notice/update',
   CLUB_NOTICE_DELETE ='api/club_notice/delete',

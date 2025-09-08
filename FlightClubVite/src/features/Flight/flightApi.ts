@@ -63,7 +63,7 @@ export const flightApi = createApi({
       }),
       getDeviceMaxValues: builder.query<IResultBase<IDeviceMaxValues>,IDeviceMaxValuesQuery>({
         query: (query) => ({
-          url:`/${URLS.FLIGHT_DEVICE_MAX_VALUES}/${query.device_id}?status=${query.status.join(",")}${query.from ? `&from=${query.from}` : ""}${query.to ? `&to=${query.to}` : ""}`,
+          url:`/${URLS.FLIGHT_DEVICE_ENGINE_VALUES}/${query.device_id}?status=${query.status.join(",")}${query.from ? `&from=${query.from}` : ""}${query.to ? `&to=${query.to}` : ""}`,
           method: "GET"
         }),providesTags: ["Flights"],
         transformResponse: (response : IResultBase<IDeviceMaxValues>) => {

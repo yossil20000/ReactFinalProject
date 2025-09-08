@@ -12,6 +12,7 @@ const { CValidationError } = require('../Utils/CValidationError');
 const constants = require('../Models/constants');
 const Expense = require('../Models/expense');
 const { send_recipe } = require('../Services/payReciepPdf');
+const res = require('express/lib/response');
 require('../Services/expeseService');
 
 exports.club = async function (req, res) {
@@ -961,7 +962,8 @@ exports.list_transaction = [
     try {
       let from = new Date(req.query.from);
       let to = new Date(req.query.to);
-      let filter = { value_date: { $gte: from, $lte: to } };
+      const income = await transactionTotalQuery(from, to, constants.PaymentMethod.TRANSFER);
+      let filter = { date: { $gte: from, $lte: to } };
       //let filter = { value_date: undefined };
       if (isNaN(from) || isNaN(to)) {
         filter = {}
@@ -1156,8 +1158,7 @@ exports.expense_fix = [
 exports.account_transaction_fix_date = [
   async (req, res, next) => {
     
-    try {
-      
+    try {  
       let filter = { value_date: undefined };
       
       const results = await Transaction.find(filter);
@@ -1175,3 +1176,41 @@ exports.account_transaction_fix_date = [
     }
   }
 ]
+
+const transactionTotalQuery = async function (from, to,payment_method = constants.PaymentMethod.TRANSFER) {
+
+  const matchStage = {
+      "payment.method": { $eq: payment_method }
+    };
+  if(from && to){
+    matchStage.date = {$gte: new Date(from),$lte: new Date(to) } //last year;
+  }
+
+  const results = await Transaction.aggregate(
+    [
+      {
+        $match: matchStage
+      },
+      {
+        $group:
+        {
+          _id: "$type", 
+          total: { $sum: "$amount" },
+          
+        }
+      },
+      {
+        $project: {
+          _id:0,
+          type: "$_id",
+          total_amount: { $toDouble: "$total" }, // Converts Decimal128 to a regular number
+          
+        }
+      }
+    
+    ]
+  );
+
+  log.info("transactionTotalQuery/results", results);
+  return results;
+}
