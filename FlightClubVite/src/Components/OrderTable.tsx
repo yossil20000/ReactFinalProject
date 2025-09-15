@@ -30,6 +30,10 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
   const getTransaction = useMemo (() => (sourseId: string,destinationId: string , order_id: string ,amount: number,description: string, product: Transaction_OT,date:Date,engine_fund_amount:number) : IAddTransaction => {
     CustomLogger.log("OrderTable/getTransaction/input",sourseId,destinationId,order_id)
     CustomLogger.log("OrderTable/getTransaction/selectedClubAccount,orders",selectedClubAccount,orders)
+    const order = orders?.data.find((order) => order._id == order_id)
+    if(order == undefined) return {} as IAddTransaction;
+    CustomLogger.info("OrderTable/getTransaction/order",order)
+    date = order?.order_date
     const addTransaction : IAddTransaction = {
       source: {
         _id: sourseId,
@@ -58,7 +62,7 @@ export default function OrderTable({selectedMember, hideAction=false,filter={},s
     }
     CustomLogger.info("OrderTable/getTransaction/addTransaction",addTransaction)
     return addTransaction;
-  },[selectedClubAccount] )
+  },[selectedClubAccount,orders] )
 
   const orderRows = useMemo(() => {
     try{
