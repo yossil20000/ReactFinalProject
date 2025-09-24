@@ -93,6 +93,7 @@ const QuarterType = {
  * @enum {string}
  * @property {string} HOURS_0000 - 0 hours marker
  * @property {string} HOURS_0001 - 1 hour marker
+ * @property {string} HOURS_0050 - 50 hours marker
  * @property {string} HOURS_0100 - 100 hours marker
  * @property {string} HOURS_0150 - 150 hours marker
  * @property {string} HOURS_0200 - 200 hours marker
@@ -111,6 +112,7 @@ const Utilizated = {
     HOURS_UPEQ: "HOURS_UPEQ",
     HOURS_0000: "HOURS_0000",
     HOURS_0001: "HOURS_0001",
+    HOURS_0050: "HOURS_0050",
     HOURS_0100: "HOURS_0100",
     HOURS_0150: "HOURS_0150",
     HOURS_0200: "HOURS_0200",

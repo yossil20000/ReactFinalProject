@@ -14,6 +14,7 @@ import { customLogger } from "../../customLogging";
 export enum Utilizated {
   HOURS_0000 = "HOURS_0000",
   HOURS_0001 = "HOURS_0001",
+  HOURS_0050 = "HOURS_0050",
   HOURS_0100 = "HOURS_0100",
   HOURS_0150 = "HOURS_0150",
   HOURS_0200 = "HOURS_0200",
@@ -31,6 +32,7 @@ export enum Utilizated {
 export const UtilizatedDictionary = {
   [Utilizated.HOURS_0000]: "Expense Not Depend on Time",
   [Utilizated.HOURS_0001]: "expense for 1 hour",
+  [Utilizated.HOURS_0050]: "expense for 50 hours",
   [Utilizated.HOURS_0100]: "expense for 100 hours",
   [Utilizated.HOURS_0150]: "expense for 150 hours",
   [Utilizated.HOURS_0200]: "expense for 200 hours", 
@@ -296,47 +298,4 @@ export class CExpenseGroupToReport {
     console.info("CExpenseToReport/getExpesesByCategoryMap/threeLevelMap", threeLevelMap);
      return threeLevelMap;
   }
-  /*   getExpesesByCategory(): Dictionary<IExpense[]> {
-      let group_category = groupBy(this.expenses, tr => tr.expense.category.toLocaleUpperCase());
-      let values = Object.values(group_category);
-      let expenses = Object.keys(group_category);
-      console.info("CExpenseToReport/getExpesesByCategory/group_category", group_category);
-      let mapKeys: Map<string, Dictionary<IExpense[]>> = new Map<string, Dictionary<IExpense[]>>();
-      expenses.forEach(element => {
-        CustomLogger.info("CExpenseToReport/getExpesesByCategory/element", element);
-        let group_type = groupBy(group_category[element], tr => tr.expense.type.toLocaleUpperCase());
-        mapKeys.set(element, group_type);
-        CustomLogger.info("CExpenseToReport/getExpesesByCategory/group_type", group_type);
-        Object.keys(group_type).forEach((type) => {
-          CustomLogger.info("CExpenseToReport/getExpesesByCategory/expensesByType/group_type, type", group_type, type);
-        })
-      })
-  
-      CustomLogger.info("CExpenseToReport/getExpesesByCategory/values.length,values,keys,group_category,mapKeys", values.length, values, expenses, group_category, mapKeys);
-  
-      this.getExpensesByCategoryAsArray(mapKeys, "expenseReport", "Expenses", "Expense Reports", false);
-  
-      return group_category;
-    }
-    getExpensesByCategoryAsArray(data: Map<string, Dictionary<IExpense[]>>, file: string = "flightReport", sheet: string = "Expenses", title: string = "Expenses Reports", filterWithDelta: boolean = false): IExportExelTable {
-      let report: IExportExelTable = {
-        file: file,
-        sheet: sheet,
-        title: title,
-        header: [],
-        body: [],
-        save: false
-      }
-      report.header = ["Index", "Date", "Source", "Destination", "Category", "Type", "Utilized", "Amount", "Description", "Total For Type", "Total For Category"];
-      customLogger.info("CExpenseToReport/getExpensesByCategoryAsArray/report,data,keys", report, data.keys());
-      let expensesTable: Array<string[]> = [[]]
-      data.forEach((value, key) => {
-        console.info("CExpenseToReport/getExpensesByCategoryAsArray/key,value", key, value);
-        expensesTable.push([]);
-      });
-  
-      report.body = expensesTable;
-      console.info("CExpenseToReport/getExpensesByCategoryAsArray/report", report)
-      return report;
-    } */
 }
