@@ -72,7 +72,7 @@ var MemberSchema = new Schema({
          index: {unique:[true , "username already exist in database"]},
         },
     password: {type: String, required: true ,minlength: 8 },
-    member_type:{type:String, enum:['Supplier','Member,Club'] , default: 'Supplier'},
+    member_type:{type:String, enum:['Supplier','Member','Club'] , default: 'Supplier'},
     status:{type:String, enum:["Active","Suspended","Removed"], default: "Active"},
     role: {type: Role, _id:false} ,
     date_of_birth: {type: Date, required: true},
