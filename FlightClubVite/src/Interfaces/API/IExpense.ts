@@ -28,6 +28,7 @@ export enum Utilizated {
   HOURS_1500 = "HOURS_1500",
   HOURS_2000 = "HOURS_2000",
   HOURS_UPEQ = "HOURS_UPEQ",
+  HOURS_OSEQ = "HOURS_OSEQ"
 }
 export const UtilizatedDictionary = {
   [Utilizated.HOURS_0000]: "Expense Not Depend on Time",
@@ -45,7 +46,8 @@ export const UtilizatedDictionary = {
   [Utilizated.HOURS_1000]: "expense for 1000 hours",
   [Utilizated.HOURS_1500]: "expense for 1500 hours",
   [Utilizated.HOURS_2000]: "expense for 2000 hours",
-  [Utilizated.HOURS_UPEQ]: "Unpredectibale Expense With Equaly divided"
+  [Utilizated.HOURS_UPEQ]: "Unpredectibale Expense With Equaly divided",
+  [Utilizated.HOURS_OSEQ]: "Over Sea Equipments"
 }
 
 function getEnumKeyByValue(value: string): keyof typeof Utilizated  {

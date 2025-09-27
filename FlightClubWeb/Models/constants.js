@@ -107,8 +107,10 @@ const QuarterType = {
  * @property {string} HOURS_1500 - 1500 hours marker
  * @property {string} HOURS_2000 - 2000 hours marker
  * @property {string} HOURS_UPEQ - Unpredicted Expense Equal Seperate
+ * @property {string} HOURS_OSEQ - Over Sea Equipments
  */
 const Utilizated = {
+    HOURS_OSEQ: "HOURS_OSEQ",
     HOURS_UPEQ: "HOURS_UPEQ",
     HOURS_0000: "HOURS_0000",
     HOURS_0001: "HOURS_0001",
