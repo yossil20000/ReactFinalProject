@@ -6,6 +6,8 @@ const nodemailer = require('nodemailer');
 const Q = require('q');
 let sender = {
     service: "gmail",
+    port: 587, // Or 465 for SSL/TLS
+    secure: false, // Use 'true' for port 465, 'false' for 587 with STARTTLS
     auth:{
         user: "flight.club.972@gmail.com",
         pass: "ngoglfjbapqkpoai"
@@ -34,6 +36,11 @@ function SendMail(to,subject,text,html='<h1>Hello Club Member</h1>'){
         mailOption.subject = subject;
         mailOption.text = text;
         mailOption.html = `${html}<p>${text}</p>`;
+        if(process.env.DONT_SEND_MAIL && process.env.DONT_SEND_MAIL.toLowerCase() === 'true'){
+            log.warn("DONT_SEND_MAIL is true - Mail not sent");
+            resolve("DONT_SEND_MAIL is true - Mail not sent");
+            return;
+        }
         transporter.sendMail(mailOption, function(err,success) {
             log.info(sender);
             if(err){
@@ -54,6 +61,11 @@ function SendMailQ(to, subject,text, callback){
     mailOption.to = to;
     mailOption.subject = subject;
     mailOption.text = text;
+    if(process.env.DONT_SEND_MAIL && process.env.DONT_SEND_MAIL.toLowerCase() === 'true'){
+            log.warn("DONT_SEND_MAIL is true - Mail not sent");
+            resolve("DONT_SEND_MAIL is true - Mail not sent");
+            return;
+     }
     transporter.sendMail(mailOption, function(err,success) {
     if(err){
         log.error(err);
@@ -82,6 +94,11 @@ async function SendMailRecipe(to, subject,text,pdf, callback){
             contentType: 'application/pdf'
         }
     ]
+    if(process.env.DONT_SEND_MAIL && process.env.DONT_SEND_MAIL.toLowerCase() === 'true'){
+            log.warn("DONT_SEND_MAIL is true - Mail not sent");
+            resolve("DONT_SEND_MAIL is true - Mail not sent");
+            return;
+        }
     transporter.sendMail(mailOption, function(err,success) {
     if(err){
         log.error(err);
