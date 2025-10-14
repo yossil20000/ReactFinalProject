@@ -79,6 +79,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 57,version: "2.0.23.0",date: new Date(2025,8,23).getDisplayDate() , "description" : "Add Service Tollerance option","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 58,version: "2.0.23.1",date: new Date(2025,8,25).getDisplayDate() , "description" : "Server crash when lots Flight. remove the unneeded  data","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 59,version: "2.0.24.0",date: new Date(2025,9,24).getDisplayDate() , "description" : "Fix Add reservation error, Add Hours_0050","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 60,version: "2.0.24.1",date: new Date(2025,10,13).getDisplayDate() , "description" : "Update reservation when change date from don't change date to. Mail try to fix sender","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
 
 
   ]

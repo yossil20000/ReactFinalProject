@@ -15,6 +15,8 @@ let sender = {
 };
 let transporter = nodemailer.createTransport({
     service: "gmail",
+    port: 587, // Or 465 for SSL/TLS
+    secure: false, // Use 'true' for port 465, 'false' for 587 with STARTTLS
     auth:{
         user: process.env.SITE_MAIL,
         pass: process.env.nodemailer,
