@@ -2,6 +2,9 @@
 export {}
 const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short'});
+const daysOfWeek = [
+  'Sun', 'Mon', 'Tue', 'Wed', "Thu", "Fri", "Sat"
+]
 declare global {
    interface Date {
       addHours(hours: number, useThis?: boolean): Date;
@@ -41,6 +44,7 @@ declare global {
       dateWithoutTimezone() : string 
       getOffsetDate(offset: number) : Date
       getDayDiff(date: Date) : number
+      getWeekDayDateDisplay() : string
    }
 }
 
@@ -254,3 +258,10 @@ Date.prototype.dateWithoutTimezone = function () :string {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
   return diffDays;
  }
+Date.prototype.getWeekDayDateDisplay = function() : string {
+   return `${daysOfWeek[this.getDay()]} ${this.getDate().toString().padStart(2,"0")}/${(this.getMonth()+1).toString().padStart(2,"0")}/${this.getFullYear()} ${this.getHours().toString().padStart(2,"0")}:${this.getMinutes().toString().padStart(2,"0")}`
+}
+ const date = new Date()
+ console.log("date.extensions loaded", date.getFullYear(), date.getMonth(), date.getDate(), daysOfWeek[date.getDay()])
+ console.log("date.extensions loaded getWeekDayDateDisplay", date.getWeekDayDateDisplay())
+  

@@ -22,7 +22,7 @@ import IReservation, { GetInitReservationAdd, IReservationCreateApi, IReservatio
 import UpdateReservationDialog from "./UpdateReservationDialog";
 import CreateReservationDialog from "./CreateReservationDialog.js";
 import { IReservationFilterDate } from "../../Interfaces/API/IFlightReservation.js";
-import { fullMonthFilter, getFullMonthFilter, IDateFilter } from "../../Interfaces/IDateFilter.js";
+import { getFullMonthFilter } from "../../Interfaces/IDateFilter.js";
 import { getDayFilter, getMonthFilter, getTodayFilter, getWeekFilter } from "../../Utils/filtering.js";
 import DatePickerDate from "../../Components/Buttons/DatePickerDate.js";
 import GeneralDrawer from "../../Components/GeneralDrawer.js";
@@ -46,8 +46,11 @@ import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
 import CalanderViewMonth, { IDisplayCell } from "../../Components/Calander/CalanderViewMonth";
 import { DateTime } from "luxon";
-
-const dateFilter: IDateFilter = fullMonthFilter;
+//consts size
+const xsPixels = '0.83rem';
+const smPixels = '1.3rem';
+const mdPixels = '1.5rem';
+//const dateFilter: IDateFilter = fullMonthFilter;
 interface ItableData {
   _id_reservaion: string; _id_member: string; name: string;
   device_name: string; date_from: Date; date_to: Date; member_id: string; validOperation: CanDo;
@@ -666,7 +669,7 @@ function ReservationsPage() {
               <>
                 <TableContainer>
                   <Table stickyHeader={true}
-                    sx={{ minWidth: 750 }}
+                    sx={{ minWidth: 300 }}
                     aria-labelledby="tableTitle"
                     size={dense ? 'small' : 'medium'}
                   >
@@ -735,28 +738,29 @@ function ReservationsPage() {
                         return (
                           <Accordion key={row._id_reservaion} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
                             <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                              <Typography variant='caption'> {row.device_name} , {new Date(row.date_from).getDisplayDateTime()} {"=>"} {new Date(row.date_to).getDisplayDateTime()}</Typography>
+                              <Typography sx={{ fontSize: {xs:xsPixels, sm:smPixels, md:mdPixels} }} variant='caption'> {new Date(row.date_from).getWeekDayDateDisplay()} {"=>"} {new Date(row.date_to).getWeekDayDateDisplay()}</Typography>
                             </AccordionSummary>
-                            <AccordionDetails>
+                            <AccordionDetails >
                               <Grid container spacing={1}>
                                 <Grid item xs={4} sm={4}>
-                                  <Typography>
+                                  <Typography sx={{ fontSize: {xs:xsPixels, sm:smPixels, md:mdPixels} }}>
                                     {row.name}
                                   </Typography>
                                 </Grid>
-                                <Grid item xs={4} sm={4}>
-                                  
-                                  <Typography>
+                                <Grid item xs={3} sm={4}>           
+                                  <Typography sx={{ fontSize: {xs:xsPixels, sm:smPixels, md:mdPixels} }}>
                                     {row.member_id}
                                   </Typography>
                                 </Grid>
 
-                                <Grid item xs={2} sm={4} >
-                                  <Typography>
+                                <Grid item xs={2} sm={2} >
+                                  <Typography >
                                     {(row.validOperation & CanDo.Edit) ? <Button onClick={(event) => handleEditClick(event, row._id_reservaion)}>Edit</Button> : null}
-
                                   </Typography>
-                                  <Typography>
+                                
+                                </Grid>
+                                <Grid item xs={3} sm={2} >
+                                 <Typography >
                                     {confirmation.open === true ? (<ConfirmationDialog title={confirmation.title} content={confirmation.content}
                                       open={confirmation.open} action={confirmation.action} keepMounted={confirmation.keepMounted}
                                       onClose={onConfirmationClose} isOperate={false} />
@@ -765,9 +769,13 @@ function ReservationsPage() {
                                   </Typography>
 
                                 </Grid>
-                                <Grid item xs={5} sm={5}>
-                                  
-                                  <Typography>
+                                <Grid item xs={4} sm={4}>
+                                  <Typography sx={{ fontSize: {xs:'0.83rem', sm:'1.2rem', md:'1.5rem'} }}>
+                                    {`Plane: ${row.device_name}`}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={8} sm={8}>
+                                  <Typography sx={{ fontSize: {xs:'0.83rem', sm:'1.2rem', md:'1.5rem'} }}>
                                     {`_id: ${row._id_reservaion}`}
                                   </Typography>
                                 </Grid>
