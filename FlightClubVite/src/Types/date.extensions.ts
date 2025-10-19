@@ -45,6 +45,7 @@ declare global {
       getOffsetDate(offset: number) : Date
       getDayDiff(date: Date) : number
       getWeekDayDateDisplay() : string
+      getPadDateDisplay() : string
    }
 }
 
@@ -261,7 +262,11 @@ Date.prototype.dateWithoutTimezone = function () :string {
 Date.prototype.getWeekDayDateDisplay = function() : string {
    return `${daysOfWeek[this.getDay()]} ${this.getDate().toString().padStart(2,"0")}/${(this.getMonth()+1).toString().padStart(2,"0")}/${this.getFullYear()} ${this.getHours().toString().padStart(2,"0")}:${this.getMinutes().toString().padStart(2,"0")}`
 }
+Date.prototype.getPadDateDisplay = function() : string {
+   return `${this.getDate().toString().padStart(2,"0")}/${(this.getMonth()+1).toString().padStart(2,"0")}/${this.getFullYear()}`
+}
+/* 
  const date = new Date()
  console.log("date.extensions loaded", date.getFullYear(), date.getMonth(), date.getDate(), daysOfWeek[date.getDay()])
  console.log("date.extensions loaded getWeekDayDateDisplay", date.getWeekDayDateDisplay())
-  
+ */  

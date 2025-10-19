@@ -196,7 +196,10 @@ useEffect(() => {
     { field: '_id', type: 'string', hideable: true },
     {
       field: 'date', headerName: 'Date', type: 'date', sortable: true, editable: true,
-      filterable: true, flex: 1, minWidth: 110
+      filterable: true, flex: 1, minWidth: 110,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date.getPadDateDisplay();
+    }
     },
     { field: 'type', headerName: 'Type', type: "singleSelect", valueOptions: Object.values(DEVICE_SERVICE), editable: true, minWidth: 80, flex: 1 },
     { field: 'engien_meter', headerName: 'Meter', type: 'number', minWidth: 70, flex: 1, editable: true },

@@ -91,8 +91,14 @@ const getData = useMemo(() => {
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id',hideable: true },
     /* { field: '_id',hideable: true }, */
-    { field: 'date', hideable: true, headerName: 'Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1},
-    { field: 'value_date', hideable: true, headerName: 'Value Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1},
+    { field: 'date', hideable: true, headerName: 'Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date.getPadDateDisplay();
+    }},
+    { field: 'value_date', hideable: true, headerName: 'Value Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date.getPadDateDisplay();
+    }},
     { field: 'source', headerName: 'Source', minWidth: 130, maxWidth:180 ,flex: 2 },
     { field: 'destination', headerName: 'Destination', minWidth: 130, maxWidth:180, flex: 2 },
     { field: 'order', headerName: 'Order', minWidth: 110, maxWidth:110, flex: 1 },

@@ -87,7 +87,10 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
 
   const columns: GridColDef[] = useMemo(() => [
     { field: '_id', headerName: 'id', hideable: true, minWidth: 50, type: 'string' },
-    { field: 'date', headerName: 'Date', minWidth: 30, type: 'date' },
+    { field: 'date', headerName: 'Date', minWidth: 30, type: 'date' ,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date.getPadDateDisplay();
+    }},
     { field: 'sizePerUnit', headerName: 'Unit Size', minWidth: 90, type: 'string' },
     { field: 'units', headerName: 'Units', minWidth: 40, type: 'number' },
     { field: 'pricePeUnit', headerName: 'Per Unit', minWidth: 90, type: 'number' },

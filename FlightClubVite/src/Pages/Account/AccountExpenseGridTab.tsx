@@ -85,7 +85,10 @@ function AccountExpenseGridTab() {
     { field: '_id', type: 'string', hideable: true ,filterable: true},
     {
       field: 'date', headerName: 'Date', type: 'date', sortable: true, editable: true,
-      filterable: true, flex: 1, minWidth: 110
+      filterable: true, flex: 1, minWidth: 110,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date.getPadDateDisplay();
+    }
     },
     { field: 'units', headerName: 'Units', type: 'number', minWidth: 160, flex: 1, editable: true },
     { field: 'pricePeUnit', headerName: 'Price', type: 'number', minWidth: 160, flex: 1, editable: true },

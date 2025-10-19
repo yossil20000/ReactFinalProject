@@ -35,7 +35,10 @@ setRows(rows)
     { field: '_id', type: 'string',minWidth: 230, hideable: true },
     {
       field: 'date', headerName: 'Date', type: 'date', sortable: true, editable: true,
-      filterable: true, flex: 1, minWidth: 100,maxWidth: 100
+      filterable: true, flex: 1, minWidth: 100,maxWidth: 100,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date.getPadDateDisplay();
+    }
     },
     { field: 'source', headerName: 'Source', type: 'string', minWidth: 160,maxWidth: 230, flex: 2, editable: true },
     { field: 'destination_balance', headerName: 'P.Balance', type: 'number', minWidth: 140,maxWidth: 140, flex: 1, editable: true },
