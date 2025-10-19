@@ -216,3 +216,7 @@ Date.prototype.dateWithoutTimezone = function ()  {
    console.log("TimeOffsetDate/time,offset",time,offset)
    return new Date(this.valueOf() + offset * 60000);
   }
+
+  Date.prototype.getDateTimeDisplay = function()  {
+   return `${this.getDate()}/${this.getMonth()+1}/${this.getFullYear()} ${this.getLocal24Hours()}`;
+}

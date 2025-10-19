@@ -98,8 +98,9 @@ function GetTransactionCells(item: ITransaction): ITransactionReportTableCell[] 
         width: "60%"
       }
       cells[1] = description
+      const totalAmount: Number = Number(item.amount) + (item.engine_fund_amount === undefined ? 0 : item.engine_fund_amount)
       const amount: ITransactionReportTableCell = {
-        data: Number(item.amount).toFixed(2),
+        data: totalAmount.toFixed(2),
         toolTip: "",
         width: "20%"
       }

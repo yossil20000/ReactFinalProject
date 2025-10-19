@@ -110,6 +110,7 @@ const QuarterType = {
  * @property {string} HOURS_OSEQ - Over Sea Equipments
  */
 const Utilizated = {
+    HOURS_UPQP: "HOURS_UPQP",
     HOURS_OSEQ: "HOURS_OSEQ",
     HOURS_UPEQ: "HOURS_UPEQ",
     HOURS_0000: "HOURS_0000",
