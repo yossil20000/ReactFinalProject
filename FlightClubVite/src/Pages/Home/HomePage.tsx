@@ -25,8 +25,9 @@ function HomePage() {
   useEffect(() => {
     CustomLogger.info("HomePage/data", data)
     if (data?.data !== undefined && data?.data !== null) {
-      setNotices(data.data)
-      CustomLogger.info("HomePage/setNotices", data.data)
+      const sortedNotices =[...data.data].sort((a, b) => new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime());
+      setNotices(sortedNotices)
+      CustomLogger.info("HomePage/setNotices", sortedNotices)
     }
   }, [data])
   const getFilterImage = () => {

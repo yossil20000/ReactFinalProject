@@ -9,7 +9,9 @@ const ClubNoticeScema = new Schema({
     issue_date: {type: Date, required: true, default: Date.now},
     due_date: {type: Date},
     isExpired: {type: Boolean, default: false},
-    isPublic: {type: Boolean, default: false}
+    isPublic: {type: Boolean, default: false},
+    isAlert: {type: Boolean, default: false}
+
     
 });
 ClubNoticeScema

@@ -54,7 +54,8 @@ function NoticesTable({validationAlert,setValidationAlert,onError}: INoticesTabl
         issue_date: row.issue_date,
         due_date: row.due_date,
         isExpired: row.isExpired,
-        isPublic: row.isPublic
+        isPublic: row.isPublic,
+        isAlert: row.isAlert
       }
       if (saveRow !== undefined && saveRow?._id !== "") {
         payLoad = await updateNotice(saveRow).unwrap();
@@ -81,7 +82,7 @@ function NoticesTable({validationAlert,setValidationAlert,onError}: INoticesTabl
       onError(error)
     }
     finally {
-      refetch();
+      //refetch();
     }
 
   }
@@ -122,6 +123,7 @@ function NoticesTable({validationAlert,setValidationAlert,onError}: INoticesTabl
       title: row.title,
       isExpired: row.isExpired,
       isPublic: row.isPublic,
+      isAlert: row.isAlert,
       description: row.description
 
     }))
@@ -184,6 +186,7 @@ function NoticesTable({validationAlert,setValidationAlert,onError}: INoticesTabl
     },
     { field: 'isExpired', headerName: 'Expired', type: 'boolean', flex: 1, editable: true, minWidth: 130, maxWidth: 130 },
     { field: 'isPublic', headerName: 'Public', type: 'boolean', flex: 1, editable: true, minWidth: 130, maxWidth: 130 },
+    { field: 'isAlert', headerName: 'Alert', type: 'boolean', flex: 1, editable: true, minWidth: 130, maxWidth: 130 },
     { field: 'title', headerName: 'Title', type: 'string', flex: 3, editable: true, minWidth: 130 },
     { field: 'description', headerName: 'Description', flex: 4, editable: true, minWidth: 140 },
     {
@@ -264,7 +267,7 @@ function NoticesTable({validationAlert,setValidationAlert,onError}: INoticesTabl
     const handleClick = () => {
       const id = rows.length
       setRows((oldRows) => [...oldRows,
-      { id: id, _id: "", issue_date: new Date(), due_date: new Date(), isExpired: true, isPublic: true, title: "", description: "", isNew: true, isEdit: 0 }]);
+      { id: id, _id: "", issue_date: new Date(), due_date: new Date(), isExpired: true, isPublic: true,isAlert: false, title: "", description: "", isNew: true, isEdit: 0 }]);
       setRowModesModel((oldModel) => ({
         ...oldModel,
         [id]: { mode: GridRowModes.Edit, fieldToFocus: 'date' }

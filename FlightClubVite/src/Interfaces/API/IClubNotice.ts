@@ -6,6 +6,7 @@ export default interface IClubNotice{
     due_date: Date;
     isExpired: boolean;
     isPublic: boolean;
+    isAlert: boolean;
 }
 
 export const NewNotice : IClubNotice = {
@@ -15,18 +16,21 @@ export const NewNotice : IClubNotice = {
     issue_date: new Date(),
     due_date: new Date(),
     isExpired:  false,
-    isPublic: false
+    isPublic: false,
+    isAlert: false
 }
 
 export interface INoticeFilter {
     public: boolean,
     expired: boolean,
     isValid: boolean,
+    isAlert: boolean,
     all: boolean
 }
 export const NewNoticeFilter : INoticeFilter = {
     public: false,
     expired: false,
     isValid: false,
+    isAlert: false,
     all: true
 }
