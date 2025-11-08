@@ -19,19 +19,12 @@ function HomePage() {
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
   const { data: images } = useFetchAllImagesQuery();
   const { isError, isLoading, isSuccess, isFetching, error, data } = useFetchAllNoticesQuery();
-  const [notices, setNotices] = useState<IClubNotice[]>([])
+  
   useEffect(() => {
     CustomLogger.info("HomePage/isLoading", isLoading)
   }, [isLoading])
 
-  useEffect(() => {
-    CustomLogger.info("HomePage/data", data)
-    if (data?.data !== undefined && data?.data !== null) {
-      const sortedNotices =[...data.data].sort((a, b) => new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime());
-      setNotices(sortedNotices)
-      CustomLogger.info("HomePage/setNotices", sortedNotices)
-    }
-  }, [data])
+
   const getFilterImage = () => {
     CustomLogger.log("homePage/getFilterImage/login", login)
     const found = login.member.roles.find(role => role === Role.guest)
@@ -54,7 +47,7 @@ function HomePage() {
             Club Messages
           </AccordionSummary>
           <AccordionDetails>
-            <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
+            <NoticeStepper header='Club Messages' steppers={clubNotices as IClubNotice[]} editMode={false} role={Role.guest} children={<></>} />
           </AccordionDetails>
         </Accordion>
 
