@@ -4,7 +4,7 @@ import NoticeStepper from '../../Components/NoticeStepper'
 import { Role } from '../../Interfaces/API/IMember';
 import IClubNotice from '../../Interfaces/API/IClubNotice';
 import { useFetchAllNoticesQuery } from '../../features/clubNotice/noticeApiSlice';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Typography } from '@mui/material';
 import QuiltedImageList from '../../Components/Masonry/QuiltedImageList';
 import { useFetchAllImagesQuery } from '../../features/image/imageApiSlice';
 import { IImageDisplay } from '../../Interfaces/API/IImage';
@@ -55,6 +55,11 @@ function HomePage() {
             <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
           </AccordionDetails>
         </Accordion>
+        {notices.filter(n => n.isAlert).map((noticeAlert, index) => 
+                <Alert variant="filled" severity="warning" >
+  <Typography key={index} dir="rtl">{noticeAlert.title}: {noticeAlert.description}</Typography>
+        </Alert>)}
+
         <DeviceReport />
         <Accordion >
           <AccordionSummary style={{ fontWeight: "bold" }} expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>Galllery</AccordionSummary>
