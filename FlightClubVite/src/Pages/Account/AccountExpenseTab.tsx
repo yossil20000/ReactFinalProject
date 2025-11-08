@@ -323,7 +323,7 @@ function AccountExpenseTab() {
               ) : null}
               {openExpenseEdit == true && selectedExpense !== undefined ? (
                 <UpdateExpenseDialog
-                  value={selectedExpense}
+                  expense={selectedExpense}
                   onClose={handleAddOnClose}
                   onSave={handleAddOnSave}
                   open={openExpenseEdit}

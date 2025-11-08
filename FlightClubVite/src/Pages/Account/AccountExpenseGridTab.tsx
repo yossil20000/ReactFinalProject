@@ -243,7 +243,7 @@ function AccountExpenseGridTab() {
             <div style={{ overflow: "hidden", height: "100%" }}>
               {openExpenseSave && <ReportDialog onClose={handleAddOnClose} open={openExpenseSave} table={(new CExpenseToReport(data?.data ? data.data : [],new Date().getStartOfYear().getMidDayDate(), new Date().getEndOfYear().getMidDayDate())).getExpesesToExel()} action="ExpenseExport" />}
               {openExpenseAdd == true ? (<CreateExpenseDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseAdd} />) : (null)}
-              {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
+              {(openExpenseEdit == true && selectedExpense !== undefined) ? (<UpdateExpenseDialog expense={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openExpenseEdit} />) : (null)}
               {(openAddTransaction == true && selectedExpense !== undefined) ? (<CreateTransactionDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddTransaction} />) : (null)}
               {(openDeleteExpense == true && selectedExpense !== undefined) ? (<DeleteExpenseDialog value={selectedExpense} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openDeleteExpense} />) : (null)}
               <GridTable title={"Expense"} style={{}} children={<></>} rows={rows} setRows={setRows} columns={columns} initialState={initialState} onSave={onSave} actionColumn={true}></GridTable>

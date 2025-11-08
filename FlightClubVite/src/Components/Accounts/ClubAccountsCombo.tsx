@@ -28,9 +28,9 @@ function ClubAccountsCombo(props: IClubAccountProps) {
       return { label: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: `${input.member.member_type}.${input.member.family_name}.${input.member.first_name}`, key: input.member.member_type, key2: input.account_id }
     return { label: `${input.member.member_id}/${input.member.family_name}/${input.account_id}`, _id: input._id, description: `${input.member.member_type}.${input.member.family_name}.${input.member.first_name}`, key: input.member.member_type, key2: input.account_id }
   }
-
+CustomLogger.log("ClubAccountsCombo/props", props)
   useEffect(() => {
-    CustomLogger.log("ClubAccountsCombo/accounts/data", accounts?.data)
+    CustomLogger.log("ClubAccountsCombo/accounts/data", accounts?.data, initialItem)
     let items = accounts?.data.map((item: IClubAccountsCombo) => (item));
     if (items !== undefined && items?.length > 0) {
       const club = items.at(0);
@@ -56,7 +56,7 @@ function ClubAccountsCombo(props: IClubAccountProps) {
       
     }
     CustomLogger.info("ClubAccountsCombo/clubAccounts/items", items)
-  }, [accounts?.data])
+  }, [accounts?.data,initialItem])
 
   const onSelectedItem = (item: InputComboItem) => {
     setSelectedItem(item);

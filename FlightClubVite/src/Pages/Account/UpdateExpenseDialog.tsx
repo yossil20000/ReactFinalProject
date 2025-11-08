@@ -8,8 +8,10 @@ import {
   Grid,
   LinearProgress,
   TextField,
+  ThemeProvider,
+  useTheme,
 } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ClubAccountsCombo from "../../Components/Accounts/ClubAccountsCombo";
 import {
   InputComboItem,
@@ -37,38 +39,63 @@ import FullScreenLoader from "../../Components/FullScreenLoader";
 import { MemberType } from "../../Interfaces/API/IMember";
 import SizePerUnitCombo from "../../Components/Buttons/SizePerUnitCombo";
 import UtilizatedCombo from "../../Components/Buttons/UtilizatedCombo";
+import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { DateTime } from "luxon";
 export interface UpdateExpenseDialogProps {
   onClose: () => void;
   onSave: (value: IExpenseBase) => void;
   open: boolean;
-  value: IExpense;
+  expense: IExpense;
 }
 
 function UpdateExpenseDialog({
   onClose,
   onSave,
   open,
-  value,
+  expense,
   ...other
 }: UpdateExpenseDialogProps) {
   const [UpdateExpense, { isError, isLoading }] = useUpdateExpenseMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [bank, setBank] = useState<IClubAccount | undefined>();
 
-  const [selectedExpense, setSelectedExpense] = useState<IExpense>(value);
-  const [selectedSource, setSelectedSource] = useState<InputComboItem>();
+  const [selectedExpense, setSelectedExpense] = useState<IExpense>(expense);
+  const [selectedSource, setSelectedSource] = useState<InputComboItem>({_id:"", label:"INIT", description:""});
   const [selectedDestination, setSelectedDestination] =
-    useState<InputComboItem>();
+    useState<InputComboItem>({_id:"", label:"INIT", description:""});
   const [selectedType, setSelectedType] = useState<InputComboItem>();
   const [selectedCategory, setSelectedCategory] = useState<InputComboItem>();
   const [selectedSPU, setSelectedSPU] = useState<InputComboItem>();
   const [validationAlert, setValidationAlert] = useState<
     IValidationAlertProps[]
   >([]);
-  const [isSaved, setIsSaved] = useState(false);
-  const UpdateSourceAccountFields = (): IExpenseBase => {
-    let newObj = selectedExpense;
-    CustomLogger.info(
+  useEffect(() => {
+    CustomLogger.info("UpdateExpenseDialog/useEffect/expense", expense);
+    let item : InputComboItem = {
+      _id: expense.source.id,
+      label: expense.source.display,
+      key: expense.source.type,
+      key2: expense.source.account_id,
+      description: expense.supplier,
+    };
+    setSelectedSource(item);
+    setSourceCombo(RenderSource(item));
+    item = {
+      _id: expense.destination.id,
+      label: expense.destination.display,
+      key: expense.destination.type,
+      key2: expense.destination.account_id,
+      description: expense.supplier,
+    };
+    setSelectedDestination(item)
+    setDestinationCombo(RenderDestination(item))    
+  }, [expense]);
+    const theme = useTheme();
+    const [isSaved, setIsSaved] = useState(false);
+    const UpdateSourceAccountFields = (): IExpenseBase => {
+      let newObj = selectedExpense;
+      CustomLogger.info(
       "CreateExspenseDialog/UpdateSourceAccountFields/selectedSource",
       selectedSource,
       selectedDestination
@@ -148,22 +175,22 @@ function UpdateExpenseDialog({
     SetProperty(selectedExpense, `supplier`, item.description)
   };
 
-  const RenderSource = (): JSX.Element => {
+  const RenderSource = (  defaultIem: InputComboItem = selectedSource): JSX.Element => {
     return (
       <ClubAccountsCombo
         title={"Source"}
-        selectedItem={selectedSource}
+        selectedItem={defaultIem}
         onChanged={onSelectedSource}
         source={"_ExpenseDialogs/Source"}
         includesType={[MemberType.Club]}
       />
     );
   };
-  const RenderDestination = (): JSX.Element => {
+  const RenderDestination = (defaultIem: InputComboItem = selectedDestination): JSX.Element => {
     return (
       <ClubAccountsCombo
         title={"Destination"}
-        selectedItem={selectedDestination}
+        selectedItem={defaultIem}
         onChanged={OnselectedDestination}
         source={"_CreateExspense/Destination"}
         filter={{}}
@@ -171,9 +198,9 @@ function UpdateExpenseDialog({
       />
     );
   };
-  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(RenderSource());
+  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(<></>);
   const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(
-    RenderDestination()
+    <></>
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -241,6 +268,11 @@ function UpdateExpenseDialog({
       setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
     } */
   };
+    const handleDateChange = (newValue: DateTime | null) => {
+      let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
+      newDate.setHours(12,0,0,0);
+      setSelectedExpense(prev => ({ ...prev, date: newDate }))
+    };
   return (
     <Dialog
       sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: "auto" } }}
@@ -249,7 +281,7 @@ function UpdateExpenseDialog({
       {...other}
     >
       <DialogTitle>Update Expense</DialogTitle>
-      {isQuery && isLoading ? (
+      {isQuery && isLoading && !selectedSource && !selectedDestination ? (
         <>
           <FullScreenLoader />
         </>
@@ -358,7 +390,20 @@ function UpdateExpenseDialog({
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={4} sx={{paddingTop: "2ch"}}>
+              <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
+                    <ThemeProvider theme={theme}>
+                      <MobileDatePicker
+                        sx={{ width:"100%"} }  
+                        label="Date"
+                        value={DateTime.fromJSDate(new Date(selectedExpense.date))}
+                        onChange={handleDateChange}
+                        
+                      />
+                    </ThemeProvider>
+                  </LocalizationProvider>
+              </Grid>
+              <Grid item xs={8} sx={{paddingTop: "2ch", paddingLeft: "1ch"}}>
                 <TextField
                   fullWidth={true}
                   onChange={handleChange}
