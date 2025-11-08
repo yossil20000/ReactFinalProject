@@ -46,6 +46,7 @@ import { InputComboItem } from "../../Components/Buttons/ControledCombo";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
 import CalanderViewMonth, { IDisplayCell } from "../../Components/Calander/CalanderViewMonth";
 import { DateTime } from "luxon";
+import useClubNotices from "../../hooks/useClubNotices";
 //consts size
 const xsPixels = '0.83rem';
 const smPixels = '1.3rem';
@@ -192,6 +193,8 @@ let reservationUpdateIntitial: IReservationUpdate = {
 
 function ReservationsPage() {
   const theme = useTheme();
+   const [clubNotices, alertView] = useClubNotices();
+   
   const [viewMode, setViewMode] = useState<EviewMode>(EviewMode.E_VM_MONTH);
   const [dateRef, setDateRef] = useState(new Date())
   const [openFilter, setOpenFilter] = useState(false)
@@ -536,6 +539,7 @@ function ReservationsPage() {
 
       <div className='header'>
         <Box sx={{ width: '100%' }}>
+          <>{alertView}</>
           {isReservationUpdate && <UpdateReservationDialog onClose={handleUpdateOnClose} value={reservationUpdate} open={isReservationUpdate} onSave={handleUpdateOnSave} />}
           {openReservationAdd && <CreateReservationDialog onClose={handleAddOnClose} value={GetInitReservationAdd()} open={openReservationAdd} onSave={handleAddOnSave} />}
           {viewMode === EviewMode.E_VM_MONTH ?

@@ -12,8 +12,10 @@ import { useAppSelector } from '../../app/hooks';
 import { ILoginResult } from '../../Interfaces/API/ILogin';
 import DeviceReport from './DeviceReport';
 import { GridExpandMoreIcon } from '@mui/x-data-grid';
+import useClubNotices from '../../hooks/useClubNotices';
 
 function HomePage() {
+  const [clubNotices, alertView] = useClubNotices();
   const login: ILoginResult = useAppSelector((state) => state.authSlice);
   const { data: images } = useFetchAllImagesQuery();
   const { isError, isLoading, isSuccess, isFetching, error, data } = useFetchAllNoticesQuery();
@@ -55,11 +57,8 @@ function HomePage() {
             <NoticeStepper header='Club Messages' steppers={notices} editMode={false} role={Role.guest} children={<></>} />
           </AccordionDetails>
         </Accordion>
-        {notices.filter(n => n.isAlert).map((noticeAlert, index) => 
-                <Alert variant="filled" severity="warning" >
-  <Typography key={index} dir="rtl">{noticeAlert.title}: {noticeAlert.description}</Typography>
-        </Alert>)}
 
+          <>{alertView}</>
         <DeviceReport />
         <Accordion >
           <AccordionSummary style={{ fontWeight: "bold" }} expandIcon={<GridExpandMoreIcon />} aria-control="device-report" id='device_report'>Galllery</AccordionSummary>
