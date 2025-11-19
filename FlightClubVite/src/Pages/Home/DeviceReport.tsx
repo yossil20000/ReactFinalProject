@@ -69,8 +69,8 @@ function DeviceReport() {
                   <div>{`Current Engine Total Hours (Calculated: offset + current TACH) ${(report.device.engien_start_meter + report.engien_stop).toFixed(1)}`}</div>
                   <div>{`Current Airframe Total Hours (Calculated: offset + current TACH) ${(Number(7101.4) + report.engien_stop).toFixed(1)}`}</div>
                   <div color="red"><b><u>Last Engine overall in 2011 on airframe hours 6320.7</u></b></div>
-                  <div color="red"><b><u>Engine meter replacmnt on 31/1/2018 at engine TACH 7101.4</u></b></div>
-                  <div color="red"><b><u>Due to engine meter replacmnton the offset from the new meter is: 7101.4 - 6320.7 = 780.7</u></b></div>
+                  <div color="red"><b><u>Engine meter replaced on 31/1/2018 at engine TACH 7101.4</u></b></div>
+                  <div color="red"><b><u>Due to engine meter replacement the offset from the new meter is: 7101.4 - 6320.7 = 780.7</u></b></div>
                 </Typography>
               </CardContent>
             </Card>
