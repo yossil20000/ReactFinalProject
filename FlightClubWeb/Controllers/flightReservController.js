@@ -179,7 +179,9 @@ exports.reservation_delete = function (req, res, next) {
 								<p><b><u>From:</u></b> ${new Date(doc.date_from).getOffsetDate(doc.timeOffset)}</p>
 								<p><b><u>To:</u></b> ${new Date(doc.date_to).getOffsetDate(doc.timeOffset)}</p>
 								<p><b><u>By:</u></b> ${doc.member.full_name}</p></div>`
-								sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.DELETED, message)
+								if(process.env.DONT_SEND_MAIL =='false'){
+									sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.DELETED, message)
+								}
 								res.status(201).json({ success: true, errors: ["delete"], data: doc });
 							}
 							return;
@@ -273,8 +275,9 @@ exports.reservation_create = [
     <p><b><u>From:</u></b> ${new Date(newReservation.date_from).getOffsetDate(newReservation.timeOffset)}</p>
     <p><b><u>To:</u></b> ${new Date(newReservation.date_to).getOffsetDate(newReservation.timeOffset)}</p>
     <p><b><u>By:</u></b> ${member.full_name}</p></div>`
-
-				const notifyResult = await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CREATED, message);
+				if(process.env.DONT_SEND_MAIL =='false'){
+					const notifyResult = await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CREATED, message);
+				}
 				log.info("FindSameFlight/end/flightNotification", newReservation.flightNotification);
 				res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
 				log.info("FindSameFlight/end/created", newReservation.flightNotification);
@@ -352,8 +355,9 @@ exports.reservation_update = [
 													<p><b><u>From:</u></b> ${new Date(req.body.date_from).getOffsetDate(results.timeOffset)}</p>
 													<p><b><u>To:</u></b> ${new Date(req.body.date_to).getOffsetDate(results.timeOffset)}</p>
 													<p><b><u>By:</u></b> ${results.member.full_name}</p></div>`
-
-					await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CHANGED, message)
+					if(process.env.DONT_SEND_MAIL =='false'){
+						await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CHANGED, message)
+					}
 					return res.status(201).json({ success: true, errors: [], data: [] });
 				}
 				else {

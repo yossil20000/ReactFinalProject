@@ -3,8 +3,12 @@ const Notification = require("../Models/notification");
 const log = require('debug-level').log('notificationService');
 const mail = require("../Services/mailService");
 const sendNotification =  async (event,notifyWhen,message) => {
-
+const sendNotificationFlage = false
   try{
+    if (!sendNotificationFlage) {
+    log.warn("sendNotification/false",event,notifyWhen,message);
+    return true;
+    }
     const aggregate = Notification.aggregate();
     const filter = {
       "filter":{
