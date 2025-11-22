@@ -2,8 +2,8 @@ const e = require("express");
 const Notification = require("../Models/notification");
 const log = require('debug-level').log('notificationService');
 const mail = require("../Services/mailService");
-const sendNotification =  async (event,notifyWhen,message) => {
 const sendNotificationFlage = false
+const sendNotification =  async (event,notifyWhen,message) => {
   try{
     if (!sendNotificationFlage) {
     log.warn("sendNotification/false",event,notifyWhen,message);
@@ -39,6 +39,10 @@ const sendNotificationFlage = false
 }
 
 const sendAdmniNotification = async (subject,message) => {
+  if (!sendNotificationFlage) {
+    log.warn("sendAdmniNotification/false",subject,message);
+    return true;
+    }
   mail.SendMail(process.env.SITE_MAIL,`Notification:  ${subject}` ,`Hello ${process.env.SITE_MAIL} \n ${message}` )
         .then(() => {
           log.info("Send Mail to:",process.env.SITE_MAIL);
