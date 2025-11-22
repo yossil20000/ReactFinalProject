@@ -277,10 +277,11 @@ exports.reservation_create = [
     <p><b><u>By:</u></b> ${member.full_name}</p></div>`
 				if(process.env.DONT_SEND_MAIL =='false'){
 					const notifyResult = await sendNotification(constants.NotifyEvent.FlightReservation, constants.NotifyOn.CREATED, message);
+					log.info("FlightReservation/created/flightNotification", newReservation.flightNotification);
 				}
-				log.info("FindSameFlight/end/flightNotification", newReservation.flightNotification);
+				
 				res.status(201).json({ success: true, errors: ["Created"], data: newReservation });
-				log.info("FindSameFlight/end/created", newReservation.flightNotification);
+				log.info("FlightReservation/created/end", newReservation);
 				return;
 			}
 			else {
