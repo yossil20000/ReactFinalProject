@@ -2,7 +2,6 @@ import { OrderStatus } from "./IAccount"
 import { MemberType } from "./IMember"
 import { ExportExpensesType, getNewExportExpensesType, IExportExelTable, MapTotal } from "../IExport"
 import { get, groupBy } from "lodash";
-import { Dictionary } from "@reduxjs/toolkit";
 import { customLogger } from "../../customLogging";
 
 /**
@@ -214,23 +213,67 @@ export class CExpenseGroupToReport {
       title: `${title}  From ${this.from.getDisplayDate()} To ${this.to.getDisplayDate()}`,
       header: [],
       body: [],
-      save: false
+      save: false,
+      summary:  new Map<string, number>()
     }
+    report.summary = new Map<string, number>(); 
+    report.summary.set("FlightHours", this.tachEnd - this.tachStart);
+    report.summary.set("Members", 12);
+    report.summary.set("PricePerHour", 0);
+    report.summary.set("PricePerMonth", 0);
+    report.summary.set("AnnualUnExpectedPaid", 0);
+    report.summary.set("UnExpectedPerMonth", 0);
+    
+    report.summary.set("TotalPrice", 0);
+
     const reportData = this.getExpesesByUtilizationObject();
     report.header = ["Utilized","Utilized description","Type", "Amount", "Category","Total"]
     report.body = [];
     report.body.push([title, "", "", "", ""]);
+    console.info("getExpesesUtilizationToExel/Sumary start");
     reportData.map.forEach((utilizedMap, utilizated) => {
       console.info("getExpesesUtilizationToExel/utilizatedMap", utilizated, utilizedMap.subtotal);
       report.body.push([utilizated, `${UtilizatedDictionary[getEnumKeyByValue(utilizated)]}`,"", "", "", utilizedMap.subtotal.toFixed(2)]);
-      
+      console.info("getExpesesUtilizationToExel/Sumary/typeMap start");
       (utilizedMap as MapTotal).map.forEach((typeMap, type) => {
-        console.info("getExpesesUtilizationToExel/typeMap", type, typeMap, typeof typeMap);
+        console.info("getExpesesUtilizationToExel/Sumary/typeMap", type, typeMap, typeof typeMap);
         report.body.push(["", "",type,  typeMap.subtotal.toFixed(2), `${Array.from((typeMap as MapTotal).map.keys()).join(", ")}`]);
-        
-        
+        if(utilizated==="HOURS_0000" || utilizated==="HOURS_UPEQ" || utilizated==="HOURS_OSEQ"){
+          
+          report.summary?.set("TotalPerMonth", Number((report.summary.get("TotalPerMonth") || 0) + typeMap.subtotal));
+          customLogger.log("getExpesesUtilizationToExel/Sumary/HOURS_0000 and HOURS_UPEQ and HOURS_OSEQ", utilizated,typeMap.subtotal.toFixed(2),report.summary?.get("TotalPerMonth"));
+        }
+         if(utilizated==="HOURS_0001" || utilizated==="HOURS_0050" || utilizated==="HOURS_0100" || utilizated==="HOURS_0150" || utilizated==="HOURS_0200" || utilizated==="HOURS_0250" || utilizated==="HOURS_0300" || utilizated==="HOURS_0350" || utilizated==="HOURS_0400" || utilizated==="HOURS_0450" || utilizated==="HOURS_0500"){
+          const priceDeviced = Number(utilizated.split("_")[1]);
+          report.summary?.set("TotalPerHour", Number((report.summary.get("TotalPerHour") || 0) + typeMap.subtotal / priceDeviced));
+          customLogger.log("getExpesesUtilizationToExel/Sumary/HOURS_0001 and above",utilizated, typeMap.subtotal.toFixed(2),report.summary?.get("TotalPerHour"));
+        }
+        if(utilizated==="HOURS_UPQP"){
+          customLogger.log("getExpesesUtilizationToExel/Sumary/HOURS_UPQP", typeMap.subtotal.toFixed(2));
+          report.summary?.set("AnnualUnExpectedPaid", Number((report.summary?.get("AnnualUnExpectedPaid") || 0) + typeMap.subtotal));
+          customLogger.log("getExpesesUtilizationToExel/Sumary/HOURS_UPQP",utilizated, typeMap.subtotal.toFixed(2),report.summary?.get("AnnualUnExpectedPaid"));
+        }
       })
+      console.info("getExpesesUtilizationToExel/Sumary/typeMap end");
     })
+    report.summary.set("PricePerHour", Number(((report.summary.get("TotalPerHour") || 0) / (report.summary.get("FlightHours") || 1)).toFixed(2)));
+    report.summary.set("PricePerMonth", Number(((report.summary.get("TotalPerMonth") || 0) / (report.summary.get("Members") || 1)).toFixed(2))/12); ;
+    report.summary.set("UnExpectedPerMonth", Number(((report.summary.get("AnnualUnExpectedPaid") || 0) / (report.summary.get("Members") || 1)).toFixed(2))/12); ;
+    console.info("getExpesesUtilizationToExel/Sumary end",
+    report.summary.get("TotalPerMonth"), report.summary.get("TotalPerHour"), report.summary.get("AnnualUnExpectedPaid") );
+    report.body.push(["", "", "", "", "",""]);
+    report.body.push(["", "Estimated PricePer Hour Calculation", "", "",""]);
+    report.body.push(["Flight Hours", (report.summary.get("FlightHours") || 0).toFixed(1), "", ""]);
+    report.body.push(["Total Expenses For Per Hour Calculation", (report.summary.get("TotalPerHour") || 0).toFixed(2), "", ""]);
+    report.body.push(["Price Per Hour", (report.summary.get("PricePerHour") || 0).toFixed(2), "", ""]);
+    
+    report.body.push(["","Estimated Price Per Month Calculation","",""]);
+    report.body.push(["Members", (report.summary.get("Members") || 0).toFixed(0), "", ""]);
+    report.body.push(["Total Expenses For Month Calculation", (report.summary.get("TotalPerMonth") || 0).toFixed(2), "", "", "",""]);
+    report.body.push(["Total UnExpected Expenses Paid", (report.summary.get("AnnualUnExpectedPaid") || 0).toFixed(2), "", "", "",""]);
+    report.body.push(["Price Per Month", (report.summary.get("PricePerMonth") || 0).toFixed(2), "", ""]);
+    report.body.push(["UnExpected Per Month", (report.summary.get("UnExpectedPerMonth") || 0).toFixed(2), "", ""]);
+    report.body.push(["Total Estimated Price Per Month", ((report.summary.get("PricePerMonth") || 0)+(report.summary.get("UnExpectedPerMonth") || 0)).toFixed(2), "", ""]);  
     console.info("getExpesesUtilizationToExel/report", report)
     return report;
   }

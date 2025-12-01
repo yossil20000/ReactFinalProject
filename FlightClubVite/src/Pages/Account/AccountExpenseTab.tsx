@@ -299,7 +299,7 @@ function AccountExpenseTab() {
                   onClose={handleAddOnClose}
                   open={openExpenseUtilizedSave}
                   table={new CExpenseGroupToReport(
-                    data?.data ? data.data : [], filter.from, filter.to, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].max_engien_stop : 0, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].min_engien_stop : 0
+                    data?.data ? data.data : [], filter.from, filter.to, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].min_engien_start : 0, deviceMaxValues && deviceMaxValues.data.length > 0 ? deviceMaxValues.data[0].max_engien_stop : 0
                   ).getExpesesUtilizationToExel()}
                   action="ExpenseGroupExport"
                 />

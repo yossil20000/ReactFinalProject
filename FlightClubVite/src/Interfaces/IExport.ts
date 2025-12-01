@@ -7,7 +7,8 @@ export interface IExportExelTable {
   header: string[];
   body: Array<string[]>
   save:boolean;
-  showSelfSave?:boolean
+  showSelfSave?:boolean;
+  summary?:  Map<string, number>;
 }
 
 export type MapTotal = {
