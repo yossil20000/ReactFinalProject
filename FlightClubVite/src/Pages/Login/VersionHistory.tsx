@@ -81,6 +81,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 59,version: "2.0.24.0",date: new Date(2025,9,24).getDisplayDate() , "description" : "Fix Add reservation error, Add Hours_0050","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 60,version: "2.0.24.1",date: new Date(2025,10,13).getDisplayDate() , "description" : "Update reservation when change date from don't change date to. Mail try to fix sender","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 61,version: "2.0.24.2",date: new Date(2025,11,8).getDisplayDate() , "description" : "Add Alert in Home and reservation pages","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 62,version: "2.0.25.0",date: new Date(2025,12,1).getDisplayDate() , "description" : "Add Summary section to Type report. Summary calculate the estimate flight expense","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
 
 
   ]
