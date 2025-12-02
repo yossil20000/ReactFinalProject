@@ -220,6 +220,7 @@ export class CExpenseGroupToReport {
     report.summary.set("FlightHours", this.tachEnd - this.tachStart);
     report.summary.set("Members", 12);
     report.summary.set("PricePerHour", 0);
+    report.summary.set("EngineFund", 120);
     report.summary.set("PricePerMonth", 0);
     report.summary.set("AnnualUnExpectedPaid", 0);
     report.summary.set("UnExpectedPerMonth", 0);
@@ -265,7 +266,9 @@ export class CExpenseGroupToReport {
     report.body.push(["", "Estimated PricePer Hour Calculation", "", "",""]);
     report.body.push(["Flight Hours", (report.summary.get("FlightHours") || 0).toFixed(1), "Formula", ""]);
     report.body.push(["Total Expenses Per Hour Flight", (report.summary.get("TotalPerHour") || 0).toFixed(2), "=SUM(HOURS_000x / x) where x is flight hours in the table above", ""]);
-    report.body.push(["Calculated Price Per Hour", (report.summary.get("PricePerHour") || 0).toFixed(2), "Total Expenses Per Hour Flight / Flight Hours", ""]);
+    report.body.push(["Engine Fund Per Hour", (report.summary.get("EngineFund") || 0).toFixed(2), "Fixed Engine Fund Per Hour", ""]);
+    report.body.push(["Calculated Price Per Hour", (report.summary.get("PricePerHour") || 0 ).toFixed(2), "Total Expenses Per Hour Flight / Flight Hours", ""]);
+    report.body.push(["Total Price Per Hour", ((report.summary.get("PricePerHour") || 0 ) + ((report.summary.get("EngineFund") || 0))).toFixed(2), "Total Expenses Per Hour Flight + Engine Fund Per Hour", ""]);
     
     report.body.push(["","Estimated Price Per Month Calculation","",""]);
     report.body.push(["Members", (report.summary.get("Members") || 0).toFixed(0), "", ""]);
