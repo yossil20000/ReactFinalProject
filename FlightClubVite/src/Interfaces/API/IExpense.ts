@@ -32,23 +32,23 @@ export enum Utilizated {
 }
 export const UtilizatedDictionary = {
   [Utilizated.HOURS_0000]: "Expense Not Depend on Time",
-  [Utilizated.HOURS_0001]: "expense for 1 hour",
-  [Utilizated.HOURS_0050]: "expense for 50 hours",
-  [Utilizated.HOURS_0100]: "expense for 100 hours",
-  [Utilizated.HOURS_0150]: "expense for 150 hours",
-  [Utilizated.HOURS_0200]: "expense for 200 hours", 
-  [Utilizated.HOURS_0250]: "expense for 250 hours",
-  [Utilizated.HOURS_0300]: "expense for 300 hours", 
-  [Utilizated.HOURS_0350]: "expense for 350 hours",
-  [Utilizated.HOURS_0400]: "expense for 400 hours", 
-  [Utilizated.HOURS_0450]: "expense for 450 hours",
-  [Utilizated.HOURS_0500]: "expense for 500 hours", 
-  [Utilizated.HOURS_1000]: "expense for 1000 hours",
-  [Utilizated.HOURS_1500]: "expense for 1500 hours",
-  [Utilizated.HOURS_2000]: "expense for 2000 hours",
+  [Utilizated.HOURS_0001]: "expense for 1 hour flight",
+  [Utilizated.HOURS_0050]: "expense for 50 hours flight",
+  [Utilizated.HOURS_0100]: "expense for 100 hours flight",
+  [Utilizated.HOURS_0150]: "expense for 150 hours flight",
+  [Utilizated.HOURS_0200]: "expense for 200 hours flight", 
+  [Utilizated.HOURS_0250]: "expense for 250 hours flight",
+  [Utilizated.HOURS_0300]: "expense for 300 hours flight", 
+  [Utilizated.HOURS_0350]: "expense for 350 hours flight",
+  [Utilizated.HOURS_0400]: "expense for 400 hours flight", 
+  [Utilizated.HOURS_0450]: "expense for 450 hours flight",
+  [Utilizated.HOURS_0500]: "expense for 500 hours flight", 
+  [Utilizated.HOURS_1000]: "expense for 1000 hours flight",
+  [Utilizated.HOURS_1500]: "expense for 1500 hours flight",
+  [Utilizated.HOURS_2000]: "expense for 2000 hours flight",
   [Utilizated.HOURS_UPEQ]: "Unpredectibale Expense With Equaly divided",
-  [Utilizated.HOURS_OSEQ]: "Over Sea Equipments",
-  [Utilizated.HOURS_UPQP]: "Unpredectibale Expense Quarterly Payment"
+  [Utilizated.HOURS_OSEQ]: "Over Sea Equipments Handlement Expense",
+  [Utilizated.HOURS_UPQP]: "Unpredectibale Expense Quarterly Paid by Members"
 }
 
 function getEnumKeyByValue(value: string): keyof typeof Utilizated  {
@@ -263,17 +263,17 @@ export class CExpenseGroupToReport {
     report.summary.get("TotalPerMonth"), report.summary.get("TotalPerHour"), report.summary.get("AnnualUnExpectedPaid") );
     report.body.push(["", "", "", "", "",""]);
     report.body.push(["", "Estimated PricePer Hour Calculation", "", "",""]);
-    report.body.push(["Flight Hours", (report.summary.get("FlightHours") || 0).toFixed(1), "", ""]);
-    report.body.push(["Total Expenses For Per Hour Calculation", (report.summary.get("TotalPerHour") || 0).toFixed(2), "", ""]);
-    report.body.push(["Price Per Hour", (report.summary.get("PricePerHour") || 0).toFixed(2), "", ""]);
+    report.body.push(["Flight Hours", (report.summary.get("FlightHours") || 0).toFixed(1), "Formula", ""]);
+    report.body.push(["Total Expenses Per Hour Flight", (report.summary.get("TotalPerHour") || 0).toFixed(2), "=SUM(HOURS_000x / x) where x is flight hours in the table above", ""]);
+    report.body.push(["Calculated Price Per Hour", (report.summary.get("PricePerHour") || 0).toFixed(2), "Total Expenses Per Hour Flight / Flight Hours", ""]);
     
     report.body.push(["","Estimated Price Per Month Calculation","",""]);
     report.body.push(["Members", (report.summary.get("Members") || 0).toFixed(0), "", ""]);
-    report.body.push(["Total Expenses For Month Calculation", (report.summary.get("TotalPerMonth") || 0).toFixed(2), "", "", "",""]);
-    report.body.push(["Total UnExpected Expenses Paid", (report.summary.get("AnnualUnExpectedPaid") || 0).toFixed(2), "", "", "",""]);
-    report.body.push(["Price Per Month", (report.summary.get("PricePerMonth") || 0).toFixed(2), "", ""]);
-    report.body.push(["UnExpected Per Month", (report.summary.get("UnExpectedPerMonth") || 0).toFixed(2), "", ""]);
-    report.body.push(["Total Estimated Price Per Month", ((report.summary.get("PricePerMonth") || 0)+(report.summary.get("UnExpectedPerMonth") || 0)).toFixed(2), "", ""]);  
+    report.body.push(["Total Expenses For Month Calculation", (report.summary.get("TotalPerMonth") || 0).toFixed(2), "`=(HOURS_0000+HOURS_UPEQ+HOURS_OSEQ)`", "", "",""]);
+    report.body.push(["Total UnExpected Expenses Paid", (report.summary.get("AnnualUnExpectedPaid") || 0).toFixed(2), "`=HOURS_UPQP`", "", "",""]);
+    report.body.push(["Price Per Month Per Member", (report.summary.get("PricePerMonth") || 0).toFixed(2), "`=(Total Expenses For Month Calculation)  / Members_Count / 12[month]`", ""]);
+    report.body.push(["UnExpected Per Month Per Member", (report.summary.get("UnExpectedPerMonth") || 0).toFixed(2), "`=Price Per Month Per Member + UnExpected Per Month Per Member`", ""]);
+    report.body.push(["Total Estimated Price Per Month Per Member", ((report.summary.get("PricePerMonth") || 0)+(report.summary.get("UnExpectedPerMonth") || 0)).toFixed(2), "", ""]);  
     console.info("getExpesesUtilizationToExel/report", report)
     return report;
   }
