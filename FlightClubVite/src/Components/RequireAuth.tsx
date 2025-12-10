@@ -4,21 +4,14 @@ import { ROUTES } from "../Types/Urls";
 import { Role } from "../Interfaces/API/IMember";
 import Unauthorize from "./Unauthorize";
 import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
 export interface IRequireAuthProps {
   roles: Role[];
 }
 export  const UseIsAuthorized = (allowedRoles: IRequireAuthProps): boolean => {
   const login = useAppSelector((state) => state.authSlice);
-  const [ref,setRef] = useState(false)
-  useEffect(()=> {
-    let found = login.member.roles.find(role => allowedRoles?.roles?.includes(role));
-    CustomLogger.log("UseIsAuthorized/allowd,found,ref",allowedRoles,found,found === undefined ? false : true)
-    
-    setRef(found === undefined ? false : true)
-  },[login.member.roles,allowedRoles])
-
-  return ref
+  let isAuthorized = login.member.roles.some(role => allowedRoles?.roles?.includes(role));
+   CustomLogger.log("UseIsAuthorized/allowd,found,ref",allowedRoles,isAuthorized)
+  return isAuthorized;
 }
 function RequireAuth(allowedRoles: IRequireAuthProps) {
   const login = useAppSelector((state) => state.authSlice);
