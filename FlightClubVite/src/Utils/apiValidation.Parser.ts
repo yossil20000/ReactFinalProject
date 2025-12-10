@@ -1,10 +1,20 @@
 import { IValidationAlertProps } from "../Components/Buttons/TransitionAlert";
 import { IValidation } from "../Interfaces/IValidation";
 
+/**
+ * 
+ * @param validation  - The validation object containing details about the validation error.  
+ * @returns   A formatted string representing the validation error.
+ */
 export function apiValidationParse(validation: IValidation): string {
   return `${validation.param} (${validation.value}) : ${validation.msg} `;
 }
-
+/**
+ * 
+ * @param error - The error payload to parse. Can be an object with various shapes, an Error instance, an array, or a string.     
+ * @param onclose - A callback function to be invoked when the validation alert is closed.    
+ * @returns  - An array of IValidationAlertProps representing the parsed validation errors.
+ */
 export function getValidationFromError(error: any, onclose: () => void): IValidationAlertProps[] {
   CustomLogger.error("getValidationFromError", error)
   let validation: IValidationAlertProps[] = [];
@@ -110,4 +120,29 @@ export function getValidationFromError(error: any, onclose: () => void): IValida
     CustomLogger.error("getValidationFromError/finanly/validation", validation)
     return validation;
   }
+}
+/**
+ * 
+ * @param message - The custom validation message to be displayed.
+ * @param value - The value associated with the validation error.
+ * @param param - The parameter name associated with the validation error.
+ * @param onclose - A callback function to be invoked when the validation alert is closed.
+ * @param validation - An optional array of existing validation alerts to which the new alert will be added.
+ * @returns  An array of IValidationAlertProps representing the parsed validation errors.
+ */
+export function getValidationFromUserMessage(message: string,value:string,param: string, onclose: () => void,validation?: IValidationAlertProps[]): IValidationAlertProps[] {
+  CustomLogger.error("getValidationFromUserMessage/message", message)
+  if(validation === undefined)
+    validation = [];
+
+  let alert: IValidationAlertProps = {
+    location: 'Custom',
+    msg: message,     
+    param: param,
+    value: value,
+    open: true, 
+    onClose: onclose
+  };
+  validation.push(alert);
+  return validation;
 }
