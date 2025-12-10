@@ -7,7 +7,7 @@ import { IValidationAlertProps, ValidationAlert } from '../../Components/Buttons
 import ColumnGroupingTable, { Column } from '../../Components/ColumnGroupingTable'
 import { useClubAccountQuery, useFetchAllAccountsQuery } from '../../features/Account/accountApiSlice'
 import { IAccount, IAccountsCombo } from '../../Interfaces/API/IAccount'
-import { IClubAccount } from '../../Interfaces/API/IClub'
+import { EAccountType, IAddTransaction, IClubAccount, PaymentMethod, Transaction_OT, Transaction_Type } from '../../Interfaces/API/IClub'
 import { MemberType, Role } from '../../Interfaces/API/IMember'
 import { Status } from '../../Interfaces/API/IStatus'
 import ContainerPage, { ContainerPageFooter, ContainerPageHeader, ContainerPageMain } from '../Layout/Container'
@@ -16,6 +16,9 @@ import CreateAccountDialog from './CreateAccountDialog'
 import UpdateAccountDialog from './UpdateAccountDialog'
 import FullScreenLoader from '../../Components/FullScreenLoader'
 import { UseIsAuthorized } from '../../Components/RequireAuth'
+import PayTransactionDialog from './PayTransactionDialog'
+import { IExpenseBase } from '../../Interfaces/API/IExpense'
+import { QuarterType } from '../../Utils/enums'
 
 
 interface Data {
@@ -59,7 +62,6 @@ interface IAccountFilter {
 
 function AccountsTab() {
   const isAuthorized = UseIsAuthorized({ roles: [Role.desk, Role.admin, Role.account] })
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const handleChangePage = (event: unknown, newPage: number) => { setPage(newPage); };
@@ -133,11 +135,12 @@ function AccountsTab() {
       render: (<> <ActionButtons OnAction={onAction} show={[EAction.ADD]} item={""} disable={[{ key: EAction.ADD, value: !isAuthorized }]} /></>),
       isCell: true,
       description:""
-    }
+    },
   ];
   const [openAccountAdd, setOpenAccountAdd] = useState(false);
   const [openAddToBank, setOpenAddToBank] = useState(false);
   const [openAccountEdit, setOpenAccountEdit] = useState(false);
+  const [openAccountPay, setOpenAccountPay] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<IAccount | undefined>(undefined);
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [bank, setBank] = useState<IClubAccount | undefined>();
@@ -164,7 +167,11 @@ function AccountsTab() {
         if (foundAccount)
           bankRow = <Box><div>{bankFound.club.brand}/{bankFound.club.branch}</div><div>{bankFound.club.account_id}</div></Box>
       }
-      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.engine_fund_balance,row.balance+row.engine_fund_balance, row.status, row.description, <><ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} disable={[{ key: EAction.EDIT, value: !isAuthorized }]}/></>)
+      return createData(bankRow, row._id, row.account_id, row.member?.member_type, row.member?.family_name, row.balance, row.engine_fund_balance,row.balance+row.engine_fund_balance, row.status, row.description, 
+      <>
+      <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={row.account_id} disable={[{ key: EAction.EDIT, value: !isAuthorized }]}/>
+      <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={row.account_id} disable={[{ key: EAction.PAY, value: !isAuthorized }]}/>
+      </>)
     })
     CustomLogger.info("AccountsTab/getData", rows)
     return rows === undefined ? [] : rows;
@@ -226,6 +233,12 @@ function AccountsTab() {
           setOpenAccountEdit(true);
         }
         break;
+      case EAction.PAY:
+        if (item !== undefined) {
+          OnSelectedAccount(item);
+          setOpenAccountPay(true);
+        }
+        break;
       case EAction.SAVE:
         /* onSave() */
         break;
@@ -251,13 +264,23 @@ function AccountsTab() {
     setOpenAccountAdd(false);
     setOpenAccountEdit(false);
     setOpenAddToBank(false)
+    setOpenAccountPay(false);
   }
   const handleAddOnSave = (value: IAccount) => {
     refetch();
     setOpenAccountAdd(false);
     setOpenAccountEdit(false);
     setOpenAddToBank(false)
+    setOpenAccountPay(false);
     CustomLogger.log("AccountsTab/handleAddOnSave/value", value);
+  }
+  const handleAddOnPay = (value: IExpenseBase) => {
+    refetch();
+    setOpenAccountAdd(false);
+    setOpenAccountEdit(false);
+    setOpenAddToBank(false)
+    setOpenAccountPay(false);
+    CustomLogger.log("AccountsTab/handleAddOnPay/value", value);
   }
   const RenderClubAccount = useMemo(() => {
     let savingEngien: number = 1
@@ -311,6 +334,35 @@ function AccountsTab() {
     }
     return true
   }
+  function getExpense(selectedAccount: IAccount) : IAddTransaction {
+    const transaction: IAddTransaction ={
+      source: {
+        _id: "BC001001",
+        accountType: EAccountType.EAT_BANK
+      },
+      destination: {
+        _id: selectedAccount.account_id,
+        accountType: selectedAccount.member.member_type === MemberType.Supplier ? EAccountType.EAT_SUPPLIERS : EAccountType.EAT_ACCOUNT
+      },
+      amount: selectedAccount.balance,
+      engine_fund_amount: 0,
+      type: selectedAccount.member.member_type === MemberType.Supplier ? Transaction_Type.CREDIT : Transaction_Type.DEBIT,
+      order: {
+        type: Transaction_OT.TRANSFER,
+        _id: '',
+        quarter: QuarterType.NONE
+      },
+      payment: {
+        method: PaymentMethod.TRANSFER,
+        referance: ''
+      },
+      description: '',
+      date: new Date(),
+      value_date: new Date(),
+      supplier: ''
+    }
+    return transaction;
+  }
   return (
     <ContainerPage>
       <>
@@ -354,6 +406,7 @@ function AccountsTab() {
             {(openAddToBank == true && bank !== undefined && selectedAccount !== undefined) ? (<AddAccountToBankDialog value={selectedAccount} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddToBank} bank={bank} />) : (null)}
             {openAccountAdd == true ? (<CreateAccountDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAccountAdd} />) : (null)}
             {(openAccountEdit == true && selectedAccount !== undefined) ? (<UpdateAccountDialog value={selectedAccount} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAccountEdit} />) : (null)}
+            {openAccountPay == true && selectedAccount !== undefined ? (<PayTransactionDialog value={getExpense(selectedAccount)} onClose={handleAddOnClose} onSave={(value) => handleAddOnPay(value)} open={openAccountPay} />) : (null)}
             <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.filter(filterAccount)} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
           </>
         </ContainerPageMain>

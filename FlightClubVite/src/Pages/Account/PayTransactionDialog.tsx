@@ -9,7 +9,7 @@ import { useClubAccountQuery, useClubAddTransactionPaymentMutation } from '../..
 import { EAccountType, IAddTransaction, IPaymentRecipe, PayInfo, PaymentMethod, Transaction_OT, Transaction_Type, getTransactionToPaymentReciept, newPayInfo } from '../../Interfaces/API/IClub';
 import { IExpenseBase } from '../../Interfaces/API/IExpense';
 import { setProperty } from '../../Utils/setProperty';
-import { getValidationFromError } from '../../Utils/apiValidation.Parser';
+import { getValidationFromError, getValidationFromUserMessage } from '../../Utils/apiValidation.Parser';
 import FullScreenLoader from '../../Components/FullScreenLoader';
 import { MemberType } from '../../Interfaces/API/IMember';
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
@@ -24,6 +24,7 @@ export interface PayTransactionDialogProps {
   onClose: () => void;
   onSave: (value: IExpenseBase) => void;
   open: boolean;
+  value?: IAddTransaction | undefined;
 }
 
 const getAccountType = (memberType: string | undefined): string => {
@@ -45,21 +46,47 @@ const getAccountType = (memberType: string | undefined): string => {
   }
 }
 
-function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactionDialogProps) {
+function PayTransactionDialog({ onClose, onSave, open,value, ...other }: PayTransactionDialogProps) {
   /* const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
   const [recipe, setRecipe] = useState<IPaymentRecipe>() */
-  const [payInfo,setPayInfo] = useState<PayInfo>(newPayInfo)
+  const theme = useTheme()
   const [AddTransaction, { isError, isLoading, error, isSuccess: transactionSccuess }] = useClubAddTransactionPaymentMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
-  const [flipSource, setFlipSource] = useState(false)
-  const theme = useTheme()
-  const [selectedSource, setSelectedSource] = useState<InputComboItem>()
-  const [selectedDestination, setSelectedDestination] = useState<InputComboItem>()
+
+  const [payInfo,setPayInfo] = useState<PayInfo>(newPayInfo)
+  const [selectedSource, setSelectedSource] = useState<InputComboItem>({_id:"", label:"INIT", description:""})
+  const [selectedDestination, setSelectedDestination] = useState<InputComboItem>({_id:"", label:"INIT", description:""})
   const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
-  
+    
+  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(<></>);
+  const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(<></>);
 
   const [isSaved, setIsSaved] = useState(false);
 
+useEffect(() => {
+      let item : InputComboItem = {
+        _id: value?.source._id === undefined ? "" : value?.source._id,
+        label: "",
+        key: value?.source.accountType,
+        key2: value?.source._id,
+        description: "",
+      };
+      setSelectedSource(item);
+      setSourceCombo(RenderSource(item));
+  item = {
+      _id: value?.destination._id === undefined ? "" : value?.destination._id,
+      label: "",
+      key: value?.destination.accountType,
+      key2: value?.destination._id,
+      description: "",
+    };
+    setSelectedDestination(item)
+    setDestinationCombo(RenderDestination(item))        
+  if(value !== undefined){
+    setPayInfo({selectedTransaction:value, recipe: getTransactionToPaymentReciept().getReciep(value)})
+  }
+
+}, [value])
 
   const UpdateSourceAccountFields = (): IAddTransaction => {
     let newObj: IAddTransaction = payInfo.selectedTransaction
@@ -109,6 +136,11 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     CustomLogger.log("PayTransactionDialog/onSave", payInfo.selectedTransaction)
     setValidationAlert([]);
     const transaction = UpdateSourceAccountFields()
+    if(transaction.amount === undefined || transaction.amount ==0){
+      const validation = getValidationFromUserMessage("Amount must be not equal 0", transaction.amount?.toString() ?? "","amount", handleOnValidatiobClose);
+      setValidationAlert(validation);
+      return
+    }
     if (transaction !== undefined) {
       await AddTransaction(transaction).unwrap().then((data) => {
         CustomLogger.info("PayTransactionDialog/onSave/", data);
@@ -133,25 +165,22 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
     setSelectedDestination(item);
   }
 
-  const RenderSource = (): JSX.Element => {
-    return <ClubAccountsCombo title={"Source"} selectedItem={selectedSource} onChanged={onSelectedSource} source={"_NewTransactions/Source"} includesType={[MemberType.Club]} />
+  const RenderSource = (defaultIem: InputComboItem): JSX.Element => {
+    return <ClubAccountsCombo title={"Source"} selectedItem={defaultIem} onChanged={onSelectedSource} source={"_NewTransactions/Source"} includesType={[MemberType.Club]} />
     /* return flipSource === false ?
      
     :
     <ClubAccountsCombo title={"DE"} selectedItem={selectedDestination} onChanged={onSelectedSource} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} /> */
   }
-  const RenderDestination = (): JSX.Element => {
-    return <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} />
+  const RenderDestination = (defaultIem: InputComboItem): JSX.Element => {
+    return <ClubAccountsCombo title={"Destination"} selectedItem={defaultIem} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} />
     /* return flipSource === false ?
     <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_CreateExspense/Destination"} filter={{}} includesType={[MemberType.Member, MemberType.Supplier]} />
     :
     <ClubAccountsCombo title={"Destination"} selectedItem={selectedDestination} onChanged={OnselectedDestination} source={"_NewTransactions/Source"} includesType={[MemberType.Club]} /> */
   }
-  const handleFlipClick = () => {
-    CustomLogger.log("NewTransaction/handleFlipClick", flipSource,)
-    setFlipSource((prev) => !prev)
+  
 
-  }
   const handleNumericChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
     CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
@@ -268,16 +297,12 @@ function PayTransactionDialog({ onClose, onSave, open, ...other }: PayTransactio
         <>
           <DialogContent>
             <Grid container sx={{ width: "100%" }} justifyContent="center" columns={12} rowGap={1}>
-              <Grid item xs={11} sm={5}  >
-                {RenderSource()}
+              <Grid item xs={12} sm={6}  >
+                {sourceCombo}
               </Grid >
-              <Grid item xs={2} textAlign={"center"} margin={"auto"}>
-                <IconButton color="primary" aria-label="flip source and destination" onClick={handleFlipClick}>
-                  <FlipCameraAndroidIcon />
-                </IconButton>
-              </Grid>
-              <Grid item xs={11} sm={5}>
-                {RenderDestination()}
+
+              <Grid item xs={12} sm={6}>
+                {destinationCombo}
               </Grid>
               <Grid item sx={{ marginLeft: "0px" }} xs={6}  md={6}>
                 <LocalizationProvider adapterLocale={"en-gb"} dateAdapter={AdapterLuxon}>
