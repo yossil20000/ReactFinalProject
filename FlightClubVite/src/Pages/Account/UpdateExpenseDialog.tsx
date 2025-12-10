@@ -56,20 +56,21 @@ function UpdateExpenseDialog({
   expense,
   ...other
 }: UpdateExpenseDialogProps) {
+  const theme = useTheme();
   const [UpdateExpense, { isError, isLoading }] = useUpdateExpenseMutation();
   const { data: bankAccounts, isLoading: isQuery } = useClubAccountQuery(true);
   const [bank, setBank] = useState<IClubAccount | undefined>();
-
   const [selectedExpense, setSelectedExpense] = useState<IExpense>(expense);
   const [selectedSource, setSelectedSource] = useState<InputComboItem>({_id:"", label:"INIT", description:""});
-  const [selectedDestination, setSelectedDestination] =
-    useState<InputComboItem>({_id:"", label:"INIT", description:""});
+  const [selectedDestination, setSelectedDestination] = useState<InputComboItem>({_id:"", label:"INIT", description:""});
+  const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
   const [selectedType, setSelectedType] = useState<InputComboItem>();
   const [selectedCategory, setSelectedCategory] = useState<InputComboItem>();
   const [selectedSPU, setSelectedSPU] = useState<InputComboItem>();
-  const [validationAlert, setValidationAlert] = useState<
-    IValidationAlertProps[]
-  >([]);
+  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(<></>);
+  const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(<></>);
+ 
+  
   useEffect(() => {
     CustomLogger.info("UpdateExpenseDialog/useEffect/expense", expense);
     let item : InputComboItem = {
@@ -91,7 +92,7 @@ function UpdateExpenseDialog({
     setSelectedDestination(item)
     setDestinationCombo(RenderDestination(item))    
   }, [expense]);
-    const theme = useTheme();
+    
     const [isSaved, setIsSaved] = useState(false);
     const UpdateSourceAccountFields = (): IExpenseBase => {
       let newObj = selectedExpense;
@@ -198,11 +199,7 @@ function UpdateExpenseDialog({
       />
     );
   };
-  const [sourceCombo, setSourceCombo] = useState<JSX.Element>(<></>);
-  const [destinationCombo, setDestinationCombo] = useState<JSX.Element>(
-    <></>
-  );
-
+  
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     CustomLogger.log(
       "ExpenseDialog/handleChange",
