@@ -1,7 +1,6 @@
 /* https://react-pdf.org/styling#stylesheet-api */
-import ReactPDF, { View, Text, StyleSheet } from '@react-pdf/renderer'
+import { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { ITransactionReportTableHeader } from '../../../Interfaces/ITransactionsReport'
-import { center } from '@turf/turf'
 const borderColor = '#000000'
 const styles = StyleSheet.create({
   container: {
