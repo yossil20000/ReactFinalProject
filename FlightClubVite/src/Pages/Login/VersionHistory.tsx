@@ -2,7 +2,7 @@ import '../../Types/date.extensions'
 import { CssBaseline } from '@mui/material'
 import { Container, Box, createTheme } from '@mui/system'
 import { DataGrid,GridColDef,GridToolbarContainer } from '@mui/x-data-grid';
-import { ThemeProvider } from 'styled-components';
+
 const theme = createTheme();
 
 export interface IVersionHistoryProps {
@@ -97,7 +97,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
   }
   return (
     <>
-      <ThemeProvider theme={theme}>
+      {/* <ThemeProvider theme={theme}> */}
         {show === true ? 
         (
           <Container component="main" >
@@ -120,7 +120,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
         </Container>
         ) : (null)}
 
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </>
   )
 }
