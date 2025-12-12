@@ -2,7 +2,7 @@ import * as React from 'react';
 import Stack from '@mui/material/Stack';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from '@mui/x-charts';
-import * as turf from "@turf/turf";
+/* import * as turf from "@turf/turf"; */
 import inside from 'point-in-polygon';
 import { EPoint_WAB_GC } from '../Interfaces/API/IWAB';
 import { useState } from 'react';
@@ -90,7 +90,7 @@ initializeArrayWithValues(5, 2); // [2, 2, 2, 2, 2] */
       }
       console.log("WABChart/getLastPointLocation/utility_normal",utilityArea,normalArea)
 /*      var pt = turf.point(wabXPoints[size-1] === null ? 0 : wabXPoints[size-1] ,wabYPoints[size-1] === null ? 0 : wabYPoints[size-1]);*/
-       var polyUtility = turf.polygon([[
+       /* var polyUtility = turf.polygon([[
         [35, 1200],
         [35, 1960],
         [36.5,  2100],
@@ -107,7 +107,7 @@ initializeArrayWithValues(5, 2); // [2, 2, 2, 2, 2] */
         [40.5, 1200],
         [40.5, 2100],
         [36.5,2100]
-      ]]);
+      ]]); */
       var polyNormal2 = [
          
         [36.5, 2100],
@@ -129,14 +129,14 @@ initializeArrayWithValues(5, 2); // [2, 2, 2, 2, 2] */
 
       console.log("WABChart/getLastPointLocation/point",getLastPoint())
       let lastPoint = getLastPoint();
-      var pt = turf.point(lastPoint);
+      /* var pt = turf.point(lastPoint);
       let resUtil2 = turf.booleanPointInPolygon(pt, polyUtility);
-      let resNormal2 = turf.booleanPointInPolygon(pt, polyNormal);
+      let resNormal2 = turf.booleanPointInPolygon(pt, polyNormal); */
       let resUtil = inside(lastPoint,polyUtility2);
       let resNormal = inside(lastPoint,polyNormal2);
 
       console.log("WABChart/getLastPointLocation/truf_res_utility",resUtil,resNormal)
-      console.log("WABChart/getLastPointLocation/inside_res_utility",resUtil2,resNormal2)
+      /* console.log("WABChart/getLastPointLocation/inside_res_utility",resUtil2,resNormal2) */
       console.log("WABChart/getLastPointLocation/truf_res_utility_normal",resUtil,resNormal)
       let cgResult : EPoint_WAB_GC = EPoint_WAB_GC.EPOINT_OUT_LIMIT
       if(resUtil)
