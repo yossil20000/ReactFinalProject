@@ -21,8 +21,6 @@
     "@mui/x-date-pickers": "^6.20.2",
     "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^1.9.7",
-    "@turf/boolean-point-in-polygon": "^6.5.0",
-    "@turf/turf": "^6.5.0",
     "async-mutex": "^0.4.0",
     "axios": "^1.6.0",
     "clsx": "^2.1.0",
