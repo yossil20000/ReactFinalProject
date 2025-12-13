@@ -1,7 +1,7 @@
 {
   "name": "flight-club",
   "private": true,
-  "version": "0.1.0",
+  "version": "2.0.26",
   "scripts": {
     "dev": "vite --port 4000",
     "build": "tsc && vite build",
@@ -29,7 +29,6 @@
     "lodash": "^4.17.21",
     "luxon": "^3.4.3",
     "nested-property": "^4.0.0",
-    "npm": "^10.8.2",
     "point-in-polygon": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -41,7 +40,6 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7",
-    "@types/luxon": "^3.3.3",
     "@types/point-in-polygon": "^1.1.5",
     "@types/react": "^18.2.34",
     "@types/react-dom": "^18.2.14",
