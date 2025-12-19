@@ -155,7 +155,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
     setSelectedExpense(setProperty(selectedExpense, prop, item.label))
     CustomLogger.log("selectedExpense", selectedExpense)
   }
-  const handleDateChange = (newValue: DateTime | null) => {
+  const handleDateChange = (newValue: any | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setHours(12,0,0,0);
     setSelectedExpense(prev => ({ ...prev, date: newDate }))

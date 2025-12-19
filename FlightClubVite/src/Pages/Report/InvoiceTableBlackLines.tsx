@@ -9,8 +9,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 24,
     textAlign: 'center',
-    fontStyle: 'bold',
-
+    fontWeight: 700,
   },
   date: {
     width: '13%',

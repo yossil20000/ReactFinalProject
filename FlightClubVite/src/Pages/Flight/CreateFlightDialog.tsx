@@ -61,7 +61,7 @@ function CreateFlightDialog({ value, onClose, onSave, open, ...other }: CreateFl
     }
   }, [isLoading])
 
-  const handleFromDateFilterChange = (newValue: DateTime | null) => {
+  const handleFromDateFilterChange = (newValue: any | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
     setFlightCreate(prev => ({ ...prev, date: newDate }))

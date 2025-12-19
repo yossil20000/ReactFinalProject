@@ -221,7 +221,7 @@ useEffect(() => {
     CustomLogger.log("NewTransaction/SetProperty/newobj", newObj)
     return newObj;
   }
-  const handleDateChange = (newValue: DateTime | null,field:string="date") => {
+  const handleDateChange = (newValue: any | null,field:string="date") => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0);
     const newObj = setProperty(payInfo.selectedTransaction, field, newDate)

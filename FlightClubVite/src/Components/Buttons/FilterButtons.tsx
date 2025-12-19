@@ -1,5 +1,5 @@
-import { alpha,Box, Button, createTheme, IconButton, TextField, ThemeProvider, Toolbar, Tooltip, useMediaQuery } from "@mui/material";
-import { LocalizationProvider, MobileDatePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
+import { alpha,Box, createTheme, IconButton, ThemeProvider, Toolbar, Tooltip, useMediaQuery } from "@mui/material";
+import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTime } from "luxon";
 import SplitedButton from "./SplitedButton";
@@ -23,7 +23,7 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
   const { isByDateRange, OnFilterOwner, isFilterOwner, handleFilterClick, filterDate, setFilterDate } = props;
   const dateRangeBP = useMediaQuery('(min-width:410px)');
   CustomLogger.log("EnhancedTableToolbar/isbydateRange", isByDateRange);
-  const handleFromDateFilterChange = (newValue: DateTime | null) => {
+  const handleFromDateFilterChange = (newValue: any | null) => {
     if (newValue !== null) {
       let newDate = newValue?.toJSDate();
       if (newDate && filterDate.to && newDate <= filterDate.to){
@@ -32,7 +32,7 @@ export default  function FilterButtons(props: EnhancedTableToolbarProps) {
         
     }
   };
-  const handleToDateFilterChange = (newValue: DateTime | null) => {
+  const handleToDateFilterChange = (newValue: any | null) => {
     if (newValue !== null) {
       let newDate = newValue?.toJSDate();
       if (newDate !== null && filterDate.from && newDate >= filterDate.from) {

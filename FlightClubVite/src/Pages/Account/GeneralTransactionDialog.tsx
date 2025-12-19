@@ -193,7 +193,7 @@ function GeneralTransactionDialog({ onClose, onSave, open, ...other }: GeneralTr
     setSelectedTransaction(setProperty(selectedTransaction, prop, item.label))
     CustomLogger.log("GeneralTransactionDialog/onComboChanged/selectedTransaction", selectedTransaction)
   }
-  const handleDateChange = (newValue: DateTime | null) => {
+  const handleDateChange = (newValue: any | null) => {
     CustomLogger.info("GeneralTransactionDialog/handleDateChange", newValue)
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0);

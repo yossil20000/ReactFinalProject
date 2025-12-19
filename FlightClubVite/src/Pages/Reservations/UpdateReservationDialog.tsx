@@ -100,7 +100,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
     }
   }, [isLoading])
 
-  const handleFromDateFilterChange = (newValue: DateTime | null) => {
+  const handleFromDateFilterChange = (newValue: any | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
     /* let date_to = new Date(newDate).addHours(1) */
@@ -109,7 +109,7 @@ function UpdateReservationDialog({ value, onClose, onSave, open, ...other }: Upd
     setValidator(errors)
   };
 
-  const handleToDateFilterChange = (newValue: DateTime | null) => {
+  const handleToDateFilterChange = (newValue: any | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
     setReservationUpdate(prev => ({ ...prev, date_to: newDate, time_to: newDate.getTime()}))

@@ -91,7 +91,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
 
   }, [isLoading])
 
-  const handleFromDateFilterChange = (newValue: DateTime | null) => {
+  const handleFromDateFilterChange = (newValue: any | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)
     let date_to = new Date(newDate).addHours(1)
@@ -100,7 +100,7 @@ function CreateReservationDialog({ value, onClose, onSave, open, ...other }: Cre
     setValidator(errors)
   };
   
-  const handleToDateFilterChange = (newValue: DateTime | null) => {
+  const handleToDateFilterChange = (newValue: any | null) => {
     CustomLogger.log("CreateFlightDialoq/handleToDateFilterChange/", newValue);
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0)

@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 48,
     textAlign: 'center',
-    fontStyle: 'bold',
+    fontWeight: 700,
 
   },
   date: {

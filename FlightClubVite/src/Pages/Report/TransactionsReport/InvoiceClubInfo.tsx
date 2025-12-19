@@ -17,7 +17,7 @@ function InvoiceClubInfo() {
     },
     invoiceDate: {
       fontSize: 12,
-      fontStyle: 'bold'
+      fontWeight: 700,
     },
     lable: {
       width: 140,textDecoration:'underline'

@@ -57,7 +57,7 @@ function UpdateFlightDialog({ value, onClose, onSave, open, ...other }: UpdateFl
     }
   }, [isLoading])
 
-  const handleFromDateFilterChange = (newValue: DateTime | null) => {
+  const handleFromDateFilterChange = (newValue: any | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     setFlightUpdate(prev => ({ ...prev, date: newDate }))
   };

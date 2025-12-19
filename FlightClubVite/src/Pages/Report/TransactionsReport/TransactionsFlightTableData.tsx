@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     height: 24,
     textAlign: 'left',
-    fontStyle: 'bold',
+    fontWeight: 700,
 
   }
 })

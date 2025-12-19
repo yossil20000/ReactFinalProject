@@ -95,7 +95,7 @@ function CreateQuarterDialoq({ open, onClose, onSave, ...other }: ICreateQuarter
       [event.target.name]: event.target.value
     }));
   };
-  const handleDateChange = (newValue: DateTime | null) => {
+  const handleDateChange = (newValue: any | null) => {
     let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
     newDate.setSeconds(0, 0);
     setSelectedMembers(prev => ({ ...prev, date: newDate }))

@@ -43,7 +43,7 @@ export default function SplitedButton(props: ISplitButtonProps) {
           aria-haspopup="menu"
           onClick={handleToogle}> <ArrowDropDownIcon />
         </Button>
-        <Popper sx={{ zIndex: 1, }} open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal nonce={undefined} onResize={undefined} onResizeCapture={undefined}>
+        <Popper sx={{ zIndex: 1, }} open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal nonce={undefined} >
           {({ TransitionProps, placement }) => (<Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>

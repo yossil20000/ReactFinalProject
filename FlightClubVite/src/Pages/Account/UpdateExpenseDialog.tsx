@@ -265,7 +265,7 @@ function UpdateExpenseDialog({
       setSelectedExpense(SetProperty(selectedExpense,'description',`|${selectedExpense.expense.category}|${item.lable}|`))
     } */
   };
-    const handleDateChange = (newValue: DateTime | null) => {
+    const handleDateChange = (newValue: any | null) => {
       let newDate = newValue?.toJSDate() === undefined ? new Date() : newValue?.toJSDate();
       newDate.setHours(12,0,0,0);
       setSelectedExpense(prev => ({ ...prev, date: newDate }))
