@@ -84,6 +84,7 @@ function VersionHistory({show=false} : IVersionHistoryProps) {
     {id: 62,version: "2.0.25.0",date: new Date(2025,12,1).getDisplayDate() , "description" : "Add Summary section to Type report. Summary calculate the estimate flight expense","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 63,version: "2.0.25.1",date: new Date(2025,12,2).getDisplayDate() , "description" : "Fix Summary section to Type report. Summary calculate the estimate flight expense","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
     {id: 64,version: "2.0.26.0",date: new Date(2025,12,10).getDisplayDate() , "description" : "Option to Add payment from user Accouts","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
+    {id: 65,version: "2.0.26.1",date: new Date(2025,12,10).getDisplayDate() , "description" : "Member option comco selection fix","known_bug": "Admin/Devices Device need to clear and reselect the device name"},    
 
 
   ]
