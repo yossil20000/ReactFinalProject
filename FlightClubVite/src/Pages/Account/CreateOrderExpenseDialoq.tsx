@@ -43,27 +43,28 @@ function CreateOrderExpenseDialoq({ open, onClose, onSave, ...other }: ICreateOr
 
     onClose()
   }
-  const handleOnSave = async () => {
+  async function handleOnSave(): Promise<void> {
     CustomLogger.log("CreateOrderExpenseDialoq/handleOnSave", selectedMembers)
     try {
       setValidationAlert([])
       setIsSaved(false)
-      await CreateExpenseOrder(selectedMembers).unwrap().then((results) => {
-        CustomLogger.info("CreateOrderExpenseDialoq/handleOnSave/result", results)
+      CreateExpenseOrder(selectedMembers).unwrap().then((results) => {
+        const newLocal = "CreateOrderExpenseDialoq/handleOnSave/result"
+        CustomLogger.info(newLocal, results)
         if (results.success) {
           setIsSaved(true)
         }
       }).catch((err) => {
-        const validation = getValidationFromError(err, handleOnValidatiobClose);
-        setValidationAlert(validation);
+        const validation = getValidationFromError(err, handleOnValidatiobClose)
+        setValidationAlert(validation)
         CustomLogger.error("CreateOrderExpenseDialoq/handleOnSave/error", err)
       })
 
     }
     catch (error) {
       CustomLogger.error("CreateOrderExpenseDialoq/handleOnSave/error", error)
-      const validation = getValidationFromError(error, handleOnValidatiobClose);
-      setValidationAlert(validation);
+      const validation = getValidationFromError(error, handleOnValidatiobClose)
+      setValidationAlert(validation)
 
     }
   }
@@ -128,7 +129,7 @@ function CreateOrderExpenseDialoq({ open, onClose, onSave, ...other }: ICreateOr
                 </LocalizationProvider>
                 {/* </Item> */}
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} height={'100%'}>
                 <MembersOptionCombo OnSelectedChanged={OnSelectedChanged} />
                 <Divider light />
               </Grid>

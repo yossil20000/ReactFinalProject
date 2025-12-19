@@ -352,11 +352,11 @@ function DeviceTabItem() {
 
                     <Grid item xs={2} justifySelf={"center"}>
                       {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
-                      <MultiOptionCombo property={"details.instruments"} label={"Adtional Systems "} selectedItems={getSelectedInstrument()} items={navLableItems} onSelected={onSelecteAditionaSystem} />
+                      <MultiOptionCombo property={"details.instruments"} label={"Adtional Systems "} values={getSelectedInstrument()} options={navLableItems} onChange={onSelecteAditionaSystem} />
                     </Grid>
                     <Grid item xs={2} justifySelf={"center"}>
                       {/* <Typography sx={{ width: "100%", height:"100%" ,flexShrink: 0 ,textAlign: "center",  display:'flex',alignItems:"center"}} >Status Next Service</Typography> */}
-                      <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} selectedItems={getSelectedCanreserve()} items={memberCanReserve} onSelected={onSelecteCanReserv} />
+                      <MultiOptionCombo property={"can_reservs"} label={"Order Permssion"} values={getSelectedCanreserve()} options={memberCanReserve}  onChange={onSelecteCanReserv} />
                     </Grid>
                   </Grid>
                 </Grid>
