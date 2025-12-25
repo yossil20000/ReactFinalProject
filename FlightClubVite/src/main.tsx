@@ -10,14 +10,14 @@ import { ThemeProvider } from "@emotion/react";
 globalThis.CustomLogger = new CCustomLogger({ level: "info" });
 ReactDOM.createRoot(document.getElementById("root")!).render(
   //<Provider store={store}>
-  <StrictMode>
+  <>
     <ThemeProvider theme={{}}>
       <Provider store={storeUser}>
         <CssBaseline />
         <App />
       </Provider>
     </ThemeProvider>
-  </StrictMode>
+  </>
 
   //</Provider>
 );
