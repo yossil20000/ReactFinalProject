@@ -90,7 +90,7 @@ function CreateExpenseDialog({ onClose, onSave, open, ...other }: CreateExpenseD
 
 
   }
-  const onSelectedSource = (item: InputComboItem) => {
+  const onSelectedSource = (item: InputComboItem):void => {
     CustomLogger.log("onSelectedSource/item", item)
     setSelectedSource(item)
   }

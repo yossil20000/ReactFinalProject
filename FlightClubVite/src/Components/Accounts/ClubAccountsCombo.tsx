@@ -73,7 +73,7 @@ CustomLogger.log("ClubAccountsCombo/props", props)
       
     }
     CustomLogger.info("ClubAccountsCombo/clubAccounts/items", items)
-  }, [accounts?.data,initialItem])
+  }, [accounts?.data,initialItem?._id])
 
   const onSelectedItem = (item: InputComboItem) => {
     setSelectedItem(item);
