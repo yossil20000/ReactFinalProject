@@ -23,6 +23,18 @@ exports.expense_type = [
     }
   }
 ]
+exports.selection_type =[
+  async function (req, res, next) {
+    try {
+      const selections = await SelectionType.find({});  
+      return res. status(201).json({ success: true, errors: [], data: selections });
+    }
+    catch (error) {
+      return next(new ApplicationError("type", 400, "CONTROLLER.TYPE.TYPE.EXCEPTION", { name: "EXCEPTION", error }));
+    }   
+  }
+
+]
 exports.create_type = [
   body("key","key length not valid").isLength({min: 0}),
    async function (req, res, next) {

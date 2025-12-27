@@ -74,10 +74,14 @@ export  enum URLS{
   CLUB_DELETE_EXPENSE = 'api/club_account/delete_expense',
   CLUB_TRANSACTION_SEARCH = 'api/club_account/transaction/search',
   CLUB_RESERV = 'api/club_account/club/account_saving',
-  TYPES = 'api/type',
+  TYPES = 'api/selection_types',
+  TYPES_ALL = 'api/selection_types/selection/all',
   NOTIFY = 'api/notification',
   NOTIFY_SEARCH = 'api/notification/search',
   NOTIFY_CREATE = 'api/notification/create',
-  NOTIFY_UPDATE = 'api/notification/update'
-  
+  NOTIFY_UPDATE = 'api/notification/update',
+  EXPENSE_ITEM = 'api/expense_item',
+  EXPENSE_ITEM_CREATE = 'api/expense_item/create',
+  EXPENSE_ITEM_UPDATE = 'api/expense_item/update',
+  EXPENSE_ITEM_DELETE = 'api/expense_item/delete'
 }

@@ -8,6 +8,7 @@ import AccountsTab from "./AccountsTab";
 import AccountTransactionsTab from "./AccountTransactionsTab";
 import AccountReportsTab from "./AccountReportsTab";
 import AccountStatisticTab from "./AccountStatisticTab";
+import AccountExpenseItemGridTab from "./AccountExpenseItemGridTab";
 
 const items: ScrollableTabsItem[] = [
   { id: 0, label: "Member Flights" },
@@ -17,6 +18,7 @@ const items: ScrollableTabsItem[] = [
   { id: 4, label: "Report" },
   { id: 4, label: "Statistic" },
   { id: 6, label: "Accounts" },
+  { id: 7, label: "Expense Items" },
  /*  { id: 5, label: "ExpenseGrid" } */
 ]
 
@@ -42,6 +44,7 @@ function AccountPage() {
               {value === 3 && (<AccountTransactionsTab/>)}
               {value === 4 && (<AccountReportsTab/>)}
               {value === 5 && (<AccountStatisticTab/>)}
+              {value === 7 && (<AccountExpenseItemGridTab/>)}
              {/*  {value === 5 && (<AccountExpenseGridTab/>)} */}
               {/* {value === 5 && (<AccountTest/>)} */}
 

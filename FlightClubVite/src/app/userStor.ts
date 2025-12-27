@@ -13,6 +13,8 @@ import { imageApiSlice } from "../features/image/imageApiSlice";
 import { accountApiSlice } from "../features/Account/accountApiSlice";
 import {notifyApiSlice} from '../features/Notification/notificationApiSlice';
 import adminPageSliceReducer from "../features/Admin/adminPageSlice";
+import { expenseItemApiSlice } from "../features/expenseItem/expenseItemApiSlice";
+
 
 export const storeUser = configureStore({
     reducer:{
@@ -27,6 +29,7 @@ export const storeUser = configureStore({
         [imageApiSlice.reducerPath] : imageApiSlice.reducer,
         [accountApiSlice.reducerPath] : accountApiSlice.reducer,
         [notifyApiSlice.reducerPath] : notifyApiSlice.reducer,
+        [expenseItemApiSlice.reducerPath] : expenseItemApiSlice.reducer,
         authSlice: authSliceReducer ,
         selectedNotice: noticeSliceReducer,
         setDairty: adminPageSliceReducer
@@ -46,6 +49,7 @@ export const storeUser = configureStore({
         .concat(imageApiSlice.middleware)
         .concat(accountApiSlice.middleware)
         .concat(notifyApiSlice.middleware)
+        .concat(expenseItemApiSlice.middleware);
     }
 });
 

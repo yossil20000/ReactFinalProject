@@ -9,8 +9,6 @@ const mail = require("../Services/mailService");
 require('../Types/date.extensions')
 
 var { body, validationResult } = require('express-validator');
-const { path } = require('../app');
-const member = require('../Models/member');
 const { getLastMemberId } = require('../Services/memberService');
 
 exports.member_flight_summary = async function (req, res, next) {

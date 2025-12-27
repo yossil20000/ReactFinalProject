@@ -252,6 +252,16 @@ export const accountApiSlice = createApi({
 
         })
       }),
+      fetchAllTypes: builder.query<IResultBase<ITypes>,void>({
+        query: () => ({
+          url: `/${URLS.TYPES_ALL}`,
+          method: "GET",
+        }),
+        transformResponse : (response : IResultBase<ITypes>) => {
+          CustomLogger.info("fetchAllTypes/response", response);
+          return response;
+        } 
+      }),
       fetchAccountSaving: builder.query<IResultBaseSingle<IClubAccountSaving>,string>({
         query: (key) => ({
           url:`/${URLS.CLUB_RESERV}/${key}`,
@@ -297,9 +307,10 @@ export const {
   useUpdateExpenseMutation,
   useDeleteExpenseMutation,
   useFetchTypesQuery,
+  useFetchAllTypesQuery,
   useFetchTransactionQuery,
   useCreateQuarterOrderMutation,
   useCreateExpenseOrderMutation,
   useFetchAccountSavingQuery,
-  useUpdateAccountSavingMutation
+  useUpdateAccountSavingMutation,
 } = accountApiSlice;

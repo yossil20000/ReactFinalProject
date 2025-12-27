@@ -10,7 +10,7 @@ const SelectionTypeSchema = new Schema({
   key: {type: String ,unique: true,  default: "Expense", set: setUpper},
   values: {type: [String] ,unique: true,
     default:["AnnualTest","Insurance","Other","Parts","Repair","Fuel","Oil","AirpotTax"], set: setUpperArray} 
-})
+},{toJSON: {getters: true}} )
 
 function setUpper(value) {
   return value.toUpperCase();
