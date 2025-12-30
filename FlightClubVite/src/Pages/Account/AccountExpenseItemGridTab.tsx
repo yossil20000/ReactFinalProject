@@ -1,11 +1,11 @@
 import "../../Types/date.extensions"
 import { Box } from '@mui/material'
-import ExpenseItemsTable from "../../Components/Tables/ExpenseItemsTable";
-import { IValidationAlertProps, NewValidationAlertProps, ValidationAlert, getValidationAlertMessages } from "../../Components/Buttons/TransitionAlert";
+import { IValidationAlertProps, NewValidationAlertProps, getValidationAlertMessages } from "../../Components/Buttons/TransitionAlert";
 import { useState } from "react";
 import useSessionStorage from "../../hooks/useLocalStorage";
 import { getValidationFromError } from "../../Utils/apiValidation.Parser";
 import ConfirmationDialog, { ConfirmationDialogProps } from "../../Components/ConfirmationDialog";
+import ExpenseItemTableX from "../../Components/Tables/ExpenseItemsTable";
 
 function AccountExpenseItemGridTab() {
   const [validationAlert, setValidationAlert] = useSessionStorage<IValidationAlertProps[]>("_ExpenseItemsTab/alert",[NewValidationAlertProps]);
@@ -42,7 +42,7 @@ function AccountExpenseItemGridTab() {
       </div>
       <div className='main' style={{ overflow: "auto", height: "100%" }}>
         <Box marginTop={2} height={'100%'}>
-          <ExpenseItemsTable validationAlert={validationAlert} setValidationAlert={setValidationAlert} onError={OnError}/>
+          <ExpenseItemTableX validationAlert={validationAlert} setValidationAlert={setValidationAlert} onError={OnError}/>
         </Box>        
       </div>
       <div className='footer'>
