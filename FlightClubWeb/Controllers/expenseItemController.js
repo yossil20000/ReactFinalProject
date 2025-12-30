@@ -42,9 +42,9 @@ exports.expense_item = [
 
 exports.expense_item_create = [ 
 body('item_name').trim().isLength({ min: 1 }).withMessage("item_name must be with length > 0"),
-  body('category').trim().isLength({ min: 1 }).withMessage("category must be with length > 0"),
-  body('type').trim().isLength({ min: 1 }).withMessage("type must be with length > 0"),
-  body('utilizated').trim().isIn(Object.values(constants.Utilizated)).withMessage("utilizated must be one of " + Object.values(constants.Utilizated).join(",")),
+  body('expense.category').trim().isLength({ min: 1 }).withMessage("category must be with length > 0"),
+  body('expense.type').trim().isLength({ min: 1 }).withMessage("type must be with length > 0"),
+  body('expense.utilizated').trim().isIn(Object.values(constants.Utilizated)).withMessage("utilizated must be one of " + Object.values(constants.Utilizated).join(",")),
   async (req, res, next) => {
     try {
       log.info("expense_item_create", req.body);
@@ -55,9 +55,9 @@ body('item_name').trim().isLength({ min: 1 }).withMessage("item_name must be wit
       const newItem = new ExpenseItem({
         item_name:  req.body.item_name,
         expense: {
-          category: req.body.category,
-          type: req.body.type,
-          utilizated: req.body.utilizated
+          category: req.body.expense.category,
+          type: req.body.expense.type,
+          utilizated: req.body.expense.utilizated
         } 
       });
       const savedItem =  await newItem.save();
@@ -91,9 +91,9 @@ exports.expense_item_delete = [
 exports.expense_item_update = [
   body('_id').trim().isLength({ min: 24, max: 24 }).withMessage("_id must be valid 24 characters"),
   body('item_name').trim().isLength({ min: 1 }).withMessage("item_name must be with length > 0"),   
-  body('category').trim().isLength({ min: 1 }).withMessage("category must be with length > 0"),
-  body('type').trim().isLength({ min: 1 }).withMessage("type must be with length > 0"),
-  body('utilizated').trim().isIn(Object.values(constants.Utilizated)).withMessage("utilizated must be one of " + Object.values(constants.Utilizated).join(",")),
+  body('expense.category').trim().isLength({ min: 1 }).withMessage("category must be with length > 0"),
+  body('expense.type').trim().isLength({ min: 1 }).withMessage("type must be with length > 0"),
+  body('expense.utilizated').trim().isIn(Object.values(constants.Utilizated)).withMessage("utilizated must be one of " + Object.values(constants.Utilizated).join(",")),
   async (req, res, next) => {
     try {
       log.info("expense_item_update", req.body);    
