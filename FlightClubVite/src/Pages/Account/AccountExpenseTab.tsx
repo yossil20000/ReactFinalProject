@@ -42,6 +42,7 @@ import { from_to_year_Filter } from "../../Utils/filtering";
 import { getFilter, IFilter } from "../../Interfaces/API/IFilter";
 import { useGetDeviceMaxValuesQuery } from "../../features/Flight/flightApi";
 import { defaultMaxValuesQuery, FlightStatus } from "../../Interfaces/API/IFlight";
+import useLocalStorage, { useSessionStorage } from "../../hooks/useLocalStorage";
 interface Data {
   _id: string;
   date: Date;
@@ -63,9 +64,9 @@ function AccountExpenseTab() {
     roles: [Role.desk, Role.admin, Role.account],
   });
   const [openFilter, setOpenFilter] = useState(false);
-  const [filter, setFilter] = useState<IDateFilter>({currentOffset: 0, from: new Date().getStartOfYear().getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter);
+  const [filter, setFilter] = useSessionStorage<IDateFilter>("AccountExpenseDateFilter",{currentOffset: 0, from: new Date().getStartOfYear().getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter);
   const { data, refetch, isLoading, error } = useFetchExpenseQuery(filter);
-  const { data: deviceMaxValues, error: deviceMaxValuesError } = useGetDeviceMaxValuesQuery({...defaultMaxValuesQuery, device_id: "4XCGC",status: [FlightStatus.CREATED, FlightStatus.CLOSE,FlightStatus.PAYED],from: filter.from.getStartDayDate(), to: filter.to.getEndDayDate()})
+  const { data: deviceMaxValues, error: deviceMaxValuesError } = useGetDeviceMaxValuesQuery({...defaultMaxValuesQuery, device_id: "4XCGC",status: [FlightStatus.CREATED, FlightStatus.CLOSE,FlightStatus.PAYED],from: new Date(filter.from).getStartDayDate(), to: new Date(filter.to).getEndDayDate()})
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);
   const [openExpenseSave, setOpenExpenseSave] = useState(false);
   const [openExpenseUtilizedSave, setOpenExpenseUtilizedSave] = useState(false);
@@ -80,15 +81,20 @@ function AccountExpenseTab() {
     IValidationAlertProps[]
   >([]);
 
-  const OnSelectedAction = (item: string): void => {
+  const OnSelectedAction = (item: string | IExpense): void => {
+    if (typeof item === "string") {
     const found = data?.data.find((expense) => expense._id === item);
     CustomLogger.log("AccountExpenseTab/OnSelectedAction", found);
     setSelectedExpense(found);
+    }
+    else {
+      setSelectedExpense(item);
+    }
   };
   function onAction(
     action: EAction,
     event?: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    item?: string
+    item?: string | IExpense
   ) {
     event?.defaultPrevented;
     CustomLogger.log("AccountExpenseTab/onAction", event?.target, action, item);
@@ -184,7 +190,7 @@ function AccountExpenseTab() {
     const newFilter = SetProperty(filter, key, new Date(value));
     setFilter(newFilter);
     CustomLogger.log("AccountExpenseTab/onDateChanged", newFilter);
-    refetch();
+    
   };
   return (
     <Box fontSize={{ xs: "1rem", md: "1.2rem" }} height={"100%"}>

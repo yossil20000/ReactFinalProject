@@ -358,10 +358,12 @@ function ExpenseItemTable({validationAlert,setValidationAlert,onError}: IExpense
             columnVisibilityModel: {
               _id: false
             }
-          }
+          },
+          sorting: {
+            sortModel: [{ field: 'category', sort: 'asc' }],
         }
         }
-
+      }
         pageSizeOptions={[5, 10, 15, 20, 50, 100]}
         getRowHeight={() => 'auto'}
         rows={rows}

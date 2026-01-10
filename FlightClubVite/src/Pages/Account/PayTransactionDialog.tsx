@@ -15,7 +15,6 @@ import { MemberType } from '../../Interfaces/API/IMember';
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
-import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
 import TransactionTypeCombo from '../../Components/Buttons/TransactionTypeCombo';
 import { GridExpandMoreIcon } from '@mui/x-data-grid';
 import { QuarterType } from '../../Utils/enums';
@@ -90,7 +89,8 @@ useEffect(() => {
 
   const UpdateSourceAccountFields = (): IAddTransaction => {
     let newObj: IAddTransaction = payInfo.selectedTransaction
-    newObj = {
+    CustomLogger.warn("PayTransactionDialog/UpdateSourceAccountFields/before", newObj)
+ /*    newObj = {
       source: {
         _id: selectedSource?.key2 === undefined ? "" : selectedSource?.key2,
         accountType: getAccountType(selectedSource?.key)
@@ -115,11 +115,11 @@ useEffect(() => {
       date: payInfo.selectedTransaction.date,
       value_date: payInfo.selectedTransaction.value_date,
       supplier: payInfo.selectedTransaction.supplier // Add supplier property
-    }
+    } */
     CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/selectedSource", selectedSource, selectedDestination)
     CustomLogger.log("PayTransactionDialog/UpdateSourceAccountFields/newobj", newObj)
     //setSelectedExpense(newObj);
-    setPayInfo({selectedTransaction: newObj,recipe: payInfo.recipe});
+    /* setPayInfo({selectedTransaction: newObj,recipe: payInfo.recipe}); */
     return newObj
   }
 
@@ -156,12 +156,12 @@ useEffect(() => {
   }
 
   const onSelectedSource = (item: InputComboItem) => {
-    CustomLogger.log("onSelectedSource/item", item)
+    CustomLogger.log("PayTransactionDialog/onSelectedSource/item", item)
     setSelectedSource(item)
   }
 
   const OnselectedDestination = (item: InputComboItem): void => {
-
+    CustomLogger.log("PayTransactionDialog/OnselectedDestination/item", item)
     setSelectedDestination(item);
   }
 

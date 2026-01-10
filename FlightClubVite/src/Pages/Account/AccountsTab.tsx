@@ -56,6 +56,7 @@ interface IAccountFilter {
   account_id: string;
   active_only: boolean;
   negative_balance: boolean;
+  positive_balance: boolean;
   members: boolean;
   suppliers: boolean
 }
@@ -146,7 +147,7 @@ function AccountsTab() {
   const [bank, setBank] = useState<IClubAccount | undefined>();
   const { data, refetch, isLoading, error } = useFetchAllAccountsQuery({});
   const { data: bankAccounts } = useClubAccountQuery(true);
-  const [filterData, setFilterData] = useState({ account_id: "", active_only: true, negative_balance: false, members: true, suppliers: false } as IAccountFilter)
+  const [filterData, setFilterData] = useState({ account_id: "", active_only: true, negative_balance: false,positive_balance: false, members: true, suppliers: true } as IAccountFilter)
   const getData = useMemo(() => {
     let bankFound: IClubAccount | undefined = undefined;
     if (bankAccounts?.data !== undefined && bankAccounts?.data.length > 0) {
@@ -188,6 +189,9 @@ function AccountsTab() {
 
     if (filterData.negative_balance && filter == true) {
       filter = item.balance < 0 ? true : false
+    }
+    if (filterData.positive_balance && filter == true) {
+      filter = item.balance > 0 ? true : false
     }
     if (!filterData.members && filter == true) {
       filter = item.member_type == MemberType.Member ? false : true
@@ -386,7 +390,11 @@ function AccountsTab() {
                     <FormControlLabel control={<Checkbox onChange={handleFilterChange}
                       name={"negative_balance"} checked={filterData?.negative_balance}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
-                      label={filterData?.negative_balance ? "Negative Balance" : "Balance"} />
+                      label={"Negative Balance"} />
+                    <FormControlLabel control={<Checkbox onChange={handleFilterChange}
+                      name={"positive_balance"} checked={filterData?.positive_balance}
+                      sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}
+                      label={"Positive Balance"} />
                     <FormControlLabel control={<Checkbox onChange={handleFilterChange}
                       name={"members"} checked={filterData?.members}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: 24 } }} />}

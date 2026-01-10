@@ -1,5 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { customLogger } from "../customLogging";
 import '../Types/date.extensions'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
@@ -19,7 +19,7 @@ interface IExpenseTableProps {
   hideAction?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
-  onAction?: (action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string) => void;
+  onAction?: (action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string | IExpense) => void;
   // selectedClubAccount: InputComboItem | null;
 }
 export default function ExpenseTable({ hideAction = false, filter = {}, onAction = () => { } }: IExpenseTableProps) {
@@ -29,6 +29,11 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
   const [page, setPage] = useState(1);
   const { data: Expenses, isLoading, error } = useFetchExpenseQuery(filter);
 
+  const onSelectCommand = (action: EAction, event?: React.MouseEvent<HTMLButtonElement, MouseEvent>, item?: string ) : void => {
+    const found = Expenses?.data.find((expense) => expense._id === item);
+    customLogger.log("ExpenseTable/onSelectCommand", item);
+    onAction(action, event, found);
+  }
   const getExpenseStatistics = (expenses: IExpense[]) => {
     const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     const average = total / expenses.length;
@@ -52,6 +57,9 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
     customLogger.log("ExpenseTable/getExpenseStatistics/groupByCategory", groupBy, groupByCategory, groupByType)
     return { total, average, max, min, groupBy, groupByCategory };
   }
+  useEffect(() => {
+    customLogger.log("ExpenseTable/UseEffect/Expenses", Expenses, filter);
+  }, [filter, Expenses?.data]);
   const ExpenseRows = useMemo(() => {
 
     customLogger.log("ExpenseTable/ExpenseRows/filter/filter", filter)
@@ -80,10 +88,10 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
       return rows
     }
 
-    return [filter]
+    return []
 
 
-  }, [Expenses, filter.ExpenseStatus])
+  }, [Expenses])
 
   const columns: GridColDef[] = useMemo(() => [
     { field: '_id', headerName: 'id', hideable: true, minWidth: 50, type: 'string' },
@@ -114,7 +122,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
           <>{params.row.status == OrderStatus.CREATED ? (<>
             <Box display={'flex'} flexDirection={'row'} gap={1}>
               <ActionButtons OnAction={onAction} show={[EAction.EDIT]} item={params.row._id} display={[{ key: EAction.EDIT, value: "Edit" }]} disable={[{ key: EAction.EDIT, value: !isAuthorized }]} />
-              <ActionButtons OnAction={onAction} show={[EAction.PAY]} item={params.row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY, value: !isAuthorized }]} />
+              <ActionButtons OnAction={onSelectCommand} show={[EAction.PAY]} item={params.row._id} display={[{ key: EAction.PAY, value: "Transact" }]} disable={[{ key: EAction.PAY, value: !isAuthorized }]} />
               <ActionButtons OnAction={onAction} show={[EAction.DELETE]} item={params.row._id} display={[{ key: EAction.DELETE, value: "Delete" }]} disable={[{ key: EAction.DELETE, value: !isAuthorized }]} />
             </Box>
           </>) : (<></>)}

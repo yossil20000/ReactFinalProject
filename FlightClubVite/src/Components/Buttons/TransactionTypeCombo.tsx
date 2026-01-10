@@ -11,8 +11,19 @@ function TransactionTypeCombo(props : StateComboProps) {
     CustomLogger.log("TransactionTypeCombo/ DeviceItem", item)
     onChanged(item)
   }
+  let typeLabel = "Type";
+   switch ((selectedItem.label as TransactionCombo_Type).toLocaleLowerCase()) {
+    case TransactionCombo_Type.CREDIT.toLocaleLowerCase():
+      typeLabel= "Club Outcome"
+      break;
+    case TransactionCombo_Type.DEBIT.toLocaleLowerCase():
+      typeLabel= "Club Income"
+      break; 
+    default:
+      'Type';
+  }
   return (
-    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items.current} /* handleComboChange={handleDeviceOnChange} */ title={`Type`} />
+    <ControledCombo onSelectedItem={onSelectedItem}  selectedItem={selectedItem === undefined ? null : selectedItem} items={items.current} /* handleComboChange={handleDeviceOnChange} */ title={typeLabel} />
   )
 }
 

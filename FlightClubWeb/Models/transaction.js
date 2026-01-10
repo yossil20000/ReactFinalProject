@@ -40,7 +40,7 @@ var TransactionSchema = new Schema({
   },
   description: {type: String},
   date: {type: Date, default: new Date()},
-  value_date: {type: Date}
+  value_date: {type: Date, default: new Date()},
 
 },{toJSON: {getters: true}})
 
@@ -50,7 +50,7 @@ function getDecimal(value) {
   }
   return value;
 };
-/* TransactionSchema.post("find",async function(docs){
+TransactionSchema.post("find",async function(docs){
   console.log("Check value_date if empty, current value",docs.value_date);
   docs.forEach((doc) => {
     let value_date = doc.value_date;
@@ -62,7 +62,7 @@ function getDecimal(value) {
       console.log("value_date is not empty, current value",doc._id,doc.value_date,doc.description);
     }
   })
-}) */
+}) 
 const Transaction = mongoose.model("Transaction", TransactionSchema);
 module.exports = {
   Transaction: Transaction,
