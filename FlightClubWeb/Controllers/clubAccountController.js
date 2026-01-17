@@ -170,8 +170,8 @@ exports.add_order_transaction = [
   body('payment.method').isLength({ min: 1 }).withMessage("Payment methos is missing"),
   async (req, res, next) => {
     try {
-      
-      let { source, destination, amount,engine_fund_amount, order, description, type} = req.body;
+
+      let { source, destination, amount,engine_fund_amount, order, description, type,date} = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
@@ -505,7 +505,7 @@ exports.add_transaction_Type = [
 
   async (req, res, next) => {
     try {
-      let { source, destination, amount, order, description, payment, type,date} = req.body;
+      let { source, destination, amount, order, description, payment, type,date,} = req.body;
       type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -684,13 +684,15 @@ exports.add_transaction_payment = [
 
   async (req, res, next) => {
     try {
-      let { source, destination, amount, order, description, payment, type,date } = req.body;
+      let { source, destination, amount, order, description, payment, type,date,value_date,engine_fund_amount } = req.body;
       type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUBACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "ExpressValidator", errors }));
       }
-
+      if( type !== constants.TransactionType.CREDIT && type !== constants.TransactionType.DEBIT) {     
+          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(type, `Transaction Type`, 'type', "DB.ClubAccount")).validationResult.errors }));
+      }
       /* Transaction */
       const session = await mongoose.startSession();
       try {
@@ -749,17 +751,33 @@ exports.add_transaction_payment = [
         log.info("tSource", tSource)
         const tDestination = getTranctionName(destination, destinationAccount);
         log.info("tDestination", tDestination)
+        // tranasaction amount fields
+        amount = Number(Number(Math.abs(amount)).toFixed(2));
+        engine_fund_amount = Number(engine_fund_amount === undefined ? 0 : Number(Math.abs(engine_fund_amount)).toFixed(2));
         //transaction fields
-        let tSourceAmount = Number(0);
-        let tSourceEngineFundAmount = Number(0);
-        let tDestinationAmount = Number(0);
-        let tDestinationEngineFundAmount = Number(0);
-
-        let newEngineFundAmount = Number(0);
-        let newAmount = Number(amount);
+        let tSource_Balance = Number(0);
+        let tSource_EngineFundAmount = Number(0);
+        let tDestination_Balance = Number(0);
+        let tDestination_EngineFundAmount = Number(0);
+        //DEBIT destination to source, source income + operation
+        //CREDIT source to destination, source expense - opearation
+        
+        // current balances
         let destination_engine_fund_balance = Number(destinationAccount.engine_fund_balance.toFixed(2));
+        let source_engine_fund_balance = Number(sourceAccount.account_saving[0].balance.toFixed(2));
+        let destination_balance = Number(destinationAccount.balance.toFixed(2));
+        let source_balance = Number(sourceAccount.balance.toFixed(2));
+        // determining sign based on transaction type
+        const sign = type == constants.TransactionType.CREDIT ? 1 : -1;
+        //calculating new balances 
+        tSource_Balance = source_balance + ( -sign * Number(amount));
+        tSource_EngineFundAmount = source_engine_fund_balance + ( -sign * Number(engine_fund_amount));
+        tDestination_Balance = destination_balance + (-sign * Number(amount));
+        tDestination_EngineFundAmount = destination_engine_fund_balance + (-sign * Number(engine_fund_amount));
+        
 
-        if(type == constants.TransactionType.DEBIT && destination_engine_fund_balance < 0){
+
+/*         if(type == constants.TransactionType.DEBIT && destination_engine_fund_balance < 0){
           if(newAmount + destination_engine_fund_balance >= 0)
           {
             newEngineFundAmount = Math.abs(destination_engine_fund_balance);
@@ -769,9 +787,9 @@ exports.add_transaction_payment = [
             newEngineFundAmount = Math.abs(destination_engine_fund_balance);
             newAmount = 0;
           }
-        }
+        } */
 
-       if (type == constants.TransactionType.CREDIT) {
+/*        if (type == constants.TransactionType.CREDIT) {
           tSourceAmount = Number(Number(-newAmount).toFixed(2));
           tSourceEngineFundAmount = Number(0)
           tDestinationAmount = tSourceAmount
@@ -783,42 +801,44 @@ exports.add_transaction_payment = [
           tDestinationAmount = tSourceAmount
           tDestinationEngineFundAmount = tSourceEngineFundAmount;
           
-        }
-        else {
-          await session.abortTransaction();
-          return next(new ApplicationError("add_transaction", 400, "CONTROLLER.CLUB_ACCOUNT.ADD_TRANSACTION.VALIDATION", { name: "Validator", errors: (new CValidationError(type, `Transaction Type`, 'type', "DB.ClubAccount")).validationResult.errors }));
-        }
+        } */
+        
             
-        const sourceTransaction = new Transaction({
+        const newTransaction = new Transaction({
           source: tSource,
           destination: tDestination,
-          amount: tSourceAmount,
-          engine_fund_amount: tSourceEngineFundAmount,
-          source_balance: Number(sourceAccount.balance.toFixed(2)),
-          destination_balance: Number(destinationAccount.balance.toFixed(2)),
+          //Transaction amounts
+          amount: Number(amount),
+          engine_fund_amount: Number(engine_fund_amount),
+          //Previous balances
+          source_balance: source_balance,
+          destination_balance: destination_balance,
+          //
           type: type,
           calculation_type: constants.CalcType.AMOUNT,
           date: new Date(date),
+          value_date: new Date(value_date),
           description: description,
           payment: payment,
           order: order
         });
-
+        //updating club account balance
         log.info("sourceAccount.account_saving[0].balance",sourceAccount?.account_saving[0]?.balance)
-        sourceAccount.balance = Number(sourceAccount.balance.toFixed(2)) + tSourceAmount;
-        sourceAccount.account_saving[0].balance = Number(sourceAccount?.account_saving[0]?.balance.toFixed(2)) + tSourceEngineFundAmount;
+        sourceAccount.balance = tSource_Balance;
+        sourceAccount.account_saving[0].balance = tSource_EngineFundAmount
         if (isNaN(sourceAccount.balance)) {
           throw new Error('Source: The new balance is not a number!');
         }
 
-        sourceAccount.transactions.push(sourceTransaction);
+        sourceAccount.transactions.push(newTransaction);
         await sourceAccount.save({ session })
-        await sourceTransaction.save({ session });
+        await newTransaction.save({ session });
 
-        destinationAccount.transactions.push(sourceTransaction);
+        destinationAccount.transactions.push(newTransaction);
         /*  await destinationTransaction.save({ session }); */
-        destinationAccount.balance = Number(destinationAccount.balance.toFixed(2)) + tDestinationAmount;
-        destinationAccount.engine_fund_balance = Number(destinationAccount.engine_fund_balance.toFixed(2)) + tDestinationEngineFundAmount;
+        // updating account balance
+        destinationAccount.balance = tDestination_Balance;
+        destinationAccount.engine_fund_balance = tDestination_EngineFundAmount;
        
         if (isNaN(destinationAccount.balance)) {
           throw new Error('Destination: The new balance is not a number!');
@@ -831,7 +851,7 @@ exports.add_transaction_payment = [
         await session.commitTransaction();
         const savedCA = await ClubAccount.find().populate('transactions')
         log.info("savedCA", savedCA)
-        await send_recipe(/* destinationAccount.member.contact.email */"yos.1965@gmail.com",sourceTransaction);
+        await send_recipe(/* destinationAccount.member.contact.email */"yos.1965@gmail.com",newTransaction);
         
         return res.status(201).json({ success: true, errors: ["add_transaction success"], data: [] })
       }

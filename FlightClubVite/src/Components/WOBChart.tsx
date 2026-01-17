@@ -128,12 +128,13 @@ initializeArrayWithValues(5, 2); // [2, 2, 2, 2, 2] */
       ];
 
       console.log("WABChart/getLastPointLocation/point",getLastPoint())
-      let lastPoint = getLastPoint();
+      let lastPoint1 = getLastPoint();
+      let lastPoint = [lastPoint1[0],lastPoint1[1]] as [number,number]
       /* var pt = turf.point(lastPoint);
       let resUtil2 = turf.booleanPointInPolygon(pt, polyUtility);
       let resNormal2 = turf.booleanPointInPolygon(pt, polyNormal); */
-      let resUtil = inside(lastPoint,polyUtility2);
-      let resNormal = inside(lastPoint,polyNormal2);
+      let resUtil = inside(lastPoint,polyUtility2 as [number,number][]);
+      let resNormal = inside(lastPoint,polyNormal2 as [number,number][]);
 
       console.log("WABChart/getLastPointLocation/truf_res_utility",resUtil,resNormal)
       /* console.log("WABChart/getLastPointLocation/inside_res_utility",resUtil2,resNormal2) */

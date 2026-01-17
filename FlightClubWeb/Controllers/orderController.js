@@ -207,7 +207,8 @@ exports.order_quarter_create = [
           })
         })
       }
-      await Promise.all(promises)
+      const results = await Promise.all(promises)
+      console.log("All quarters results", promises);
       return res.status(201).json({ success: true, errors: [], data: [] })
     }
     catch (error) {

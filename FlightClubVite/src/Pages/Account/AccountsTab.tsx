@@ -349,7 +349,7 @@ function AccountsTab() {
         accountType: selectedAccount.member.member_type === MemberType.Supplier ? EAccountType.EAT_SUPPLIERS : EAccountType.EAT_ACCOUNT
       },
       amount: selectedAccount.balance,
-      engine_fund_amount: 0,
+      engine_fund_amount: selectedAccount.engine_fund_balance,
       type: selectedAccount.member.member_type === MemberType.Supplier ? Transaction_Type.CREDIT : Transaction_Type.DEBIT,
       order: {
         type: Transaction_OT.TRANSFER,
@@ -414,7 +414,7 @@ function AccountsTab() {
             {(openAddToBank == true && bank !== undefined && selectedAccount !== undefined) ? (<AddAccountToBankDialog value={selectedAccount} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAddToBank} bank={bank} />) : (null)}
             {openAccountAdd == true ? (<CreateAccountDialog onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAccountAdd} />) : (null)}
             {(openAccountEdit == true && selectedAccount !== undefined) ? (<UpdateAccountDialog value={selectedAccount} onClose={handleAddOnClose} onSave={handleAddOnSave} open={openAccountEdit} />) : (null)}
-            {openAccountPay == true && selectedAccount !== undefined ? (<PayTransactionDialog value={getExpense(selectedAccount)} onClose={handleAddOnClose} onSave={(value) => handleAddOnPay(value)} open={openAccountPay} />) : (null)}
+            {openAccountPay == true && selectedAccount !== undefined ? (<PayTransactionDialog value={getExpense(selectedAccount)} onClose={handleAddOnClose} onSave={(value) => handleAddOnPay(value)} open={openAccountPay} accountPay={true} />) : (null)}
             <ColumnGroupingTable page={page} rowsPerPage={rowsPerPage} rows={getData.filter(filterAccount)} columns={columns} header={[]} action={{ show: [], OnAction: onAction, item: "" }} />
           </>
         </ContainerPageMain>

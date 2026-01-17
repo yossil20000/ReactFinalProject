@@ -24,6 +24,7 @@ export interface PayTransactionDialogProps {
   onSave: (value: IExpenseBase) => void;
   open: boolean;
   value?: IAddTransaction | undefined;
+  accountPay: boolean;
 }
 
 const getAccountType = (memberType: string | undefined): string => {
@@ -45,7 +46,7 @@ const getAccountType = (memberType: string | undefined): string => {
   }
 }
 
-function PayTransactionDialog({ onClose, onSave, open,value, ...other }: PayTransactionDialogProps) {
+function PayTransactionDialog({ onClose, onSave, open,value, accountPay, ...other }: PayTransactionDialogProps) {
   /* const [selectedTransaction, setSelectedTransaction] = useState<IAddTransaction>(newTransaction);
   const [recipe, setRecipe] = useState<IPaymentRecipe>() */
   const theme = useTheme()
@@ -184,14 +185,15 @@ useEffect(() => {
   const handleNumericChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
     CustomLogger.log("NewTransaction/handleChange", event.target.name, event.target.value)
+    let {name, value} = event.target;
 
-    if (event.target.name = "amount") {
-      if(Number(event.target.value)<0){
-          event.target.value = Math.abs(Number(event.target.value)).toString()
+    if (name == "amount") {
+      if(Number(value)<0){
+        value = Math.abs(Number(value)).toString()
       }
       
     }
-    let newObj: IAddTransaction = SetProperty(payInfo.selectedTransaction, event.target.name, event.target.value) as IAddTransaction;
+    let newObj: IAddTransaction = SetProperty(payInfo.selectedTransaction, name, value) as IAddTransaction;
     const recipe = getTransactionToPaymentReciept().getReciep(newObj,payInfo.recipe)
     newObj = SetProperty(newObj, "payment.referance", JSON.stringify(recipe)) as IAddTransaction;
     setPayInfo({selectedTransaction: newObj, recipe: recipe})
@@ -333,13 +335,25 @@ useEffect(() => {
                   selectedItem={{ label: payInfo.selectedTransaction.type === undefined ? "" : payInfo.selectedTransaction.type.toString(), _id: "", description: "" }} />
               </Grid>
               <Grid item xs={12} md={4} sx={{paddingRight:{xs:'0px' , md:'1ch'} }}>
-                <TextField fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
+                <TextField key={"payInfo.selectedTransaction.amount"} fullWidth={true} onChange={handleNumericChange} id="amount" name="amount"
                   type="number"
-                  label="Amount" placeholder="Amount" variant="standard"
-                  value={payInfo.selectedTransaction?.amount} required
+                  label={`Amount: ${payInfo.selectedTransaction?.amount}`} placeholder="Amount" variant="standard"
+                  value={Math.abs(Number(payInfo.selectedTransaction?.amount))} required
                   helperText="" error={false} InputLabelProps={{ shrink: true }}
                   inputProps={{ max: 1000, min: 1 }} />
               </Grid>
+              {accountPay === true ? (
+              <Grid item xs={12} md={4} sx={{paddingRight:{xs:'0px' , md:'1ch'} }}>
+                <TextField key={"payInfo.selectedTransaction.engine_fund_amount"} fullWidth={true} onChange={handleNumericChange} id="engine_fund_amount" name="engine_fund_amount"
+                  type="number"
+                  label={`Engine Fund Amount: ${payInfo.selectedTransaction?.engine_fund_amount}`} placeholder="Engine Fund Amount" variant="standard"
+                  value={Math.abs(Number(payInfo.selectedTransaction?.engine_fund_amount))} required
+                  helperText="" error={false} InputLabelProps={{ shrink: true }}
+                  inputProps={{ max: 1000, min: 1 }} />
+              </Grid>
+              ) : (<></>)}
+
+               
               <Grid item xs={12} md={4}>
                 <TextField fullWidth={true} onChange={handleChange} id="payment.method" name="payment.method"
                   disabled
