@@ -347,7 +347,7 @@ exports.add_transaction = [
 
   async (req, res, next) => {
     try {
-      let { source, destination, amount, order, description, payment, type,supplier } = req.body;
+      let { source, destination, amount, order, description, payment, type,supplier,value_date } = req.body;
       type = type.toUpperCase();
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -424,6 +424,7 @@ exports.add_transaction = [
           type: type,
           calculation_type: constants.CalcType.AMOUNT,
           date: new Date(expense.date),
+          value_date: expense.value_date == undefined ? new Date(value_date) : new Date(expense.value_date) ,
           description: description,
           payment: payment,
           order: order

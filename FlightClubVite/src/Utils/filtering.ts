@@ -90,7 +90,7 @@ export function from_to_Filter(today: Date): IDateFilter {
 export function from_to_year_Filter(today: Date): IDateFilter {
   return {
     to: today.getEndOfYear(),
-    from: today.getStartOfYear(),
+    from: today.getStartOfYear().addMonths(-3),
     currentOffset: (new Date()).getTimezoneOffset()
   }
 };

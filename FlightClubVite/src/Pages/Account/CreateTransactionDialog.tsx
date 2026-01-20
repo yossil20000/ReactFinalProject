@@ -151,8 +151,8 @@ function CreateTransactionDialog({ onClose, onSave, open, value, ...other }: Cre
             referance: ""
           },
           description: value.description,
-          date: new Date(),
-          value_date: new Date(),
+          date: new Date(value.date),
+          value_date: new Date(value.date),
           supplier: value.supplier === undefined ? "Unknown" : value.supplier
         }
         setSelectedTransaction(newTransaction);

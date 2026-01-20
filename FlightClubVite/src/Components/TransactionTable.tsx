@@ -35,7 +35,7 @@ export default function TransactionTable({transactionSave,setTransactionSave, hi
   console.log("TransactionTable/filter", filter)
   const { data: dataTransaction , isLoading,error } = useFetchTransactionQuery(filter.dateFilter)
   const [rowId, setRowId] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(100);
   const [page, setPage] = useState(1);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   
