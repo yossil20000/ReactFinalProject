@@ -28,7 +28,13 @@ var ExpenseSchema = new Schema({
     account_id: {type: String, required: true,default:""}
   },
   supplier:{type: String, required: true,default:""}
-},{toJSON: {getters: true}})
+},{toJSON: {getters: true} });
+
+ExpenseSchema.virtual('createdAt').get(function() {
+  return this._id.getTimestamp();
+});
+
+
 
 function getDecimal(value) {
   if (typeof value !== 'undefined') {

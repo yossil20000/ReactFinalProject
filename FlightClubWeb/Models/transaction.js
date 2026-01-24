@@ -42,8 +42,11 @@ var TransactionSchema = new Schema({
   date: {type: Date, default: new Date()},
   value_date: {type: Date, default: new Date()},
 
-},{toJSON: {getters: true}})
+},{toJSON: {getters: true} });
 
+TransactionSchema.virtual('createdAt').get(function() {
+  return this._id.getTimestamp();
+});
 function getDecimal(value) {
   if (typeof value !== 'undefined') {
      return parseFloat(value.toString());
