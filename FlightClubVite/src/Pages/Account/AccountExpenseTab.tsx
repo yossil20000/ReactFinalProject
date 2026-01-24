@@ -64,7 +64,7 @@ function AccountExpenseTab() {
     roles: [Role.desk, Role.admin, Role.account],
   });
   const [openFilter, setOpenFilter] = useState(false);
-  const [filter, setFilter] = useSessionStorage<IDateFilter>("AccountExpenseDateFilter",{currentOffset: 0, from: new Date().getStartOfYear().getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter);
+  const [filter, setFilter] = useSessionStorage<IDateFilter>("AccountExpenseDateFilter",{currentOffset: 0, from: new Date().getStartOfYear().addMonths(-3).getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter);
   const { data, refetch, isLoading, error } = useFetchExpenseQuery(filter);
   const { data: deviceMaxValues, error: deviceMaxValuesError } = useGetDeviceMaxValuesQuery({...defaultMaxValuesQuery, device_id: "4XCGC",status: [FlightStatus.CREATED, FlightStatus.CLOSE,FlightStatus.PAYED],from: new Date(filter.from).getStartDayDate(), to: new Date(filter.to).getEndDayDate()})
   const [openExpenseAdd, setOpenExpenseAdd] = useState(false);

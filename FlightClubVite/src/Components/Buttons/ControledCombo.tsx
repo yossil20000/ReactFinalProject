@@ -63,10 +63,17 @@ export default function ControledCombo(props: InputComboProps) {
     if(selectedItem !== undefined )
     setValue((selectedItem as InputComboItem))
   },[selectedItem])
+  const customFilterOptions = (options: InputComboItem[], params: any) => {
+    const filtered = options.filter((option) => {
+      return option.description.toLowerCase().includes(params.inputValue.toLowerCase()) || option.label.toLowerCase().includes(params.inputValue.toLowerCase());
+    });
+    return filtered;
+  }
   return (
 <Autocomplete
       fullWidth={true}
       value={value}
+      filterOptions={customFilterOptions}
       onChange={(event: any, newValue: InputComboItem | null) => {
         CustomLogger.info("ControledCombo/onChange", newValue)
 
