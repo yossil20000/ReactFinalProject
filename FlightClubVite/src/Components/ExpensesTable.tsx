@@ -77,6 +77,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
       status: row.status,
       source: row.source.display,
       destination: row.destination.display,
+      createdAt: new Date(row.createdAt),
     }))
     if (Expenses?.data.length) {
       getExpenseStatistics(Expenses.data)
@@ -95,10 +96,17 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
 
   const columns: GridColDef[] = useMemo(() => [
     { field: '_id', headerName: 'id', hideable: true, minWidth: 50, type: 'string' },
+    { field: 'createdAt', headerName: 'Updated At',hide: true, minWidth: 300, type: 'date' ,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date
+    }},
     { field: 'date', headerName: 'Date', minWidth: 30, type: 'date' ,valueFormatter: (params) => {
       const date = new Date(params.value);
-      return date.getPadDateDisplay();
-    }},
+      return date.getPadDateDisplay();},
+      sortcomparator: (v1: Date, v2: Date,param1:any, param2:any) => {
+        
+        return param1.row.createdAt.getTime() - param2.row.createdAt.getTime();    }
+    },
     { field: 'sizePerUnit', headerName: 'Unit Size', minWidth: 90, type: 'string' },
     { field: 'units', headerName: 'Units', minWidth: 40, type: 'number' },
     { field: 'pricePeUnit', headerName: 'Per Unit', minWidth: 90, type: 'number' },
@@ -167,7 +175,8 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
             columnVisibilityModel: {
               _id: false,
               member: false,
-              description: false
+              description: false,
+              createdAt: false
             }
           }
         }}

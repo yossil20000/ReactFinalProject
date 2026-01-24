@@ -10,6 +10,7 @@ import FullScreenLoader from "./FullScreenLoader";
 import ReportDialog from "./Report/Exel/ReportDialog";
 import { CTransactionToReport } from "../Interfaces/API/IAccountReport";
 import { GridInitialStateCommunity } from "@mui/x-data-grid/models/gridStateCommunity";
+import { difference, update } from "lodash";
 
 
 export interface ITransactionTableFilter {
@@ -26,7 +27,8 @@ let initialState: GridInitialStateCommunity = {
   columns: {
     columnVisibilityModel: {
       id: false,
-      date: true
+      date: true,
+      createdAt: false,
     }
   },
   pagination: { paginationModel: { pageSize: 100 } },
@@ -38,7 +40,27 @@ export default function TransactionTable({transactionSave,setTransactionSave, hi
   const [pageSize, setPageSize] = useState(100);
   const [page, setPage] = useState(1);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
-  
+    const getCreditDebitBalance = (transaction: ITransaction[]) : [number,number,number,number,number,number] => {
+    let totalCredit=0;
+    let totalDebit=0;
+    let totalCreditEngineFund=0;
+    let totalDebitEngineFund=0;
+    transaction.forEach((item)=>{
+      if(item.payment.method.toLocaleUpperCase() !== "TRANSFER"){
+      if(item.type.toLocaleUpperCase() === "CREDIT"){
+        totalCredit += Math.abs(item.amount);
+        totalCreditEngineFund += Math.abs(item.engine_fund_amount);
+      }
+      else if(item.type.toLocaleUpperCase() === "DEBIT"){
+        totalDebit += Math.abs(item.amount);
+        totalDebitEngineFund += Math.abs(item.engine_fund_amount);
+      }}
+    });
+    
+    
+    return [totalCredit,totalDebit,totalCredit - totalDebit, totalCreditEngineFund,totalDebitEngineFund,totalCreditEngineFund - totalDebitEngineFund];
+  }  
+
 useEffect(()=>{
   CustomLogger.info("TransactionTable/filter", filter)
 },[filter])
@@ -77,11 +99,19 @@ const getData = useMemo(() => {
       paymentMethod : row.payment.method,
       paymentReferance: row.payment.referance,
       order: row.order.type,
-      description: COrderDescription.displayTransaction(row.description) 
+      description: COrderDescription.displayTransaction(row.description),
+      createdAt: new Date(row.createdAt)
     }))
     if (rows !== undefined) {
+      try {
       CustomLogger.info("TransactionTable/orders", rows, transactions);
+      const [credit, debit, difference, creditEngineFund, debitEngineFund, differenceEngineFund] = getCreditDebitBalance(transactions);
+      const newLocal = "TransactionTable/creditDebit";
+      CustomLogger.info(newLocal, credit, debit, difference, creditEngineFund, debitEngineFund, differenceEngineFund);
       return rows
+      } catch (error) {
+        CustomLogger.error("TransactionTable/transactionRows/error", error)
+      }
     }
     return []
 
@@ -91,10 +121,16 @@ const getData = useMemo(() => {
   const columns: GridColDef[] = useMemo(() => [
     { field: 'id',hideable: true },
     /* { field: '_id',hideable: true }, */
+    { field: 'createdAt', headerName: 'Updated At',hide: true, minWidth: 300, type: 'date' ,valueFormatter: (params) => {
+      const date = new Date(params.value);
+      return date
+    }},
     { field: 'date', hideable: true, headerName: 'Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1,valueFormatter: (params) => {
       const date = new Date(params.value);
-      return date.getPadDateDisplay();
-    }},
+      return date.getPadDateDisplay();},
+      sortcomparator: (v1: Date, v2: Date,param1:any, param2:any) => {
+        return param1.row.createdAt.getTime() - param2.row.createdAt.getTime(); }
+    },
     { field: 'value_date', hideable: true, headerName: 'Value Date',type: 'dateTime' ,minWidth: 120,maxWidth: 120, flex: 1,valueFormatter: (params) => {
       const date = new Date(params.value);
       return date.getPadDateDisplay();

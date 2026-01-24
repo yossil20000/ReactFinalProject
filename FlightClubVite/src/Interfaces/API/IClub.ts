@@ -156,7 +156,8 @@ export interface ITransactionBase {
 }
 
 export interface ITransaction extends ITransactionBase {
-  _id: string
+  _id: string,
+  createdAt: Date
 }
 export class CTransaction {
 
@@ -377,7 +378,8 @@ const transactions: ITransaction = {
   },
   description: "",
   date: new Date(),
-  value_date: new Date()
+  value_date: new Date(),
+  createdAt: new Date()
 }
 export let getIAddTransaction : IAddTransaction = {
   source: {
