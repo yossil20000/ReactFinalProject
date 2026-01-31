@@ -212,6 +212,24 @@ export class CExpenseGroupToReport {
     console.info("CExpenseGroupToReport/report", report)
     return report;
   }
+  sortMapByUtilizated(map: Map<string, MapTotal>): Map<string, MapTotal> {
+    const sortedKeys = Array.from(map.keys()).sort((a, b) => {
+      const aValue = parseInt(a.split('_')[1]); 
+      const bValue = parseInt(b.split('_')[1]);
+      return aValue - bValue;
+    });
+    console.info("CExpenseGroupToReport/sortMapByUtilizated/sortedKeys", sortedKeys, map);
+    const sortedMap = new Map<string, MapTotal>();
+    sortedKeys.forEach(key => {
+      const value = map.get(key); 
+      if (value) {
+        sortedMap.set(key, value); 
+      }
+    });
+    console.info("CExpenseGroupToReport/sortMapByUtilizated/sortedMap", sortedMap);
+    return sortedMap;
+  }
+
   getExpesesUtilizationToExel(file: string = "ExpensesUtilizationReport", sheet: string = "Expenses", title: string = "Expense Reports"): IExportExelTable {
     let report: IExportExelTable = {
       file: file,
@@ -243,11 +261,14 @@ export class CExpenseGroupToReport {
     report.header = ["Utilized","Utilized description","Type", "Amount", "Category","Total"]
     report.body = [];
     report.body.push([title, "", "", "", ""]);
-    console.info("getExpesesUtilizationToExel/Sumary start");
-    reportData.map.forEach((utilizedMap, utilizated) => {
+    console.info("getExpesesUtilizationToExel/Sumary start/reportData.map",reportData.map);
+     const sortedTypeMap = this.sortMapByUtilizated((reportData.map) as Map<string, MapTotal>);
+    sortedTypeMap.forEach((utilizedMap, utilizated) => {
       console.info("getExpesesUtilizationToExel/utilizatedMap", utilizated, utilizedMap.subtotal);
       report.body.push([utilizated, `${UtilizatedDictionary[getEnumKeyByValue(utilizated)]}`,"", "", "", utilizedMap.subtotal.toFixed(2)]);
       console.info("getExpesesUtilizationToExel/Sumary/typeMap start");
+     
+
       (utilizedMap as MapTotal).map.forEach((typeMap, type) => {
         console.info("getExpesesUtilizationToExel/Sumary_loop/typeMap", type, typeMap, typeof typeMap);
         report.body.push(["", "",type,  typeMap.subtotal.toFixed(2), `${Array.from((typeMap as MapTotal).map.keys()).join(", ")}`]);
