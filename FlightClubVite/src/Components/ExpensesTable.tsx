@@ -73,11 +73,15 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
       category: row.expense.category,
       type: row.expense.type,
       utilizated: row.expense.utilizated,
+      isMemberPaid: row.expense.isMemberPaid,
+      isEqualSplit: row.expense.isEqualSplit,
       description: row.description,
       status: row.status,
       source: row.source.display,
       destination: row.destination.display,
       createdAt: new Date(row.createdAt),
+      
+      
     }))
     if (Expenses?.data.length) {
       getExpenseStatistics(Expenses.data)
@@ -114,6 +118,8 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
     { field: 'category', headerName: 'Category', minWidth: 70, type: 'string' },
     { field: 'type', headerName: 'Type', minWidth: 70, type: 'string', flex: 2 },
     { field: 'utilizated', headerName: 'Utilizated', minWidth: 70, type: 'string', flex: 2 },
+    { field: 'isMemberPaid', headerName: 'Member Paid', minWidth: 90, type: 'boolean',resizable: true },
+    { field: 'isEqualSplit', headerName: 'Equal Split', minWidth: 90, type: 'boolean',resizable: true },
     { field: 'description', headerName: 'Description', minWidth: 170, type: 'string' },
     { field: 'status', headerName: 'Status', minWidth: 70, type: 'string', format: (value: Status) => value.toLocaleUpperCase(), isCell: true },
     { field: 'source', headerName: 'Source', minWidth: 170, type: 'string' },
@@ -177,7 +183,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
               member: false,
               description: false,
               createdAt: false
-            }
+            },
           }
         }}
 
@@ -189,6 +195,7 @@ export default function ExpenseTable({ hideAction = false, filter = {}, onAction
         checkboxSelection={false}
         getRowId={(row) => row._id}
         disableRowSelectionOnClick
+        
         onCellEditStop={(params) => setRowId(params.id.toString())}
       /* rowHeight={123} */
 

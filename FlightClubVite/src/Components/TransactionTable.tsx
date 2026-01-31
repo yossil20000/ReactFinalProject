@@ -142,7 +142,7 @@ const getData = useMemo(() => {
     { field: 'destination_balance', headerName: 'D.PrevBalance', type: 'number', minWidth: 140, maxWidth:140, flex: 1 },
     { field: 'amount', headerName: 'Amount', type: 'number', minWidth: 120, maxWidth:120, flex: 1 },
     { field: 'engine_fund_amount', headerName: 'EngineFund', type: 'number', minWidth: 120, maxWidth:120, flex: 1 },
-    { field: 'transactionType', headerName: 'Type', type: 'number', minWidth: 100, maxWidth:100, flex: 1 },
+    { field: 'transactionType', headerName: 'Type', type: 'text', minWidth: 100, maxWidth:100, flex: 1 },
     { field: 'paymentMethod', headerName: 'PayMethod', type: 'text', minWidth: 130, maxWidth:160, flex: 1 },
     { field: 'paymentReferance', headerName: 'PayRef', type: 'text', minWidth: 160, flex: 4 },
     { field: 'description', headerName: 'Description', minWidth: 200, flex: 4 },

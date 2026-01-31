@@ -11,7 +11,9 @@ var ExpenseSchema = new Schema({
   expense: {
     category: {type: String, required:true, default: ""},
     type: {type: String, required:true, default: ""},
-    utilizated: {type: String, enum : Object.values(constants.Utilizated) , default: constants.Utilizated.HOURS_0000 }
+    utilizated: {type: String, enum : Object.values(constants.Utilizated) , default: constants.Utilizated.HOURS_0000 },
+    isEqualSplit: {type: Boolean, default: false},
+    isMemberPaid: {type: Boolean, default: false}
   },
   description: {type: String,default: ""},
   status: {type:String, enum: Object.values(constants.OrderStatus), default: constants.OrderStatus.CREATED},
@@ -50,6 +52,13 @@ ExpenseSchema.post("find",async function(docs){
       doc.supplier = doc.destination.display
       console.log("Supplier is empty, setting to null",doc.supplier);
     } 
-  })
+    switch(doc.expense.utilizated){
+      case constants.Utilizated.HOURS_UPEQ:
+        doc.expense.isEqualSplit = true;
+        break;
+      case constants.Utilizated.HOURS_UPQP:
+        doc.expense.isMemberPaid = true;
+        break;
+  }  });
 })
 module.exports = mongoose.model("Expense", ExpenseSchema);

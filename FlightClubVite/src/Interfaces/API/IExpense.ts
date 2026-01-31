@@ -82,7 +82,9 @@ export interface IExpenseBase {
   expense: {
     category: string,
     type: string,
-    utilizated: Utilizated
+    utilizated: Utilizated,
+    isEqualSplit: boolean
+    isMemberPaid: boolean
   }
   description: string,
   status: OrderStatus,
@@ -115,7 +117,9 @@ export const newExpense: IExpenseBase = {
   expense: {
     category: "",
     type: "",
-    utilizated: Utilizated.HOURS_0000
+    utilizated: Utilizated.HOURS_0000,
+    isEqualSplit: false,
+    isMemberPaid: false
   },
   description: "",
   status: OrderStatus.CREATED,
@@ -224,6 +228,7 @@ export class CExpenseGroupToReport {
     report.summary.set("PricePerHour", 0);
     report.summary.set("EngineFund", 120);
     report.summary.set("PricePerMonth", 0);
+    report.summary.set("AnnualUnExpected", 0);
     report.summary.set("AnnualUnExpectedPaid", 0);
     report.summary.set("UnExpectedPerMonth", 0);
     report.summary.set("UnExpectedPerHour", 0);
@@ -231,6 +236,8 @@ export class CExpenseGroupToReport {
     report.summary.set("TotalPrice", 0);
 
     const reportData = this.getExpesesByUtilizationObject();
+    report.summary.set("AnnualUnExpected", reportData.unexpected_expense || 0);
+    report.summary.set("AnnualUnExpectedPaid", reportData.members_paid || 0);
     report.header = ["Utilized","Utilized description","Type", "Amount", "Category","Total"]
     report.body = [];
     report.body.push([title, "", "", "", ""]);
@@ -247,8 +254,11 @@ export class CExpenseGroupToReport {
           report.summary?.set("TotalPerMonth", Number((report.summary.get("TotalPerMonth") || 0) + typeMap.subtotal));
           customLogger.log("getExpesesUtilizationToExel/Sumary/HOURS_0000 and HOURS_UPEQ and HOURS_OSEQ", utilizated,typeMap.subtotal.toFixed(2),report.summary?.get("TotalPerMonth"));
         }
-         if(utilizated==="HOURS_0001" || utilizated==="HOURS_0050" || utilizated==="HOURS_0100" || utilizated==="HOURS_0150" || utilizated==="HOURS_0200" || utilizated==="HOURS_0250" || utilizated==="HOURS_0300" || utilizated==="HOURS_0350" || utilizated==="HOURS_0400" || utilizated==="HOURS_0450" || utilizated==="HOURS_0500"){
+         if(utilizated !=="HOURS_000" && utilizated !=="HOURS_UPEQ" && utilizated !=="HOURS_OSEQ" && utilizated !=="HOURS_UPQP"){
           const priceDeviced = Number(utilizated.split("_")[1]);
+          if(priceDeviced===0){
+            return;
+          }
           report.summary?.set("TotalPerHour", Number((report.summary.get("TotalPerHour") || 0) + typeMap.subtotal / priceDeviced));
           customLogger.log("getExpesesUtilizationToExel/Sumary/HOURS_0001 and above",utilizated, typeMap.subtotal.toFixed(2),report.summary?.get("TotalPerHour"));
         }
@@ -269,23 +279,28 @@ export class CExpenseGroupToReport {
     report.body.push(["", "", "", "", "",""]);
     report.body.push(["", "Estimated PricePer Hour Calculation", "", "",""]);
     report.body.push(["Flight Hours", (report.summary.get("FlightHours") || 0).toFixed(1), "Formula", ""]);
-    report.body.push(["Total Expenses Per Hour Flight", (report.summary.get("TotalPerHour") || 0).toFixed(2), "=SUM(HOURS_000x / x) where x is flight hours in the table above", ""]);
-    report.body.push(["Total UnExpected Expenses Paid", (report.summary.get("AnnualUnExpectedPaid") || 0).toFixed(2), "`=HOURS_UPQP`", "", "",""]);
+    report.body.push(["Total Expenses Depend on Flight Hour", (report.summary.get("TotalPerHour") || 0).toFixed(2), "=SUM(HOURS_000x / x) where x is flight hours in the table above", ""]);
+    
     report.body.push(["Expenses Price Per Hour", (report.summary.get("PricePerHour") || 0 ).toFixed(2), "Total Expenses Per Hour Flight / Flight Hours", ""]);
-    report.body.push(["UnExpected Expenses Per Hour", (report.summary.get("UnExpectedPerHour") || 0).toFixed(2), "`=Total UnExpected Expenses Paid / Flight Hours`", ""]);
     report.body.push(["Engine Fund Per Hour", (report.summary.get("EngineFund") || 0).toFixed(2), "Fixed Engine Fund Per Hour", ""]);
     
-    report.body.push(["Total Price Per Hour", ((report.summary.get("PricePerHour") || 0 )+ (report.summary.get("UnExpectedPerHour") || 0 ) + ((report.summary.get("EngineFund") || 0))).toFixed(2), "Total Expenses Per Hour Flight + Engine Fund Per Hour", ""]);
+    report.body.push(["Actual Price Per Hour", ((report.summary.get("PricePerHour") || 0 ) + ((report.summary.get("EngineFund") || 0))).toFixed(2), "Total Expenses Per Hour Flight + Engine Fund Per Hour", ""]);
     
     report.body.push(["","Estimated Price Per Month Calculation","",""]);
     report.body.push(["Members", (report.summary.get("Members") || 0).toFixed(0), "", ""]);
     report.body.push(["Total Expenses For Month Calculation", (report.summary.get("TotalPerMonth") || 0).toFixed(2), "`=(HOURS_0000+HOURS_UPEQ+HOURS_OSEQ)`", "", "",""]);
     /* report.body.push(["Total UnExpected Expenses Paid", (report.summary.get("AnnualUnExpectedPaid") || 0).toFixed(2), "`=HOURS_UPQP`", "", "",""]); */
-    report.body.push(["Price Per Month Per Member", (report.summary.get("PricePerMonth") || 0).toFixed(2), "`=(Total Expenses For Month Calculation)  / Members_Count / 12[month]`", ""]);
+    report.body.push(["Actual Price Per Month Per Member", (report.summary.get("PricePerMonth") || 0).toFixed(2), "`=(Total Expenses For Month Calculation)  / Members_Count / 12[month]`", ""]);
     /* report.body.push(["UnExpected Per Month Per Member", (report.summary.get("UnExpectedPerMonth") || 0).toFixed(2), "`=Price Per Month Per Member + UnExpected Per Month Per Member`", ""]); */
-    report.body.push(["Total Estimated Price Per Month Per Member", ((report.summary.get("PricePerMonth") || 0)).toFixed(2), "", ""]);  
-    report.body.push(["","Un Expected Expense Per Month Per Member","",""]);
-    report.body.push(["UnExpected Per Month Per Member", (report.summary.get("UnExpectedPerMonth") || 0).toFixed(2), "`=Price Per Month Per Member + UnExpected Per Month Per Member`", ""]);
+    
+    report.body.push(["","UnExpected Expense","",""]);
+    report.body.push(["Total UnExpected Expenses", (report.summary.get("AnnualUnExpected") || 0).toFixed(2), "", "", "",""]);
+    report.body.push(["Total UnExpected Expenses Paid", (report.summary.get("AnnualUnExpectedPaid") || 0).toFixed(2), "", "", "",""]);
+    report.body.push(["UnExpected Per Month Per Member Paid", (report.summary.get("UnExpectedPerMonth") || 0).toFixed(2), "`=Price Per Month Per Member + UnExpected Per Month Per Member`", ""]);
+    /* report.body.push(["UnExpected Expenses Per Hour", (report.summary.get("UnExpectedPerHour") || 0).toFixed(2), "`=Total UnExpected Expenses Paid / Flight Hours`", ""]); */
+    report.body.push(["","Member Actual Paid","",""]);
+    report.body.push(["Actual Member Paid Per Month", (( 440) + (report.summary.get("UnExpectedPerMonth") || 0)).toFixed(2), "", ""]); 
+    report.body.push(["Actual Member Paid Per Hour", ( Number(740).toFixed(2)), "", ""]);   
     console.info("getExpesesUtilizationToExel/report", report)
     return report;
   }
@@ -328,11 +343,18 @@ export class CExpenseGroupToReport {
     let threeLevelMap: MapTotal = { map: new Map<string, MapTotal>(), subtotal: 0, total: 0 };
     threeLevelMap.map = new Map<string, MapTotal>();
     threeLevelMap.subtotal = 0;
+    let UnpredectibaleExpenseWithEqualydividedTotal: number = 0;
+    let UnpredectibaleExpenseQuarterlyPaidbyMembersTotal: number = 0;
     this.expenses.forEach((expense) => {
       let category = expense.expense.category.toLocaleUpperCase();
       let type = expense.expense.type.toLocaleUpperCase();
       let utilized = expense.expense.utilizated.toLocaleUpperCase();
-
+      if(expense.expense.isEqualSplit){
+        UnpredectibaleExpenseWithEqualydividedTotal += expense.amount;
+      }
+      if(expense.expense.isMemberPaid){
+        UnpredectibaleExpenseQuarterlyPaidbyMembersTotal += expense.amount;
+      }
       if (!threeLevelMap.map.has(utilized)) {
         threeLevelMap.map.set(utilized, { map: new Map<string, MapTotal>(), subtotal: 0, total: 0 });
       }
@@ -354,7 +376,10 @@ export class CExpenseGroupToReport {
       }
 
     })
-    console.info("CExpenseToReport/getExpesesByCategoryMap/threeLevelMap", threeLevelMap);
+    threeLevelMap.unexpected_expense = UnpredectibaleExpenseWithEqualydividedTotal;
+    threeLevelMap.members_paid = UnpredectibaleExpenseQuarterlyPaidbyMembersTotal;
+    console.info("CExpenseToReport/getExpesesByUtilizationObject/threeLevelMap", threeLevelMap);
+
      return threeLevelMap;
   }
 }

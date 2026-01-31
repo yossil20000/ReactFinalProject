@@ -15,7 +15,8 @@ export type MapTotal = {
   map:  Map<string, MapTotal | ExportExpensesType>;
     subtotal: number;
     total: number;
-  
+  unexpected_expense?: number;
+  members_paid?: number;
 }
 
 export type Dictionary<T> = {
