@@ -8,7 +8,7 @@ import {
   ListItemButton,
   ListItemIcon,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActionButtons, { EAction } from "../../Components/Buttons/ActionButtons";
 import {
   IValidationAlertProps,
@@ -38,11 +38,10 @@ import DatePickerDate from "../../Components/Buttons/DatePickerDate";
 import GeneralDrawer from "../../Components/GeneralDrawer";
 import { SetProperty } from "../../Utils/setProperty";
 import { IDateFilter } from "../../Interfaces/IDateFilter";
-import { from_to_year_Filter } from "../../Utils/filtering";
-import { getFilter, IFilter } from "../../Interfaces/API/IFilter";
 import { useGetDeviceMaxValuesQuery } from "../../features/Flight/flightApi";
 import { defaultMaxValuesQuery, FlightStatus } from "../../Interfaces/API/IFlight";
-import useLocalStorage, { useSessionStorage } from "../../hooks/useLocalStorage";
+import { useSessionStorage } from "../../hooks/useLocalStorage";
+
 interface Data {
   _id: string;
   date: Date;
@@ -74,13 +73,12 @@ function AccountExpenseTab() {
   const [openExpenseEdit, setOpenExpenseEdit] = useState(false);
   const [openAddTransaction, setOpenAddTransaction] = useState(false);
   const [openDeleteExpense, setOpenDeleteExpense] = useState(false);
-  const [selectedExpense, setSelectedExpense] = useState<IExpense | undefined>(
-    undefined
-  );
-  const [validationAlert, setValidationAlert] = useState<
-    IValidationAlertProps[]
-  >([]);
-
+  const [selectedExpense, setSelectedExpense] = useState<IExpense | undefined>(undefined);
+  const [validationAlert, setValidationAlert] = useState<IValidationAlertProps[]>([]);
+  useEffect(() => {
+    setFilter({currentOffset: 0, from: new Date().getStartOfYear().addMonths(-3).getMidDayDate(), to: new Date().getEndOfYear().getMidDayDate()} as IDateFilter)
+    console.log("AccountExpenseTab/useEffect/filter", filter);
+  }, []);
   const OnSelectedAction = (item: string | IExpense): void => {
     if (typeof item === "string") {
     const found = data?.data.find((expense) => expense._id === item);

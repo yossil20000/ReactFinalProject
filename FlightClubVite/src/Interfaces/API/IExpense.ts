@@ -252,7 +252,7 @@ export class CExpenseGroupToReport {
     report.summary.set("AnnualUnExpectedPaid", 0);
     report.summary.set("UnExpectedPerMonth", 0);
     report.summary.set("UnExpectedPerHour", 0);
-    
+    report.summary.set("TotalDirectFlightHour", 0);
     report.summary.set("TotalPrice", 0);
 
     const reportData = this.getExpesesByUtilizationObject();
@@ -277,7 +277,12 @@ export class CExpenseGroupToReport {
           report.summary?.set("TotalPerMonth", Number((report.summary.get("TotalPerMonth") || 0) + typeMap.subtotal));
           customLogger.log("getExpesesUtilizationToExel/Sumary_loop/HOURS_0000 and HOURS_UPEQ and HOURS_OSEQ", utilizated,typeMap.subtotal.toFixed(2),report.summary?.get("TotalPerMonth"));
         }
-         if(utilizated !=="HOURS_000" && utilizated !=="HOURS_UPEQ" && utilizated !=="HOURS_OSEQ" && utilizated !=="HOURS_UPQP"){
+        if(utilizated==="HOURS_0001"){
+          
+          report.summary?.set("TotalDirectFlightHour", Number((report.summary?.get("TotalDirectFlightHour") || 0) + typeMap.subtotal));
+          customLogger.log("getExpesesUtilizationToExel/Sumary_loop/HOURS_0001",utilizated, typeMap.subtotal.toFixed(2),report.summary?.get("TotalDirectFlightHour"));
+        }
+         if(utilizated !=="HOURS_0000" && utilizated !=="HOURS_UPEQ" && utilizated !=="HOURS_OSEQ" && utilizated !=="HOURS_UPQP"){
           const priceDeviced = Number(utilizated.split("_")[1]);
           if(priceDeviced===0){
             return;
@@ -302,7 +307,9 @@ export class CExpenseGroupToReport {
     report.summary.get("TotalPerMonth"), report.summary.get("TotalPerHour"), report.summary.get("AnnualUnExpectedPaid") );
     report.body.push(["", "", "", "", "",""]);
     report.body.push(["", "Actual PricePer Hour Flight", "", "",""]);
-    report.body.push(["Total Expenses Related To Flight", (report.summary.get("TotalRelatedToFlight") || 0).toFixed(2), "", ""]);
+    report.body.push(["Total Expenses Related To Flight", (report.summary.get("TotalRelatedToFlight") || 0).toFixed(2), "HOURS_0001 and above", ""]);
+    report.body.push(["Total Expenses OIL and Fuel", (report.summary.get("TotalDirectFlightHour") || 0).toFixed(2), "HOURS_0001", ""]);
+    report.body.push(["OIL and FUEL Consmption per Hour Flight", ((report.summary.get("TotalDirectFlightHour") || 0) / (report.summary.get("FlightHours") || 1)).toFixed(2), "Total Expenses OIL and Fuel / Total Flight Hours", ""]);
     report.body.push(["Actual Flight Hours", (report.summary.get("FlightHours") || 0).toFixed(1), "", ""]);
     report.body.push(["Actual Expense Per Hour Flight", ( (report.summary.get("TotalRelatedToFlight") || 0) / (report.summary.get("FlightHours") || 1)).toFixed(2), "Total Related To Flight / Actual Flight Hours", ""]);
     report.body.push(["Engine Fund Per Hour", (report.summary.get("EngineFund") || 0).toFixed(2), "Fixed Engine Fund Per Hour", ""]);

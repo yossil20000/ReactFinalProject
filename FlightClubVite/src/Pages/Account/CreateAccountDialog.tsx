@@ -112,7 +112,7 @@ function CreateAccountDialog({ onClose, onSave, open, ...other }: CreateAccountD
               {isSupplier === true ? (<>              <Grid item xs={12} md={6}>
                 <MembersCombo selectedItem={selectedMember} onChanged={onMemberChanged} source={"source"} filter={{ filter: { member_type: MemberType.Supplier } }} />
               </Grid></>) : (<>            <Grid item xs={12} md={6}>
-                <MembersCombo selectedItem={selectedMember} onChanged={onMemberChanged} source={"_CreateAccount/members"} filter={{ filter: { member_type: MemberType.Member } }}/>
+                <MembersCombo selectedItem={selectedMember} onChanged={onMemberChanged} source={"_CreateAccount/members"} filter={{ filter: { member_type: {$in:[MemberType.Member, MemberType.Club]} } }}/>
               </Grid></>)}
 
 

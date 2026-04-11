@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var log = require('debug-level').log('db');
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URL ?? '', {
+    const conn = await mongoose.connect(process.env.MONGODB_URL_CLUSTER_CLUB ?? '', {
       useUnifiedTopology: true,
       useNewUrlParser: true
     })
